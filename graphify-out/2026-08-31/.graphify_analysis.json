@@ -213,6 +213,11 @@
       "degree": 9
     },
     {
+      "id": "src_utils_categoryhelpers_getcategorymeta",
+      "label": "getCategoryMeta()",
+      "degree": 7
+    },
+    {
       "id": "src_components_ui_card_card",
       "label": "Card()",
       "degree": 7
@@ -220,11 +225,6 @@
     {
       "id": "src_components_ui_input_input",
       "label": "Input",
-      "degree": 7
-    },
-    {
-      "id": "src_utils_categoryhelpers_getcategorymeta",
-      "label": "getCategoryMeta()",
       "degree": 7
     },
     {
@@ -246,15 +246,26 @@
       "why": "bridges separate communities; peripheral node `Badge()` unexpectedly reaches hub `cn()`"
     },
     {
-      "source": "Button()",
-      "target": "cn()",
+      "source": "PersonTransactionModalProps",
+      "target": "Person",
       "source_files": [
-        "src/components/ui/Button.tsx",
-        "src/utils/cn.ts"
+        "src/components/modals/PersonTransactionModal.tsx",
+        "src/store/useStore.ts"
       ],
       "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "bridges separate communities"
+      "relation": "references",
+      "why": "peripheral node `PersonTransactionModalProps` unexpectedly reaches hub `Person`"
+    },
+    {
+      "source": "SettleModalProps",
+      "target": "Person",
+      "source_files": [
+        "src/components/modals/SettleModal.tsx",
+        "src/store/useStore.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `SettleModalProps` unexpectedly reaches hub `Person`"
     },
     {
       "source": "AddPersonModal()",
@@ -277,21 +288,38 @@
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "bridges separate communities"
-    },
-    {
-      "source": "SettleModal()",
-      "target": "cn()",
-      "source_files": [
-        "src/components/modals/SettleModal.tsx",
-        "src/utils/cn.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "bridges separate communities"
     }
   ],
-  "tokens": {
-    "input": 0,
-    "output": 0
-  }
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `cn()` connect `UI Components & Modals` to `UI/UX Design Architecture`, `Budget Domain Logic & PRD`, `Core Dependencies & Utilities`, `App Routing & Layout`?",
+      "why": "High betweenness centrality (0.057) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `useStore` connect `UI Components & Modals` to `Build & Dev Tooling`, `Budget Domain Logic & PRD`, `Core Dependencies & Utilities`, `App Routing & Layout`?",
+      "why": "High betweenness centrality (0.038) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `IconBadgeProps`, `FilterType`, `TimeFilter` to the rest of the system?",
+      "why": "62 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `TypeScript App Config` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Build & Dev Tooling` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.13043478260869565 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Node & Vite Config` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.1 - nodes in this community are weakly interconnected."
+    }
+  ]
 }

@@ -1,162 +1,130 @@
-# PaceWise
+# 💰 PaceWise
 
-Student budgeting and debt tracking for managing a monthly allowance, daily spending pace, and money owed to or from friends.
+> **Spend smarter. Stay on pace.**
 
-PaceWise is designed around a simple question: how much can I safely spend today? The app combines monthly allowance tracking, daily budget calculations, fixed bills, and informal debt management in one lightweight workspace.
+PaceWise is a student-focused budgeting app that helps you understand how much you can safely spend each day. Track your allowance, expenses, bills, income, and money owed between friends — all in one clean workspace.
 
-## Overview
+## ✨ What PaceWise does
 
-PaceWise is a student-focused personal finance app for people who receive a fixed monthly budget and want to pace spending over time instead of reacting to historical expenses after the fact.
+### 💸 Smart Daily Budget
 
-The current implementation is a client-side React application with local persistence. It lets a user:
+PaceWise turns a monthly allowance into an adaptive daily spending limit. It keeps track of what remains, what has already been spent, and how much can be carried forward to future days.
 
-- set a monthly starting allowance
-- add income, expenses, and bills
-- track daily carry-forward and remaining allowance
-- monitor how much is available to spend today
-- track balances with people and settle debts
-- review month-to-date spending insights
+### 🧾 Track Your Spending
 
-The product is intentionally focused and lightweight. It does not include backend sync, authentication, or bank integrations.
+Add expenses with a category, reason, date, and payment method. Bills are tracked separately from everyday spending so your monthly budget stays realistic.
 
-## Features
+### 👥 Keep Track of People
 
-### Budgeting
+Track who owes you, who you owe, and the full history behind each balance. The app supports person-level transactions and settlement flows for informal debts.
 
-- Monthly allowance configuration with currency selection
-- Base daily budget calculation from the current month window
-- Carry-forward logic for underspending from previous days
-- Money left calculation based on income, bills, and spending
-- Overspending status when today exceeds the recommended daily pacing
+### 📊 Understand Your Spending
 
-### Transactions
+The Insights page summarizes the month’s allowance, fixed bills, income, category breakdown, and pacing health so you can adjust spending before the month slips away.
 
-- Add expense transactions with category, reason, date, and payment method
-- Add income transactions with source and date
-- Record bill payments separately from general spending
-- Search and filter transactions by type and time range
-- Delete transactions from the history view
+### 🌗 Light & Dark Mode
 
-### People & Debts
+Choose between light, dark, or system theme settings to fit your day and screen.
 
-- Add people and track balances individually
-- Track money you have given or taken
-- View a person detail page with full history
-- Record settlement flows and debt repayment history
+### 📱 Built for Desktop & Mobile
 
-### Insights
+The interface is responsive, with a desktop sidebar and mobile-friendly bottom navigation so it works across devices.
 
-- Monthly summary cards for starting allowance, income, bills, and spend
-- Category breakdown for spending
-- Largest outflow indicators
-- Pacing health and average daily spending comparisons
+## 🧠 The PaceWise difference
 
-### Theme & Responsive UI
+Traditional expense trackers usually answer:
 
-- Light, dark, and system theme modes
-- Desktop sidebar navigation and mobile bottom navigation
-- Responsive layouts optimized for both desktop and phone-sized screens
+> “Where did my money go?”
 
-## How It Works
+PaceWise answers a more useful question:
 
-The core budgeting logic lives in [src/features/budget/budgetEngine.ts](src/features/budget/budgetEngine.ts). It calculates a month-based spending pace from the configured allowance and recorded transactions.
+> “How much can I spend today?”
 
-At a high level:
+The app focuses on pacing rather than just historical tracking. Unspent daily allowance can carry forward, and changes like income or bills are reflected in the budget logic automatically.
 
-- Effective total budget = starting allowance + income - bills
-- Base daily budget = effective total budget / total days in the selected month
-- Carry-forward = daily budget earned so far - discretionary spending up to yesterday
-- Today’s available = base daily budget + carry-forward
-- Money left = effective total budget - prior spending - spending today
+## 💰 How the daily budget works
 
-This creates a pacing model where unused daily allowance can roll forward instead of disappearing at the end of the day.
+The core idea is simple:
+
+- Set your monthly allowance
+- Divide it across the month
+- Carry forward unused daily budget when you spend less than your target
+- Adjust the available amount when bills or extra money come in
 
 Example:
 
 ```text
 Monthly allowance: ₹6,000
 Days in month: 30
-Base daily budget: ₹200/day
+Daily budget: ₹200
 
-If you spend ₹100 on day 1, your carry-forward becomes ₹100 for day 2.
+If you spend only ₹100 today,
+your unused ₹100 carries forward.
+
+Tomorrow: ₹200 + ₹100 = ₹300 available
 ```
 
-The app treats person debt separately from ordinary spending:
+Bills and income also affect the budget in real time, so the daily pace stays aligned with the month’s actual financial picture.
 
-- a transaction marked as gave is treated as a cash outflow
-- a settlement transaction marked as took is treated as cash inflow
-- balances are maintained per person and displayed as positive or negative values
+## 👥 People & debts
 
-## Tech Stack
+The People section helps you keep informal money relationships clear:
 
-The project is built with the following technologies already present in the repository:
+- money you gave someone
+- money you took from someone
+- amounts to receive
+- amounts to give
+- individual balances and history
+- settlement and repayment tracking
 
-- React 19
-- Vite 8
-- TypeScript
-- React Router DOM
-- Zustand for state management and persistence
-- Tailwind CSS 4
-- date-fns for date handling
-- lucide-react for icons
-- Vitest for tests
-- oxlint for linting
+Example:
 
-## Project Structure
+- 🟢 Rahul — you receive ₹500
+- 🔴 Aman — you give ₹300
 
-```text
-PaceWise/
-├── Docs/
-│   ├── Pace_Stitch_Design_Prompts.md
-│   ├── Student_Money_Tracker_PRD.md
-│   └── Student_Money_Tracker_UIUX.md
-├── src/
-│   ├── App.tsx
-│   ├── main.tsx
-│   ├── index.css
-│   ├── components/
-│   │   ├── layout/
-│   │   ├── modals/
-│   │   └── ui/
-│   ├── features/
-│   │   └── budget/
-│   │       └── budgetEngine.ts
-│   ├── pages/
-│   │   ├── Dashboard.tsx
-│   │   ├── Insights.tsx
-│   │   ├── People.tsx
-│   │   ├── PersonDetails.tsx
-│   │   ├── Settings.tsx
-│   │   └── Transactions.tsx
-│   ├── store/
-│   │   └── useStore.ts
-│   └── utils/
-│       ├── categoryHelpers.ts
-│       └── cn.ts
-├── tests/
-│   └── budget/
-│       ├── budgetEngine.test.ts
-│       └── comprehensiveEngine.test.ts
-├── index.html
-├── package.json
-├── package-lock.json
-├── tsconfig.json
-├── tsconfig.app.json
-├── tsconfig.node.json
-├── vite.config.ts
-├── README.md
-└── .gitignore
-```
+Each person has their own transaction timeline and current outstanding balance.
 
-## Getting Started
+## 📱 Features at a glance
 
-### Prerequisites
+| Feature | Status |
+|---|---|
+| 💰 Monthly allowance | ✅ |
+| 📅 Daily budget | ✅ |
+| 🔄 Carry-forward | ✅ |
+| 💸 Expense tracking | ✅ |
+| 💵 Income tracking | ✅ |
+| 🧾 Bills | ✅ |
+| 👥 People & debts | ✅ |
+| 📜 Transactions | ✅ |
+| 📊 Insights | ✅ |
+| 🌗 Light / Dark / System theme | ✅ |
+| 📱 Responsive UI | ✅ |
 
-Use a recent Node.js LTS version. This project is configured as a Vite React app and currently relies on the dependencies listed in [package.json](package.json).
+## 🎨 Design
 
-### Install
+PaceWise is designed to feel clean and easy to scan. The app emphasizes clarity over clutter, with strong financial states, minimal friction, and a lightweight student-first visual language.
+
+## 🛠️ Tech stack
+
+- ⚛️ React
+- 📘 TypeScript
+- ⚡ Vite
+- 🎨 Tailwind CSS
+- 🗃️ Zustand
+- 📅 date-fns
+- 🧪 Vitest
+
+## 🚀 Getting started
+
+### Requirements
+
+- Node.js LTS
+
+### Installation
 
 ```bash
+git clone https://github.com/abhinavbharti2345/PaceWise.git
+cd PaceWise
 npm install
 ```
 
@@ -172,104 +140,24 @@ npm run dev
 npm run build
 ```
 
-### Preview build locally
+### Preview production build
 
 ```bash
 npm run preview
 ```
 
-### Lint
+## ✅ Current status
 
-```bash
-npm run lint
-```
-
-## Environment Variables
-
-No environment variables are currently required by this project.
-
-The app runs entirely in the browser and persists data locally via Zustand. There is no backend service, API configuration, or .env file in the repository.
-
-## Development
-
-The project is a front-end application with local state persistence and no separate backend service.
-
-Main implementation points:
-
-- app routing and theme handling: [src/App.tsx](src/App.tsx)
-- app-wide persisted state: [src/store/useStore.ts](src/store/useStore.ts)
-- daily budgeting logic: [src/features/budget/budgetEngine.ts](src/features/budget/budgetEngine.ts)
-- dashboard flow: [src/pages/Dashboard.tsx](src/pages/Dashboard.tsx)
-- people and debt tracking: [src/pages/People.tsx](src/pages/People.tsx)
-- settings and theme controls: [src/pages/Settings.tsx](src/pages/Settings.tsx)
-
-## Testing
-
-The repository includes unit tests for the budget engine, including carry-forward behavior, income and bill adjustments, and overspending detection.
-
-Run the test suite with:
-
-```bash
-npx vitest run
-```
-
-The current tests live in:
-
-- [tests/budget/budgetEngine.test.ts](tests/budget/budgetEngine.test.ts)
-- [tests/budget/comprehensiveEngine.test.ts](tests/budget/comprehensiveEngine.test.ts)
-
-## Architecture
-
-The app uses a simple client-side architecture:
-
-- UI screens are implemented as page components under [src/pages](src/pages)
-- modal forms handle adding transactions and people
-- shared app state is stored in Zustand and persisted to local storage
-- business rules are centralized in the budget engine
-- theme and navigation are handled in the app shell and global CSS
-
-This keeps the product lightweight while making budgeting logic easy to test independently.
+PaceWise is a working personal budgeting app with local persistence, daily pacing logic, debt tracking, and spending insights. It is intentionally focused on the student budgeting workflow rather than bank sync or multi-user cloud features.
 
 ## Roadmap
 
-The following items are planned based on the product documentation and are not fully implemented in the current codebase:
+The project documentation outlines a few future ideas that are not part of the current implementation, including:
 
-- cloud sync / multi-device accounts
-- export/import data
-- recurring bills and subscriptions
-- refund tracking
+- cloud sync
+- export / import
+- recurring bills
 - savings goals
-- richer charts and trend analysis
-- richer notifications and reminders
+- richer analytics and trends
 
-These are documented in [Docs/Student_Money_Tracker_PRD.md](Docs/Student_Money_Tracker_PRD.md) and [Docs/Student_Money_Tracker_UIUX.md](Docs/Student_Money_Tracker_UIUX.md), but are not yet implemented in the current repository state.
-
-## Contributing
-
-Contributions are welcome for bug fixes, UX improvements, and additional budgeting features.
-
-A reasonable workflow is:
-
-1. Fork the repository
-2. Create a feature branch
-3. Install dependencies with `npm install`
-4. Make focused changes
-5. Run `npx vitest run` and `npm run build`
-6. Open a pull request with a clear summary
-
-## License
-
-No license file is currently present in this repository, so the project does not currently declare an open-source license.
-
-## Acknowledgements
-
-This project makes use of:
-
-- React
-- Vite
-- Tailwind CSS
-- Zustand
-- date-fns
-- lucide-react
-
-These libraries are already included as dependencies in [package.json](package.json).
+Those are documented in the project’s design and PRD notes, but they are not currently implemented in this codebase.
