@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -10,15 +12,20 @@ import {
   Sun, 
   Check, 
   Wallet,
-  Sparkles
+  Sparkles,
+  LogOut,
+  Mail
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 export function Settings() {
   const { config, updateConfig } = useStore();
+  const { user, signOut } = useAuthStore();
+  const navigate = useNavigate();
   const [totalMoney, setTotalMoney] = useState(config.totalMoney.toString());
   const [currency, setCurrency] = useState(config.currency || '₹');
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const handleSaveBudget = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +40,17 @@ export function Settings() {
     }
   };
 
-
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    try {
+      await signOut();
+      navigate('/');
+    } catch (err) {
+      console.error('Sign out failed:', err);
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 max-w-3xl pb-20 sm:pb-0">
@@ -62,6 +79,37 @@ export function Settings() {
           <span>Budget settings saved and recalibrated across all pages!</span>
         </div>
       )}
+
+      {/* Account Card */}
+      <Card className="border border-[var(--color-gray-light)]">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Mail size={18} className="text-[var(--color-primary)]" />
+            <CardTitle>Account</CardTitle>
+          </div>
+        </CardHeader>
+
+        <div className="p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-[var(--color-gray-dark)] uppercase font-bold tracking-wider">
+                Email
+              </p>
+              <p className="text-sm font-semibold text-[var(--color-dark)] mt-1">{user?.email}</p>
+            </div>
+          </div>
+
+          <Button
+            onClick={handleSignOut}
+            disabled={isSigningOut}
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2 font-bold text-red-600 hover:bg-red-50"
+          >
+            <LogOut size={16} />
+            <span>{isSigningOut ? 'Signing Out...' : 'Sign Out'}</span>
+          </Button>
+        </div>
+      </Card>
 
       {/* Monthly Budget Form */}
       <Card className="border border-[var(--color-gray-light)]">
