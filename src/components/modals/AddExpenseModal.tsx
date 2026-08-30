@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { X, Calendar as CalendarIcon, Tag, Check, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { X, Check, AlertCircle } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
-import { format } from 'date-fns';
 import { EXPENSE_CATEGORIES } from '../../utils/categoryHelpers';
 
 interface AddExpenseModalProps {

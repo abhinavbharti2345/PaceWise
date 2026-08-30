@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
@@ -10,7 +10,6 @@ import {
   ArrowUpRight, 
   ArrowDownRight, 
   CheckCircle, 
-  Plus, 
   Trash2, 
   Clock, 
   Receipt 
@@ -49,7 +48,6 @@ export function PersonDetails() {
     .filter((t) => t.personId === person.id)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  const absBalance = Math.abs(person.balance);
   const isOwedToUser = person.balance > 0;
   const isUserOwing = person.balance < 0;
   const isSettled = person.balance === 0;

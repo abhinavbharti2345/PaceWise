@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, ArrowUpRight, ArrowDownRight, AlertCircle, Check } from 'lucide-react';
+import { useState } from 'react';
+import { X, ArrowUpRight, ArrowDownRight, AlertCircle } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import type { Person } from '../../store/useStore';
 import { Button } from '../ui/Button';

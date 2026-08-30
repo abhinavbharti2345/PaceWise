@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Transaction, BudgetConfig, TransactionType } from '../features/budget/budgetEngine';
+import type { Transaction, BudgetConfig } from '../features/budget/budgetEngine';
 
 export interface Person {
   id: string;
@@ -124,7 +124,7 @@ const mockTransactions: Transaction[] = [
 
 export const useStore = create<AppState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       config: mockConfig,
       transactions: mockTransactions,
       people: mockPeople,

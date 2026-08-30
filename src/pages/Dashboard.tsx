@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { calculateBudget } from '../features/budget/budgetEngine';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
@@ -12,10 +12,6 @@ import { AddPersonModal } from '../components/modals/AddPersonModal';
 import { format } from 'date-fns';
 import { 
   Plus, 
-  ArrowUpRight, 
-  ArrowDownRight, 
-  CreditCard, 
-  UserPlus, 
   TrendingUp, 
   TrendingDown,
   ArrowRight,
@@ -26,7 +22,6 @@ import { cn } from '../utils/cn';
 import { getCategoryMeta } from '../utils/categoryHelpers';
 
 export function Dashboard() {
-  const navigate = useNavigate();
   const { config, transactions, people } = useStore();
   
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);

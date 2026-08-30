@@ -1,19 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useStore } from '../store/useStore';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { 
   Settings as SettingsIcon, 
-  AlertTriangle, 
   Monitor, 
   Moon, 
   Sun, 
-  RotateCcw, 
-  Trash2, 
   Check, 
   Wallet,
-  Calendar,
   Sparkles
 } from 'lucide-react';
 import { cn } from '../utils/cn';

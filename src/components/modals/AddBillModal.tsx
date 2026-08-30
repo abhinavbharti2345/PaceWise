@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, CreditCard, Check, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { X, Check, AlertCircle } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { LayoutDashboard, ArrowRightLeft, Users, PieChart, Settings } from 'lucide-react';
 import { cn } from '../../utils/cn';

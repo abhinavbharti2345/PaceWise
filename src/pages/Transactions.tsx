@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { IconBadge } from '../components/ui/IconBadge';
 import { format, isToday, isThisWeek, isThisMonth } from 'date-fns';
 import { cn } from '../utils/cn';
-import { Search, Filter, Plus, Trash2, Calendar, Receipt } from 'lucide-react';
+import { Search, Trash2, Calendar, Receipt } from 'lucide-react';
 import { getCategoryMeta } from '../utils/categoryHelpers';
 import { AddExpenseModal } from '../components/modals/AddExpenseModal';
 import { AddMoneyModal } from '../components/modals/AddMoneyModal';

@@ -1,14 +1,9 @@
-import React from 'react';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 import { calculateBudget } from '../features/budget/budgetEngine';
 import { 
   TrendingDown, 
-  TrendingUp, 
   PieChart, 
-  AlertCircle, 
-  Calendar, 
-  ArrowUpRight, 
   ArrowDownRight, 
   CreditCard, 
   ShieldCheck, 
@@ -16,7 +11,6 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '../utils/cn';
-import { getCategoryMeta } from '../utils/categoryHelpers';
 
 export function Insights() {
   const { config, transactions } = useStore();
@@ -204,27 +198,24 @@ export function Insights() {
           </CardHeader>
 
           <div className="mt-4 space-y-3.5">
-            {categoryBreakdown.map((item) => {
-              const meta = getCategoryMeta('expense', item.category);
-              return (
-                <div key={item.category} className="space-y-1.5">
-                  <div className="flex justify-between text-xs font-bold">
-                    <span className="text-[var(--color-dark)] flex items-center gap-1.5">
-                      <span>{item.category}</span>
-                    </span>
-                    <span className="text-[var(--color-gray-dark)]">
-                      {formatCurrency(item.amount)} ({item.percentage}%)
-                    </span>
-                  </div>
-                  <div className="w-full bg-[var(--color-surface-light)] rounded-full h-2 overflow-hidden">
-                    <div 
-                      className="bg-[var(--color-primary)] h-full rounded-full transition-all duration-500" 
-                      style={{ width: `${item.percentage}%` }}
-                    />
-                  </div>
+            {categoryBreakdown.map((item) => (
+              <div key={item.category} className="space-y-1.5">
+                <div className="flex justify-between text-xs font-bold">
+                  <span className="text-[var(--color-dark)] flex items-center gap-1.5">
+                    <span>{item.category}</span>
+                  </span>
+                  <span className="text-[var(--color-gray-dark)]">
+                    {formatCurrency(item.amount)} ({item.percentage}%)
+                  </span>
                 </div>
-              );
-            })}
+                <div className="w-full bg-[var(--color-surface-light)] rounded-full h-2 overflow-hidden">
+                  <div 
+                    className="bg-[var(--color-primary)] h-full rounded-full transition-all duration-500" 
+                    style={{ width: `${item.percentage}%` }}
+                  />
+                </div>
+              </div>
+            ))}
 
             {categoryBreakdown.length === 0 && (
               <p className="text-sm text-[var(--color-gray-dark)] py-8 text-center">No expense categories to display yet.</p>
@@ -239,25 +230,22 @@ export function Insights() {
           </CardHeader>
 
           <div className="mt-3 divide-y divide-[var(--color-gray-light)]">
-            {largestExpenses.map((t) => {
-              const meta = getCategoryMeta(t.type, t.category);
-              return (
-                <div key={t.id} className="py-3 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center font-bold text-xs">
-                      ₹
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-[var(--color-dark)]">{t.reason || t.category || t.type}</p>
-                      <p className="text-[10px] text-[var(--color-gray-dark)]">{format(new Date(t.date), 'dd MMM yyyy')} • {t.category || t.type}</p>
-                    </div>
+            {largestExpenses.map((t) => (
+              <div key={t.id} className="py-3 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center font-bold text-xs">
+                    ₹
                   </div>
-                  <span className="text-sm font-extrabold text-[var(--color-primary)]">
-                    {formatCurrency(t.amount)}
-                  </span>
+                  <div>
+                    <p className="text-xs font-bold text-[var(--color-dark)]">{t.reason || t.category || t.type}</p>
+                    <p className="text-[10px] text-[var(--color-gray-dark)]">{format(new Date(t.date), 'dd MMM yyyy')} • {t.category || t.type}</p>
+                  </div>
                 </div>
-              );
-            })}
+                <span className="text-sm font-extrabold text-[var(--color-primary)]">
+                  {formatCurrency(t.amount)}
+                </span>
+              </div>
+            ))}
 
             {largestExpenses.length === 0 && (
               <p className="text-sm text-[var(--color-gray-dark)] py-8 text-center">No expenses recorded yet.</p>
