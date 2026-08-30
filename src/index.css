@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: var(--primary);
+  --color-orange: var(--orange);
+  --color-success: var(--success);
+  --color-dark: var(--dark);
+  --color-gray-dark: var(--gray-dark);
+  --color-gray-light: var(--gray-light);
+  --color-surface: var(--surface);
+  --color-surface-light: var(--surface-light);
+  --color-bg-light: var(--bg-light);
+
+  /* Semantic card surface tokens - opaque, never transparent */
+  --color-positive-bg: var(--positive-bg);
+  --color-positive-border: var(--positive-border);
+  --color-positive-text: var(--positive-text);
+  --color-positive-accent: var(--positive-accent);
+
+  --color-negative-bg: var(--negative-bg);
+  --color-negative-border: var(--negative-border);
+  --color-negative-text: var(--negative-text);
+  
+  --font-sans: 'Inter', sans-serif;
+  
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.5rem;
+}
+
+:root {
+  /* Brand */
+  --primary: #FF453A;
+  --orange: #FF9F0A;
+  --success: #30A46C;
+
+  /* Text */
+  --dark: #17181A;
+  --gray-dark: #6B7280;
+
+  /* Surfaces & Structure */
+  --gray-light: #E2E4E8;
+  --surface: #FFFFFF;
+  --surface-light: #F0F1F3;
+  --bg-light: #F6F7F9;
+
+  /* Positive / Green semantic card tokens — fully opaque */
+  --positive-bg: #EAF7F0;
+  --positive-border: #C7E8D5;
+  --positive-text: #18794E;
+  --positive-accent: #30A46C;
+
+  /* Negative / Red semantic card tokens — fully opaque */
+  --negative-bg: #FFF0EF;
+  --negative-border: #FFD4D1;
+  --negative-text: #D9362E;
+}
+
+.dark {
+  --primary: #FF453A;
+  --orange: #FFD60A;
+  --success: #32D74B;
+  --dark: #F5F5F7;
+  --gray-dark: #AEAEB2;
+  --gray-light: #48484A;
+  --surface: #1C1C1E;
+  --surface-light: #3A3A3C;
+  --bg-light: #000000;
+
+  /* Dark mode semantic card tokens */
+  --positive-bg: rgba(50, 215, 75, 0.08);
+  --positive-border: rgba(50, 215, 75, 0.18);
+  --positive-text: #32D74B;
+  --positive-accent: #32D74B;
+
+  --negative-bg: rgba(255, 69, 58, 0.08);
+  --negative-border: rgba(255, 69, 58, 0.18);
+  --negative-text: #FF453A;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg-light);
+    color: var(--color-dark);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
