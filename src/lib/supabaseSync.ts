@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/useAuthStore';
 import { useStore } from '../store/useStore';
@@ -8,78 +8,134 @@ import type { Person } from '../store/useStore';
 /**
  * Hook to synchronize Zustand store with Supabase
  * Handles:
- * - Fetching data from Supabase on auth
- * - Syncing local changes to Supabase
- * - Migrating localStorage data to Supabase
+ * - Ensuring user profile row exists
+ * - Fetching cloud data from Supabase on auth
+ * - Syncing budget configuration changes to Supabase
  */
 export function useSupabaseSync() {
   const user = useAuthStore((state: any) => state.user);
-  const { config, setConfig, addPerson } = useStore();
+  const { config, setConfig } = useStore();
+  const isFetchedRef = useRef(false);
 
   // Fetch data from Supabase when user logs in
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      isFetchedRef.current = false;
+      return;
+    }
+
+    let isMounted = true;
 
     const fetchData = async () => {
       try {
-        // Fetch budget config
+        // 1. Ensure user profile exists in public.profiles table (satisfies FK constraints)
+        try {
+          const profileData = {
+            id: user.id,
+            email: user.email || '',
+            display_name:
+              user.user_metadata?.full_name ||
+              user.user_metadata?.name ||
+              user.user_metadata?.display_name ||
+              user.email?.split('@')[0] ||
+              'User',
+            updated_at: new Date().toISOString(),
+          };
+
+          const { data: upsertedProfile } = await supabase.from('profiles').upsert(
+            profileData,
+            { onConflict: 'id' }
+          ).select().single();
+
+          if (upsertedProfile) {
+            useAuthStore.setState({
+              profile: {
+                displayName: upsertedProfile.display_name,
+                email: upsertedProfile.email,
+                avatarUrl: user.user_metadata?.avatar_url || null,
+              }
+            });
+          }
+        } catch (profileErr) {
+          console.warn('Profile upsert note:', profileErr);
+        }
+
+        if (!isMounted) return;
+
+        // 2. Fetch budget config
         const { data: configData, error: configError } = await supabase
           .from('budget_configs')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (configError && configError.code !== 'PGRST116') {
-          // PGRST116 = no rows returned, which is fine for first login
-          throw configError;
+          console.error('Failed to fetch budget config:', configError);
         }
+
+        if (!isMounted) return;
 
         if (configData) {
           const normalizedConfig: BudgetConfig = {
-            totalMoney: configData.total_money,
+            totalMoney: Number(configData.total_money) || 0,
             startDate: configData.start_date,
             endDate: configData.end_date,
             currency: configData.currency || '₹',
             theme: configData.theme || 'system',
           };
           setConfig(normalizedConfig);
+        } else {
+          // Initialize budget config in Supabase for first-time user
+          const currentConfig = useStore.getState().config;
+          await supabase.from('budget_configs').insert({
+            user_id: user.id,
+            total_money: currentConfig.totalMoney,
+            start_date: currentConfig.startDate,
+            end_date: currentConfig.endDate,
+            currency: currentConfig.currency || '₹',
+            theme: currentConfig.theme || 'system',
+          });
         }
 
-        // Fetch people
+        if (!isMounted) return;
+
+        // 3. Fetch people
         const { data: peopleData, error: peopleError } = await supabase
           .from('people')
           .select('*')
-          .eq('user_id', user.id);
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: true });
 
-        if (peopleError) throw peopleError;
-
-        // Clear existing people and reload from Supabase
-        if (peopleData && peopleData.length > 0) {
-          useStore.setState({ people: [] });
-          for (const p of peopleData) {
-            addPerson({
+        if (peopleError) {
+          console.error('Failed to fetch people:', peopleError);
+        } else if (peopleData) {
+          useStore.setState({
+            people: peopleData.map((p) => ({
+              id: p.id,
               name: p.name,
               avatarUrl: p.avatar_url,
-              balance: p.balance,
-            });
-          }
+              balance: Number(p.balance) || 0,
+            })),
+          });
         }
 
-        // Fetch transactions
+        if (!isMounted) return;
+
+        // 4. Fetch transactions
         const { data: txData, error: txError } = await supabase
           .from('transactions')
           .select('*')
           .eq('user_id', user.id)
           .order('date', { ascending: false });
 
-        if (txError) throw txError;
-
-        if (txData && txData.length > 0) {
+        if (txError) {
+          console.error('Failed to fetch transactions:', txError);
+        } else if (txData) {
           useStore.setState({
             transactions: txData.map((tx) => ({
               id: tx.id,
               type: tx.type,
-              amount: tx.amount,
+              amount: Number(tx.amount),
               date: tx.date,
               category: tx.category,
               reason: tx.reason,
@@ -93,29 +149,35 @@ export function useSupabaseSync() {
             })),
           });
         }
+
+        if (isMounted) {
+          isFetchedRef.current = true;
+        }
       } catch (err) {
         console.error('Failed to fetch data from Supabase:', err);
-        // Fall back to localStorage
       }
     };
 
     fetchData();
-  }, [user, setConfig, addPerson]);
 
-  // Sync budget config changes to Supabase
+    return () => {
+      isMounted = false;
+    };
+  }, [user, setConfig]);
+
+  // Sync budget config changes to Supabase ONLY after initial load
   useEffect(() => {
-    if (!user) return;
+    if (!user || !isFetchedRef.current) return;
 
     const syncConfig = async () => {
       try {
-        const existing = await supabase
+        const { data: existing } = await supabase
           .from('budget_configs')
           .select('id')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
-        if (existing.data) {
-          // Update existing
+        if (existing) {
           await supabase
             .from('budget_configs')
             .update({
@@ -127,8 +189,7 @@ export function useSupabaseSync() {
               updated_at: new Date().toISOString(),
             })
             .eq('user_id', user.id);
-        } else if (!existing.error || existing.error.code === 'PGRST116') {
-          // Insert new
+        } else {
           await supabase.from('budget_configs').insert({
             user_id: user.id,
             total_money: config.totalMoney,
@@ -145,9 +206,6 @@ export function useSupabaseSync() {
 
     syncConfig();
   }, [user, config]);
-
-  // Note: For transactions and people, we sync on add/delete via modals
-  // This hook handles initial load and periodic sync
 }
 
 /**

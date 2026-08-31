@@ -2,6 +2,7 @@ import { Outlet, NavLink } from 'react-router-dom';
 import { LayoutDashboard, ArrowRightLeft, Users, PieChart, Settings } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useStore } from '../../store/useStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import { calculateBudget } from '../../features/budget/budgetEngine';
 
 const navItems = [
@@ -14,6 +15,7 @@ const navItems = [
 
 export function AppLayout() {
   const { config, transactions } = useStore();
+  const { profile, user } = useAuthStore();
   const todayDateStr = new Date().toISOString();
   const stats = calculateBudget(config, transactions, todayDateStr);
 
@@ -29,7 +31,7 @@ export function AppLayout() {
           </div>
           <div>
             <span className="text-xl font-extrabold tracking-tight text-[var(--color-dark)]">Pace<span className="text-[var(--color-primary)]">Wise</span></span>
-            <p className="text-[10px] text-[var(--color-gray-dark)] font-semibold uppercase tracking-wider">Student Budget</p>
+            <p className="text-[10px] text-[var(--color-gray-dark)] font-semibold uppercase tracking-wider">Personal Budget</p>
           </div>
         </div>
         
@@ -63,17 +65,31 @@ export function AppLayout() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 px-1">
-            <div className="w-9 h-9 bg-gradient-to-br from-red-500 to-amber-500 rounded-full flex items-center justify-center font-bold text-white text-sm shadow-sm">
-              S
+          <NavLink 
+            to="/profile"
+            className={({ isActive }) => 
+              cn(
+                "flex items-center gap-3 px-2 py-1.5 rounded-xl transition-all cursor-pointer",
+                isActive ? "bg-[var(--color-surface-light)] shadow-sm" : "hover:bg-[var(--color-surface-light)]"
+              )
+            }
+          >
+            <div className="w-9 h-9 bg-gradient-to-br from-red-500 to-amber-500 rounded-full flex items-center justify-center font-bold text-white text-sm shadow-sm shrink-0 overflow-hidden">
+              {profile?.avatarUrl ? (
+                <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                (profile?.displayName || user?.email || 'U').charAt(0).toUpperCase()
+              )}
             </div>
-            <div>
-              <p className="text-xs font-bold text-[var(--color-dark)]">Student Account</p>
+            <div className="truncate">
+              <p className="text-xs font-bold text-[var(--color-dark)] truncate">
+                {profile?.displayName || user?.email?.split('@')[0] || 'User'}
+              </p>
               <p className="text-[10px] text-[var(--color-success)] font-semibold flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-success)] animate-pulse" /> Active Month
               </p>
             </div>
-          </div>
+          </NavLink>
         </div>
       </aside>
 

@@ -1,9 +1,15 @@
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
 import type { User } from '@supabase/supabase-js';
+import { useStore } from './useStore';
 
 interface AuthState {
   user: User | null;
+  profile: {
+    displayName: string | null;
+    email: string | null;
+    avatarUrl: string | null;
+  } | null;
   loading: boolean;
   error: string | null;
 
@@ -13,11 +19,13 @@ interface AuthState {
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   checkAuthStatus: () => Promise<void>;
+  updateProfile: (updates: { displayName?: string }) => void;
   clearError: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
+  profile: null,
   loading: true,
   error: null,
 
@@ -91,7 +99,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
-      set({ user: null });
+      set({ user: null, profile: null });
+      useStore.getState().resetData();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Sign out failed';
       set({ error: message });
@@ -109,7 +118,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (data.session?.user) {
         set({ user: data.session.user });
       } else {
-        set({ user: null });
+        set({ user: null, profile: null });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to check auth status';
@@ -119,5 +128,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
+  updateProfile: (updates) => set((state) => ({
+    profile: state.profile ? { ...state.profile, ...updates } : null
+  })),
+
   clearError: () => set({ error: null }),
 }));
+
+// Automatically listen for auth state changes (email confirmation redirect, token refresh, OAuth)
+supabase.auth.onAuthStateChange((_event, session) => {
+  useAuthStore.setState((state) => ({
+    user: session?.user ?? null,
+    profile: session ? state.profile : null,
+    loading: false,
+  }));
+});

@@ -8,6 +8,7 @@ import { PersonDetails } from './pages/PersonDetails';
 import { Insights } from './pages/Insights';
 import { Settings } from './pages/Settings';
 import { AuthPage } from './pages/Auth';
+import { Profile } from './pages/Profile';
 import { useStore } from './store/useStore';
 import { useAuthStore } from './store/useAuthStore';
 import { useSupabaseSync } from './lib/supabaseSync';
@@ -16,20 +17,14 @@ import { Loader } from 'lucide-react';
 function AppContent() {
   const { config } = useStore();
   const { user, loading: authLoading, checkAuthStatus } = useAuthStore();
-  const user_id = useAuthStore((state) => state.user?.id);
 
-  // Initialize Supabase sync when user is authenticated
-  if (user_id) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useSupabaseSync();
-  }
+  // Initialize Supabase sync (hook handles auth state internally)
+  useSupabaseSync();
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     const root = document.documentElement;
     const isDark =
@@ -45,10 +40,10 @@ function AppContent() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg)]">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-light)]">
         <div className="flex flex-col items-center gap-4">
           <Loader className="animate-spin" size={32} color="var(--color-primary)" />
-          <p className="text-[var(--color-gray-dark)]">Loading...</p>
+          <p className="text-[var(--color-gray-dark)] font-medium">Loading PaceWise...</p>
         </div>
       </div>
     );
@@ -67,6 +62,7 @@ function AppContent() {
         <Route path="people/:id" element={<PersonDetails />} />
         <Route path="insights" element={<Insights />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

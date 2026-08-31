@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { calculateBudget } from '../features/budget/budgetEngine';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -23,6 +24,7 @@ import { getCategoryMeta } from '../utils/categoryHelpers';
 
 export function Dashboard() {
   const { config, transactions, people } = useStore();
+  const { profile, user } = useAuthStore();
   
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [isMoneyModalOpen, setIsMoneyModalOpen] = useState(false);
@@ -57,12 +59,14 @@ export function Dashboard() {
     ? Math.min(100, Math.round((stats.spentToday / stats.todaysAvailable) * 100))
     : stats.spentToday > 0 ? 100 : 0;
 
+  const displayName = profile?.displayName || user?.email?.split('@')[0] || 'User';
+
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Top Header */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-dark)] tracking-tight">Good day, Student 👋</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-dark)] tracking-tight">Good day, {displayName} 👋</h1>
           <p className="text-[var(--color-gray-dark)] text-sm mt-0.5">{todayStr}</p>
         </div>
         <div className="flex items-center gap-3">
