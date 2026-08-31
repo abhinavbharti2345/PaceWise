@@ -15,7 +15,9 @@ import {
   TrendingDown,
   ArrowRight,
   AlertTriangle,
-  Scale
+  Scale,
+  ArrowRightLeft,
+  CreditCard
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { getCategoryMeta } from '../utils/categoryHelpers';
@@ -66,7 +68,7 @@ export function Dashboard() {
     || 'User';
 
   return (
-    <div className="space-y-4 sm:space-y-6 animate-in fade-in duration-300 pb-8 sm:pb-0">
+    <div className="flex-1 flex flex-col space-y-4 sm:space-y-5 xl:space-y-6 animate-in fade-in duration-300 pb-8 sm:pb-0 min-h-full">
       {/* Top Header */}
       <header>
         <div>
@@ -78,7 +80,7 @@ export function Dashboard() {
       {/* Row 1: Hero & Budget Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 xl:gap-6">
         {/* Money Left Hero Card */}
-        <div className="lg:col-span-5 bg-gradient-to-br from-[#1c1c1e] via-[#2c1515] to-[#991b1b] rounded-3xl p-5 sm:p-6 text-white shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[160px] sm:min-h-[220px]">
+        <div className="lg:col-span-4 bg-gradient-to-br from-[#1c1c1e] via-[#2c1515] to-[#991b1b] rounded-3xl p-5 sm:p-6 text-white shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[160px] sm:min-h-[220px]">
           <div className="flex justify-between items-start">
             <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-widest text-red-200">Total Money Left</span>
             <span className="text-[10px] sm:text-xs font-semibold text-red-200 bg-black/30 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full backdrop-blur-sm">
@@ -86,8 +88,8 @@ export function Dashboard() {
             </span>
           </div>
           <div className="my-3 sm:my-4">
-            <h2 className="text-4xl sm:text-5xl font-black tracking-tight leading-none">{formatCurrency(stats.moneyLeft)}</h2>
-            <p className="text-red-200 text-xs sm:text-sm mt-1 sm:mt-1.5 font-medium opacity-90">
+            <h2 className="text-3xl sm:text-4xl xl:text-5xl font-black tracking-tight leading-none truncate">{formatCurrency(stats.moneyLeft)}</h2>
+            <p className="text-red-200 text-xs sm:text-sm mt-1 sm:mt-1.5 font-medium opacity-90 truncate">
               of {formatCurrency(config.totalMoney)} starting allowance
             </p>
           </div>
@@ -105,10 +107,10 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Side-by-Side Container for Today's Budget & Carry Forward on Mobile */}
-        <div className="lg:col-span-7 grid grid-cols-2 gap-3 sm:gap-6">
+        {/* Side-by-Side Container for Today's Budget & Carry Forward on Mobile / lg:contents on Desktop */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:contents">
           {/* Today's Budget Card */}
-          <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-3.5 sm:p-5 min-w-0">
+          <Card className="lg:col-span-4 flex flex-col justify-between border border-[var(--color-gray-light)] p-3.5 sm:p-5 min-w-0">
             <div>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-xs sm:text-sm truncate">Today's Budget</CardTitle>
@@ -152,7 +154,7 @@ export function Dashboard() {
 
           {/* Carry Forward Card */}
           <Card
-            className="flex flex-col justify-between p-3.5 sm:p-5 min-w-0"
+            className="lg:col-span-4 flex flex-col justify-between p-3.5 sm:p-5 min-w-0"
             style={{
               background: stats.carryForward >= 0 ? 'var(--positive-bg)' : 'var(--negative-bg)',
               border: `1px solid ${stats.carryForward >= 0 ? 'var(--positive-border)' : 'var(--negative-border)'}`,
@@ -196,12 +198,12 @@ export function Dashboard() {
       </div>
 
       {/* Lower Section Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 xl:gap-6">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 xl:gap-6">
         
         {/* Main Content (Left) */}
         <div className="lg:col-span-8 flex flex-col space-y-4 sm:space-y-5 xl:space-y-6">
           {/* Quick Actions */}
-          <Card className="border border-[var(--color-gray-light)] p-4 sm:p-5">
+          <Card className="border border-[var(--color-gray-light)] p-4 sm:p-5 shrink-0">
             <CardTitle className="mb-3 sm:mb-4 text-sm sm:text-xs">Quick Actions</CardTitle>
             <div className="grid grid-cols-4 gap-1 sm:gap-2">
               <button 
@@ -236,7 +238,7 @@ export function Dashboard() {
           </Card>
 
           {/* Recent Transactions */}
-          <Card className="border border-[var(--color-gray-light)] flex-1 flex flex-col p-4 sm:p-5">
+          <Card className="border border-[var(--color-gray-light)] flex-1 flex flex-col p-4 sm:p-5 min-h-[260px] lg:min-h-[300px]">
             <CardHeader className="mb-3 sm:mb-4">
               <div className="flex items-center justify-between w-full">
                 <CardTitle className="text-sm sm:text-xs">Recent Transactions</CardTitle>
@@ -246,7 +248,7 @@ export function Dashboard() {
               </div>
             </CardHeader>
 
-            <div className="mt-0 sm:mt-2 divide-y divide-[var(--color-gray-light)]">
+            <div className="mt-0 sm:mt-2 divide-y divide-[var(--color-gray-light)] flex-1 flex flex-col">
               {recentTransactions.map((t) => {
                 const meta = getCategoryMeta(t.type, t.category);
                 const isIncome = t.type === 'income' || (t.type === 'person' && t.direction === 'took' && t.isSettlement);
@@ -282,9 +284,12 @@ export function Dashboard() {
               })}
 
               {recentTransactions.length === 0 && (
-                <div className="text-center py-6 sm:py-12 text-[var(--color-gray-dark)]">
-                  <p className="font-semibold text-xs sm:text-sm">No transactions yet</p>
-                  <p className="text-[10px] sm:text-xs mt-1">Add your first expense to start tracking.</p>
+                <div className="flex-1 flex flex-col items-center justify-center py-8 sm:py-12 text-[var(--color-gray-dark)] my-auto">
+                  <div className="w-12 h-12 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex items-center justify-center mb-2.5 text-[var(--color-gray-dark)] opacity-70">
+                    <ArrowRightLeft size={20} />
+                  </div>
+                  <p className="font-bold text-xs sm:text-sm text-[var(--color-dark)]">No transactions yet</p>
+                  <p className="text-[11px] text-[var(--color-gray-dark)] mt-1 max-w-xs text-center">Add your daily expenses or income to track your cash flow.</p>
                 </div>
               )}
             </div>
@@ -292,107 +297,110 @@ export function Dashboard() {
         </div>
 
         {/* Sidebar (Right) */}
-        <div className="lg:col-span-4 space-y-4 sm:space-y-5 xl:space-y-6">
+        <div className="lg:col-span-4 flex flex-col space-y-4 sm:space-y-5 xl:space-y-6">
           {/* People Summary & Net Position */}
-        <Card className="border border-[var(--color-gray-light)] flex flex-col justify-between p-4 sm:p-5">
-          <CardHeader className="mb-3">
-            <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-1.5">
-                <Scale size={16} className="text-[var(--color-primary)]" />
-                <CardTitle className="text-sm sm:text-xs">People & Net Position</CardTitle>
-              </div>
-              <Link to="/people" className="text-[10px] sm:text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1">
-                View all <ArrowRight size={12} />
-              </Link>
-            </div>
-          </CardHeader>
-
-          {/* Prominent Net Position Banner */}
-          <div 
-            className="p-3 sm:p-3.5 rounded-2xl mb-3 flex items-center justify-between border transition-all"
-            style={{
-              background: netPosition > 0 ? 'var(--positive-bg)' : netPosition < 0 ? 'var(--negative-bg)' : 'var(--color-surface-light)',
-              borderColor: netPosition > 0 ? 'var(--positive-border)' : netPosition < 0 ? 'var(--negative-border)' : 'var(--color-gray-light)'
-            }}
-          >
-            <div className="min-w-0 flex-1 pr-2">
-              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">Net Position</span>
-              <p className="text-[10px] sm:text-[11px] font-semibold text-[var(--color-gray-dark)] mt-0.5 truncate">
-                {netPosition > 0 ? "Overall net positive" : netPosition < 0 ? "Overall net payable" : "Completely settled"}
-              </p>
-            </div>
-            <span className={cn(
-              "text-lg sm:text-2xl font-black leading-none shrink-0",
-              netPosition > 0 ? "text-[var(--color-success)]" : netPosition < 0 ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
-            )}>
-              {netPosition > 0 ? `+${formatCurrency(netPosition)}` : netPosition < 0 ? `-${formatCurrency(Math.abs(netPosition))}` : '₹0'}
-            </span>
-          </div>
-
-          {/* Side-by-Side To Receive / To Give Cards */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-3">
-            <div
-              className="p-2.5 sm:p-3 rounded-2xl flex flex-col justify-between border"
-              style={{background: 'var(--positive-bg)', border: '1px solid var(--positive-border)'}}
-            >
-              <div className="min-w-0">
-                <span className="text-[11px] sm:text-xs font-bold block truncate" style={{color: 'var(--positive-text)'}}>To Receive</span>
-                <p className="text-[9px] sm:text-[11px] text-[var(--color-gray-dark)] font-medium truncate mt-0.5">{peopleOwingCount} owe you</p>
-              </div>
-              <span className="text-base sm:text-lg font-extrabold text-[var(--color-success)] leading-none mt-2 truncate">
-                {formatCurrency(toReceive)}
-              </span>
-            </div>
-
-            <div
-              className="p-2.5 sm:p-3 rounded-2xl flex flex-col justify-between border"
-              style={{background: 'var(--negative-bg)', border: '1px solid var(--negative-border)'}}
-            >
-              <div className="min-w-0">
-                <span className="text-[11px] sm:text-xs font-bold block truncate" style={{color: 'var(--negative-text)'}}>To Give</span>
-                <p className="text-[9px] sm:text-[11px] text-[var(--color-gray-dark)] font-medium truncate mt-0.5">You owe {userOwingCount}</p>
-              </div>
-              <span className="text-base sm:text-lg font-extrabold text-[var(--color-primary)] leading-none mt-2 truncate">
-                {formatCurrency(toGive)}
-              </span>
-            </div>
-          </div>
-        </Card>
-
-        {/* Bills Card */}
-        <Card className="border border-[var(--color-gray-light)] flex flex-col justify-between p-4 sm:p-5">
-          <CardHeader className="mb-2 sm:mb-4">
-            <div className="flex items-center justify-between w-full">
-              <CardTitle className="text-sm sm:text-xs">Recent Bills Paid</CardTitle>
-              <button onClick={() => setIsBillModalOpen(true)} className="text-[10px] sm:text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1">
-                + Add Bill
-              </button>
-            </div>
-          </CardHeader>
-          <div className="space-y-2 mt-0 sm:mt-2">
-            {bills.length > 0 ? (
-              bills.map(b => (
-                <div key={b.id} className="flex items-center justify-between p-2 rounded-xl hover:bg-[var(--color-surface-light)] transition-colors">
-                  <div className="flex items-center gap-2.5">
-                    <IconBadge iconName="CreditCard" color="red" size="sm" className="scale-90 sm:scale-100" />
-                    <div>
-                      <p className="text-[11px] sm:text-xs font-bold text-[var(--color-dark)] leading-tight">{b.category || 'Bill'}</p>
-                      <p className="text-[9px] sm:text-[10px] text-[var(--color-gray-dark)] mt-0.5">{format(new Date(b.date), 'dd MMM yyyy')}</p>
-                    </div>
-                  </div>
-                  <span className="text-xs font-extrabold text-[var(--color-primary)]">{formatCurrency(b.amount)}</span>
+          <Card className="border border-[var(--color-gray-light)] flex flex-col justify-between p-4 sm:p-5 shrink-0">
+            <CardHeader className="mb-3">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-1.5">
+                  <Scale size={16} className="text-[var(--color-primary)]" />
+                  <CardTitle className="text-sm sm:text-xs">People & Net Position</CardTitle>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-4 sm:py-6 text-[var(--color-gray-dark)]">
-                <p className="text-[11px] sm:text-xs font-semibold">No bills recorded</p>
-                <p className="text-[9px] sm:text-[10px] mt-0.5">Record fixed payments like Rent or Credit Card.</p>
+                <Link to="/people" className="text-[10px] sm:text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1">
+                  View all <ArrowRight size={12} />
+                </Link>
               </div>
-            )}
-          </div>
-        </Card>
+            </CardHeader>
+
+            {/* Prominent Net Position Banner */}
+            <div 
+              className="p-3 sm:p-3.5 rounded-2xl mb-3 flex items-center justify-between border transition-all"
+              style={{
+                background: netPosition > 0 ? 'var(--positive-bg)' : netPosition < 0 ? 'var(--negative-bg)' : 'var(--color-surface-light)',
+                borderColor: netPosition > 0 ? 'var(--positive-border)' : netPosition < 0 ? 'var(--negative-border)' : 'var(--color-gray-light)'
+              }}
+            >
+              <div className="min-w-0 flex-1 pr-2">
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">Net Position</span>
+                <p className="text-[10px] sm:text-[11px] font-semibold text-[var(--color-gray-dark)] mt-0.5 truncate">
+                  {netPosition > 0 ? "Overall net positive" : netPosition < 0 ? "Overall net payable" : "Completely settled"}
+                </p>
+              </div>
+              <span className={cn(
+                "text-lg sm:text-2xl font-black leading-none shrink-0",
+                netPosition > 0 ? "text-[var(--color-success)]" : netPosition < 0 ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
+              )}>
+                {netPosition > 0 ? `+${formatCurrency(netPosition)}` : netPosition < 0 ? `-${formatCurrency(Math.abs(netPosition))}` : '₹0'}
+              </span>
+            </div>
+
+            {/* Side-by-Side To Receive / To Give Cards */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              <div
+                className="p-2.5 sm:p-3 rounded-2xl flex flex-col justify-between border"
+                style={{background: 'var(--positive-bg)', border: '1px solid var(--positive-border)'}}
+              >
+                <div className="min-w-0">
+                  <span className="text-[11px] sm:text-xs font-bold block truncate" style={{color: 'var(--positive-text)'}}>To Receive</span>
+                  <p className="text-[9px] sm:text-[11px] text-[var(--color-gray-dark)] font-medium truncate mt-0.5">{peopleOwingCount} owe you</p>
+                </div>
+                <span className="text-base sm:text-lg font-extrabold text-[var(--color-success)] leading-none mt-2 truncate">
+                  {formatCurrency(toReceive)}
+                </span>
+              </div>
+
+              <div
+                className="p-2.5 sm:p-3 rounded-2xl flex flex-col justify-between border"
+                style={{background: 'var(--negative-bg)', border: '1px solid var(--negative-border)'}}
+              >
+                <div className="min-w-0">
+                  <span className="text-[11px] sm:text-xs font-bold block truncate" style={{color: 'var(--negative-text)'}}>To Give</span>
+                  <p className="text-[9px] sm:text-[11px] text-[var(--color-gray-dark)] font-medium truncate mt-0.5">You owe {userOwingCount}</p>
+                </div>
+                <span className="text-base sm:text-lg font-extrabold text-[var(--color-primary)] leading-none mt-2 truncate">
+                  {formatCurrency(toGive)}
+                </span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Bills Card */}
+          <Card className="border border-[var(--color-gray-light)] flex-1 flex flex-col justify-between p-4 sm:p-5 min-h-[160px] lg:min-h-[190px]">
+            <CardHeader className="mb-2 sm:mb-3 shrink-0">
+              <div className="flex items-center justify-between w-full">
+                <CardTitle className="text-sm sm:text-xs">Recent Bills Paid</CardTitle>
+                <button onClick={() => setIsBillModalOpen(true)} className="text-[10px] sm:text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1">
+                  + Add Bill
+                </button>
+              </div>
+            </CardHeader>
+            <div className="space-y-2 mt-0 sm:mt-2 flex-1 flex flex-col">
+              {bills.length > 0 ? (
+                bills.map(b => (
+                  <div key={b.id} className="flex items-center justify-between p-2 rounded-xl hover:bg-[var(--color-surface-light)] transition-colors">
+                    <div className="flex items-center gap-2.5">
+                      <IconBadge iconName="CreditCard" color="red" size="sm" className="scale-90 sm:scale-100" />
+                      <div>
+                        <p className="text-[11px] sm:text-xs font-bold text-[var(--color-dark)] leading-tight">{b.category || 'Bill'}</p>
+                        <p className="text-[9px] sm:text-[10px] text-[var(--color-gray-dark)] mt-0.5">{format(new Date(b.date), 'dd MMM yyyy')}</p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-extrabold text-[var(--color-primary)]">{formatCurrency(b.amount)}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center py-4 sm:py-6 text-[var(--color-gray-dark)] my-auto">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex items-center justify-center mb-2 text-[var(--color-gray-dark)] opacity-70">
+                    <CreditCard size={18} />
+                  </div>
+                  <p className="text-[11px] sm:text-xs font-bold text-[var(--color-dark)]">No bills recorded</p>
+                  <p className="text-[9px] sm:text-[10px] mt-0.5 text-center text-[var(--color-gray-dark)]">Record fixed payments like Rent or Credit Card.</p>
+                </div>
+              )}
+            </div>
+          </Card>
+        </div>
       </div>
-    </div>
 
     {/* Modals */}
       <AddExpenseModal 

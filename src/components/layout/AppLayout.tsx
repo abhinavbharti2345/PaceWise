@@ -95,7 +95,7 @@ export function AppLayout() {
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-full relative overflow-y-auto pb-28 md:pb-8">
-        <div className="flex-1 w-full max-w-[1440px] mx-auto p-4 sm:p-6 md:p-8 lg:p-10">
+        <div className="flex-1 flex flex-col w-full max-w-[1440px] mx-auto p-4 sm:p-6 md:p-8 lg:p-10">
           <Outlet />
         </div>
       </main>
