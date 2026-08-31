@@ -171,17 +171,50 @@ describe('budgetEngine', () => {
 
     it('clamps to 100% if for some edge case moneyLeft exceeds effective budget', () => {
       const config = { totalMoney: 0, startDate: '2026-08-01', endDate: '2026-08-31' };
-      // By definition effective = totalMoney + income - bills
-      // moneyLeft = effective - expenses
-      // Money left can technically never mathematically exceed effectiveTotalBudget in this formula 
-      // unless expenses are negative, which the UI shouldn't allow, but we test the clamp anyway
       const stats = calculateBudget(config, [], '2026-08-01');
-      
-      // We simulate setting the stats manually to see the percentage calculation clamp behavior
-      // Wait, we can't manually set it inside calculateBudget, but we can verify it safely handles 0/0.
       expect(stats.effectiveTotalBudget).toBe(0);
       expect(stats.moneyLeft).toBe(0);
       expect(stats.progressPercentage).toBe(0);
+    });
+  });
+
+  describe('dailyStats generation', () => {
+    it('generates a correct array of daily stats for the budget period', () => {
+      const config = { totalMoney: 300, startDate: '2026-08-01', endDate: '2026-08-03' };
+      const transactions: Transaction[] = [
+        { id: '1', type: 'expense', amount: 50, date: '2026-08-01' },
+        { id: '2', type: 'expense', amount: 20, date: '2026-08-02' }
+      ];
+      const stats = calculateBudget(config, transactions, '2026-08-02');
+      
+      expect(stats.dailyStats.length).toBe(3); // 3 days total
+      
+      // Day 1
+      expect(stats.dailyStats[0].dayIndex).toBe(1);
+      expect(stats.dailyStats[0].isFuture).toBe(false);
+      expect(stats.dailyStats[0].discretionarySpent).toBe(50);
+      expect(stats.dailyStats[0].cumulativeDiscretionarySpent).toBe(50);
+      expect(stats.dailyStats[0].cumulativeIdealSpent).toBe(100); // 300 / 3 * 1
+      expect(stats.dailyStats[0].idealRemaining).toBe(200); // 300 - (100 * 1)
+      expect(stats.dailyStats[0].actualRemaining).toBe(250); // 300 - 50
+
+      // Day 2 (Today)
+      expect(stats.dailyStats[1].dayIndex).toBe(2);
+      expect(stats.dailyStats[1].isFuture).toBe(false);
+      expect(stats.dailyStats[1].discretionarySpent).toBe(20);
+      expect(stats.dailyStats[1].cumulativeDiscretionarySpent).toBe(70);
+      expect(stats.dailyStats[1].cumulativeIdealSpent).toBe(200);
+      expect(stats.dailyStats[1].idealRemaining).toBe(100); // 300 - (100 * 2)
+      expect(stats.dailyStats[1].actualRemaining).toBe(230); // 300 - 50 - 20
+
+      // Day 3 (Future)
+      expect(stats.dailyStats[2].dayIndex).toBe(3);
+      expect(stats.dailyStats[2].isFuture).toBe(true);
+      expect(stats.dailyStats[2].discretionarySpent).toBe(0);
+      expect(stats.dailyStats[2].cumulativeDiscretionarySpent).toBe(70);
+      expect(stats.dailyStats[2].cumulativeIdealSpent).toBe(300);
+      expect(stats.dailyStats[2].idealRemaining).toBe(0); // 300 - (100 * 3)
+      expect(stats.dailyStats[2].actualRemaining).toBe(0); // Future day is 0
     });
   });
 });

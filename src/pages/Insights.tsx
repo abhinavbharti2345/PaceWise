@@ -36,12 +36,189 @@ const getCategoryIcon = (category: string) => {
   return <MoreHorizontal size={16} className="text-[var(--color-gray-dark)]" />;
 };
 
+const formatCurrency = (amount: number) => `₹${Math.round(amount).toLocaleString('en-IN')}`;
+
+// Extracted to prevent entire Insights page re-rendering on hover
+const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
+  const [hoverIndex, setHoverIndex] = React.useState<number | null>(null);
+
+  // We want to show cumulative spending.
+  // 0% (top) means 0 spent. 100% (bottom) means total budget spent.
+  // So Y = (spent / budget) * 100.
+  // Wait, if Y=0 is TOP, then spent=0 -> Y=0 (top). spent=budget -> Y=100 (bottom).
+  // So the line starts at top left and goes down to bottom right. This represents cumulative spent accurately.
+  
+  const getX = React.useCallback((index: number) => {
+    if (stats.totalDays <= 1) return 50;
+    return (index / (stats.totalDays - 1)) * 100;
+  }, [stats.totalDays]);
+  
+  const getY = React.useCallback((spent: number) => {
+    if (stats.effectiveTotalBudget <= 0) return 0;
+    const pct = (spent / stats.effectiveTotalBudget) * 100;
+    return Math.max(0, Math.min(100, pct));
+  }, [stats.effectiveTotalBudget]);
+
+  const pastStats = React.useMemo(() => 
+    stats.dailyStats.filter((s: any) => !s.isFuture || s.dayIndex === stats.daysPassed + 1),
+  [stats.dailyStats, stats.daysPassed]);
+
+  // Actual cumulative spend line
+  const actualPathD = React.useMemo(() => {
+    if (pastStats.length === 0) return 'M 0 0';
+    const points = pastStats.map((s: any) => `${getX(s.dayIndex - 1)} ${getY(s.cumulativeDiscretionarySpent)}`);
+    return `M ${points[0]} ` + points.slice(1).map((p: string) => `L ${p}`).join(' ');
+  }, [pastStats, getX, getY]);
+
+  const fillPathD = React.useMemo(() => {
+    if (pastStats.length === 0) return 'M 0 100 L 0 100 Z';
+    const lastX = getX(pastStats[pastStats.length - 1].dayIndex - 1);
+    // Fill from actual path down to bottom (100) or up to top?
+    // Usually fill is below the line. Since Y goes from 0 (top) to 100 (bottom),
+    // below the line is from Y to 0? No, 100 is bottom.
+    // If the line is at Y=20, below it is Y=100. 
+    return `${actualPathD} L ${lastX} 100 L 0 100 Z`;
+  }, [actualPathD, pastStats, getX]);
+
+  const handleMouseMove = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (stats.totalDays <= 1) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const xPct = ((e.clientX - rect.left) / rect.width) * 100;
+    const estimatedIndex = Math.round((xPct / 100) * (stats.totalDays - 1));
+    const clampedIndex = Math.max(0, Math.min(stats.totalDays - 1, estimatedIndex));
+    setHoverIndex(clampedIndex);
+  }, [stats.totalDays]);
+
+  const handleMouseLeave = React.useCallback(() => setHoverIndex(null), []);
+
+  return (
+    <Card className="lg:col-span-2 flex flex-col relative border border-[var(--color-gray-light)] p-5 sm:p-6">
+      <div className="flex justify-between items-center mb-6">
+        <CardTitle>Spend vs Ideal Path</CardTitle>
+        <select className="bg-[var(--color-surface)] border border-[var(--color-gray-light)] text-[var(--color-dark)] rounded-lg text-[11px] font-medium px-2 py-1 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none">
+          <option>This Month</option>
+        </select>
+      </div>
+      <div 
+        className="flex-grow relative min-h-[200px] rounded-b-lg border-b border-[var(--color-primary)]/30 bg-gradient-to-b from-[var(--color-primary)]/10 dark:from-[var(--color-primary)]/20 to-transparent flex items-end group/chart cursor-crosshair touch-pan-y"
+        onPointerMove={handleMouseMove}
+        onPointerLeave={handleMouseLeave}
+      >
+        
+        <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="grad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="var(--color-primary)"></stop>
+              <stop offset="100%" stopColor="transparent"></stop>
+            </linearGradient>
+          </defs>
+          
+          {/* Ideal Line (Diagonal - from top left to bottom right) */}
+          <line
+            x1="0"
+            y1="0"
+            x2="100"
+            y2="100"
+            stroke="var(--color-gray-light)"
+            strokeWidth="1"
+            vectorEffect="non-scaling-stroke"
+            strokeDasharray="4 4"
+            opacity="0.8"
+          />
+
+          {/* Actual Path Fill */}
+          <path d={fillPathD} fill="url(#grad)" className="opacity-40" />
+          
+          {/* Actual Path Stroke */}
+          <path d={actualPathD} fill="none" stroke="var(--color-primary)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+        </svg>
+        
+        {/* Today Indicator (only shown if not hovering) */}
+        {stats.daysPassed > 0 && hoverIndex === null && (
+          <div 
+            className="absolute top-0 bottom-0 border-l border-dashed border-[var(--color-gray-light)] transition-opacity duration-200 pointer-events-none"
+            style={{ left: `${getX(stats.daysPassed)}%` }}
+          >
+            <div className="absolute -top-6 -translate-x-1/2 bg-[var(--color-surface)] border border-[var(--color-gray-light)] px-2 py-1 rounded text-[11px] font-medium text-[var(--color-dark)] shadow-sm">Today</div>
+            <div 
+              className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)]" 
+              style={{ top: `${getY(pastStats[pastStats.length - 1]?.cumulativeDiscretionarySpent || 0)}%` }}
+            ></div>
+          </div>
+        )}
+
+        {/* Interactive Tooltip */}
+        {hoverIndex !== null && stats.dailyStats[hoverIndex] && (
+          <div 
+            className="absolute top-0 bottom-0 border-l border-solid border-[var(--color-gray-dark)] z-20 pointer-events-none"
+            style={{ left: `${getX(hoverIndex)}%` }}
+          >
+            {/* Tooltip Card */}
+            <div className="absolute top-4 -translate-x-1/2 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-lg shadow-xl p-3 min-w-[170px] whitespace-nowrap z-30 pointer-events-none">
+              <div className="flex justify-between items-center text-[11px] font-bold text-[var(--color-dark)] mb-3 uppercase tracking-wide border-b border-[var(--color-gray-light)] pb-1">
+                <span>Day {stats.dailyStats[hoverIndex].dayIndex}</span>
+                <span className="text-[var(--color-gray-dark)] font-medium">{format(new Date(stats.dailyStats[hoverIndex].date), 'MMM dd')}</span>
+              </div>
+              
+              <div className="flex flex-col gap-1.5 text-[12px]">
+                <div className="flex justify-between gap-4">
+                  <span className="text-[var(--color-gray-dark)]">Ideal spent</span>
+                  <span className="font-medium text-[var(--color-dark)]">{formatCurrency(stats.dailyStats[hoverIndex].cumulativeIdealSpent)}</span>
+                </div>
+                
+                <div className="flex justify-between gap-4">
+                  <span className="text-[var(--color-gray-dark)]">Spent till day</span>
+                  <span className="font-semibold text-[var(--color-primary)]">
+                    {stats.dailyStats[hoverIndex].isFuture ? '-' : formatCurrency(stats.dailyStats[hoverIndex].cumulativeDiscretionarySpent)}
+                  </span>
+                </div>
+                
+                <div className="flex justify-between gap-4">
+                  <span className="text-[var(--color-gray-dark)]">Spent today</span>
+                  <span className="font-medium text-[var(--color-dark)]">
+                    {stats.dailyStats[hoverIndex].isFuture ? '-' : formatCurrency(stats.dailyStats[hoverIndex].discretionarySpent)}
+                  </span>
+                </div>
+
+                {!stats.dailyStats[hoverIndex].isFuture && (() => {
+                  const diff = stats.dailyStats[hoverIndex].cumulativeIdealSpent - stats.dailyStats[hoverIndex].cumulativeDiscretionarySpent;
+                  const isUnder = diff >= 0;
+                  return (
+                    <div className="flex justify-between gap-4 pt-2 mt-1 border-t border-[var(--color-gray-light)]">
+                      <span className={cn("font-medium", isUnder ? "text-[#60dac4]" : "text-[var(--color-primary)]")}>
+                        {isUnder ? 'Under pace' : 'Over pace'}
+                      </span>
+                      <span className={cn("font-bold", isUnder ? "text-[#60dac4]" : "text-[var(--color-primary)]")}>
+                        {formatCurrency(Math.abs(diff))}
+                      </span>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+            
+            {/* Point dot on line */}
+            {!stats.dailyStats[hoverIndex].isFuture && (
+              <div 
+                className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-surface)] border-2 border-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] pointer-events-none" 
+                style={{ top: `${getY(stats.dailyStats[hoverIndex].cumulativeDiscretionarySpent)}%` }}
+              ></div>
+            )}
+          </div>
+        )}
+      </div>
+      <div className="flex justify-between mt-4 text-[11px] font-medium text-[var(--color-gray-dark)]">
+        <span>Start</span>
+        <span>End of Month</span>
+      </div>
+    </Card>
+  );
+});
+
 export function Insights() {
   const { config, transactions, people } = useStore();
   const todayDateStr = new Date().toISOString();
   const stats = calculateBudget(config, transactions, todayDateStr);
-
-  const formatCurrency = (amount: number) => `₹${Math.round(amount).toLocaleString('en-IN')}`;
   
   // 1. Pacing Narrative Logic
   const avgDailyDiscretionary = Math.round(stats.totalDiscretionarySpent / Math.max(1, stats.daysPassed));
@@ -99,13 +276,6 @@ export function Insights() {
   // 5. Projected Rollover
   const projectedRollover = stats.moneyLeft - (avgDailyDiscretionary * stats.daysRemaining);
 
-  // Dynamic Chart Points
-  const currentX = stats.totalDays > 0 ? Math.min(100, Math.max(0, (stats.daysPassed / stats.totalDays) * 100)) : 0;
-  const currentY = stats.effectiveTotalBudget > 0 ? Math.min(100, Math.max(0, (stats.totalDiscretionarySpent / stats.effectiveTotalBudget) * 100)) : 0;
-  
-  const actualPathD = `M 0 0 L ${currentX} ${currentY}`;
-  const fillPathD = `M 0 100 L 0 0 L ${currentX} ${currentY} L ${currentX} 100 Z`;
-
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-8 sm:pb-0">
       {/* Page Header */}
@@ -131,63 +301,8 @@ export function Insights() {
           </div>
         </Card>
 
-        {/* Burn-down Chart */}
-        <Card className="lg:col-span-2 flex flex-col relative border border-[var(--color-gray-light)] p-5 sm:p-6">
-          <div className="flex justify-between items-center mb-6">
-            <CardTitle>Spend vs Ideal Path</CardTitle>
-            <select className="bg-[var(--color-surface)] border border-[var(--color-gray-light)] text-[var(--color-dark)] rounded-lg text-[11px] font-medium px-2 py-1 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none">
-              <option>This Month</option>
-            </select>
-          </div>
-          <div className="flex-grow relative min-h-[200px] rounded-b-lg border-b border-[var(--color-primary)]/30 bg-gradient-to-b from-[var(--color-primary)]/10 dark:from-[var(--color-primary)]/20 to-transparent flex items-end">
-            
-            <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="grad" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stopColor="var(--color-primary)"></stop>
-                  <stop offset="100%" stopColor="transparent"></stop>
-                </linearGradient>
-              </defs>
-              
-              {/* Ideal Line (Diagonal) */}
-              <line
-                x1="0"
-                y1="100"
-                x2="100"
-                y2="0"
-                stroke="var(--color-gray-light)"
-                strokeWidth="1"
-                vectorEffect="non-scaling-stroke"
-                strokeDasharray="4 4"
-                opacity="0.8"
-              />
-
-              {/* Actual Path Fill */}
-              <path d={fillPathD} fill="url(#grad)" className="opacity-40" />
-              
-              {/* Actual Path Stroke */}
-              <path d={actualPathD} fill="none" stroke="var(--color-primary)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-            </svg>
-            
-            {/* Today Indicator */}
-            {stats.daysPassed > 0 && (
-              <div 
-                className="absolute top-0 bottom-0 border-l border-dashed border-[var(--color-gray-light)]"
-                style={{ left: `${currentX}%` }}
-              >
-                <div className="absolute -top-6 -translate-x-1/2 bg-[var(--color-surface)] border border-[var(--color-gray-light)] px-2 py-1 rounded text-[11px] font-medium text-[var(--color-dark)] shadow-sm">Today</div>
-                <div 
-                  className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)]" 
-                  style={{ top: `${currentY}%` }}
-                ></div>
-              </div>
-            )}
-          </div>
-          <div className="flex justify-between mt-4 text-[11px] font-medium text-[var(--color-gray-dark)]">
-            <span>Start</span>
-            <span>End of Month</span>
-          </div>
-        </Card>
+        {/* Burn-down Chart Extracted */}
+        <BurnDownChart stats={stats} />
       </div>
 
       {/* Mid Row: Stats Grid */}

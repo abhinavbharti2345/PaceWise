@@ -26,6 +26,17 @@ export interface BudgetConfig {
   theme?: 'light' | 'dark' | 'system';
 }
 
+export interface DailyBudgetStat {
+  dayIndex: number;
+  date: string; // ISO string for the day
+  actualRemaining: number;
+  idealRemaining: number;
+  discretionarySpent: number;
+  cumulativeDiscretionarySpent: number;
+  cumulativeIdealSpent: number;
+  isFuture: boolean;
+}
+
 export interface BudgetStats {
   baseDailyBudget: number;
   carryForward: number;
@@ -42,6 +53,7 @@ export interface BudgetStats {
   progressPercentage: number;
   totalDiscretionarySpent: number;
   zeroSpendDays: number;
+  dailyStats: DailyBudgetStat[];
 }
 
 export function calculateBudget(
@@ -156,6 +168,35 @@ export function calculateBudget(
   const activeSpendDays = Object.keys(discretionarySpendByDate).length;
   const zeroSpendDays = Math.max(0, daysUpToToday - activeSpendDays);
 
+  const dailyStats: DailyBudgetStat[] = [];
+  let cumulativeDiscretionarySpent = 0;
+
+  for (let i = 0; i < totalDays; i++) {
+    const d = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
+    const dateKey = d.getTime().toString();
+    const daySpent = discretionarySpendByDate[dateKey] || 0;
+    
+    const isFuture = d.getTime() > today.getTime();
+    
+    if (!isFuture) {
+      cumulativeDiscretionarySpent += daySpent;
+    }
+    
+    const idealRemaining = effectiveTotalBudget - (baseDailyBudget * (i + 1));
+    const actualRemaining = isFuture ? 0 : effectiveTotalBudget - cumulativeDiscretionarySpent;
+
+    dailyStats.push({
+      dayIndex: i + 1,
+      date: d.toISOString(),
+      actualRemaining: isFuture ? 0 : actualRemaining,
+      idealRemaining,
+      discretionarySpent: daySpent,
+      cumulativeDiscretionarySpent,
+      cumulativeIdealSpent: baseDailyBudget * (i + 1),
+      isFuture
+    });
+  }
+
   return {
     baseDailyBudget,
     carryForward,
@@ -172,5 +213,6 @@ export function calculateBudget(
     progressPercentage,
     totalDiscretionarySpent,
     zeroSpendDays,
+    dailyStats,
   };
 }
