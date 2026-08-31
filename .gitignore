@@ -3,3 +3,4 @@ dist
 .env
 Docs/client_secret*.json
 client_secret*.json
+obsidianVault/
