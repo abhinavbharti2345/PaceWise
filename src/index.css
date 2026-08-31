@@ -59,12 +59,12 @@
   --primary: #FF453A;
   --orange: #FFD60A;
   --success: #4ADE80;
-  --dark: #F5F5F7;
-  --gray-dark: #AEAEB2;
-  --gray-light: #48484A;
-  --surface: #1C1C1E;
-  --surface-light: #3A3A3C;
-  --bg-light: #000000;
+  --dark: #FAFAFA;
+  --gray-dark: #A1A1AA;
+  --gray-light: #27272A;
+  --surface: #18181B;
+  --surface-light: #27272A;
+  --bg-light: #09090B;
 
   /* Dark mode semantic card tokens */
   --positive-bg: rgba(74, 222, 128, 0.08);

@@ -28,7 +28,7 @@ const getCategoryIcon = (category: string) => {
   const c = (category || '').toLowerCase();
   if (c.includes('food') || c.includes('coffee') || c.includes('dining')) return <Coffee size={16} className="text-[var(--color-primary)]" />;
   if (c.includes('transport') || c.includes('travel') || c.includes('cab')) return <Car size={16} className="text-[var(--color-orange)]" />;
-  if (c.includes('entertainment') || c.includes('movie') || c.includes('concert')) return <Ticket size={16} className="text-[#60dac4]" />;
+  if (c.includes('entertainment') || c.includes('movie') || c.includes('concert')) return <Ticket size={16} className="text-[var(--color-success)]" />;
   if (c.includes('shopping') || c.includes('clothes')) return <ShoppingBag size={16} className="text-[var(--color-primary)]" />;
   if (c.includes('tech') || c.includes('gadget') || c.includes('electronics')) return <Smartphone size={16} className="text-[var(--color-primary)]" />;
   if (c.includes('home') || c.includes('rent')) return <Home size={16} className="text-[var(--color-gray-dark)]" />;
@@ -200,10 +200,10 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
                   const isUnder = diff >= 0;
                   return (
                     <div className="flex justify-between gap-4 pt-2 mt-1 border-t border-[var(--color-gray-light)]">
-                      <span className={cn("font-medium", isUnder ? "text-[#60dac4]" : "text-[var(--color-primary)]")}>
+                      <span className={cn("font-medium", isUnder ? "text-[var(--color-success)]" : "text-[var(--color-primary)]")}>
                         {isUnder ? 'Under pace' : 'Over pace'}
                       </span>
-                      <span className={cn("font-bold", isUnder ? "text-[#60dac4]" : "text-[var(--color-primary)]")}>
+                      <span className={cn("font-bold", isUnder ? "text-[var(--color-success)]" : "text-[var(--color-primary)]")}>
                         {formatCurrency(Math.abs(diff))}
                       </span>
                     </div>
@@ -240,8 +240,8 @@ export function Insights() {
   let heroTitle = "Pacing Health";
   let heroMessage: React.ReactNode = "";
   let badgeText = "On Track";
-  let badgeColor = "text-[#60dac4]";
-  let badgeBg = "bg-[#60dac4]/10";
+  let badgeColor = "text-[var(--color-success)]";
+  let badgeBg = "bg-[var(--color-positive-bg)]";
 
   if (stats.moneyLeft < 0) {
     heroMessage = <>You are in a deficit of <span className="font-bold text-[var(--color-primary)]">{formatCurrency(Math.abs(stats.moneyLeft))}</span>.</>;
@@ -249,7 +249,7 @@ export function Insights() {
     badgeColor = "text-[var(--color-primary)]";
     badgeBg = "bg-[var(--negative-bg)]";
   } else if (stats.daysPassed === 0) {
-    heroMessage = <>Your safe daily limit is <span className="font-bold text-[#60dac4]">{formatCurrency(stats.baseDailyBudget)}</span>.</>;
+    heroMessage = <>Your safe daily limit is <span className="font-bold text-[var(--color-success)]">{formatCurrency(stats.baseDailyBudget)}</span>.</>;
     badgeText = "Fresh Start";
   } else if (stats.isOverspent) {
     heroMessage = <>You're spending <span className="font-bold text-[var(--color-primary)]">{formatCurrency(avgDailyDiscretionary)}/day</span>, above target.</>;
@@ -259,7 +259,7 @@ export function Insights() {
   } else if (stats.carryForward > 0) {
     heroMessage = <>Great pacing! You've accumulated <span className="font-bold text-[var(--color-primary)]">{formatCurrency(stats.carryForward)}</span> in carry-forward.</>;
   } else {
-    heroMessage = <>You are pacing perfectly at <span className="font-bold text-[#60dac4]">{formatCurrency(avgDailyDiscretionary)}/day</span>.</>;
+    heroMessage = <>You are pacing perfectly at <span className="font-bold text-[var(--color-success)]">{formatCurrency(avgDailyDiscretionary)}/day</span>.</>;
   }
 
   // 2. Discretionary Categories (Leakage)
@@ -304,9 +304,9 @@ export function Insights() {
         {/* Pacing Health Hero */}
         <Card className="lg:col-span-1 flex flex-col justify-center relative overflow-hidden group border border-[var(--color-gray-light)] p-5 sm:p-6">
           <div className="absolute inset-0 bg-[var(--color-primary)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-          <ShieldCheck className="text-[#60dac4] mb-4 relative z-10" size={36} />
+          <ShieldCheck className="text-[var(--color-success)] mb-4 relative z-10" size={36} />
           <h3 className="text-lg sm:text-xl font-semibold text-[var(--color-dark)] mb-2 relative z-10">{heroTitle}</h3>
-          <p className="text-xl sm:text-2xl font-semibold text-[#60dac4] leading-tight relative z-10">
+          <p className="text-xl sm:text-2xl font-semibold text-[var(--color-success)] leading-tight relative z-10">
              {heroMessage}
           </p>
           <div className="mt-6 flex items-center gap-2 relative z-10">
@@ -328,7 +328,7 @@ export function Insights() {
             <TrendingDown size={20} className="text-[var(--color-gray-dark)]" />
             <span className={cn(
               "inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium",
-              avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[#0ba38f]/10 text-[#60dac4]" : "bg-[var(--negative-bg)] text-[var(--color-primary)]"
+              avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[var(--color-positive-bg)] text-[var(--color-success)]" : "bg-[var(--negative-bg)] text-[var(--color-primary)]"
             )}>
               {avgDailyDiscretionary <= stats.baseDailyBudget ? "Better" : "Worse"}
             </span>
@@ -340,7 +340,7 @@ export function Insights() {
           </div>
           <div className="mt-4 w-full h-1.5 bg-[var(--color-surface-light)] rounded-full overflow-hidden">
             <div 
-              className={cn("h-full", avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[#60dac4]" : "bg-[var(--color-primary)]")} 
+              className={cn("h-full", avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[var(--color-success)]" : "bg-[var(--color-primary)]")} 
               style={{ width: `${Math.min(100, stats.baseDailyBudget > 0 ? (avgDailyDiscretionary / stats.baseDailyBudget) * 100 : 0)}%` }}
             ></div>
           </div>
@@ -365,7 +365,7 @@ export function Insights() {
           <CardTitle className="mb-1">Projected Rollover</CardTitle>
           <div className={cn(
             "text-3xl sm:text-[32px] font-bold leading-tight tracking-tight",
-            projectedRollover > 0 ? "text-[#60dac4]" : "text-[var(--color-primary)]"
+            projectedRollover > 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"
           )}>
             {formatCurrency(projectedRollover)}
           </div>
@@ -385,7 +385,7 @@ export function Insights() {
               const colors = [
                 { bg: 'bg-[var(--color-primary)]', text: 'text-[var(--color-primary)]' },
                 { bg: 'bg-[var(--color-orange)]', text: 'text-[var(--color-orange)]' },
-                { bg: 'bg-[#60dac4]', text: 'text-[#60dac4]' },
+                { bg: 'bg-[var(--color-success)]', text: 'text-[var(--color-success)]' },
                 { bg: 'bg-[var(--color-gray-dark)]', text: 'text-[var(--color-gray-dark)]' },
               ];
               const c = colors[idx % colors.length];
