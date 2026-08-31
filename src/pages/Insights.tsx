@@ -108,12 +108,6 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
     <Card className="lg:col-span-2 flex flex-col relative border border-[var(--color-gray-light)] p-5 sm:p-6">
       <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6 min-w-0">
         <CardTitle className="text-xs sm:text-base truncate">Spend vs Ideal Path</CardTitle>
-        <div className="relative shrink-0">
-          <select className="appearance-none bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] text-[var(--color-dark)] rounded-xl text-[11px] font-bold pl-3 pr-7 py-1.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 cursor-pointer shadow-sm">
-            <option value="current">This Month</option>
-          </select>
-          <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--color-gray-dark)] pointer-events-none" />
-        </div>
       </div>
       <div 
         className="flex-grow relative min-h-[200px] rounded-b-lg border-b border-[var(--color-primary)]/30 bg-gradient-to-b from-[var(--color-primary)]/10 dark:from-[var(--color-primary)]/20 to-transparent flex items-end group/chart cursor-crosshair touch-pan-y"
@@ -237,7 +231,47 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
 export function Insights() {
   const { config, transactions, people } = useStore();
   const todayDateStr = useCurrentDate();
-  const stats = calculateBudget(config, transactions, todayDateStr);
+  
+  // 'week' = This Week, 'current' = This Month, 'last1' = Last Month, 'last2' = 2 Months Ago
+  const [timeFilter, setTimeFilter] = React.useState<string>('current');
+
+  const stats = React.useMemo(() => {
+    if (timeFilter === 'current') {
+      return calculateBudget(config, transactions, todayDateStr);
+    }
+    
+    if (timeFilter === 'week') {
+      const now = new Date();
+      // start of week (monday)
+      const start = new Date(now);
+      const day = start.getDay();
+      const diff = start.getDate() - day + (day === 0 ? -6 : 1);
+      start.setDate(diff);
+      start.setHours(0,0,0,0);
+      
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      end.setHours(23,59,59,999);
+      
+      // prorate total money based on days in current month
+      const monthDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const proratedMoney = (config.totalMoney / monthDays) * 7;
+      
+      const syntheticConfig = { ...config, totalMoney: proratedMoney, startDate: start.toISOString(), endDate: end.toISOString() };
+      return calculateBudget(syntheticConfig, transactions, todayDateStr);
+    }
+    
+    // Calculate boundaries for past months
+    const offset = timeFilter === 'last1' ? 1 : 2;
+    const targetDate = new Date();
+    targetDate.setMonth(targetDate.getMonth() - offset);
+    
+    const startDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1).toISOString();
+    const endDate = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
+    
+    const syntheticConfig = { ...config, startDate, endDate };
+    return calculateBudget(syntheticConfig, transactions, endDate);
+  }, [config, transactions, todayDateStr, timeFilter]);
   
   // 1. Pacing Narrative Logic
   const avgDailyDiscretionary = Math.round(stats.totalDiscretionarySpent / Math.max(1, stats.daysPassed));
@@ -298,9 +332,24 @@ export function Insights() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-8 sm:pb-0">
       {/* Page Header */}
-      <header>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-dark)] tracking-tight">Insights & Analytics</h1>
-        <p className="text-[var(--color-gray-dark)] text-sm mt-0.5">Deep dive into your financial pacing and habits.</p>
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-dark)] tracking-tight">Insights & Analytics</h1>
+          <p className="text-[var(--color-gray-dark)] text-sm mt-0.5">Deep dive into your financial pacing and habits.</p>
+        </div>
+        <div className="relative shrink-0">
+          <select 
+            value={timeFilter}
+            onChange={(e) => setTimeFilter(e.target.value)}
+            className="appearance-none bg-[var(--color-surface)] border border-[var(--color-gray-light)] text-[var(--color-dark)] rounded-xl text-sm font-bold pl-4 pr-10 py-2 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] cursor-pointer shadow-sm w-full sm:w-auto"
+          >
+            <option value="week">This Week</option>
+            <option value="current">This Month</option>
+            <option value="last1">Last Month</option>
+            <option value="last2">2 Months Ago</option>
+          </select>
+          <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--color-gray-dark)] pointer-events-none" />
+        </div>
       </header>
       
       {/* Top Row: Pacing Health & Daily Spend Engine Side-by-Side */}
