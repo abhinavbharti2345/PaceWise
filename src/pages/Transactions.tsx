@@ -201,7 +201,7 @@ export function Transactions() {
 
                         <button 
                           onClick={() => handleDelete(t.id, t.reason || t.category || 'Transaction')}
-                          className="opacity-0 group-hover:opacity-100 p-1.5 text-[var(--color-gray-dark)] hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/20 transition-all"
+                          className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 text-[var(--color-gray-dark)] hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/20 transition-all"
                           title="Delete transaction"
                         >
                           <Trash2 size={16} />
