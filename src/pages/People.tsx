@@ -28,18 +28,20 @@ export function People() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Header */}
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">People & Debts</h1>
-          <p className="text-[var(--color-gray-dark)] text-sm">Track informal loans and shared expenses with friends.</p>
+      <header className="flex items-start sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="min-w-0 pr-2">
+          <h1 className="text-2xl font-bold text-[var(--color-dark)] tracking-tight">People & Debts</h1>
+          <p className="text-[var(--color-gray-dark)] text-xs sm:text-sm mt-0.5 leading-relaxed">
+            Track informal loans and shared expenses with friends.
+          </p>
         </div>
         <Button 
           variant="primary" 
           onClick={() => setIsAddPersonOpen(true)} 
-          className="h-10 px-4 py-2 rounded-xl flex items-center justify-center gap-2 font-bold shadow-sm"
+          className="h-10 px-3.5 sm:px-4 py-2 rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 font-bold shadow-sm shrink-0 whitespace-nowrap"
         >
           <UserPlus size={18} />
-          <span>Add Person</span>
+          <span className="text-xs sm:text-sm">Add Person</span>
         </Button>
       </header>
 

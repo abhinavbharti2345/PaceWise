@@ -7,6 +7,8 @@ import { Input } from '../components/ui/Input';
 import { User, Mail, LogOut, Check, Pencil, Shield, AlertTriangle } from 'lucide-react';
 
 import { ConfirmModal } from '../components/modals/ConfirmModal';
+import { useStore } from '../store/useStore';
+import { deleteAllUserData, deleteUserAccount } from '../lib/supabaseSync';
 
 export function Profile() {
   const { user, profile, updateProfile, signOut } = useAuthStore();
@@ -15,6 +17,11 @@ export function Profile() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [isSignOutConfirmOpen, setIsSignOutConfirmOpen] = useState(false);
+  const [isDeleteDataModalOpen, setIsDeleteDataModalOpen] = useState(false);
+  const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
+  const resetData = useStore(state => state.resetData);
 
   // Keep displayName in sync when profile loads asynchronously
   useEffect(() => {
@@ -56,6 +63,59 @@ export function Profile() {
   };
 
   const displayInitial = (profile?.displayName || user?.email || 'U').charAt(0).toUpperCase();
+
+  const handleDeleteAllData = async () => {
+    if (!user) return;
+    setIsDeleting(true);
+    setSaveMessage(null);
+    try {
+      await deleteAllUserData(user.id);
+      resetData();
+      setIsDeleteDataModalOpen(false);
+      setSaveMessage({ type: 'success', text: 'All your PaceWise data has been permanently deleted.' });
+      setTimeout(() => setSaveMessage(null), 5000);
+    } catch (error) {
+      console.error('Failed to delete data:', error);
+      setSaveMessage({ type: 'error', text: 'Failed to delete data. Please try again.' });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    
+    // We need the user's session token to invoke the edge function securely
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError || !session?.access_token) {
+      setSaveMessage({ type: 'error', text: 'Could not verify your session. Please sign out and sign in again before deleting your account.' });
+      setIsDeleteAccountModalOpen(false);
+      return;
+    }
+
+    setIsDeleting(true);
+    setSaveMessage(null);
+    
+    try {
+      // 1. First explicitly delete all their application data
+      await deleteAllUserData(user.id);
+      
+      // 2. Invoke the edge function to delete the Supabase Auth user
+      await deleteUserAccount(session.access_token);
+      
+      // 3. Clear local state
+      resetData();
+      
+      // 4. Clear session and redirect to login
+      await signOut();
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+      setSaveMessage({ type: 'error', text: 'Failed to delete account. Please try again or contact support.' });
+      setIsDeleting(false);
+      setIsDeleteAccountModalOpen(false);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 max-w-3xl pb-20 sm:pb-0">
@@ -202,12 +262,12 @@ export function Profile() {
         </div>
       </Card>
       
-      {/* Account Actions / Danger Zone */}
+      {/* Account Actions */}
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <AlertTriangle size={18} className="text-red-500" />
-            <CardTitle className="text-base sm:text-lg text-red-600 dark:text-red-400">Account Actions</CardTitle>
+            <User size={18} className="text-[var(--color-dark)]" />
+            <CardTitle className="text-base sm:text-lg">Session</CardTitle>
           </div>
         </CardHeader>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -217,7 +277,7 @@ export function Profile() {
           </div>
           <Button 
             variant="outline" 
-            className="w-full sm:w-auto h-11 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:hover:bg-red-900/20 font-bold gap-2 shadow-sm whitespace-nowrap justify-center"
+            className="w-full sm:w-auto h-11 border-[var(--color-gray-light)] font-bold gap-2 shadow-sm whitespace-nowrap justify-center"
             onClick={() => setIsSignOutConfirmOpen(true)}
           >
             <LogOut size={18} /> Sign Out
@@ -225,6 +285,47 @@ export function Profile() {
         </div>
       </Card>
 
+      {/* Danger Zone */}
+      <Card className="border-red-200 dark:border-red-900/50">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <AlertTriangle size={18} className="text-red-500" />
+            <CardTitle className="text-base sm:text-lg text-red-600 dark:text-red-400">Danger Zone</CardTitle>
+          </div>
+        </CardHeader>
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="w-full sm:w-auto">
+              <p className="font-semibold text-base text-[var(--color-dark)]">Delete All My Data</p>
+              <p className="text-xs sm:text-sm text-[var(--color-gray-dark)] mt-0.5">Permanently remove your budgets, transactions, people and other PaceWise data. Your account remains active.</p>
+            </div>
+            <Button 
+              variant="outline" 
+              className="w-full sm:w-auto h-11 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:hover:bg-red-900/20 font-bold shadow-sm whitespace-nowrap justify-center"
+              onClick={() => setIsDeleteDataModalOpen(true)}
+            >
+              Delete All My Data
+            </Button>
+          </div>
+
+          <hr className="border-red-100 dark:border-red-900/30" />
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="w-full sm:w-auto">
+              <p className="font-semibold text-base text-[var(--color-dark)]">Delete My Account</p>
+              <p className="text-xs sm:text-sm text-[var(--color-gray-dark)] mt-0.5">Permanently delete your PaceWise account and all associated data.</p>
+            </div>
+            <Button 
+              className="w-full sm:w-auto h-11 bg-red-600 hover:bg-red-700 text-white font-bold shadow-sm whitespace-nowrap justify-center"
+              onClick={() => setIsDeleteAccountModalOpen(true)}
+            >
+              Delete My Account
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      {/* Sign Out Modal */}
       <ConfirmModal
         isOpen={isSignOutConfirmOpen}
         onClose={() => setIsSignOutConfirmOpen(false)}
@@ -235,6 +336,34 @@ export function Profile() {
         cancelText="Cancel"
         variant="destructive"
         icon={<LogOut size={20} />}
+      />
+
+      {/* Delete All Data Modal */}
+      <ConfirmModal
+        isOpen={isDeleteDataModalOpen}
+        onClose={() => setIsDeleteDataModalOpen(false)}
+        onConfirm={handleDeleteAllData}
+        title="Delete all your data?"
+        description="This will permanently delete your budgets, transactions, people and all other PaceWise data. Your account will remain active."
+        confirmText="Delete All Data"
+        cancelText="Cancel"
+        variant="destructive"
+        requiredMatchText="DELETE"
+        isLoading={isDeleting}
+      />
+
+      {/* Delete Account Modal */}
+      <ConfirmModal
+        isOpen={isDeleteAccountModalOpen}
+        onClose={() => setIsDeleteAccountModalOpen(false)}
+        onConfirm={handleDeleteAccount}
+        title="Delete your account?"
+        description="This permanently deletes your PaceWise account and all associated data. You will not be able to recover it."
+        confirmText="Delete Account Permanently"
+        cancelText="Cancel"
+        variant="destructive"
+        requiredMatchText="DELETE MY ACCOUNT"
+        isLoading={isDeleting}
       />
     </div>
   );

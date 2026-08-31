@@ -301,3 +301,43 @@ export async function updatePersonBalanceInSupabase(person_id: string, balance: 
 
   if (error) throw error;
 }
+
+/**
+ * Delete all application data for a user
+ */
+export async function deleteAllUserData(user_id: string) {
+  // Delete all user data tables
+  const tables = ['transactions', 'people', 'budget_configs', 'profiles'];
+  
+  for (const table of tables) {
+    // For profiles the column is 'id', for others it's 'user_id'
+    const column = table === 'profiles' ? 'id' : 'user_id';
+    const { error } = await supabase.from(table).delete().eq(column, user_id);
+    if (error) {
+      console.error(`[PaceWise] Error deleting ${table} for user ${user_id}:`, error);
+      throw error;
+    }
+  }
+}
+
+/**
+ * Permanently delete user auth account via Edge Function
+ */
+export async function deleteUserAccount(sessionToken: string) {
+  const { data, error } = await supabase.functions.invoke('delete-user', {
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+  });
+
+  if (error) {
+    console.error('[PaceWise] Error invoking delete-user Edge Function:', error);
+    throw error;
+  }
+
+  if (!data?.success) {
+    throw new Error(data?.error || 'Failed to delete user account');
+  }
+
+  return data;
+}

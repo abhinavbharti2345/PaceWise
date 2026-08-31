@@ -15,6 +15,7 @@ export interface ConfirmModalProps {
   variant?: 'destructive' | 'primary';
   icon?: React.ReactNode;
   isLoading?: boolean;
+  requiredMatchText?: string; // e.g. "DELETE"
 }
 
 export function ConfirmModal({
@@ -29,23 +30,36 @@ export function ConfirmModal({
   variant = 'destructive',
   icon,
   isLoading = false,
+  requiredMatchText,
 }: ConfirmModalProps) {
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const [matchValue, setMatchValue] = React.useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setMatchValue('');
+    }
+  }, [isOpen]);
+
+  const isMatchValid = !requiredMatchText || matchValue === requiredMatchText;
 
   useEffect(() => {
     if (!isOpen) return;
 
-    // Focus confirm button when modal opens
-    const timer = setTimeout(() => {
-      confirmButtonRef.current?.focus();
-    }, 50);
+    // Focus confirm button when modal opens (unless input exists)
+    if (!requiredMatchText) {
+      const timer = setTimeout(() => {
+        confirmButtonRef.current?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
         onClose();
-      } else if (e.key === 'Enter' && !isLoading) {
+      } else if (e.key === 'Enter' && !isLoading && isMatchValid) {
         if (modalRef.current && modalRef.current.contains(document.activeElement)) {
           e.preventDefault();
           onConfirm();
@@ -55,10 +69,9 @@ export function ConfirmModal({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => {
-      clearTimeout(timer);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, onClose, onConfirm, isLoading]);
+  }, [isOpen, onClose, onConfirm, isLoading, requiredMatchText, isMatchValid]);
 
   if (!isOpen) return null;
 
@@ -76,7 +89,7 @@ export function ConfirmModal({
     >
       <div
         ref={modalRef}
-        className="bg-[var(--color-surface)] w-[calc(100%-2rem)] max-w-sm sm:max-w-md rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-200 border border-[var(--color-gray-light)] p-5 sm:p-6 space-y-4"
+        className="bg-[var(--color-surface)] w-[calc(100%-2rem)] max-w-sm sm:max-w-md rounded-2xl sm:rounded-3xl shadow-2xl overflow-y-auto max-h-[90vh] animate-in zoom-in-95 fade-in duration-200 border border-[var(--color-gray-light)] p-5 sm:p-6 space-y-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with Icon */}
@@ -120,6 +133,23 @@ export function ConfirmModal({
           </div>
         )}
 
+        {/* Match Text Requirement */}
+        {requiredMatchText && (
+          <div className="pt-2">
+            <label className="block text-xs font-bold text-[var(--color-dark)] mb-2">
+              To confirm, type <span className="text-[var(--color-primary)] bg-[var(--color-surface-light)] px-1 py-0.5 rounded select-all font-mono">{requiredMatchText}</span> below:
+            </label>
+            <input
+              type="text"
+              value={matchValue}
+              onChange={(e) => setMatchValue(e.target.value)}
+              className="w-full bg-[var(--color-bg)] border border-[var(--color-gray-light)] rounded-xl px-3 h-11 text-sm font-semibold focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all"
+              placeholder={requiredMatchText}
+              autoFocus
+            />
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="flex items-center justify-end gap-2.5 pt-2">
           <Button
@@ -135,9 +165,9 @@ export function ConfirmModal({
             ref={confirmButtonRef}
             type="button"
             onClick={onConfirm}
-            disabled={isLoading}
+            disabled={isLoading || !isMatchValid}
             className={cn(
-              'h-11 px-5 font-bold text-white shadow-sm transition-all',
+              'h-11 px-5 font-bold text-white shadow-sm transition-all disabled:opacity-50',
               isDestructive
                 ? 'bg-red-600 hover:bg-red-700 active:bg-red-800'
                 : 'bg-[var(--color-primary)] hover:opacity-90'
