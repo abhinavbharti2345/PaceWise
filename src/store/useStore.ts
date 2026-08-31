@@ -15,6 +15,7 @@ interface AppState {
   config: BudgetConfig;
   transactions: Transaction[];
   people: Person[];
+  isHydrated: boolean; // true once Supabase data has been loaded for the current user
   
   // Actions
   setConfig: (config: BudgetConfig) => void;
@@ -48,6 +49,7 @@ interface AppState {
   
   clearAllData: () => void;
   resetData: () => void;
+  setHydrated: (value: boolean) => void;
 }
 
 const getMonthDates = () => {
@@ -59,77 +61,22 @@ const getMonthDates = () => {
 
 const { start: monthStart, end: monthEnd } = getMonthDates();
 
-const mockConfig: BudgetConfig = {
-  totalMoney: 6000,
+// Empty defaults — no mock data
+const defaultConfig: BudgetConfig = {
+  totalMoney: 0,
   startDate: monthStart,
   endDate: monthEnd,
   currency: '₹',
   theme: 'system',
 };
 
-const now = new Date();
-const todayIso = now.toISOString();
-const yesterdayIso = new Date(now.getTime() - 86400000).toISOString();
-const twoDaysAgoIso = new Date(now.getTime() - 86400000 * 2).toISOString();
-
-const mockPeople: Person[] = [
-  { id: 'p1', name: 'Rahul', balance: 500 },
-  { id: 'p2', name: 'Aman', balance: -300 },
-  { id: 'p3', name: 'Karan', balance: 350 },
-];
-
-const mockTransactions: Transaction[] = [
-  { 
-    id: 't1', 
-    type: 'expense', 
-    amount: 150, 
-    category: 'Food', 
-    reason: 'Dinner with friends', 
-    date: todayIso 
-  },
-  { 
-    id: 't2', 
-    type: 'bill', 
-    amount: 1000, 
-    category: 'Credit Card', 
-    reason: 'Monthly Credit Card Payment', 
-    date: todayIso 
-  },
-  { 
-    id: 't3', 
-    type: 'expense', 
-    amount: 40, 
-    category: 'Transport', 
-    reason: 'Bus fare to campus', 
-    date: todayIso 
-  },
-  { 
-    id: 't4', 
-    type: 'expense', 
-    amount: 320, 
-    category: 'Shopping', 
-    reason: 'Notebooks & stationery', 
-    date: yesterdayIso 
-  },
-  { 
-    id: 't5', 
-    type: 'person', 
-    amount: 500, 
-    category: 'Food', 
-    reason: 'Lunch bill paid for Rahul', 
-    personId: 'p1', 
-    personName: 'Rahul', 
-    direction: 'gave', 
-    date: twoDaysAgoIso 
-  },
-];
-
 export const useStore = create<AppState>()(
   persist(
     (set) => ({
-      config: mockConfig,
-      transactions: mockTransactions,
-      people: mockPeople,
+      config: defaultConfig,
+      transactions: [],
+      people: [],
+      isHydrated: false,
 
       setConfig: (config) => set({ config }),
       
@@ -149,7 +96,7 @@ export const useStore = create<AppState>()(
             theme: newConfig.theme,
             updated_at: new Date().toISOString(),
           }).eq('user_id', userId).then(({ error }) => {
-            if (error) console.error('Failed to sync config', error);
+            if (error) console.error('[PaceWise] Failed to sync config to Supabase:', error);
           });
         }
       },
@@ -179,7 +126,7 @@ export const useStore = create<AppState>()(
             payment_method: newTx.paymentMethod,
             note: newTx.note,
           }).then(({ error }) => {
-            if (error) console.error('Failed to sync transaction', error);
+            if (error) console.error('[PaceWise] Failed to insert transaction in Supabase:', error);
           });
         }
       },
@@ -191,8 +138,8 @@ export const useStore = create<AppState>()(
         
         const userId = useAuthStore.getState().user?.id;
         if (userId) {
-          supabase.from('transactions').delete().eq('id', id).then(({ error }) => {
-            if (error) console.error('Failed to delete transaction', error);
+          supabase.from('transactions').delete().eq('id', id).eq('user_id', userId).then(({ error }) => {
+            if (error) console.error('[PaceWise] Failed to delete transaction from Supabase:', error);
           });
         }
       },
@@ -213,7 +160,7 @@ export const useStore = create<AppState>()(
             avatar_url: newPerson.avatarUrl,
             balance: newPerson.balance,
           }).then(({ error }) => {
-            if (error) console.error('Failed to sync person', error);
+            if (error) console.error('[PaceWise] Failed to insert person in Supabase:', error);
           });
         }
         
@@ -227,8 +174,8 @@ export const useStore = create<AppState>()(
         
         const userId = useAuthStore.getState().user?.id;
         if (userId) {
-          supabase.from('people').delete().eq('id', id).then(({ error }) => {
-            if (error) console.error('Failed to delete person', error);
+          supabase.from('people').delete().eq('id', id).eq('user_id', userId).then(({ error }) => {
+            if (error) console.error('[PaceWise] Failed to delete person from Supabase:', error);
           });
         }
       },
@@ -244,8 +191,9 @@ export const useStore = create<AppState>()(
         if (userId) {
           const person = useStore.getState().people.find(p => p.id === personId);
           if (person) {
-            supabase.from('people').update({ balance: person.balance }).eq('id', personId).then(({ error }) => {
-              if (error) console.error('Failed to update person balance', error);
+            supabase.from('people').update({ balance: person.balance, updated_at: new Date().toISOString() })
+              .eq('id', personId).eq('user_id', userId).then(({ error }) => {
+              if (error) console.error('[PaceWise] Failed to update person balance in Supabase:', error);
             });
           }
         }
@@ -280,26 +228,39 @@ export const useStore = create<AppState>()(
         const userId = useAuthStore.getState().user?.id;
         if (userId) {
           const person = useStore.getState().people.find(p => p.id === personId);
-          const newTx = useStore.getState().transactions.find(t => t.id === txId);
           
-          if (person && newTx) {
-            Promise.all([
-              supabase.from('people').update({ balance: person.balance }).eq('id', personId),
-              supabase.from('transactions').insert({
-                id: txId,
-                user_id: userId,
-                type: newTx.type,
-                amount: newTx.amount,
-                date: newTx.date,
-                category: newTx.category,
-                reason: newTx.reason,
-                person_id: newTx.personId,
-                person_name: newTx.personName,
-                direction: newTx.direction,
-                note: newTx.note,
-              })
-            ]).catch(err => console.error('Failed to sync recordPersonTransaction', err));
+          const promises: PromiseLike<unknown>[] = [];
+          
+          if (person) {
+            promises.push(
+              supabase.from('people').update({ balance: person.balance, updated_at: new Date().toISOString() })
+                .eq('id', personId).eq('user_id', userId).then(({ error }) => {
+                  if (error) console.error('[PaceWise] Failed to update person balance:', error);
+                })
+            );
           }
+          
+          promises.push(
+            supabase.from('transactions').insert({
+              id: txId,
+              user_id: userId,
+              type: 'person',
+              amount,
+              date: txDate,
+              category: 'People',
+              reason: reason || (direction === 'gave' ? `Lent money to ${personName}` : `Borrowed from ${personName}`),
+              person_id: personId,
+              person_name: personName,
+              direction,
+              note,
+            }).then(({ error }) => {
+              if (error) console.error('[PaceWise] Failed to insert person transaction:', error);
+            })
+          );
+          
+          Promise.all(promises).catch(err => 
+            console.error('[PaceWise] Failed to sync recordPersonTransaction:', err)
+          );
         }
       },
 
@@ -307,6 +268,10 @@ export const useStore = create<AppState>()(
         const txDate = new Date().toISOString();
         const balanceChange = direction === 'received' ? -amount : amount;
         const txId = crypto.randomUUID();
+        const txDirection = direction === 'received' ? 'took' : 'gave';
+        const txReason = direction === 'received' 
+          ? `Received settlement from ${personName}` 
+          : `Paid settlement to ${personName}`;
 
         set((state) => ({
           people: state.people.map(p => 
@@ -318,12 +283,10 @@ export const useStore = create<AppState>()(
               type: 'person',
               amount,
               category: 'Settlement',
-              reason: direction === 'received' 
-                ? `Received settlement from ${personName}` 
-                : `Paid settlement to ${personName}`,
+              reason: txReason,
               personId,
               personName,
-              direction: direction === 'received' ? 'took' : 'gave',
+              direction: txDirection,
               isSettlement: true,
               date: txDate,
               note
@@ -335,27 +298,40 @@ export const useStore = create<AppState>()(
         const userId = useAuthStore.getState().user?.id;
         if (userId) {
           const person = useStore.getState().people.find(p => p.id === personId);
-          const newTx = useStore.getState().transactions.find(t => t.id === txId);
           
-          if (person && newTx) {
-            Promise.all([
-              supabase.from('people').update({ balance: person.balance }).eq('id', personId),
-              supabase.from('transactions').insert({
-                id: txId,
-                user_id: userId,
-                type: newTx.type,
-                amount: newTx.amount,
-                date: newTx.date,
-                category: newTx.category,
-                reason: newTx.reason,
-                person_id: newTx.personId,
-                person_name: newTx.personName,
-                direction: newTx.direction,
-                is_settlement: newTx.isSettlement,
-                note: newTx.note,
-              })
-            ]).catch(err => console.error('Failed to sync settleDebt', err));
+          const promises: PromiseLike<unknown>[] = [];
+          
+          if (person) {
+            promises.push(
+              supabase.from('people').update({ balance: person.balance, updated_at: new Date().toISOString() })
+                .eq('id', personId).eq('user_id', userId).then(({ error }) => {
+                  if (error) console.error('[PaceWise] Failed to update person balance:', error);
+                })
+            );
           }
+          
+          promises.push(
+            supabase.from('transactions').insert({
+              id: txId,
+              user_id: userId,
+              type: 'person',
+              amount,
+              date: txDate,
+              category: 'Settlement',
+              reason: txReason,
+              person_id: personId,
+              person_name: personName,
+              direction: txDirection,
+              is_settlement: true,
+              note,
+            }).then(({ error }) => {
+              if (error) console.error('[PaceWise] Failed to insert settlement transaction:', error);
+            })
+          );
+          
+          Promise.all(promises).catch(err => 
+            console.error('[PaceWise] Failed to sync settleDebt:', err)
+          );
         }
       },
       
@@ -368,17 +344,27 @@ export const useStore = create<AppState>()(
           theme: 'system',
         },
         transactions: [],
-        people: []
+        people: [],
+        isHydrated: false,
       }),
 
       resetData: () => set({ 
-        config: mockConfig, 
-        transactions: mockTransactions, 
-        people: mockPeople 
+        config: defaultConfig, 
+        transactions: [], 
+        people: [],
+        isHydrated: false,
       }),
+
+      setHydrated: (value) => set({ isHydrated: value }),
     }),
     {
       name: 'pacewise-storage-v2',
+      partialize: (state) => ({
+        // Only persist data fields, NOT the isHydrated flag
+        config: state.config,
+        transactions: state.transactions,
+        people: state.people,
+      }),
     }
   )
 );

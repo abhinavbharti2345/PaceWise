@@ -23,6 +23,44 @@ interface AuthState {
   clearError: () => void;
 }
 
+/**
+ * Fetch the user's profile from Supabase and set it in the auth store.
+ * Falls back to user metadata if no profile row exists yet.
+ */
+async function fetchAndSetProfile(user: User) {
+  try {
+    const { data: profileRow } = await supabase
+      .from('profiles')
+      .select('display_name, email')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    const displayName = profileRow?.display_name
+      || user.user_metadata?.full_name
+      || user.user_metadata?.name
+      || user.email?.split('@')[0]
+      || 'User';
+
+    useAuthStore.setState({
+      profile: {
+        displayName,
+        email: profileRow?.email || user.email || null,
+        avatarUrl: user.user_metadata?.avatar_url || null,
+      },
+    });
+  } catch (err) {
+    console.warn('[PaceWise] Failed to fetch profile:', err);
+    // Fallback: use user metadata
+    useAuthStore.setState({
+      profile: {
+        displayName: user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User',
+        email: user.email || null,
+        avatarUrl: user.user_metadata?.avatar_url || null,
+      },
+    });
+  }
+}
+
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   profile: null,
@@ -63,6 +101,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
       if (data.user) {
         set({ user: data.user });
+        // Profile will be fetched by useSupabaseSync
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Sign in failed';
@@ -99,8 +138,16 @@ export const useAuthStore = create<AuthState>((set) => ({
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
+      // Clear authenticated user data completely
       set({ user: null, profile: null });
       useStore.getState().resetData();
+      
+      // Clear the localStorage cache so the next user doesn't see stale data
+      try {
+        localStorage.removeItem('pacewise-storage-v2');
+      } catch {
+        // localStorage may be unavailable
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Sign out failed';
       set({ error: message });
@@ -117,6 +164,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
       if (data.session?.user) {
         set({ user: data.session.user });
+        // Eagerly fetch profile so the name is available before the full sync
+        await fetchAndSetProfile(data.session.user);
       } else {
         set({ user: null, profile: null });
       }
@@ -136,10 +185,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 }));
 
 // Automatically listen for auth state changes (email confirmation redirect, token refresh, OAuth)
-supabase.auth.onAuthStateChange((_event, session) => {
-  useAuthStore.setState((state) => ({
-    user: session?.user ?? null,
-    profile: session ? state.profile : null,
-    loading: false,
-  }));
+supabase.auth.onAuthStateChange(async (_event, session) => {
+  if (session?.user) {
+    useAuthStore.setState({ user: session.user, loading: false });
+    // Fetch profile on auth state change (e.g., OAuth redirect, email confirmation)
+    await fetchAndSetProfile(session.user);
+  } else {
+    useAuthStore.setState({ user: null, profile: null, loading: false });
+  }
 });

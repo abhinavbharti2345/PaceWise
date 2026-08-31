@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/useAuthStore';
 import { useStore } from '../store/useStore';
@@ -6,63 +6,91 @@ import type { BudgetConfig, Transaction } from '../features/budget/budgetEngine'
 import type { Person } from '../store/useStore';
 
 /**
- * Hook to synchronize Zustand store with Supabase
- * Handles:
- * - Ensuring user profile row exists
- * - Fetching cloud data from Supabase on auth
- * - Syncing budget configuration changes to Supabase
+ * Module-level flag to prevent duplicate fetches across React strict-mode
+ * double-mounts or component remounts. This is NEVER reset on remount.
+ */
+let activeFetchUserId: string | null = null;
+
+/**
+ * Hook to synchronize Zustand store with Supabase.
+ *
+ * Flow:
+ *   1. Ensure the user's profile row exists (FK requirement).
+ *   2. Fetch all cloud data (config, people, transactions).
+ *   3. Replace the Zustand store with cloud data (Supabase = source of truth).
+ *   4. Set `isHydrated = true` so the UI can render.
+ *
+ * After initial hydration, individual CRUD actions in useStore handle their own
+ * Supabase writes (optimistic local + async remote).
  */
 export function useSupabaseSync() {
-  const user = useAuthStore((state: any) => state.user);
-  const { config, setConfig } = useStore();
-  const isFetchedRef = useRef(false);
+  const user = useAuthStore((state) => state.user);
 
-  // Fetch data from Supabase when user logs in
   useEffect(() => {
     if (!user) {
-      isFetchedRef.current = false;
+      // User signed out — reset the module guard
+      activeFetchUserId = null;
       return;
     }
+
+    // Prevent duplicate fetches for the same user
+    if (activeFetchUserId === user.id) return;
+    activeFetchUserId = user.id;
 
     let isMounted = true;
 
     const fetchData = async () => {
       try {
-        // 1. Ensure user profile exists in public.profiles table (satisfies FK constraints)
+        // ── 1. Ensure profile row exists ──────────────────────────────
+        // Use INSERT ... ON CONFLICT DO NOTHING so we never overwrite
+        // a user's manually-edited display_name.
         try {
-          const profileData = {
-            id: user.id,
-            email: user.email || '',
-            display_name:
+          const { data: existingProfile } = await supabase
+            .from('profiles')
+            .select('id, display_name, email')
+            .eq('id', user.id)
+            .maybeSingle();
+
+          if (!existingProfile) {
+            // First login — create the profile row
+            const displayName =
               user.user_metadata?.full_name ||
               user.user_metadata?.name ||
               user.user_metadata?.display_name ||
               user.email?.split('@')[0] ||
-              'User',
-            updated_at: new Date().toISOString(),
-          };
+              'User';
 
-          const { data: upsertedProfile } = await supabase.from('profiles').upsert(
-            profileData,
-            { onConflict: 'id' }
-          ).select().single();
+            await supabase.from('profiles').insert({
+              id: user.id,
+              email: user.email || '',
+              display_name: displayName,
+            });
 
-          if (upsertedProfile) {
+            // Update auth store with the new name
             useAuthStore.setState({
               profile: {
-                displayName: upsertedProfile.display_name,
-                email: upsertedProfile.email,
+                displayName,
+                email: user.email || null,
                 avatarUrl: user.user_metadata?.avatar_url || null,
-              }
+              },
+            });
+          } else {
+            // Profile already exists — read it (don't overwrite display_name)
+            useAuthStore.setState({
+              profile: {
+                displayName: existingProfile.display_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+                email: existingProfile.email || user.email || null,
+                avatarUrl: user.user_metadata?.avatar_url || null,
+              },
             });
           }
         } catch (profileErr) {
-          console.warn('Profile upsert note:', profileErr);
+          console.warn('[PaceWise] Profile upsert note:', profileErr);
         }
 
         if (!isMounted) return;
 
-        // 2. Fetch budget config
+        // ── 2. Fetch budget config ───────────────────────────────────
         const { data: configData, error: configError } = await supabase
           .from('budget_configs')
           .select('*')
@@ -70,12 +98,13 @@ export function useSupabaseSync() {
           .maybeSingle();
 
         if (configError && configError.code !== 'PGRST116') {
-          console.error('Failed to fetch budget config:', configError);
+          console.error('[PaceWise] Failed to fetch budget config:', configError);
         }
 
         if (!isMounted) return;
 
         if (configData) {
+          // Cloud config exists — use it as the source of truth
           const normalizedConfig: BudgetConfig = {
             totalMoney: Number(configData.total_money) || 0,
             startDate: configData.start_date,
@@ -83,23 +112,37 @@ export function useSupabaseSync() {
             currency: configData.currency || '₹',
             theme: configData.theme || 'system',
           };
-          setConfig(normalizedConfig);
+          useStore.getState().setConfig(normalizedConfig);
         } else {
-          // Initialize budget config in Supabase for first-time user
-          const currentConfig = useStore.getState().config;
+          // First-time user: create a budget config row in Supabase
+          // with clean defaults (not stale localStorage)
+          const now = new Date();
+          const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+          const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString();
+          
+          const freshConfig: BudgetConfig = {
+            totalMoney: 0,
+            startDate: monthStart,
+            endDate: monthEnd,
+            currency: '₹',
+            theme: 'system',
+          };
+          
           await supabase.from('budget_configs').insert({
             user_id: user.id,
-            total_money: currentConfig.totalMoney,
-            start_date: currentConfig.startDate,
-            end_date: currentConfig.endDate,
-            currency: currentConfig.currency || '₹',
-            theme: currentConfig.theme || 'system',
+            total_money: freshConfig.totalMoney,
+            start_date: freshConfig.startDate,
+            end_date: freshConfig.endDate,
+            currency: freshConfig.currency,
+            theme: freshConfig.theme,
           });
+          
+          useStore.getState().setConfig(freshConfig);
         }
 
         if (!isMounted) return;
 
-        // 3. Fetch people
+        // ── 3. Fetch people ──────────────────────────────────────────
         const { data: peopleData, error: peopleError } = await supabase
           .from('people')
           .select('*')
@@ -107,21 +150,22 @@ export function useSupabaseSync() {
           .order('created_at', { ascending: true });
 
         if (peopleError) {
-          console.error('Failed to fetch people:', peopleError);
-        } else if (peopleData) {
-          useStore.setState({
-            people: peopleData.map((p) => ({
-              id: p.id,
-              name: p.name,
-              avatarUrl: p.avatar_url,
-              balance: Number(p.balance) || 0,
-            })),
-          });
+          console.error('[PaceWise] Failed to fetch people:', peopleError);
         }
-
+        
         if (!isMounted) return;
 
-        // 4. Fetch transactions
+        // Always replace — Supabase is the source of truth
+        useStore.setState({
+          people: (peopleData || []).map((p) => ({
+            id: p.id,
+            name: p.name,
+            avatarUrl: p.avatar_url,
+            balance: Number(p.balance) || 0,
+          })),
+        });
+
+        // ── 4. Fetch transactions ────────────────────────────────────
         const { data: txData, error: txError } = await supabase
           .from('transactions')
           .select('*')
@@ -129,32 +173,40 @@ export function useSupabaseSync() {
           .order('date', { ascending: false });
 
         if (txError) {
-          console.error('Failed to fetch transactions:', txError);
-        } else if (txData) {
-          useStore.setState({
-            transactions: txData.map((tx) => ({
-              id: tx.id,
-              type: tx.type,
-              amount: Number(tx.amount),
-              date: tx.date,
-              category: tx.category,
-              reason: tx.reason,
-              source: tx.source,
-              personId: tx.person_id,
-              personName: tx.person_name,
-              direction: tx.direction,
-              isSettlement: tx.is_settlement,
-              paymentMethod: tx.payment_method,
-              note: tx.note,
-            })),
-          });
+          console.error('[PaceWise] Failed to fetch transactions:', txError);
         }
+        
+        if (!isMounted) return;
 
+        // Always replace — Supabase is the source of truth
+        useStore.setState({
+          transactions: (txData || []).map((tx) => ({
+            id: tx.id,
+            type: tx.type,
+            amount: Number(tx.amount),
+            date: tx.date,
+            category: tx.category,
+            reason: tx.reason,
+            source: tx.source,
+            personId: tx.person_id,
+            personName: tx.person_name,
+            direction: tx.direction,
+            isSettlement: tx.is_settlement,
+            paymentMethod: tx.payment_method,
+            note: tx.note,
+          })),
+        });
+
+        // ── 5. Mark hydration complete ───────────────────────────────
         if (isMounted) {
-          isFetchedRef.current = true;
+          useStore.getState().setHydrated(true);
         }
       } catch (err) {
-        console.error('Failed to fetch data from Supabase:', err);
+        console.error('[PaceWise] Failed to fetch data from Supabase:', err);
+        // Still allow the app to render with whatever local data exists
+        if (isMounted) {
+          useStore.getState().setHydrated(true);
+        }
       }
     };
 
@@ -163,49 +215,7 @@ export function useSupabaseSync() {
     return () => {
       isMounted = false;
     };
-  }, [user, setConfig]);
-
-  // Sync budget config changes to Supabase ONLY after initial load
-  useEffect(() => {
-    if (!user || !isFetchedRef.current) return;
-
-    const syncConfig = async () => {
-      try {
-        const { data: existing } = await supabase
-          .from('budget_configs')
-          .select('id')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (existing) {
-          await supabase
-            .from('budget_configs')
-            .update({
-              total_money: config.totalMoney,
-              start_date: config.startDate,
-              end_date: config.endDate,
-              currency: config.currency,
-              theme: config.theme,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('user_id', user.id);
-        } else {
-          await supabase.from('budget_configs').insert({
-            user_id: user.id,
-            total_money: config.totalMoney,
-            start_date: config.startDate,
-            end_date: config.endDate,
-            currency: config.currency || '₹',
-            theme: config.theme || 'system',
-          });
-        }
-      } catch (err) {
-        console.error('Failed to sync budget config to Supabase:', err);
-      }
-    };
-
-    syncConfig();
-  }, [user, config]);
+  }, [user]);
 }
 
 /**

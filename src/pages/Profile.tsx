@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { supabase } from '../lib/supabase';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
@@ -11,6 +11,13 @@ export function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(profile?.displayName || '');
   const [isSaving, setIsSaving] = useState(false);
+
+  // Keep displayName in sync when profile loads asynchronously
+  useEffect(() => {
+    if (profile?.displayName && !isEditing) {
+      setDisplayName(profile.displayName);
+    }
+  }, [profile?.displayName, isEditing]);
 
   // Authentication provider
   const provider = user?.app_metadata?.provider || 'email';

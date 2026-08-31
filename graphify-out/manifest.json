@@ -90,16 +90,16 @@
     "semantic_hash": "c9184b7287532ce79042558fd04115c1"
   },
   "src/App.tsx": {
-    "mtime": 1788174345.7904625,
-    "seen": 1788174916.751789,
-    "ast_hash": "8ad6fda2efc9387cae459f56cb04ff4e",
-    "semantic_hash": "8ad6fda2efc9387cae459f56cb04ff4e"
+    "mtime": 1788175088.4659011,
+    "seen": 1788175798.4052658,
+    "ast_hash": "90619318d046e4d59e766fadcb7eebe8",
+    "semantic_hash": "90619318d046e4d59e766fadcb7eebe8"
   },
   "src/components/layout/AppLayout.tsx": {
-    "mtime": 1788130351.6528502,
-    "seen": 1788174916.7517903,
-    "ast_hash": "b92819e81f499f56345ce4732a0315dc",
-    "semantic_hash": "b92819e81f499f56345ce4732a0315dc"
+    "mtime": 1788174984.1735227,
+    "seen": 1788175798.4052675,
+    "ast_hash": "101c49290dc136a2482925dcd93de8f7",
+    "semantic_hash": "101c49290dc136a2482925dcd93de8f7"
   },
   "src/components/modals/AddExpenseModal.tsx": {
     "mtime": 1788133883.6037712,
@@ -150,10 +150,10 @@
     "semantic_hash": "fa535ad310524494d8f0e4b12962c74e"
   },
   "src/pages/Dashboard.tsx": {
-    "mtime": 1788130351.6528502,
-    "seen": 1788174916.7526853,
-    "ast_hash": "b4206ff17e527fdd8164faa4ed84da39",
-    "semantic_hash": "b4206ff17e527fdd8164faa4ed84da39"
+    "mtime": 1788175133.5616052,
+    "seen": 1788175798.4072978,
+    "ast_hash": "427f46d512fe9ec1bd9341a9bb13de78",
+    "semantic_hash": "427f46d512fe9ec1bd9341a9bb13de78"
   },
   "src/pages/Insights.tsx": {
     "mtime": 1788130351.6578505,
@@ -864,10 +864,10 @@
     "semantic_hash": "808d3e82e8e32442631c529913ae3728"
   },
   "src/lib/supabaseSync.ts": {
-    "mtime": 1788174362.7626982,
-    "seen": 1788174916.7525618,
-    "ast_hash": "2e93e68d5282a65db2cb9a3a33d9bbec",
-    "semantic_hash": "2e93e68d5282a65db2cb9a3a33d9bbec"
+    "mtime": 1788174927.1739023,
+    "seen": 1788175798.407049,
+    "ast_hash": "2049e49cd09f502769a0d8a9c6cfc79c",
+    "semantic_hash": "2049e49cd09f502769a0d8a9c6cfc79c"
   },
   "src/pages/Auth.tsx": {
     "mtime": 1788173118.5104733,
@@ -880,5 +880,11 @@
     "seen": 1788174916.7526908,
     "ast_hash": "d44b6be6a88202d2c60288c2b30c9aef",
     "semantic_hash": "d44b6be6a88202d2c60288c2b30c9aef"
+  },
+  "src/pages/Profile.tsx": {
+    "mtime": 1788175159.0447712,
+    "seen": 1788175798.4076824,
+    "ast_hash": "f59513817888a818595d3c7164bd9ba0",
+    "semantic_hash": "f59513817888a818595d3c7164bd9ba0"
   }
 }

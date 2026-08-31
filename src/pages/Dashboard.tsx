@@ -34,7 +34,8 @@ export function Dashboard() {
   const todayDateStr = new Date().toISOString();
   const stats = calculateBudget(config, transactions, todayDateStr);
 
-  const formatCurrency = (amount: number) => `₹${Math.round(amount).toLocaleString('en-IN')}`;
+  const currencySymbol = config.currency || '₹';
+  const formatCurrency = (amount: number) => `${currencySymbol}${Math.round(amount).toLocaleString('en-IN')}`;
 
   const todayStr = format(new Date(), 'EEEE, d MMMM yyyy');
 
@@ -59,7 +60,11 @@ export function Dashboard() {
     ? Math.min(100, Math.round((stats.spentToday / stats.todaysAvailable) * 100))
     : stats.spentToday > 0 ? 100 : 0;
 
-  const displayName = profile?.displayName || user?.email?.split('@')[0] || 'User';
+  const displayName = profile?.displayName
+    || user?.user_metadata?.full_name
+    || user?.user_metadata?.name
+    || user?.email?.split('@')[0]
+    || 'User';
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -190,7 +195,7 @@ export function Dashboard() {
                 {stats.carryForward >= 0 ? `+${formatCurrency(stats.carryForward)}` : `-${formatCurrency(Math.abs(stats.carryForward))}`}
               </h3>
               <p className="text-xs font-semibold mt-1" style={{color: stats.carryForward >= 0 ? 'var(--positive-text)' : 'var(--negative-text)'}}>
-                {stats.carryForward >= 0 ? "Saved from previous days" : "Deficit from previous days"}
+                {stats.carryForward >= 0 ? "Carried forward from previous days" : "Overspent from previous days"}
               </p>
             </div>
           </div>

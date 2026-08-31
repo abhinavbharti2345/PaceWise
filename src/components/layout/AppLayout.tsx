@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { LayoutDashboard, ArrowRightLeft, Users, PieChart, Settings } from 'lucide-react';
+import { LayoutDashboard, ArrowRightLeft, Users, PieChart, Settings, User } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useStore } from '../../store/useStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -19,7 +19,7 @@ export function AppLayout() {
   const todayDateStr = new Date().toISOString();
   const stats = calculateBudget(config, transactions, todayDateStr);
 
-  const formatCurrency = (val: number) => `₹${Math.round(val).toLocaleString('en-IN')}`;
+  const formatCurrency = (val: number) => `${config.currency || '₹'}${Math.round(val).toLocaleString('en-IN')}`;
 
   return (
     <div className="flex h-screen bg-[var(--color-bg-light)] text-[var(--color-dark)] overflow-hidden">
@@ -124,6 +124,24 @@ export function AppLayout() {
               )}
             </NavLink>
           ))}
+          <NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              cn(
+                'flex flex-col items-center py-1.5 px-3 rounded-xl gap-1 transition-all',
+                isActive
+                  ? 'text-[var(--color-primary)] font-bold'
+                  : 'text-[var(--color-gray-dark)] font-medium'
+              )
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <User size={22} strokeWidth={isActive ? 2.5 : 2} />
+                <span className="text-[10px] font-bold">Profile</span>
+              </>
+            )}
+          </NavLink>
         </div>
       </nav>
     </div>
