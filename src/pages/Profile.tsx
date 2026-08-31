@@ -97,11 +97,11 @@ export function Profile() {
           </div>
         </CardHeader>
         
-        <div className="p-6 md:p-8 space-y-8">
+        <div className="p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
           
           {/* Profile Header section */}
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-            <div className="w-24 h-24 bg-gradient-to-br from-red-500 to-amber-500 rounded-full flex items-center justify-center font-bold text-white text-4xl shadow-md shrink-0 overflow-hidden border-4 border-white dark:border-[var(--color-surface)]">
+          <div className="flex flex-row items-center gap-4 sm:gap-6">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500 to-amber-500 rounded-full flex items-center justify-center font-bold text-white text-2xl sm:text-3xl shadow-md shrink-0 overflow-hidden border-2 sm:border-4 border-white dark:border-[var(--color-surface)]">
               {profile?.avatarUrl ? (
                 <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
@@ -109,22 +109,22 @@ export function Profile() {
               )}
             </div>
             
-            <div className="flex-1 space-y-3 pt-2">
+            <div className="flex-1 min-w-0 pt-1">
               {isEditing ? (
-                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2">
+                <div className="flex flex-col sm:flex-row items-start gap-2">
                   <Input 
                     value={displayName} 
                     onChange={(e) => setDisplayName(e.target.value)} 
                     placeholder="Enter your name"
-                    className="max-w-[300px] text-center sm:text-left font-bold text-lg"
+                    className="w-full max-w-[300px] font-bold text-base sm:text-lg"
                     autoFocus
                   />
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 w-full sm:w-auto">
                     <Button 
                       variant="success" 
                       onClick={handleSave} 
                       disabled={isSaving || !displayName.trim()}
-                      className="gap-1 shadow-sm px-6"
+                      className="gap-1 shadow-sm px-4 h-11 flex-1 sm:flex-none justify-center"
                     >
                       <Check size={16} /> Save
                     </Button>
@@ -135,25 +135,26 @@ export function Profile() {
                         setIsEditing(false);
                       }}
                       disabled={isSaving}
+                      className="h-11 flex-1 sm:flex-none justify-center"
                     >
                       Cancel
                     </Button>
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3">
-                  <div>
-                    <h2 className="text-2xl font-extrabold text-[var(--color-dark)] tracking-tight">
+                <div className="flex flex-row items-center justify-between gap-2 sm:gap-3">
+                  <div className="min-w-0">
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-[var(--color-dark)] tracking-tight truncate">
                       {profile?.displayName || 'Set your name'}
                     </h2>
-                    <p className="text-[var(--color-gray-dark)] mt-0.5">{user?.email}</p>
+                    <p className="text-[var(--color-gray-dark)] text-sm sm:text-base mt-0.5 truncate">{user?.email}</p>
                   </div>
                   <button 
                     onClick={() => setIsEditing(true)}
-                    className="p-2 text-[var(--color-gray-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-light)] rounded-full transition-colors cursor-pointer sm:mt-0.5"
+                    className="p-2 sm:p-2.5 shrink-0 text-[var(--color-gray-dark)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-light)] rounded-full transition-colors cursor-pointer"
                     title="Edit Name"
                   >
-                    <Pencil size={16} />
+                    <Pencil size={18} />
                   </button>
                 </div>
               )}
@@ -163,24 +164,24 @@ export function Profile() {
           <hr className="border-[var(--color-gray-light)]" />
           
           {/* Information Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="bg-[var(--color-bg-light)] p-4 rounded-2xl border border-[var(--color-gray-light)]">
-              <p className="text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="bg-[var(--color-bg-light)] p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-[var(--color-gray-light)] flex flex-col justify-center">
+              <p className="text-[11px] sm:text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider mb-1 flex items-center gap-1.5">
                 <Mail size={14} /> Email Address
               </p>
-              <p className="font-semibold text-[var(--color-dark)]">
+              <p className="font-semibold text-sm sm:text-base text-[var(--color-dark)] truncate">
                 {user?.email}
               </p>
             </div>
             
-            <div className="bg-[var(--color-bg-light)] p-4 rounded-2xl border border-[var(--color-gray-light)]">
-              <p className="text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <div className="bg-[var(--color-bg-light)] p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-[var(--color-gray-light)] flex flex-col justify-center">
+              <p className="text-[11px] sm:text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider mb-1 flex items-center gap-1.5">
                 <Shield size={14} /> Authentication
               </p>
-              <div className="flex items-center gap-2 font-semibold text-[var(--color-dark)]">
+              <div className="flex items-center gap-2 font-semibold text-sm sm:text-base text-[var(--color-dark)]">
                 {isGoogle ? (
                   <>
-                    <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+                    <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                       <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                       <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -200,20 +201,20 @@ export function Profile() {
       
       {/* Account Actions / Danger Zone */}
       <Card className="border border-red-100 dark:border-red-900/30 shadow-sm overflow-hidden">
-        <CardHeader className="bg-red-50/50 dark:bg-red-900/10 border-b border-red-100 dark:border-red-900/30 pb-4">
+        <CardHeader className="bg-red-50/50 dark:bg-red-900/10 border-b border-red-100 dark:border-red-900/30 pb-3 sm:pb-4">
           <div className="flex items-center gap-2">
             <AlertTriangle size={18} className="text-red-500" />
-            <CardTitle className="text-lg text-red-600 dark:text-red-400">Account Actions</CardTitle>
+            <CardTitle className="text-base sm:text-lg text-red-600 dark:text-red-400">Account Actions</CardTitle>
           </div>
         </CardHeader>
-        <div className="p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-center sm:text-left">
-            <p className="font-semibold text-[var(--color-dark)]">Sign Out of PaceWise</p>
-            <p className="text-sm text-[var(--color-gray-dark)] mt-0.5">You will need to sign back in to access your data.</p>
+        <div className="p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="w-full sm:w-auto">
+            <p className="font-semibold text-base text-[var(--color-dark)]">Sign Out of PaceWise</p>
+            <p className="text-xs sm:text-sm text-[var(--color-gray-dark)] mt-0.5">You will need to sign back in to access your data.</p>
           </div>
           <Button 
             variant="outline" 
-            className="w-full sm:w-auto text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:hover:bg-red-900/20 font-bold gap-2 shadow-sm whitespace-nowrap"
+            className="w-full sm:w-auto h-11 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:hover:bg-red-900/20 font-bold gap-2 shadow-sm whitespace-nowrap justify-center"
             onClick={() => {
               if (window.confirm('Are you sure you want to sign out?')) {
                 signOut();
