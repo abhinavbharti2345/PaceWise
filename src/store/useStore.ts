@@ -80,7 +80,7 @@ export const useStore = create<AppState>()(
 
       setConfig: (config) => set({ config }),
       
-      updateConfig: (partial) => {
+      updateConfig: async (partial) => {
         const oldConfig = useStore.getState().config;
         const oldTransactions = useStore.getState().transactions;
         const isNewMonth = partial.startDate && new Date(partial.startDate).getTime() > new Date(oldConfig.startDate).getTime();
@@ -88,7 +88,6 @@ export const useStore = create<AppState>()(
         let rolloverTx: Omit<Transaction, 'id'> | null = null;
         
         if (isNewMonth) {
-          // Calculate the exact final state of the previous budget period
           const finalStats = calculateBudget(oldConfig, oldTransactions, oldConfig.endDate);
           const unusedAmount = finalStats.todaysAvailable - finalStats.spentToday;
           
@@ -96,7 +95,7 @@ export const useStore = create<AppState>()(
             rolloverTx = {
               type: 'income',
               amount: unusedAmount,
-              date: partial.startDate!, // Drop it on the first day of the new month
+              date: partial.startDate!, 
               category: 'Rollover',
               reason: 'Rollover from previous month',
               source: 'other',
@@ -108,23 +107,62 @@ export const useStore = create<AppState>()(
           config: { ...state.config, ...partial }
         }));
         
-        // If there's a rollover, add it using the existing action so it syncs properly
         if (rolloverTx) {
           useStore.getState().addTransaction(rolloverTx);
         }
         
-        const userId = useAuthStore.getState().user?.id;
-        if (userId) {
-          const newConfig = useStore.getState().config;
-          supabase.from('budget_configs').update({
-            total_money: newConfig.totalMoney,
-            start_date: newConfig.startDate,
-            end_date: newConfig.endDate,
-            currency: newConfig.currency,
-            theme: newConfig.theme,
-            updated_at: new Date().toISOString(),
-          }).eq('user_id', userId).then(({ error }) => {
-            if (error) console.error('[PaceWise] Failed to sync config to Supabase:', error);
+        const user = useAuthStore.getState().user;
+        console.log('[PaceWise DB] Current user for updateConfig:', user?.id);
+
+        if (!user?.id) {
+          console.error('[PaceWise DB] ERROR: Cannot update budget config, user is not authenticated.');
+          return;
+        }
+
+        const newConfig = useStore.getState().config;
+        console.log('[PaceWise DB] Saving budget...');
+        console.log('[PaceWise DB] Budget payload:', newConfig);
+
+        try {
+          // Manual UPSERT since user_id is not uniquely constrained in DB
+          const { data: existing } = await supabase
+            .from('budget_configs')
+            .select('id')
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          if (existing) {
+            const { error } = await supabase.from('budget_configs').update({
+              total_money: newConfig.totalMoney,
+              start_date: newConfig.startDate,
+              end_date: newConfig.endDate,
+              currency: newConfig.currency,
+              theme: newConfig.theme,
+              updated_at: new Date().toISOString(),
+            }).eq('user_id', user.id);
+            
+            if (error) throw error;
+            console.log('[PaceWise DB] Budget save SUCCESS (updated)');
+          } else {
+            const { error } = await supabase.from('budget_configs').insert({
+              user_id: user.id,
+              total_money: newConfig.totalMoney,
+              start_date: newConfig.startDate,
+              end_date: newConfig.endDate,
+              currency: newConfig.currency,
+              theme: newConfig.theme,
+            });
+            
+            if (error) throw error;
+            console.log('[PaceWise DB] Budget save SUCCESS (inserted)');
+          }
+        } catch (error: any) {
+          console.error('[PaceWise DB] Failed to save budget config', {
+            error,
+            code: error?.code,
+            message: error?.message,
+            details: error?.details,
+            hint: error?.hint
           });
         }
       },
@@ -136,27 +174,46 @@ export const useStore = create<AppState>()(
           transactions: [newTx, ...state.transactions]
         }));
 
-        const userId = useAuthStore.getState().user?.id;
-        if (userId) {
-          supabase.from('transactions').insert({
-            id,
-            user_id: userId,
-            type: newTx.type,
-            amount: newTx.amount,
-            date: newTx.date,
-            category: newTx.category,
-            reason: newTx.reason,
-            source: newTx.source,
-            person_id: newTx.personId,
-            person_name: newTx.personName,
-            direction: newTx.direction,
-            is_settlement: newTx.isSettlement,
-            payment_method: newTx.paymentMethod,
-            note: newTx.note,
-          }).then(({ error }) => {
-            if (error) console.error('[PaceWise] Failed to insert transaction in Supabase:', error);
-          });
+        const user = useAuthStore.getState().user;
+        console.log('[PaceWise DB] Current user for addTransaction:', user?.id);
+
+        if (!user?.id) {
+          console.error('[PaceWise DB] ERROR: Cannot add transaction, user is not authenticated.');
+          return;
         }
+
+        console.log('[PaceWise DB] Saving transaction...');
+        console.log('[PaceWise DB] Transaction payload:', newTx);
+
+        // Fire and forget cloud write
+        supabase.from('transactions').insert({
+          id,
+          user_id: user.id,
+          type: newTx.type,
+          amount: newTx.amount,
+          date: newTx.date,
+          category: newTx.category,
+          reason: newTx.reason,
+          source: newTx.source,
+          person_id: newTx.personId,
+          person_name: newTx.personName,
+          direction: newTx.direction,
+          is_settlement: newTx.isSettlement,
+          payment_method: newTx.paymentMethod,
+          note: newTx.note,
+        }).then(({ error }) => {
+          if (error) {
+            console.error('[PaceWise DB] Failed to save transaction', {
+              error,
+              code: error?.code,
+              message: error?.message,
+              details: error?.details,
+              hint: error?.hint
+            });
+          } else {
+            console.log('[PaceWise DB] Transaction save SUCCESS');
+          }
+        });
       },
 
       deleteTransaction: (id) => {
@@ -164,12 +221,29 @@ export const useStore = create<AppState>()(
           transactions: state.transactions.filter(t => t.id !== id)
         }));
         
-        const userId = useAuthStore.getState().user?.id;
-        if (userId) {
-          supabase.from('transactions').delete().eq('id', id).eq('user_id', userId).then(({ error }) => {
-            if (error) console.error('[PaceWise] Failed to delete transaction from Supabase:', error);
-          });
+        const user = useAuthStore.getState().user;
+        console.log('[PaceWise DB] Current user for deleteTransaction:', user?.id);
+
+        if (!user?.id) {
+          console.error('[PaceWise DB] ERROR: Cannot delete transaction, user is not authenticated.');
+          return;
         }
+
+        console.log(`[PaceWise DB] Deleting transaction ${id}...`);
+
+        supabase.from('transactions').delete().eq('id', id).eq('user_id', user.id).then(({ error }) => {
+          if (error) {
+            console.error('[PaceWise DB] Failed to delete transaction', {
+              error,
+              code: error?.code,
+              message: error?.message,
+              details: error?.details,
+              hint: error?.hint
+            });
+          } else {
+            console.log('[PaceWise DB] Transaction delete SUCCESS');
+          }
+        });
       },
       
       addPerson: (person) => {
@@ -179,18 +253,37 @@ export const useStore = create<AppState>()(
           people: [...state.people, newPerson]
         }));
         
-        const userId = useAuthStore.getState().user?.id;
-        if (userId) {
-          supabase.from('people').insert({
-            id,
-            user_id: userId,
-            name: newPerson.name,
-            avatar_url: newPerson.avatarUrl,
-            balance: newPerson.balance,
-          }).then(({ error }) => {
-            if (error) console.error('[PaceWise] Failed to insert person in Supabase:', error);
-          });
+        const user = useAuthStore.getState().user;
+        console.log('[PaceWise DB] Current user for addPerson:', user?.id);
+
+        if (!user?.id) {
+          console.error('[PaceWise DB] ERROR: Cannot add person, user is not authenticated.');
+          return id;
         }
+
+        console.log('[PaceWise DB] Saving person...');
+        console.log('[PaceWise DB] Person payload:', newPerson);
+
+        // Fire and forget
+        supabase.from('people').insert({
+          id,
+          user_id: user.id,
+          name: newPerson.name,
+          avatar_url: newPerson.avatarUrl,
+          balance: newPerson.balance,
+        }).then(({ error }) => {
+          if (error) {
+            console.error('[PaceWise DB] Failed to save person', {
+              error,
+              code: error?.code,
+              message: error?.message,
+              details: error?.details,
+              hint: error?.hint
+            });
+          } else {
+            console.log('[PaceWise DB] Person save SUCCESS');
+          }
+        });
         
         return id;
       },
@@ -200,12 +293,29 @@ export const useStore = create<AppState>()(
           people: state.people.filter(p => p.id !== id)
         }));
         
-        const userId = useAuthStore.getState().user?.id;
-        if (userId) {
-          supabase.from('people').delete().eq('id', id).eq('user_id', userId).then(({ error }) => {
-            if (error) console.error('[PaceWise] Failed to delete person from Supabase:', error);
-          });
+        const user = useAuthStore.getState().user;
+        console.log('[PaceWise DB] Current user for deletePerson:', user?.id);
+
+        if (!user?.id) {
+          console.error('[PaceWise DB] ERROR: Cannot delete person, user is not authenticated.');
+          return;
         }
+
+        console.log(`[PaceWise DB] Deleting person ${id}...`);
+
+        supabase.from('people').delete().eq('id', id).eq('user_id', user.id).then(({ error }) => {
+          if (error) {
+            console.error('[PaceWise DB] Failed to delete person', {
+              error,
+              code: error?.code,
+              message: error?.message,
+              details: error?.details,
+              hint: error?.hint
+            });
+          } else {
+            console.log('[PaceWise DB] Person delete SUCCESS');
+          }
+        });
       },
 
       updatePersonBalance: (personId, amountChange) => {
@@ -293,10 +403,12 @@ export const useStore = create<AppState>()(
       },
 
       settleDebt: ({ personId, personName, amount, direction, note }) => {
-        const txDate = new Date().toISOString();
-        const balanceChange = direction === 'received' ? -amount : amount;
         const txId = crypto.randomUUID();
+        const txDate = new Date().toISOString();
+        
         const txDirection = direction === 'received' ? 'took' : 'gave';
+        const balanceChange = direction === 'received' ? -amount : amount;
+        
         const txReason = direction === 'received' 
           ? `Received settlement from ${personName}` 
           : `Paid settlement to ${personName}`;
@@ -323,44 +435,61 @@ export const useStore = create<AppState>()(
           ]
         }));
 
-        const userId = useAuthStore.getState().user?.id;
-        if (userId) {
-          const person = useStore.getState().people.find(p => p.id === personId);
-          
-          const promises: PromiseLike<unknown>[] = [];
-          
-          if (person) {
-            promises.push(
-              supabase.from('people').update({ balance: person.balance, updated_at: new Date().toISOString() })
-                .eq('id', personId).eq('user_id', userId).then(({ error }) => {
-                  if (error) console.error('[PaceWise] Failed to update person balance:', error);
-                })
-            );
-          }
-          
+        const user = useAuthStore.getState().user;
+        console.log('[PaceWise DB] Current user for settleDebt:', user?.id);
+
+        if (!user?.id) {
+          console.error('[PaceWise DB] ERROR: Cannot settle debt, user is not authenticated.');
+          return;
+        }
+
+        const person = useStore.getState().people.find(p => p.id === personId);
+        
+        const promises: PromiseLike<unknown>[] = [];
+        
+        if (person) {
+          console.log(`[PaceWise DB] Updating person balance for ${personId}...`);
           promises.push(
-            supabase.from('transactions').insert({
-              id: txId,
-              user_id: userId,
-              type: 'person',
-              amount,
-              date: txDate,
-              category: 'Settlement',
-              reason: txReason,
-              person_id: personId,
-              person_name: personName,
-              direction: txDirection,
-              is_settlement: true,
-              note,
-            }).then(({ error }) => {
-              if (error) console.error('[PaceWise] Failed to insert settlement transaction:', error);
-            })
-          );
-          
-          Promise.all(promises).catch(err => 
-            console.error('[PaceWise] Failed to sync settleDebt:', err)
+            supabase.from('people').update({ balance: person.balance, updated_at: new Date().toISOString() })
+              .eq('id', personId).eq('user_id', user.id).then(({ error }) => {
+                if (error) {
+                  console.error('[PaceWise DB] Failed to update person balance', { error, code: error?.code });
+                }
+              })
           );
         }
+        
+        console.log('[PaceWise DB] Inserting settlement transaction...');
+        promises.push(
+          supabase.from('transactions').insert({
+            id: txId,
+            user_id: user.id,
+            type: 'person',
+            amount,
+            date: txDate,
+            category: 'Settlement',
+            reason: txReason,
+            person_id: personId,
+            person_name: personName,
+            direction: txDirection,
+            is_settlement: true,
+            note,
+          }).then(({ error }) => {
+            if (error) {
+              console.error('[PaceWise DB] Failed to insert settlement transaction', { error, code: error?.code });
+            } else {
+              console.log('[PaceWise DB] Settle debt SUCCESS');
+            }
+          })
+        );
+        
+        Promise.all(promises).catch((error: any) => {
+          console.error('[PaceWise DB] Failed to sync settleDebt', {
+            error,
+            code: error?.code,
+            message: error?.message
+          });
+        });
       },
       
       clearAllData: () => set({

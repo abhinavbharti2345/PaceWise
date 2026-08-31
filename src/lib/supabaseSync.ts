@@ -28,7 +28,6 @@ export function useSupabaseSync() {
 
   useEffect(() => {
     if (!user) {
-      // User signed out — reset the module guard
       activeFetchUserId = null;
       return;
     }
@@ -37,59 +36,62 @@ export function useSupabaseSync() {
     if (activeFetchUserId === user.id) return;
     activeFetchUserId = user.id;
 
-    let isMounted = true;
-
     const fetchData = async () => {
+      console.log(`[PaceWise Sync] starting for user ${user.id}`);
+      
       try {
+        console.log('[PaceWise Sync] checking profile');
         // ── 1. Ensure profile row exists ──────────────────────────────
-        // Use INSERT ... ON CONFLICT DO NOTHING so we never overwrite
-        // a user's manually-edited display_name.
-        try {
-          const { data: existingProfile } = await supabase
-            .from('profiles')
-            .select('id, display_name, email')
-            .eq('id', user.id)
-            .maybeSingle();
-
-          if (!existingProfile) {
-            // First login — create the profile row
-            const displayName =
-              user.user_metadata?.full_name ||
-              user.user_metadata?.name ||
-              user.user_metadata?.display_name ||
-              user.email?.split('@')[0] ||
-              'User';
-
-            await supabase.from('profiles').insert({
-              id: user.id,
-              email: user.email || '',
-              display_name: displayName,
-            });
-
-            // Update auth store with the new name
-            useAuthStore.setState({
-              profile: {
-                displayName,
-                email: user.email || null,
-                avatarUrl: user.user_metadata?.avatar_url || null,
-              },
-            });
-          } else {
-            // Profile already exists — read it (don't overwrite display_name)
-            useAuthStore.setState({
-              profile: {
-                displayName: existingProfile.display_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-                email: existingProfile.email || user.email || null,
-                avatarUrl: user.user_metadata?.avatar_url || null,
-              },
-            });
-          }
-        } catch (profileErr) {
-          console.warn('[PaceWise] Profile upsert note:', profileErr);
+        const { data: existingProfile, error: profileErr } = await supabase
+          .from('profiles')
+          .select('id, display_name, email')
+          .eq('id', user.id)
+          .maybeSingle();
+          
+        if (profileErr && profileErr.code !== 'PGRST116') {
+          console.warn('[PaceWise Sync] WARNING profile fetch error:', profileErr);
         }
 
-        if (!isMounted) return;
+        if (!existingProfile) {
+          const displayName =
+            user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            user.user_metadata?.display_name ||
+            user.email?.split('@')[0] ||
+            'User';
 
+          const { error: insertErr } = await supabase.from('profiles').insert({
+            id: user.id,
+            email: user.email || '',
+            display_name: displayName,
+          });
+          
+          if (insertErr) console.warn('[PaceWise Sync] WARNING profile insert error:', insertErr);
+
+          useAuthStore.setState({
+            profile: {
+              displayName,
+              email: user.email || null,
+              avatarUrl: user.user_metadata?.avatar_url || null,
+            },
+          });
+        } else {
+          useAuthStore.setState({
+            profile: {
+              displayName: existingProfile.display_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+              email: existingProfile.email || user.email || null,
+              avatarUrl: user.user_metadata?.avatar_url || null,
+            },
+          });
+        }
+
+        // Abort if the user logged out during the fetch
+        if (useAuthStore.getState().user?.id !== user.id) {
+          console.log('[PaceWise Sync] User changed. Aborting sync.');
+          return;
+        }
+
+        console.log('[PaceWise Sync] fetching budget');
         // ── 2. Fetch budget config ───────────────────────────────────
         const { data: configData, error: configError } = await supabase
           .from('budget_configs')
@@ -98,13 +100,12 @@ export function useSupabaseSync() {
           .maybeSingle();
 
         if (configError && configError.code !== 'PGRST116') {
-          console.error('[PaceWise] Failed to fetch budget config:', configError);
+          console.error('[PaceWise Sync] ERROR fetching budget config:', configError);
         }
 
-        if (!isMounted) return;
+        if (useAuthStore.getState().user?.id !== user.id) return;
 
         if (configData) {
-          // Cloud config exists — use it as the source of truth
           const normalizedConfig: BudgetConfig = {
             totalMoney: Number(configData.total_money) || 0,
             startDate: configData.start_date,
@@ -114,8 +115,6 @@ export function useSupabaseSync() {
           };
           useStore.getState().setConfig(normalizedConfig);
         } else {
-          // First-time user: create a budget config row in Supabase
-          // with clean defaults (not stale localStorage)
           const now = new Date();
           const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
           const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString();
@@ -128,7 +127,7 @@ export function useSupabaseSync() {
             theme: 'system',
           };
           
-          await supabase.from('budget_configs').insert({
+          const { error: configInsertErr } = await supabase.from('budget_configs').insert({
             user_id: user.id,
             total_money: freshConfig.totalMoney,
             start_date: freshConfig.startDate,
@@ -137,11 +136,16 @@ export function useSupabaseSync() {
             theme: freshConfig.theme,
           });
           
+          if (configInsertErr) {
+             console.error('[PaceWise Sync] ERROR inserting default budget config:', configInsertErr);
+          }
+          
           useStore.getState().setConfig(freshConfig);
         }
 
-        if (!isMounted) return;
+        if (useAuthStore.getState().user?.id !== user.id) return;
 
+        console.log('[PaceWise Sync] fetching people');
         // ── 3. Fetch people ──────────────────────────────────────────
         const { data: peopleData, error: peopleError } = await supabase
           .from('people')
@@ -150,12 +154,11 @@ export function useSupabaseSync() {
           .order('created_at', { ascending: true });
 
         if (peopleError) {
-          console.error('[PaceWise] Failed to fetch people:', peopleError);
+          console.error('[PaceWise Sync] ERROR fetching people:', peopleError);
         }
         
-        if (!isMounted) return;
+        if (useAuthStore.getState().user?.id !== user.id) return;
 
-        // Always replace — Supabase is the source of truth
         useStore.setState({
           people: (peopleData || []).map((p) => ({
             id: p.id,
@@ -165,6 +168,7 @@ export function useSupabaseSync() {
           })),
         });
 
+        console.log('[PaceWise Sync] fetching transactions');
         // ── 4. Fetch transactions ────────────────────────────────────
         const { data: txData, error: txError } = await supabase
           .from('transactions')
@@ -173,12 +177,11 @@ export function useSupabaseSync() {
           .order('date', { ascending: false });
 
         if (txError) {
-          console.error('[PaceWise] Failed to fetch transactions:', txError);
+          console.error('[PaceWise Sync] ERROR fetching transactions:', txError);
         }
         
-        if (!isMounted) return;
+        if (useAuthStore.getState().user?.id !== user.id) return;
 
-        // Always replace — Supabase is the source of truth
         useStore.setState({
           transactions: (txData || []).map((tx) => ({
             id: tx.id,
@@ -198,23 +201,17 @@ export function useSupabaseSync() {
         });
 
         // ── 5. Mark hydration complete ───────────────────────────────
-        if (isMounted) {
-          useStore.getState().setHydrated(true);
-        }
+        console.log('[PaceWise Sync] hydration complete');
+        useStore.getState().setHydrated(true);
+
       } catch (err) {
-        console.error('[PaceWise] Failed to fetch data from Supabase:', err);
-        // Still allow the app to render with whatever local data exists
-        if (isMounted) {
-          useStore.getState().setHydrated(true);
-        }
+        console.error('[PaceWise Sync] UNEXPECTED FATAL ERROR:', err);
+        // Safety fallback: allow user into the app
+        useStore.getState().setHydrated(true);
       }
     };
 
     fetchData();
-
-    return () => {
-      isMounted = false;
-    };
   }, [user]);
 }
 
