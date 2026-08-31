@@ -39,6 +39,7 @@ export interface BudgetStats {
   totalAddedMoney: number;
   totalBills: number;
   isOverspent: boolean;
+  progressPercentage: number;
 }
 
 export function calculateBudget(
@@ -123,6 +124,16 @@ export function calculateBudget(
 
   const isOverspent = spentToday > todaysAvailable;
 
+  // 6. Progress Percentage
+  // Use effectiveTotalBudget, clamped between 0-100%
+  let progressPercentage = 0;
+  if (effectiveTotalBudget > 0) {
+    progressPercentage = Math.round((moneyLeft / effectiveTotalBudget) * 100);
+    progressPercentage = Math.max(0, Math.min(100, progressPercentage));
+  } else if (effectiveTotalBudget === 0 && moneyLeft === 0) {
+    progressPercentage = 0; // If they have absolutely nothing, they have 0% left
+  }
+
   return {
     baseDailyBudget,
     carryForward,
@@ -136,5 +147,6 @@ export function calculateBudget(
     totalAddedMoney,
     totalBills,
     isOverspent,
+    progressPercentage,
   };
 }

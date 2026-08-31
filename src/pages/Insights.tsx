@@ -133,7 +133,7 @@ export function Insights() {
               <div className="flex justify-between text-xs font-bold mb-1.5">
                 <span className="text-[var(--color-gray-dark)]">Month Budget Consumed</span>
                 <span className="text-[var(--color-dark)]">
-                  {Math.round((totalAllSpending / (stats.effectiveTotalBudget || 1)) * 100)}%
+                  {100 - stats.progressPercentage}%
                 </span>
               </div>
               <div className="w-full bg-[var(--color-surface-light)] rounded-full h-3 overflow-hidden">
@@ -142,7 +142,7 @@ export function Insights() {
                     "h-full rounded-full transition-all duration-700",
                     stats.moneyLeft <= 0 ? "bg-red-600" : "bg-[var(--color-primary)]"
                   )}
-                  style={{ width: `${Math.min(100, (totalAllSpending / (stats.effectiveTotalBudget || 1)) * 100)}%` }}
+                  style={{ width: `${100 - stats.progressPercentage}%` }}
                 />
               </div>
             </div>

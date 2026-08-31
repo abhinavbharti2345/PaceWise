@@ -92,12 +92,12 @@ export function Dashboard() {
           <div>
             <div className="flex justify-between text-[10px] sm:text-[11px] text-red-200 font-semibold mb-1 sm:mb-1.5">
               <span>Remaining Budget</span>
-              <span>{Math.max(0, Math.round((stats.moneyLeft / (config.totalMoney || 1)) * 100))}%</span>
+              <span>{stats.progressPercentage}%</span>
             </div>
             <div className="w-full bg-black/40 rounded-full h-1.5 sm:h-2 overflow-hidden backdrop-blur-sm">
               <div 
                 className="bg-gradient-to-r from-red-400 to-white h-full rounded-full transition-all duration-1000" 
-                style={{ width: `${Math.min(100, Math.max(0, (stats.moneyLeft / (config.totalMoney || 1)) * 100))}%` }}
+                style={{ width: `${stats.progressPercentage}%` }}
               />
             </div>
           </div>
