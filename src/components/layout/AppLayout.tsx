@@ -101,7 +101,7 @@ export function AppLayout() {
       </main>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[var(--color-surface)] border-t border-[var(--color-gray-light)] pb-safe shadow-[0_-4px_24px_rgba(20,23,26,0.08)] z-50">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[var(--color-surface)] border-t border-[var(--color-gray-light)] pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_24px_rgba(20,23,26,0.08)] z-50">
         <div className="flex items-center justify-around px-2 py-1.5">
           {navItems.map((item) => (
             <NavLink
