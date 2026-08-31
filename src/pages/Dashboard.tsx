@@ -266,7 +266,9 @@ export function Dashboard() {
                           {t.reason || t.category || t.type}
                         </p>
                         <p className="text-[10px] sm:text-xs text-[var(--color-gray-dark)] flex items-center gap-1 mt-0.5 truncate">
-                          <span className="capitalize font-semibold text-[var(--color-dark)] shrink-0">{t.category || t.type}</span>
+                          <span className="capitalize font-semibold text-[var(--color-dark)] shrink-0">
+                            {t.type === 'person' && t.personName ? t.personName : (t.category || t.type)}
+                          </span>
                           <span>•</span>
                           <span className="shrink-0">{format(new Date(t.date), 'd MMM, h:mm a')}</span>
                         </p>
