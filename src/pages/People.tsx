@@ -44,54 +44,66 @@ export function People() {
       </header>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card
-          className="p-4 border"
-          style={{background: 'var(--positive-bg)', border: '1px solid var(--positive-border)'}}
-        >
-          <div className="flex flex-col h-full">
-            <div className="flex justify-between items-start mb-2">
-              <p className="text-xs font-bold uppercase tracking-wider" style={{color: 'var(--positive-text)'}}>To Receive</p>
-              <ArrowDownRight style={{color: 'var(--positive-accent)'}} size={18} />
+      <div className="space-y-3 sm:space-y-4">
+        {/* Net Position Card (Top) */}
+        <Card className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border border-[var(--color-gray-light)]">
+          <div className="flex items-center justify-between sm:justify-start gap-2">
+            <div className="flex items-center gap-2">
+              <Scale className="text-[var(--color-primary)]" size={18} />
+              <p className="text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider">Net Position</p>
             </div>
-            <p className="text-3xl font-extrabold text-[var(--color-success)]">{formatCurrency(toReceive)}</p>
-            <p className="text-xs mt-1 font-medium" style={{color: 'var(--positive-text)'}}>
-              {people.filter(p => (p.balance || 0) > 0).length} people owe you
+            <span className="sm:hidden text-xs font-semibold text-[var(--color-gray-dark)]">
+              {netBalance > 0 ? "Overall net positive" : netBalance < 0 ? "Overall net payable" : "Completely settled"}
+            </span>
+          </div>
+
+          <div className="flex items-baseline justify-between sm:justify-end gap-3 mt-1 sm:mt-0">
+            <h3 className={cn(
+              "text-2xl sm:text-3xl font-black leading-none",
+              netBalance > 0 ? "text-[var(--color-success)]" : netBalance < 0 ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
+            )}>
+              {netBalance > 0 ? `+${formatCurrency(netBalance)}` : netBalance < 0 ? `-${formatCurrency(netBalance)}` : '₹0'}
+            </h3>
+            <p className="hidden sm:block text-xs text-[var(--color-gray-dark)] font-medium">
+              {netBalance > 0 ? "Overall net positive" : netBalance < 0 ? "Overall net payable" : "Completely settled"}
             </p>
           </div>
         </Card>
 
-        <Card
-          className="p-4 border"
-          style={{background: 'var(--negative-bg)', border: '1px solid var(--negative-border)'}}
-        >
-          <div className="flex flex-col h-full">
-            <div className="flex justify-between items-start mb-2">
-              <p className="text-xs font-bold uppercase tracking-wider" style={{color: 'var(--negative-text)'}}>To Give</p>
-              <ArrowUpRight style={{color: 'var(--negative-text)'}} size={18} />
+        {/* Side-by-Side To Receive / To Give Cards */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          <Card
+            className="p-3.5 sm:p-4 border min-w-0"
+            style={{background: 'var(--positive-bg)', border: '1px solid var(--positive-border)'}}
+          >
+            <div className="flex flex-col h-full justify-between min-w-0">
+              <div className="flex justify-between items-start mb-1 sm:mb-2 min-w-0">
+                <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider truncate" style={{color: 'var(--positive-text)'}}>To Receive</p>
+                <ArrowDownRight style={{color: 'var(--positive-accent)'}} size={16} className="shrink-0" />
+              </div>
+              <p className="text-2xl sm:text-3xl font-extrabold text-[var(--color-success)] truncate">{formatCurrency(toReceive)}</p>
+              <p className="text-[10px] sm:text-xs mt-1 font-medium truncate" style={{color: 'var(--positive-text)'}}>
+                {people.filter(p => (p.balance || 0) > 0).length} people owe you
+              </p>
             </div>
-            <p className="text-3xl font-extrabold text-[var(--color-primary)]">{formatCurrency(toGive)}</p>
-            <p className="text-xs mt-1 font-medium" style={{color: 'var(--negative-text)'}}>
-              You owe {people.filter(p => (p.balance || 0) < 0).length} people
-            </p>
-          </div>
-        </Card>
+          </Card>
 
-        <Card className="p-4 flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider">Net Position</p>
-            <Scale className="text-[var(--color-gray-dark)]" size={18} />
-          </div>
-          <h3 className={cn(
-            "text-2xl font-extrabold mt-2",
-            netBalance > 0 ? "text-[var(--color-success)]" : netBalance < 0 ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
-          )}>
-            {netBalance > 0 ? `+${formatCurrency(netBalance)}` : netBalance < 0 ? `-${formatCurrency(netBalance)}` : '₹0'}
-          </h3>
-          <p className="text-xs text-[var(--color-gray-dark)] mt-1 font-medium">
-            {netBalance > 0 ? "Overall net positive" : netBalance < 0 ? "Overall net payable" : "Completely settled"}
-          </p>
-        </Card>
+          <Card
+            className="p-3.5 sm:p-4 border min-w-0"
+            style={{background: 'var(--negative-bg)', border: '1px solid var(--negative-border)'}}
+          >
+            <div className="flex flex-col h-full justify-between min-w-0">
+              <div className="flex justify-between items-start mb-1 sm:mb-2 min-w-0">
+                <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider truncate" style={{color: 'var(--negative-text)'}}>To Give</p>
+                <ArrowUpRight style={{color: 'var(--negative-text)'}} size={16} className="shrink-0" />
+              </div>
+              <p className="text-2xl sm:text-3xl font-extrabold text-[var(--color-primary)] truncate">{formatCurrency(toGive)}</p>
+              <p className="text-[10px] sm:text-xs mt-1 font-medium truncate" style={{color: 'var(--negative-text)'}}>
+                You owe {people.filter(p => (p.balance || 0) < 0).length} people
+              </p>
+            </div>
+          </Card>
+        </div>
       </div>
 
       {/* Search Filter */}

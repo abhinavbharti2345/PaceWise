@@ -14,7 +14,8 @@ import {
   TrendingUp, 
   TrendingDown,
   ArrowRight,
-  AlertTriangle
+  AlertTriangle,
+  Scale
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { getCategoryMeta } from '../utils/categoryHelpers';
@@ -41,6 +42,7 @@ export function Dashboard() {
   const toGive = people.filter(p => (p.balance || 0) < 0).reduce((sum, p) => sum + Math.abs(p.balance), 0);
   const peopleOwingCount = people.filter(p => (p.balance || 0) > 0).length;
   const userOwingCount = people.filter(p => (p.balance || 0) < 0).length;
+  const netPosition = toReceive - toGive;
 
   // Recent transactions
   const recentTransactions = [...transactions]
@@ -288,36 +290,68 @@ export function Dashboard() {
           </div>
         </Card>
 
-        {/* People Summary */}
+        {/* People Summary & Net Position */}
         <Card className="border border-[var(--color-gray-light)] flex flex-col justify-between p-4 sm:p-5">
-          <CardHeader className="mb-3 sm:mb-4">
+          <CardHeader className="mb-3">
             <div className="flex items-center justify-between w-full">
-              <CardTitle className="text-sm sm:text-xs">People Summary</CardTitle>
+              <div className="flex items-center gap-1.5">
+                <Scale size={16} className="text-[var(--color-primary)]" />
+                <CardTitle className="text-sm sm:text-xs">People & Net Position</CardTitle>
+              </div>
               <Link to="/people" className="text-[10px] sm:text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1">
                 View all <ArrowRight size={12} />
               </Link>
             </div>
           </CardHeader>
-          <div className="space-y-2.5 mt-0 sm:mt-2">
+
+          {/* Prominent Net Position Banner */}
+          <div 
+            className="p-3 sm:p-3.5 rounded-2xl mb-3 flex items-center justify-between border transition-all"
+            style={{
+              background: netPosition > 0 ? 'var(--positive-bg)' : netPosition < 0 ? 'var(--negative-bg)' : 'var(--color-surface-light)',
+              borderColor: netPosition > 0 ? 'var(--positive-border)' : netPosition < 0 ? 'var(--negative-border)' : 'var(--color-gray-light)'
+            }}
+          >
+            <div className="min-w-0 flex-1 pr-2">
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">Net Position</span>
+              <p className="text-[10px] sm:text-[11px] font-semibold text-[var(--color-gray-dark)] mt-0.5 truncate">
+                {netPosition > 0 ? "Overall net positive" : netPosition < 0 ? "Overall net payable" : "Completely settled"}
+              </p>
+            </div>
+            <span className={cn(
+              "text-lg sm:text-2xl font-black leading-none shrink-0",
+              netPosition > 0 ? "text-[var(--color-success)]" : netPosition < 0 ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
+            )}>
+              {netPosition > 0 ? `+${formatCurrency(netPosition)}` : netPosition < 0 ? `-${formatCurrency(Math.abs(netPosition))}` : '₹0'}
+            </span>
+          </div>
+
+          {/* Side-by-Side To Receive / To Give Cards */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <div
-              className="flex justify-between items-center p-2.5 rounded-xl"
+              className="p-2.5 sm:p-3 rounded-2xl flex flex-col justify-between border"
               style={{background: 'var(--positive-bg)', border: '1px solid var(--positive-border)'}}
             >
-              <div>
-                <span className="text-[11px] sm:text-xs font-bold" style={{color: 'var(--positive-text)'}}>To Receive</span>
-                <p className="text-[10px] sm:text-[11px] text-[var(--color-gray-dark)]">{peopleOwingCount} people owe you</p>
+              <div className="min-w-0">
+                <span className="text-[11px] sm:text-xs font-bold block truncate" style={{color: 'var(--positive-text)'}}>To Receive</span>
+                <p className="text-[9px] sm:text-[11px] text-[var(--color-gray-dark)] font-medium truncate mt-0.5">{peopleOwingCount} owe you</p>
               </div>
-              <span className="text-base sm:text-lg font-extrabold text-[var(--color-success)] leading-none">{formatCurrency(toReceive)}</span>
+              <span className="text-base sm:text-lg font-extrabold text-[var(--color-success)] leading-none mt-2 truncate">
+                {formatCurrency(toReceive)}
+              </span>
             </div>
+
             <div
-              className="flex justify-between items-center p-2.5 rounded-xl"
+              className="p-2.5 sm:p-3 rounded-2xl flex flex-col justify-between border"
               style={{background: 'var(--negative-bg)', border: '1px solid var(--negative-border)'}}
             >
-              <div>
-                <span className="text-[11px] sm:text-xs font-bold" style={{color: 'var(--negative-text)'}}>To Give</span>
-                <p className="text-[10px] sm:text-[11px] text-[var(--color-gray-dark)]">You owe {userOwingCount} people</p>
+              <div className="min-w-0">
+                <span className="text-[11px] sm:text-xs font-bold block truncate" style={{color: 'var(--negative-text)'}}>To Give</span>
+                <p className="text-[9px] sm:text-[11px] text-[var(--color-gray-dark)] font-medium truncate mt-0.5">You owe {userOwingCount}</p>
               </div>
-              <span className="text-base sm:text-lg font-extrabold text-[var(--color-primary)] leading-none">{formatCurrency(toGive)}</span>
+              <span className="text-base sm:text-lg font-extrabold text-[var(--color-primary)] leading-none mt-2 truncate">
+                {formatCurrency(toGive)}
+              </span>
             </div>
           </div>
         </Card>
