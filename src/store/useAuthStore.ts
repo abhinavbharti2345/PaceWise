@@ -14,7 +14,7 @@ interface AuthState {
   error: string | null;
 
   // Actions
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, displayName?: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -68,12 +68,18 @@ export const useAuthStore = create<AuthState>((set) => ({
   loading: true,
   error: null,
 
-  signUp: async (email, password) => {
+  signUp: async (email, password, displayName) => {
     set({ loading: true, error: null });
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: displayName ? {
+          data: {
+            full_name: displayName,
+            name: displayName,
+          }
+        } : undefined,
       });
 
       if (error) throw error;

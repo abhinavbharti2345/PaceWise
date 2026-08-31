@@ -12,6 +12,7 @@ export function AuthPage() {
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [isResetPassword, setIsResetPassword] = useState(false);
+  const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -51,17 +52,24 @@ export function AuthPage() {
 
     if (!password) return;
 
-    if (isSignUp && password !== confirmPassword) {
-      setPasswordError('Passwords do not match');
-      return;
+    if (isSignUp) {
+      if (!displayName.trim()) {
+        setPasswordError('Please enter your full name');
+        return;
+      }
+      if (password !== confirmPassword) {
+        setPasswordError('Passwords do not match');
+        return;
+      }
     }
 
     setIsLoading(true);
     try {
       if (isSignUp) {
-        await signUp(email, password);
+        await signUp(email, password, displayName.trim());
         setSuccessMessage('Account created! Please check your email for a verification link.');
         // Clear fields on success
+        setDisplayName('');
         setPassword('');
         setConfirmPassword('');
       } else {
@@ -125,6 +133,18 @@ export function AuthPage() {
               <CheckCircle2 size={18} style={{ color: 'var(--positive-accent)' }} />
               <span>{successMessage}</span>
             </div>
+          )}
+
+          {isSignUp && (
+            <Input
+              label="Full Name"
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="e.g. Abhinav Bharti"
+              required
+              disabled={isLoading}
+            />
           )}
 
           <Input
@@ -232,6 +252,7 @@ export function AuthPage() {
                 clearError();
                 setSuccessMessage('');
                 setPasswordError('');
+                setDisplayName('');
                 setPassword('');
                 setConfirmPassword('');
               }}
