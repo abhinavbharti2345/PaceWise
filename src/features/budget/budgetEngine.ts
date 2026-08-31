@@ -108,14 +108,7 @@ export function calculateBudget(
         spentToday += t.amount;
       }
     } else if (t.type === 'person') {
-      // If this is a settlement transaction, IGNORE it for budget calculations
-      // because the user will manually record an Income/Expense transaction.
-      // This prevents double-counting.
-      if (t.isSettlement) {
-        continue;
-      }
-
-      // If user gave money (lent), it's treated as cash outflow (expense)
+      // If user gave money (lent or paid settlement), it's treated as cash outflow (expense)
       if (t.direction === 'gave') {
         const dateKey = tDate.getTime().toString();
         if (isBeforeToday || isToday) {
