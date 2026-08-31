@@ -271,13 +271,13 @@
       "degree": 33
     },
     {
-      "id": "tsconfig_app_compileroptions",
-      "label": "compilerOptions",
+      "id": "src_store_useauthstore_useauthstore",
+      "label": "useAuthStore",
       "degree": 18
     },
     {
-      "id": "src_store_useauthstore_useauthstore",
-      "label": "useAuthStore",
+      "id": "tsconfig_app_compileroptions",
+      "label": "compilerOptions",
       "degree": 18
     },
     {
@@ -346,21 +346,21 @@
       "why": "peripheral node `Badge()` unexpectedly reaches hub `cn()`"
     },
     {
-      "source": "Card()",
-      "target": "cn()",
+      "source": "Dashboard()",
+      "target": "getCategoryMeta()",
       "source_files": [
-        "src/components/ui/Card.tsx",
-        "src/utils/cn.ts"
+        "src/pages/Dashboard.tsx",
+        "src/utils/categoryHelpers.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "bridges separate communities"
     },
     {
-      "source": "CardHeader()",
+      "source": "AppLayout()",
       "target": "cn()",
       "source_files": [
-        "src/components/ui/Card.tsx",
+        "src/components/layout/AppLayout.tsx",
         "src/utils/cn.ts"
       ],
       "confidence": "EXTRACTED",

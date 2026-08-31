@@ -76,6 +76,18 @@
       "source_location": "L4"
     },
     {
+      "id": "src_components_ui_card_cardprops",
+      "label": "CardProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "cardprops",
+      "source_file": "src/components/ui/Card.tsx",
+      "source_location": "L4"
+    },
+    {
       "id": "src_components_ui_iconbadge_iconbadgeprops",
       "label": "IconBadgeProps",
       "_callable": true,
@@ -136,108 +148,12 @@
       "source_location": "L3"
     },
     {
-      "id": "src_components_modals_persontransactionmodal_persontransactionmodalprops",
-      "label": "PersonTransactionModalProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "persontransactionmodalprops",
-      "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L9"
-    },
-    {
-      "id": "src_components_modals_settlemodal_settlemodalprops",
-      "label": "SettleModalProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "settlemodalprops",
-      "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L8"
-    },
-    {
-      "id": "src_features_budget_budgetengine_budgetconfig",
-      "label": "BudgetConfig",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "budgetconfig",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L21"
-    },
-    {
-      "id": "src_features_budget_budgetengine_budgetstats",
-      "label": "BudgetStats",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "budgetstats",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L29"
-    },
-    {
-      "id": "src_features_budget_budgetengine_transaction",
-      "label": "Transaction",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "transaction",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L5"
-    },
-    {
-      "id": "src_features_budget_budgetengine_transactiontype",
-      "label": "TransactionType",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "transactiontype",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L3"
-    },
-    {
-      "id": "src_store_usestore_appstate",
-      "label": "AppState",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "appstate",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L14"
-    },
-    {
-      "id": "src_store_usestore_person",
-      "label": "Person",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "person",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L7"
-    },
-    {
       "id": "src_app_errorboundaryprops",
       "label": "ErrorBoundaryProps",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "errorboundaryprops",
       "source_file": "src/App.tsx",
@@ -249,23 +165,11 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "errorboundarystate",
       "source_file": "src/App.tsx",
       "source_location": "L23"
-    },
-    {
-      "id": "src_components_ui_card_cardprops",
-      "label": "CardProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "cardprops",
-      "source_file": "src/components/ui/Card.tsx",
-      "source_location": "L4"
     },
     {
       "id": "src_store_useauthstore_authstate",
@@ -273,11 +177,107 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "authstate",
       "source_file": "src/store/useAuthStore.ts",
       "source_location": "L6"
+    },
+    {
+      "id": "src_components_modals_persontransactionmodal_persontransactionmodalprops",
+      "label": "PersonTransactionModalProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "persontransactionmodalprops",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
+      "source_location": "L9"
+    },
+    {
+      "id": "src_components_modals_settlemodal_settlemodalprops",
+      "label": "SettleModalProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "settlemodalprops",
+      "source_file": "src/components/modals/SettleModal.tsx",
+      "source_location": "L8"
+    },
+    {
+      "id": "src_features_budget_budgetengine_budgetconfig",
+      "label": "BudgetConfig",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "budgetconfig",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "src_features_budget_budgetengine_budgetstats",
+      "label": "BudgetStats",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "budgetstats",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "src_features_budget_budgetengine_transaction",
+      "label": "Transaction",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "transaction",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "src_features_budget_budgetengine_transactiontype",
+      "label": "TransactionType",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "transactiontype",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L3"
+    },
+    {
+      "id": "src_store_usestore_appstate",
+      "label": "AppState",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "appstate",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "src_store_usestore_person",
+      "label": "Person",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "person",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L7"
     },
     {
       "id": "src_app_errorboundary",
@@ -380,6 +380,39 @@
       "source_location": "L9"
     },
     {
+      "id": "src_components_ui_card_card",
+      "label": "Card()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "card()",
+      "source_file": "src/components/ui/Card.tsx",
+      "source_location": "L8"
+    },
+    {
+      "id": "src_components_ui_card_cardheader",
+      "label": "CardHeader()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "cardheader()",
+      "source_file": "src/components/ui/Card.tsx",
+      "source_location": "L22"
+    },
+    {
+      "id": "src_components_ui_card_cardtitle",
+      "label": "CardTitle()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "cardtitle()",
+      "source_file": "src/components/ui/Card.tsx",
+      "source_location": "L30"
+    },
+    {
       "id": "src_components_ui_iconbadge_iconbadge",
       "label": "IconBadge()",
       "_callable": true,
@@ -389,17 +422,6 @@
       "norm_label": "iconbadge()",
       "source_file": "src/components/ui/IconBadge.tsx",
       "source_location": "L12"
-    },
-    {
-      "id": "src_pages_people_people",
-      "label": "People()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "people()",
-      "source_file": "src/pages/People.tsx",
-      "source_location": "L10"
     },
     {
       "id": "src_pages_persondetails_persondetails",
@@ -446,6 +468,28 @@
       "source_location": "L4"
     },
     {
+      "id": "src_app_app",
+      "label": "App()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "app()",
+      "source_file": "src/App.tsx",
+      "source_location": "L141"
+    },
+    {
+      "id": "src_app_appcontent",
+      "label": "AppContent()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "appcontent()",
+      "source_file": "src/App.tsx",
+      "source_location": "L71"
+    },
+    {
       "id": "src_components_layout_applayout_applayout",
       "label": "AppLayout()",
       "_callable": true,
@@ -468,59 +512,37 @@
       "source_location": "L44"
     },
     {
-      "id": "src_lib_supabasesync_addpersontosupabase",
-      "label": "addPersonToSupabase()",
+      "id": "src_lib_supabasesync_usesupabasesync",
+      "label": "useSupabaseSync()",
       "_callable": true,
       "_origin": "ast",
       "community": 2,
       "file_type": "code",
-      "norm_label": "addpersontosupabase()",
+      "norm_label": "usesupabasesync()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L263"
+      "source_location": "L26"
     },
     {
-      "id": "src_lib_supabasesync_addtransactiontosupabase",
-      "label": "addTransactionToSupabase()",
+      "id": "src_pages_auth_authpage",
+      "label": "AuthPage()",
       "_callable": true,
       "_origin": "ast",
       "community": 2,
       "file_type": "code",
-      "norm_label": "addtransactiontosupabase()",
-      "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L221"
+      "norm_label": "authpage()",
+      "source_file": "src/pages/Auth.tsx",
+      "source_location": "L9"
     },
     {
-      "id": "src_lib_supabasesync_deletepersonfromsupabase",
-      "label": "deletePersonFromSupabase()",
+      "id": "src_pages_dashboard_dashboard",
+      "label": "Dashboard()",
       "_callable": true,
       "_origin": "ast",
       "community": 2,
       "file_type": "code",
-      "norm_label": "deletepersonfromsupabase()",
-      "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L284"
-    },
-    {
-      "id": "src_lib_supabasesync_deletetransactionfromsupabase",
-      "label": "deleteTransactionFromSupabase()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "deletetransactionfromsupabase()",
-      "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L251"
-    },
-    {
-      "id": "src_lib_supabasesync_updatepersonbalanceinsupabase",
-      "label": "updatePersonBalanceInSupabase()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "updatepersonbalanceinsupabase()",
-      "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L296"
+      "norm_label": "dashboard()",
+      "source_file": "src/pages/Dashboard.tsx",
+      "source_location": "L22"
     },
     {
       "id": "src_pages_insights_insights",
@@ -534,110 +556,22 @@
       "source_location": "L15"
     },
     {
-      "id": "src_store_usestore_getmonthdates",
-      "label": "getMonthDates()",
+      "id": "src_pages_people_people",
+      "label": "People()",
       "_callable": true,
       "_origin": "ast",
       "community": 2,
       "file_type": "code",
-      "norm_label": "getmonthdates()",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L55"
-    },
-    {
-      "id": "src_app_app",
-      "label": "App()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "app()",
-      "source_file": "src/App.tsx",
-      "source_location": "L141"
-    },
-    {
-      "id": "src_app_appcontent",
-      "label": "AppContent()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "appcontent()",
-      "source_file": "src/App.tsx",
-      "source_location": "L71"
-    },
-    {
-      "id": "src_components_ui_card_card",
-      "label": "Card()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "card()",
-      "source_file": "src/components/ui/Card.tsx",
-      "source_location": "L8"
-    },
-    {
-      "id": "src_components_ui_card_cardheader",
-      "label": "CardHeader()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "cardheader()",
-      "source_file": "src/components/ui/Card.tsx",
-      "source_location": "L22"
-    },
-    {
-      "id": "src_components_ui_card_cardtitle",
-      "label": "CardTitle()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "cardtitle()",
-      "source_file": "src/components/ui/Card.tsx",
-      "source_location": "L30"
-    },
-    {
-      "id": "src_lib_supabasesync_usesupabasesync",
-      "label": "useSupabaseSync()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "usesupabasesync()",
-      "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L26"
-    },
-    {
-      "id": "src_pages_auth_authpage",
-      "label": "AuthPage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "authpage()",
-      "source_file": "src/pages/Auth.tsx",
-      "source_location": "L9"
-    },
-    {
-      "id": "src_pages_dashboard_dashboard",
-      "label": "Dashboard()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "dashboard()",
-      "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L25"
+      "norm_label": "people()",
+      "source_file": "src/pages/People.tsx",
+      "source_location": "L10"
     },
     {
       "id": "src_pages_profile_profile",
       "label": "Profile()",
       "_callable": true,
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "profile()",
       "source_file": "src/pages/Profile.tsx",
@@ -648,7 +582,7 @@
       "label": "Settings()",
       "_callable": true,
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "settings()",
       "source_file": "src/pages/Settings.tsx",
@@ -659,11 +593,77 @@
       "label": "fetchAndSetProfile()",
       "_callable": true,
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "fetchandsetprofile()",
       "source_file": "src/store/useAuthStore.ts",
       "source_location": "L31"
+    },
+    {
+      "id": "src_lib_supabasesync_addpersontosupabase",
+      "label": "addPersonToSupabase()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "addpersontosupabase()",
+      "source_file": "src/lib/supabaseSync.ts",
+      "source_location": "L263"
+    },
+    {
+      "id": "src_lib_supabasesync_addtransactiontosupabase",
+      "label": "addTransactionToSupabase()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "addtransactiontosupabase()",
+      "source_file": "src/lib/supabaseSync.ts",
+      "source_location": "L221"
+    },
+    {
+      "id": "src_lib_supabasesync_deletepersonfromsupabase",
+      "label": "deletePersonFromSupabase()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "deletepersonfromsupabase()",
+      "source_file": "src/lib/supabaseSync.ts",
+      "source_location": "L284"
+    },
+    {
+      "id": "src_lib_supabasesync_deletetransactionfromsupabase",
+      "label": "deleteTransactionFromSupabase()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "deletetransactionfromsupabase()",
+      "source_file": "src/lib/supabaseSync.ts",
+      "source_location": "L251"
+    },
+    {
+      "id": "src_lib_supabasesync_updatepersonbalanceinsupabase",
+      "label": "updatePersonBalanceInSupabase()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "updatepersonbalanceinsupabase()",
+      "source_file": "src/lib/supabaseSync.ts",
+      "source_location": "L296"
+    },
+    {
+      "id": "src_store_usestore_getmonthdates",
+      "label": "getMonthDates()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "getmonthdates()",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L55"
     },
     {
       "id": "src_app_errorboundary_componentdidcatch",
@@ -760,16 +760,6 @@
       "source_location": "L1"
     },
     {
-      "id": "src_components_modals_settlemodal",
-      "label": "SettleModal.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "settlemodal.tsx",
-      "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "src_components_ui_badge",
       "label": "Badge.tsx",
       "_origin": "ast",
@@ -787,6 +777,16 @@
       "file_type": "code",
       "norm_label": "button.tsx",
       "source_file": "src/components/ui/Button.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_ui_card",
+      "label": "Card.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "card.tsx",
+      "source_file": "src/components/ui/Card.tsx",
       "source_location": "L1"
     },
     {
@@ -830,6 +830,16 @@
       "source_location": "L1"
     },
     {
+      "id": "src_pages_insights",
+      "label": "Insights.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "insights.tsx",
+      "source_file": "src/pages/Insights.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_pages_people",
       "label": "People.tsx",
       "_origin": "ast",
@@ -850,6 +860,16 @@
       "source_location": "L1"
     },
     {
+      "id": "src_pages_settings",
+      "label": "Settings.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "settings.tsx",
+      "source_file": "src/pages/Settings.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_pages_transactions",
       "label": "Transactions.tsx",
       "_origin": "ast",
@@ -858,16 +878,6 @@
       "norm_label": "transactions.tsx",
       "source_file": "src/pages/Transactions.tsx",
       "source_location": "L1"
-    },
-    {
-      "id": "src_store_usestore_usestore",
-      "label": "useStore",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "usestore",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L73"
     },
     {
       "id": "src_utils_categoryhelpers",
@@ -1284,64 +1294,14 @@
       "source_location": "L1"
     },
     {
-      "id": "concept_carry_forward",
-      "label": "Carry-Forward System",
+      "id": "src_app",
+      "label": "App.tsx",
       "_origin": "ast",
       "community": 2,
-      "community_name": "Build & Dev Tooling",
-      "file_type": "document",
-      "norm_label": "carry-forward system",
-      "source_file": "Docs/Student_Money_Tracker_PRD.md",
-      "source_location": "L53",
-      "summary": "Unused daily allowance carries forward to subsequent days, rewarding underspending without inflating base daily budget."
-    },
-    {
-      "id": "concept_daily_budget",
-      "label": "Base Daily Budget Calculation",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Build & Dev Tooling",
-      "file_type": "document",
-      "norm_label": "base daily budget calculation",
-      "source_file": "Docs/Student_Money_Tracker_PRD.md",
-      "source_location": "L49",
-      "summary": "Daily spending allowance calculated from remaining monthly allowance divided by total/remaining budget days."
-    },
-    {
-      "id": "concept_dynamic_recalc",
-      "label": "Dynamic Recalculation on Bills",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Build & Dev Tooling",
-      "file_type": "document",
-      "norm_label": "dynamic recalculation on bills",
-      "source_file": "Docs/Student_Money_Tracker_PRD.md",
-      "source_location": "L64",
-      "summary": "Fixed bills and non-discretionary payments reduce monthly budget and automatically adjust daily allowance."
-    },
-    {
-      "id": "concept_people_debts",
-      "label": "People & Settlements",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Build & Dev Tooling",
-      "file_type": "document",
-      "norm_label": "people & settlements",
-      "source_file": "Docs/Student_Money_Tracker_PRD.md",
-      "source_location": "L125",
-      "summary": "Tracks informal lending/borrowing ('I gave money' vs 'I took money') with full/partial settlement history."
-    },
-    {
-      "id": "doc_prd",
-      "label": "Student Money Tracker PRD",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "Build & Dev Tooling",
-      "file_type": "document",
-      "norm_label": "student money tracker prd",
-      "source_file": "Docs/Student_Money_Tracker_PRD.md",
-      "source_location": "L1",
-      "summary": "Product Requirements Document defining core budget philosophy, dynamic daily budget pacing, carry-forward, bills, and informal debt tracking."
+      "file_type": "code",
+      "norm_label": "app.tsx",
+      "source_file": "src/App.tsx",
+      "source_location": "L1"
     },
     {
       "id": "src_components_layout_applayout",
@@ -1364,100 +1324,10 @@
       "source_location": "L8"
     },
     {
-      "id": "src_features_budget_budgetengine",
-      "label": "budgetEngine.ts",
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "budgetengine.ts",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_lib_supabasesync",
-      "label": "supabaseSync.ts",
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "supabasesync.ts",
-      "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_store_usestore",
-      "label": "useStore.ts",
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "usestore.ts",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_store_usestore_defaultconfig",
-      "label": "defaultConfig",
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "defaultconfig",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L65"
-    },
-    {
-      "id": "src_store_usestore_start_monthstart_end_monthend",
-      "label": "{ start: monthStart, end: monthEnd }",
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "{ start: monthstart, end: monthend }",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L62"
-    },
-    {
-      "id": "tests_budget_budgetengine_test",
-      "label": "budgetEngine.test.ts",
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "budgetengine.test.ts",
-      "source_file": "tests/budget/budgetEngine.test.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "tests_budget_comprehensiveengine_test",
-      "label": "comprehensiveEngine.test.ts",
-      "_origin": "ast",
-      "community": 2,
-      "file_type": "code",
-      "norm_label": "comprehensiveengine.test.ts",
-      "source_file": "tests/budget/comprehensiveEngine.test.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_app",
-      "label": "App.tsx",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "app.tsx",
-      "source_file": "src/App.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_ui_card",
-      "label": "Card.tsx",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "card.tsx",
-      "source_file": "src/components/ui/Card.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "src_lib_supabase",
       "label": "supabase.ts",
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "supabase.ts",
       "source_file": "src/lib/supabase.ts",
@@ -1467,7 +1337,7 @@
       "id": "src_lib_supabase_supabase",
       "label": "supabase",
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "supabase",
       "source_file": "src/lib/supabase.ts",
@@ -1477,7 +1347,7 @@
       "id": "src_main",
       "label": "main.tsx",
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "main.tsx",
       "source_file": "src/main.tsx",
@@ -1487,47 +1357,27 @@
       "id": "src_pages_auth",
       "label": "Auth.tsx",
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "auth.tsx",
       "source_file": "src/pages/Auth.tsx",
       "source_location": "L1"
     },
     {
-      "id": "src_pages_insights",
-      "label": "Insights.tsx",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "insights.tsx",
-      "source_file": "src/pages/Insights.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "src_pages_profile",
       "label": "Profile.tsx",
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "profile.tsx",
       "source_file": "src/pages/Profile.tsx",
       "source_location": "L1"
     },
     {
-      "id": "src_pages_settings",
-      "label": "Settings.tsx",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "settings.tsx",
-      "source_file": "src/pages/Settings.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "src_store_useauthstore",
       "label": "useAuthStore.ts",
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "useauthstore.ts",
       "source_file": "src/store/useAuthStore.ts",
@@ -1537,17 +1387,27 @@
       "id": "src_store_useauthstore_useauthstore",
       "label": "useAuthStore",
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "useauthstore",
       "source_file": "src/store/useAuthStore.ts",
       "source_location": "L65"
     },
     {
+      "id": "src_store_usestore_usestore",
+      "label": "useStore",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "usestore",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L73"
+    },
+    {
       "id": "tests_integration_store_test",
       "label": "store.test.ts",
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "store.test.ts",
       "source_file": "tests/integration/store.test.ts",
@@ -1557,11 +1417,151 @@
       "id": "tests_integration_store_test_localstoragemock",
       "label": "localStorageMock",
       "_origin": "ast",
-      "community": 3,
+      "community": 2,
       "file_type": "code",
       "norm_label": "localstoragemock",
       "source_file": "tests/integration/store.test.ts",
       "source_location": "L38"
+    },
+    {
+      "id": "concept_carry_forward",
+      "label": "Carry-Forward System",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Build & Dev Tooling",
+      "file_type": "document",
+      "norm_label": "carry-forward system",
+      "source_file": "Docs/Student_Money_Tracker_PRD.md",
+      "source_location": "L53",
+      "summary": "Unused daily allowance carries forward to subsequent days, rewarding underspending without inflating base daily budget."
+    },
+    {
+      "id": "concept_daily_budget",
+      "label": "Base Daily Budget Calculation",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Build & Dev Tooling",
+      "file_type": "document",
+      "norm_label": "base daily budget calculation",
+      "source_file": "Docs/Student_Money_Tracker_PRD.md",
+      "source_location": "L49",
+      "summary": "Daily spending allowance calculated from remaining monthly allowance divided by total/remaining budget days."
+    },
+    {
+      "id": "concept_dynamic_recalc",
+      "label": "Dynamic Recalculation on Bills",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Build & Dev Tooling",
+      "file_type": "document",
+      "norm_label": "dynamic recalculation on bills",
+      "source_file": "Docs/Student_Money_Tracker_PRD.md",
+      "source_location": "L64",
+      "summary": "Fixed bills and non-discretionary payments reduce monthly budget and automatically adjust daily allowance."
+    },
+    {
+      "id": "concept_people_debts",
+      "label": "People & Settlements",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Build & Dev Tooling",
+      "file_type": "document",
+      "norm_label": "people & settlements",
+      "source_file": "Docs/Student_Money_Tracker_PRD.md",
+      "source_location": "L125",
+      "summary": "Tracks informal lending/borrowing ('I gave money' vs 'I took money') with full/partial settlement history."
+    },
+    {
+      "id": "doc_prd",
+      "label": "Student Money Tracker PRD",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "Build & Dev Tooling",
+      "file_type": "document",
+      "norm_label": "student money tracker prd",
+      "source_file": "Docs/Student_Money_Tracker_PRD.md",
+      "source_location": "L1",
+      "summary": "Product Requirements Document defining core budget philosophy, dynamic daily budget pacing, carry-forward, bills, and informal debt tracking."
+    },
+    {
+      "id": "src_components_modals_settlemodal",
+      "label": "SettleModal.tsx",
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "settlemodal.tsx",
+      "source_file": "src/components/modals/SettleModal.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_features_budget_budgetengine",
+      "label": "budgetEngine.ts",
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "budgetengine.ts",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_lib_supabasesync",
+      "label": "supabaseSync.ts",
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "supabasesync.ts",
+      "source_file": "src/lib/supabaseSync.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_store_usestore",
+      "label": "useStore.ts",
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "usestore.ts",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_store_usestore_defaultconfig",
+      "label": "defaultConfig",
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "defaultconfig",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "src_store_usestore_start_monthstart_end_monthend",
+      "label": "{ start: monthStart, end: monthEnd }",
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "{ start: monthstart, end: monthend }",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "tests_budget_budgetengine_test",
+      "label": "budgetEngine.test.ts",
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "budgetengine.test.ts",
+      "source_file": "tests/budget/budgetEngine.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_budget_comprehensiveengine_test",
+      "label": "comprehensiveEngine.test.ts",
+      "_origin": "ast",
+      "community": 3,
+      "file_type": "code",
+      "norm_label": "comprehensiveengine.test.ts",
+      "source_file": "tests/budget/comprehensiveEngine.test.ts",
+      "source_location": "L1"
     },
     {
       "id": "tsconfig_app",
@@ -2626,7 +2626,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L151",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -2638,7 +2638,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L232",
+      "source_location": "L211",
       "weight": 1.0
     },
     {
@@ -2650,7 +2650,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L26",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -2662,7 +2662,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L27",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -2674,7 +2674,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L35",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -3963,7 +3963,7 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_modals_addmoneymodal_addmoneymodal",
+      "target": "src_components_modals_addbillmodal_addbillmodal",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3975,7 +3975,7 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_modals_addbillmodal_addbillmodal",
+      "target": "src_components_modals_addpersonmodal_addpersonmodal",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3987,18 +3987,6 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_modals_addpersonmodal_addpersonmodal",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L12",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_dashboard",
       "target": "src_utils_cn_cn",
       "relation": "imports",
       "_origin": "ast",
@@ -4006,7 +3994,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L22",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -4018,7 +4006,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L23",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -4095,7 +4083,7 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_ui_button_button",
+      "target": "src_components_ui_iconbadge_iconbadge",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4107,7 +4095,7 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_ui_iconbadge_iconbadge",
+      "target": "src_components_modals_addexpensemodal_addexpensemodal",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4119,7 +4107,7 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_modals_addexpensemodal_addexpensemodal",
+      "target": "src_components_modals_addmoneymodal_addmoneymodal",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5515,7 +5503,7 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_modals_addmoneymodal",
+      "target": "src_components_modals_addbillmodal",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5527,7 +5515,7 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_modals_addbillmodal",
+      "target": "src_components_modals_addpersonmodal",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5539,18 +5527,6 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_modals_addpersonmodal",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L12",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_dashboard",
       "target": "src_utils_cn",
       "relation": "imports_from",
       "_origin": "ast",
@@ -5558,7 +5534,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L22",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -5570,7 +5546,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L23",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -5623,7 +5599,7 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_ui_button",
+      "target": "src_components_ui_iconbadge",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5635,7 +5611,7 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_ui_iconbadge",
+      "target": "src_components_modals_addexpensemodal",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5647,7 +5623,7 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_components_modals_addexpensemodal",
+      "target": "src_components_modals_addmoneymodal",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7029,7 +7005,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L25",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -7859,5 +7835,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "0edceed219ffb3cb441f61639bee584320f57695"
+  "built_at_commit": "638e58276bd54ee85a79fbbbba57d1dadf966828"
 }
