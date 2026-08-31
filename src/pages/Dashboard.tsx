@@ -105,98 +105,136 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Today's Budget Card */}
-        <Card className="lg:col-span-4 flex flex-col justify-between border border-[var(--color-gray-light)] p-4 sm:p-5">
-          <div>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-sm sm:text-xs">Today's Budget</CardTitle>
-              {stats.isOverspent && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{background: 'var(--negative-bg)', color: 'var(--negative-text)', border: '1px solid var(--negative-border)'}}>
-                  <AlertTriangle size={12} /> Over budget
-                </span>
-              )}
-            </div>
-            <div className="mt-2 sm:mt-3">
-              <h3 className="text-3xl sm:text-4xl font-extrabold text-[var(--color-dark)] leading-none">
-                {formatCurrency(Math.max(0, stats.todaysAvailable - stats.spentToday))}
-              </h3>
-              <p className="text-[var(--color-gray-dark)] text-[10px] sm:text-xs font-semibold mt-1">
-                left to spend today (of {formatCurrency(stats.todaysAvailable)})
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-[var(--color-gray-light)] flex items-end justify-between">
+        {/* Side-by-Side Container for Today's Budget & Carry Forward on Mobile */}
+        <div className="lg:col-span-7 grid grid-cols-2 gap-3 sm:gap-6">
+          {/* Today's Budget Card */}
+          <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-3.5 sm:p-5 min-w-0">
             <div>
-              <p className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] uppercase">Spent today</p>
-              <p className={cn(
-                "text-lg font-black mt-0.5 leading-none",
-                stats.isOverspent ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
-              )}>
-                {formatCurrency(stats.spentToday)}
-              </p>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xs sm:text-sm truncate">Today's Budget</CardTitle>
+                {stats.isOverspent && (
+                  <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0" style={{background: 'var(--negative-bg)', color: 'var(--negative-text)', border: '1px solid var(--negative-border)'}}>
+                    <AlertTriangle size={10} /> Over
+                  </span>
+                )}
+              </div>
+              <div className="mt-2 sm:mt-3 min-w-0">
+                <h3 className="text-xl sm:text-3xl font-extrabold text-[var(--color-dark)] leading-none truncate">
+                  {formatCurrency(Math.max(0, stats.todaysAvailable - stats.spentToday))}
+                </h3>
+                <p className="text-[var(--color-gray-dark)] text-[9px] sm:text-xs font-semibold mt-1 truncate">
+                  left to spend (of {formatCurrency(stats.todaysAvailable)})
+                </p>
+              </div>
             </div>
 
-            <div className="text-right">
-              <p className="text-[10px] sm:text-xs font-bold text-[var(--color-dark)]">
-                Base: {formatCurrency(stats.baseDailyBudget)}/day
-              </p>
-              <p className="text-[10px] sm:text-[11px] text-[var(--color-gray-dark)] mt-0.5">
-                {spentPercent}% used today
-              </p>
-            </div>
-          </div>
-        </Card>
+            <div className="mt-3 sm:mt-6 pt-2.5 sm:pt-4 border-t border-[var(--color-gray-light)] flex items-end justify-between min-w-0">
+              <div className="min-w-0">
+                <p className="text-[9px] sm:text-xs font-bold text-[var(--color-gray-dark)] uppercase truncate">Spent today</p>
+                <p className={cn(
+                  "text-xs sm:text-lg font-black mt-0.5 leading-none truncate",
+                  stats.isOverspent ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
+                )}>
+                  {formatCurrency(stats.spentToday)}
+                </p>
+              </div>
 
-        {/* Carry Forward Card */}
-        <Card
-          className="lg:col-span-3 flex flex-col justify-between p-4 sm:p-5"
-          style={{
-            background: stats.carryForward >= 0 ? 'var(--positive-bg)' : 'var(--negative-bg)',
-            border: `1px solid ${stats.carryForward >= 0 ? 'var(--positive-border)' : 'var(--negative-border)'}`,
-          }}
-        >
-          <div className="relative z-10 h-full flex flex-col justify-between">
-            <div>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-sm sm:text-xs" style={{color: stats.carryForward >= 0 ? 'var(--positive-text)' : 'var(--negative-text)'}}>
-                Carry Forward
-              </CardTitle>
-              {stats.carryForward >= 0 ? (
-                <TrendingUp size={18} className="sm:w-5 sm:h-5" style={{color: 'var(--positive-accent)'}} />
-              ) : (
-                <TrendingDown size={18} className="sm:w-5 sm:h-5 text-[var(--color-primary)]" />
-              )}
+              <div className="text-right min-w-0 pl-1">
+                <p className="text-[9px] sm:text-xs font-bold text-[var(--color-dark)] truncate">
+                  Base: {formatCurrency(stats.baseDailyBudget)}
+                </p>
+                <p className="text-[9px] sm:text-[11px] text-[var(--color-gray-dark)] mt-0.5 truncate">
+                  {spentPercent}% used
+                </p>
+              </div>
             </div>
-            <div className="mt-2 sm:mt-3">
-              <h3 className={cn(
-                "text-2xl sm:text-3xl font-extrabold leading-none",
-                stats.carryForward >= 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"
-              )}>
-                {stats.carryForward >= 0 ? `+${formatCurrency(stats.carryForward)}` : `-${formatCurrency(Math.abs(stats.carryForward))}`}
-              </h3>
-              <p className="text-[10px] sm:text-xs font-semibold mt-1" style={{color: stats.carryForward >= 0 ? 'var(--positive-text)' : 'var(--negative-text)'}}>
-                {stats.carryForward >= 0 ? "Saved from previous days" : "Overspent from previous days"}
-              </p>
-            </div>
-          </div>
+          </Card>
 
-            <div className="hidden sm:block mt-4 pt-3 border-t border-black/5 dark:border-white/5">
-              <p className="text-[11px] text-[var(--color-gray-dark)] leading-tight">
-                {stats.carryForward >= 0 
-                  ? "Your unspent daily limits are added to today's budget."
-                  : "Overspending previously reduces today's allowance."}
-              </p>
+          {/* Carry Forward Card */}
+          <Card
+            className="flex flex-col justify-between p-3.5 sm:p-5 min-w-0"
+            style={{
+              background: stats.carryForward >= 0 ? 'var(--positive-bg)' : 'var(--negative-bg)',
+              border: `1px solid ${stats.carryForward >= 0 ? 'var(--positive-border)' : 'var(--negative-border)'}`,
+            }}
+          >
+            <div className="relative z-10 h-full flex flex-col justify-between min-w-0">
+              <div className="min-w-0">
+                <div className="flex items-center justify-between min-w-0">
+                  <CardTitle className="text-xs sm:text-sm truncate" style={{color: stats.carryForward >= 0 ? 'var(--positive-text)' : 'var(--negative-text)'}}>
+                    Carry Forward
+                  </CardTitle>
+                  {stats.carryForward >= 0 ? (
+                    <TrendingUp size={16} className="sm:w-5 sm:h-5 shrink-0" style={{color: 'var(--positive-accent)'}} />
+                  ) : (
+                    <TrendingDown size={16} className="sm:w-5 sm:h-5 text-[var(--color-primary)] shrink-0" />
+                  )}
+                </div>
+                <div className="mt-2 sm:mt-3 min-w-0">
+                  <h3 className={cn(
+                    "text-xl sm:text-3xl font-extrabold leading-none truncate",
+                    stats.carryForward >= 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"
+                  )}>
+                    {stats.carryForward >= 0 ? `+${formatCurrency(stats.carryForward)}` : `-${formatCurrency(Math.abs(stats.carryForward))}`}
+                  </h3>
+                  <p className="text-[9px] sm:text-xs font-semibold mt-1 truncate" style={{color: stats.carryForward >= 0 ? 'var(--positive-text)' : 'var(--negative-text)'}}>
+                    {stats.carryForward >= 0 ? "Saved from previous days" : "Overspent from previous days"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="hidden sm:block mt-4 pt-3 border-t border-black/5 dark:border-white/5">
+                <p className="text-[11px] text-[var(--color-gray-dark)] leading-tight">
+                  {stats.carryForward >= 0 
+                    ? "Your unspent daily limits are added to today's budget."
+                    : "Overspending previously reduces today's allowance."}
+                </p>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
 
       {/* Lower Section Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 xl:gap-6">
         
         {/* Main Content (Left) */}
-        <div className="lg:col-span-8 flex flex-col">
+        <div className="lg:col-span-8 flex flex-col space-y-4 sm:space-y-5 xl:space-y-6">
+          {/* Quick Actions */}
+          <Card className="border border-[var(--color-gray-light)] p-4 sm:p-5">
+            <CardTitle className="mb-3 sm:mb-4 text-sm sm:text-xs">Quick Actions</CardTitle>
+            <div className="grid grid-cols-4 gap-1 sm:gap-2">
+              <button 
+                onClick={() => setIsExpenseModalOpen(true)}
+                className="flex flex-col items-center justify-center gap-1.5 py-2 px-1 rounded-2xl hover:bg-[var(--color-surface-light)] transition-all group"
+              >
+                <IconBadge iconName="ArrowUpRight" color="red" className="group-hover:scale-110 scale-90 sm:scale-100" />
+                <span className="text-[10px] sm:text-xs font-bold text-[var(--color-dark)] text-center leading-tight">Expense</span>
+              </button>
+              <button 
+                onClick={() => setIsMoneyModalOpen(true)}
+                className="flex flex-col items-center justify-center gap-1.5 py-2 px-1 rounded-2xl hover:bg-[var(--color-surface-light)] transition-all group"
+              >
+                <IconBadge iconName="ArrowDownRight" color="green" className="group-hover:scale-110 scale-90 sm:scale-100" />
+                <span className="text-[10px] sm:text-xs font-bold text-[var(--color-dark)] text-center leading-tight">Income</span>
+              </button>
+              <button 
+                onClick={() => setIsBillModalOpen(true)}
+                className="flex flex-col items-center justify-center gap-1.5 py-2 px-1 rounded-2xl hover:bg-[var(--color-surface-light)] transition-all group"
+              >
+                <IconBadge iconName="CreditCard" color="red" className="group-hover:scale-110 scale-90 sm:scale-100" />
+                <span className="text-[10px] sm:text-xs font-bold text-[var(--color-dark)] text-center leading-tight">Pay Bill</span>
+              </button>
+              <button 
+                onClick={() => setIsPersonModalOpen(true)}
+                className="flex flex-col items-center justify-center gap-1.5 py-2 px-1 rounded-2xl hover:bg-[var(--color-surface-light)] transition-all group"
+              >
+                <IconBadge iconName="UserPlus" color="blue" className="group-hover:scale-110 scale-90 sm:scale-100" />
+                <span className="text-[10px] sm:text-xs font-bold text-[var(--color-dark)] text-center leading-tight">Person</span>
+              </button>
+            </div>
+          </Card>
+
           {/* Recent Transactions */}
           <Card className="border border-[var(--color-gray-light)] flex-1 flex flex-col p-4 sm:p-5">
             <CardHeader className="mb-3 sm:mb-4">
@@ -255,42 +293,7 @@ export function Dashboard() {
 
         {/* Sidebar (Right) */}
         <div className="lg:col-span-4 space-y-4 sm:space-y-5 xl:space-y-6">
-          {/* Quick Actions */}
-        <Card className="border border-[var(--color-gray-light)] p-4 sm:p-5">
-          <CardTitle className="mb-3 sm:mb-4 text-sm sm:text-xs">Quick Actions</CardTitle>
-          <div className="grid grid-cols-4 gap-1 sm:gap-2">
-            <button 
-              onClick={() => setIsExpenseModalOpen(true)}
-              className="flex flex-col items-center justify-center gap-1.5 py-2 px-1 rounded-2xl hover:bg-[var(--color-surface-light)] transition-all group"
-            >
-              <IconBadge iconName="ArrowUpRight" color="red" className="group-hover:scale-110 scale-90 sm:scale-100" />
-              <span className="text-[10px] sm:text-xs font-bold text-[var(--color-dark)] text-center leading-tight">Expense</span>
-            </button>
-            <button 
-              onClick={() => setIsMoneyModalOpen(true)}
-              className="flex flex-col items-center justify-center gap-1.5 py-2 px-1 rounded-2xl hover:bg-[var(--color-surface-light)] transition-all group"
-            >
-              <IconBadge iconName="ArrowDownRight" color="green" className="group-hover:scale-110 scale-90 sm:scale-100" />
-              <span className="text-[10px] sm:text-xs font-bold text-[var(--color-dark)] text-center leading-tight">Income</span>
-            </button>
-            <button 
-              onClick={() => setIsBillModalOpen(true)}
-              className="flex flex-col items-center justify-center gap-1.5 py-2 px-1 rounded-2xl hover:bg-[var(--color-surface-light)] transition-all group"
-            >
-              <IconBadge iconName="CreditCard" color="red" className="group-hover:scale-110 scale-90 sm:scale-100" />
-              <span className="text-[10px] sm:text-xs font-bold text-[var(--color-dark)] text-center leading-tight">Pay Bill</span>
-            </button>
-            <button 
-              onClick={() => setIsPersonModalOpen(true)}
-              className="flex flex-col items-center justify-center gap-1.5 py-2 px-1 rounded-2xl hover:bg-[var(--color-surface-light)] transition-all group"
-            >
-              <IconBadge iconName="UserPlus" color="blue" className="group-hover:scale-110 scale-90 sm:scale-100" />
-              <span className="text-[10px] sm:text-xs font-bold text-[var(--color-dark)] text-center leading-tight">Person</span>
-            </button>
-          </div>
-        </Card>
-
-        {/* People Summary & Net Position */}
+          {/* People Summary & Net Position */}
         <Card className="border border-[var(--color-gray-light)] flex flex-col justify-between p-4 sm:p-5">
           <CardHeader className="mb-3">
             <div className="flex items-center justify-between w-full">
