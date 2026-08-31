@@ -246,3 +246,64 @@ describe('Hydration and Profile Logic', () => {
     expect(useStore.getState().config.totalMoney).toBe(9999);
   });
 });
+
+describe('Hardening & Cascade Deletion Logic', () => {
+  beforeEach(() => {
+    useStore.getState().resetData();
+    useAuthStore.setState({ user: { id: 'user-a' } as any });
+  });
+
+  it('13. Deleting a person cascade-deletes associated person transactions', () => {
+    const store = useStore.getState();
+    const personId = store.addPerson({ name: 'Vikram', balance: 500 });
+    
+    // Add person transaction
+    store.recordPersonTransaction({
+      personId,
+      personName: 'Vikram',
+      amount: 500,
+      direction: 'gave',
+      reason: 'Lent for lunch',
+    });
+
+    // Add unrelated transaction
+    store.addTransaction({
+      type: 'expense',
+      amount: 120,
+      reason: 'Coffee',
+      date: new Date().toISOString(),
+    });
+
+    expect(useStore.getState().people).toHaveLength(1);
+    expect(useStore.getState().transactions).toHaveLength(2);
+
+    // Delete person
+    useStore.getState().deletePerson(personId);
+
+    // Person and associated transactions should be removed, unrelated transaction remains
+    expect(useStore.getState().people).toHaveLength(0);
+    expect(useStore.getState().transactions).toHaveLength(1);
+    expect(useStore.getState().transactions[0].reason).toBe('Coffee');
+  });
+
+  it('14. Editing a transaction via updateTransaction', () => {
+    useStore.getState().addTransaction({
+      type: 'expense',
+      amount: 200,
+      reason: 'Dinner',
+      category: 'Food',
+      date: '2026-08-15T12:00:00Z',
+    });
+
+    const txId = useStore.getState().transactions[0].id;
+    useStore.getState().updateTransaction(txId, {
+      amount: 250,
+      reason: 'Fancy Dinner',
+    });
+
+    const updatedTx = useStore.getState().transactions.find((t) => t.id === txId);
+    expect(updatedTx?.amount).toBe(250);
+    expect(updatedTx?.reason).toBe('Fancy Dinner');
+  });
+});
+

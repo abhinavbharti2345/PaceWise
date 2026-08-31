@@ -5,11 +5,12 @@ import { Button } from '../components/ui/Button';
 import { IconBadge } from '../components/ui/IconBadge';
 import { format, isToday, isThisWeek, isThisMonth } from 'date-fns';
 import { cn } from '../utils/cn';
-import { Search, Trash2, Calendar, Receipt } from 'lucide-react';
+import { Search, Trash2, Edit3, Calendar, Receipt } from 'lucide-react';
 import { getCategoryMeta } from '../utils/categoryHelpers';
 import { AddExpenseModal } from '../components/modals/AddExpenseModal';
 import { AddMoneyModal } from '../components/modals/AddMoneyModal';
 import { AddBillModal } from '../components/modals/AddBillModal';
+import { EditTransactionModal } from '../components/modals/EditTransactionModal';
 import { ConfirmModal } from '../components/modals/ConfirmModal';
 import type { Transaction } from '../features/budget/budgetEngine';
 
@@ -26,6 +27,7 @@ export function Transactions() {
   const [isMoneyModalOpen, setIsMoneyModalOpen] = useState(false);
   const [isBillModalOpen, setIsBillModalOpen] = useState(false);
   const [deletingTransaction, setDeletingTransaction] = useState<Transaction | null>(null);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   const formatCurrency = (amount: number) => `₹${Math.round(amount).toLocaleString('en-IN')}`;
 
@@ -200,13 +202,22 @@ export function Transactions() {
                           {isIncome ? '+' : '−'}{formatCurrency(t.amount)}
                         </span>
 
-                        <button 
-                          onClick={() => handleDelete(t)}
-                          className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 text-[var(--color-gray-dark)] hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/20 transition-all"
-                          title="Delete transaction"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button 
+                            onClick={() => setEditingTransaction(t)}
+                            className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 text-[var(--color-gray-dark)] hover:text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-surface-light)] transition-all"
+                            title="Edit transaction"
+                          >
+                            <Edit3 size={16} />
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(t)}
+                            className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 text-[var(--color-gray-dark)] hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/20 transition-all"
+                            title="Delete transaction"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -237,6 +248,11 @@ export function Transactions() {
       <AddBillModal
         isOpen={isBillModalOpen}
         onClose={() => setIsBillModalOpen(false)}
+      />
+      <EditTransactionModal
+        isOpen={!!editingTransaction}
+        onClose={() => setEditingTransaction(null)}
+        transaction={editingTransaction}
       />
       <ConfirmModal
         isOpen={!!deletingTransaction}

@@ -21,6 +21,7 @@ interface AppState {
   setConfig: (config: BudgetConfig) => void;
   updateConfig: (partial: Partial<BudgetConfig>) => void;
   addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
+  updateTransaction: (id: string, updated: Partial<Omit<Transaction, 'id'>>) => void;
   deleteTransaction: (id: string) => void;
   
   // People actions
@@ -83,7 +84,12 @@ export const useStore = create<AppState>()(
       updateConfig: async (partial) => {
         const oldConfig = useStore.getState().config;
         const oldTransactions = useStore.getState().transactions;
-        const isNewMonth = partial.startDate && new Date(partial.startDate).getTime() > new Date(oldConfig.startDate).getTime();
+        const startOfDayTime = (d: string | Date) => {
+          const dt = new Date(d);
+          dt.setHours(0, 0, 0, 0);
+          return dt.getTime();
+        };
+        const isNewMonth = partial.startDate && startOfDayTime(partial.startDate) > startOfDayTime(oldConfig.startDate);
         
         let rolloverTx: Omit<Transaction, 'id'> | null = null;
         
@@ -216,6 +222,35 @@ export const useStore = create<AppState>()(
         });
       },
 
+      updateTransaction: (id, updated) => {
+        set((state) => ({
+          transactions: state.transactions.map((t) =>
+            t.id === id ? { ...t, ...updated } : t
+          ),
+        }));
+
+        const user = useAuthStore.getState().user;
+        if (!user?.id) return;
+
+        const payload: Record<string, any> = {};
+        if (updated.type !== undefined) payload.type = updated.type;
+        if (updated.amount !== undefined) payload.amount = updated.amount;
+        if (updated.date !== undefined) payload.date = updated.date;
+        if (updated.category !== undefined) payload.category = updated.category;
+        if (updated.reason !== undefined) payload.reason = updated.reason;
+        if (updated.source !== undefined) payload.source = updated.source;
+        if (updated.personId !== undefined) payload.person_id = updated.personId;
+        if (updated.personName !== undefined) payload.person_name = updated.personName;
+        if (updated.direction !== undefined) payload.direction = updated.direction;
+        if (updated.isSettlement !== undefined) payload.is_settlement = updated.isSettlement;
+        if (updated.paymentMethod !== undefined) payload.payment_method = updated.paymentMethod;
+        if (updated.note !== undefined) payload.note = updated.note;
+
+        supabase.from('transactions').update(payload).eq('id', id).eq('user_id', user.id).then(({ error }) => {
+          if (error) console.error('[PaceWise DB] Failed to update transaction:', error);
+        });
+      },
+
       deleteTransaction: (id) => {
         set((state) => ({
           transactions: state.transactions.filter(t => t.id !== id)
@@ -290,7 +325,8 @@ export const useStore = create<AppState>()(
 
       deletePerson: (id) => {
         set((state) => ({
-          people: state.people.filter(p => p.id !== id)
+          people: state.people.filter(p => p.id !== id),
+          transactions: state.transactions.filter(t => t.personId !== id)
         }));
         
         const user = useAuthStore.getState().user;
@@ -301,7 +337,12 @@ export const useStore = create<AppState>()(
           return;
         }
 
-        console.log(`[PaceWise DB] Deleting person ${id}...`);
+        console.log(`[PaceWise DB] Deleting person ${id} and cascading associated transactions...`);
+
+        // Cascade delete person transactions first, then delete person
+        supabase.from('transactions').delete().eq('person_id', id).eq('user_id', user.id).then(({ error }) => {
+          if (error) console.error('[PaceWise DB] Failed to delete person transactions:', error);
+        });
 
         supabase.from('people').delete().eq('id', id).eq('user_id', user.id).then(({ error }) => {
           if (error) {

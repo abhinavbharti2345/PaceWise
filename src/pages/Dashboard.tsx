@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -28,8 +28,8 @@ export function Dashboard() {
   const [isBillModalOpen, setIsBillModalOpen] = useState(false);
   const [isPersonModalOpen, setIsPersonModalOpen] = useState(false);
   
-  const todayDateStr = new Date().toISOString();
-  const stats = calculateBudget(config, transactions, todayDateStr);
+  const todayDateStr = useMemo(() => new Date().toISOString(), []);
+  const stats = useMemo(() => calculateBudget(config, transactions, todayDateStr), [config, transactions, todayDateStr]);
 
   const currencySymbol = config.currency || '₹';
   const formatCurrency = (amount: number) => `${currencySymbol}${Math.round(amount).toLocaleString('en-IN')}`;
