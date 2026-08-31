@@ -7,9 +7,16 @@ import type { Person } from '../store/useStore';
 
 /**
  * Module-level flag to prevent duplicate fetches across React strict-mode
- * double-mounts or component remounts. This is NEVER reset on remount.
+ * double-mounts or component remounts.
+ * Call resetSyncFlag() after data deletion so the next mount triggers a
+ * clean re-sync against the now-empty Supabase tables.
  */
 let activeFetchUserId: string | null = null;
+
+/** Reset the sync flag. Must be called after successful "Delete All My Data". */
+export function resetSyncFlag() {
+  activeFetchUserId = null;
+}
 
 /**
  * Hook to synchronize Zustand store with Supabase.
@@ -246,13 +253,20 @@ export async function addTransactionToSupabase(
 }
 
 /**
- * Delete transaction from Supabase
+ * Delete transaction from Supabase.
+ * Scoped to both transaction ID and authenticated user_id to prevent
+ * accidental cross-user deletion if RLS has any gap.
  */
 export async function deleteTransactionFromSupabase(transaction_id: string) {
+  const { data: { session } } = await supabase.auth.getSession();
+  const user_id = session?.user?.id;
+  if (!user_id) throw new Error('Not authenticated');
+
   const { error } = await supabase
     .from('transactions')
     .delete()
-    .eq('id', transaction_id);
+    .eq('id', transaction_id)
+    .eq('user_id', user_id);
 
   if (error) throw error;
 }
@@ -279,13 +293,20 @@ export async function addPersonToSupabase(
 }
 
 /**
- * Delete person from Supabase
+ * Delete person from Supabase.
+ * Scoped to both person ID and authenticated user_id to prevent
+ * accidental cross-user deletion if RLS has any gap.
  */
 export async function deletePersonFromSupabase(person_id: string) {
+  const { data: { session } } = await supabase.auth.getSession();
+  const user_id = session?.user?.id;
+  if (!user_id) throw new Error('Not authenticated');
+
   const { error } = await supabase
     .from('people')
     .delete()
-    .eq('id', person_id);
+    .eq('id', person_id)
+    .eq('user_id', user_id);
 
   if (error) throw error;
 }
@@ -303,25 +324,43 @@ export async function updatePersonBalanceInSupabase(person_id: string, balance: 
 }
 
 /**
- * Delete all application data for a user
+ * Delete all application data for the currently authenticated user.
+ * Security: user identity is derived from the live Supabase session JWT,
+ * NOT from a user_id supplied by the caller. This prevents cross-user
+ * deletion even if RLS has a gap.
+ *
+ * NOTE: If you add new user-owned tables, add them to the `tables` array below.
  */
-export async function deleteAllUserData(user_id: string) {
-  // Delete all user data tables
-  const tables = ['transactions', 'people', 'budget_configs', 'profiles'];
-  
-  for (const table of tables) {
-    // For profiles the column is 'id', for others it's 'user_id'
-    const column = table === 'profiles' ? 'id' : 'user_id';
+export async function deleteAllUserData() {
+  // Verify identity from the server-confirmed session, not caller-supplied data.
+  const { data: { session }, error: sessionErr } = await supabase.auth.getSession();
+  if (sessionErr || !session?.user?.id) {
+    throw new Error('Cannot delete data: no authenticated session found.');
+  }
+  const user_id = session.user.id;
+
+  // Tables owned by user_id. Profiles uses 'id' as the FK column.
+  // UPDATE THIS LIST if new user-owned tables are added.
+  const tables: Array<{ table: string; column: string }> = [
+    { table: 'transactions',  column: 'user_id' },
+    { table: 'people',        column: 'user_id' },
+    { table: 'budget_configs', column: 'user_id' },
+    { table: 'profiles',      column: 'id' },
+  ];
+
+  for (const { table, column } of tables) {
     const { error } = await supabase.from(table).delete().eq(column, user_id);
     if (error) {
-      console.error(`[PaceWise] Error deleting ${table} for user ${user_id}:`, error);
-      throw error;
+      console.error(`[PaceWise] Error deleting ${table}:`, error.message);
+      throw new Error(`Failed to delete your ${table}. Please try again.`);
     }
   }
 }
 
 /**
- * Permanently delete user auth account via Edge Function
+ * Permanently delete the authenticated user's Supabase Auth account via Edge Function.
+ * Identity is validated server-side from the JWT; the browser never controls which account
+ * is deleted.
  */
 export async function deleteUserAccount(sessionToken: string) {
   const { data, error } = await supabase.functions.invoke('delete-user', {
@@ -331,12 +370,12 @@ export async function deleteUserAccount(sessionToken: string) {
   });
 
   if (error) {
-    console.error('[PaceWise] Error invoking delete-user Edge Function:', error);
-    throw error;
+    console.error('[PaceWise] Error invoking delete-user Edge Function.');
+    throw new Error('Failed to delete account. Please try again or contact support.');
   }
 
   if (!data?.success) {
-    throw new Error(data?.error || 'Failed to delete user account');
+    throw new Error('Failed to delete account. Please try again or contact support.');
   }
 
   return data;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { supabase } from '../lib/supabase';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
@@ -8,7 +8,7 @@ import { User, Mail, LogOut, Check, Pencil, Shield, AlertTriangle } from 'lucide
 
 import { ConfirmModal } from '../components/modals/ConfirmModal';
 import { useStore } from '../store/useStore';
-import { deleteAllUserData, deleteUserAccount } from '../lib/supabaseSync';
+import { deleteAllUserData, deleteUserAccount, resetSyncFlag } from '../lib/supabaseSync';
 
 export function Profile() {
   const { user, profile, updateProfile, signOut } = useAuthStore();
@@ -21,6 +21,10 @@ export function Profile() {
   const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   
+  // Ref-based guard prevents double-submission even if isDeleting state hasn't
+  // propagated yet (React batching gap on rapid double-click or double-tap).
+  const isRunning = useRef(false);
+
   const resetData = useStore(state => state.resetData);
 
   // Keep displayName in sync when profile loads asynchronously
@@ -65,53 +69,86 @@ export function Profile() {
   const displayInitial = (profile?.displayName || user?.email || 'U').charAt(0).toUpperCase();
 
   const handleDeleteAllData = async () => {
-    if (!user) return;
+    // Double-submission guard: synchronous check before any async work.
+    if (isRunning.current) return;
+    isRunning.current = true;
     setIsDeleting(true);
     setSaveMessage(null);
+
     try {
-      await deleteAllUserData(user.id);
+      // deleteAllUserData now derives user identity from the live session JWT
+      // internally — the caller never supplies a user_id.
+      await deleteAllUserData();
+
+      // 1. Reset Zustand state (empties transactions, people, config)
       resetData();
+
+      // 2. Explicitly clear persisted localStorage so stale data cannot
+      //    rehydrate on the next page load.
+      try { localStorage.removeItem('pacewise-storage-v2'); } catch { /* ignore */ }
+
+      // 3. Reset the sync flag so the next mount triggers a clean re-sync
+      //    against the now-empty Supabase tables.
+      resetSyncFlag();
+
       setIsDeleteDataModalOpen(false);
       setSaveMessage({ type: 'success', text: 'All your PaceWise data has been permanently deleted.' });
-      setTimeout(() => setSaveMessage(null), 5000);
+      setTimeout(() => setSaveMessage(null), 6000);
     } catch (error) {
       console.error('Failed to delete data:', error);
       setSaveMessage({ type: 'error', text: 'Failed to delete data. Please try again.' });
     } finally {
+      isRunning.current = false;
       setIsDeleting(false);
     }
   };
 
   const handleDeleteAccount = async () => {
-    if (!user) return;
-    
-    // We need the user's session token to invoke the edge function securely
+    // Double-submission guard: synchronous check before any async work.
+    if (isRunning.current) return;
+    isRunning.current = true;
+
+    // Fetch a fresh session token to authenticate the Edge Function call.
+    // This is the only place we read the session token — never from a caller arg.
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-    
+
     if (sessionError || !session?.access_token) {
-      setSaveMessage({ type: 'error', text: 'Could not verify your session. Please sign out and sign in again before deleting your account.' });
+      setSaveMessage({
+        type: 'error',
+        text: 'Could not verify your session. Please sign out and sign back in before deleting your account.',
+      });
       setIsDeleteAccountModalOpen(false);
+      isRunning.current = false;
       return;
     }
 
     setIsDeleting(true);
     setSaveMessage(null);
-    
+
     try {
-      // 1. First explicitly delete all their application data
-      await deleteAllUserData(user.id);
-      
-      // 2. Invoke the edge function to delete the Supabase Auth user
+      // Step 1: Delete all application data first.
+      // Identity is derived from the session inside deleteAllUserData — no user_id passed.
+      await deleteAllUserData();
+
+      // Step 2: Invoke the Edge Function to delete the Supabase Auth user.
+      // The function validates the JWT server-side and uses user.id from the token.
       await deleteUserAccount(session.access_token);
-      
-      // 3. Clear local state
+
+      // Step 3: Clear Zustand state and localStorage.
       resetData();
-      
-      // 4. Clear session and redirect to login
+      try { localStorage.removeItem('pacewise-storage-v2'); } catch { /* ignore */ }
+
+      // Step 4: Sign out (clears Supabase session, sets user to null → Auth page renders).
       await signOut();
     } catch (error) {
       console.error('Failed to delete account:', error);
-      setSaveMessage({ type: 'error', text: 'Failed to delete account. Please try again or contact support.' });
+      // Provide context-aware messaging: if data deletion succeeded but Auth deletion failed,
+      // the user still has an account — they can retry.
+      setSaveMessage({
+        type: 'error',
+        text: 'Failed to delete account. Your data may have been partially removed. Please try again or contact support.',
+      });
+      isRunning.current = false;
       setIsDeleting(false);
       setIsDeleteAccountModalOpen(false);
     }
