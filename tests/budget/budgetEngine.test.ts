@@ -56,4 +56,70 @@ describe('budgetEngine', () => {
     expect(day4Stats.todaysAvailable).toBeCloseTo(566.66, 1);
     expect(day4Stats.moneyLeft).toBe(4900);
   });
+
+  it('handles historical transactions and person debts (Bug Repro)', () => {
+    const config: BudgetConfig = {
+      totalMoney: 5000,
+      startDate: '2026-08-01',
+      endDate: '2026-08-31'
+    };
+
+    const transactions: Transaction[] = [
+      // A. Historical normal expense
+      { id: 't1', type: 'expense', amount: 500, date: '2026-07-25' },
+      
+      // B. Historical person transaction (July: give Tejas 500)
+      { id: 't2', type: 'person', direction: 'gave', amount: 500, date: '2026-07-28', personId: 'p1', personName: 'Tejas' },
+      
+      // C. Current-month person transaction (August 10: give Tejas 200)
+      { id: 't3', type: 'person', direction: 'gave', amount: 200, date: '2026-08-10', personId: 'p1', personName: 'Tejas' },
+
+      // E. Manual repayment (August: add Income 500)
+      { id: 't4', type: 'income', amount: 500, date: '2026-08-15' },
+    ];
+
+    // Evaluate on August 20
+    const stats = calculateBudget(config, transactions, '2026-08-20');
+
+    // Expected moneyLeft calculation:
+    // Base allowance = 5000 (starting)
+    // + 500 (Income in Aug) = 5500 effective total budget.
+    // - 200 (Current month person transaction in Aug)
+    // = 5300
+    
+    // Note: The July expense (500) and July person transaction (500) must NOT reduce August's budget.
+    
+    expect(stats.effectiveTotalBudget).toBe(5500); // 5000 + 500
+    expect(stats.moneyLeft).toBe(5300); // 5500 - 200
+  });
+
+  it('ignores settlements to prevent double counting (Bug Repro)', () => {
+    const config: BudgetConfig = {
+      totalMoney: 5000,
+      startDate: '2026-08-01',
+      endDate: '2026-08-31'
+    };
+
+    const transactions: Transaction[] = [
+      // F. Debt settlement
+      // User settles a debt, meaning they paid someone back. 
+      // They also manually create an Expense for it.
+      { id: 't1', type: 'expense', amount: 500, date: '2026-08-05' },
+      { id: 't2', type: 'person', direction: 'gave', amount: 500, date: '2026-08-05', personId: 'p1', personName: 'Tejas', isSettlement: true },
+      
+      // User receives settlement.
+      // They also manually create an Income for it.
+      { id: 't3', type: 'income', amount: 200, date: '2026-08-06' },
+      { id: 't4', type: 'person', direction: 'took', amount: 200, date: '2026-08-06', personId: 'p2', personName: 'Rahul', isSettlement: true },
+    ];
+
+    const stats = calculateBudget(config, transactions, '2026-08-10');
+
+    // Expected:
+    // effectiveTotalBudget = 5000 + 200 (manual income) = 5200.
+    // moneyLeft = 5200 - 500 (manual expense) = 4700.
+    // The isSettlement person transactions MUST be completely ignored to prevent double counting.
+    expect(stats.effectiveTotalBudget).toBe(5200);
+    expect(stats.moneyLeft).toBe(4700);
+  });
 });

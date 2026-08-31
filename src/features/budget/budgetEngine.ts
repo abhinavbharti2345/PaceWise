@@ -68,7 +68,8 @@ export function calculateBudget(
     const tDate = startOfDay(new Date(t.date));
     
     // Ignore transactions that occurred before the current budget period start date
-    if (tDate.getTime() < start.getTime()) {
+    // OR after the current budget period end date.
+    if (tDate.getTime() < start.getTime() || tDate.getTime() > end.getTime()) {
       continue;
     }
 
@@ -86,17 +87,20 @@ export function calculateBudget(
         spentToday += t.amount;
       }
     } else if (t.type === 'person') {
+      // If this is a settlement transaction, IGNORE it for budget calculations
+      // because the user will manually record an Income/Expense transaction.
+      // This prevents double-counting.
+      if (t.isSettlement) {
+        continue;
+      }
+
       // If user gave money (lent), it's treated as cash outflow (expense)
-      // If user received settlement money, it is cash inflow
       if (t.direction === 'gave') {
         if (isBeforeToday) {
           normalExpensesUpToYesterday += t.amount;
         } else if (isToday) {
           spentToday += t.amount;
         }
-      } else if (t.direction === 'took' && t.isSettlement) {
-        // Person repayment received
-        totalAddedMoney += t.amount;
       }
     }
   }

@@ -42,7 +42,9 @@ describe('Comprehensive Budget & Debt Calculations', () => {
     expect(day1Stats.spentToday).toBe(500);
     expect(day1Stats.moneyLeft).toBe(4500);
 
-    // Day 2: friend repaid ₹300 (cash inflow)
+    // Day 2: friend repaid ₹300.
+    // In V1, the user must manually record an Income transaction for this.
+    // The settlement transaction itself should NOT affect the budget.
     const t2: Transaction = { 
       id: '2', 
       type: 'person', 
@@ -51,8 +53,16 @@ describe('Comprehensive Budget & Debt Calculations', () => {
       isSettlement: true, 
       date: '2026-08-02' 
     };
+    
+    // User manually creates an Income transaction
+    const t3: Transaction = {
+      id: '3',
+      type: 'income',
+      amount: 300,
+      date: '2026-08-02'
+    };
 
-    const day2Stats = calculateBudget(config, [t1, t2], '2026-08-02');
+    const day2Stats = calculateBudget(config, [t1, t2, t3], '2026-08-02');
     // Effective total = 5000 + 300 = 5300
     // Expenses up to yesterday = 500
     // Money left = 5300 - 500 - 0 = 4800
