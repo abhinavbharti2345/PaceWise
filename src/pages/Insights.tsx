@@ -2,7 +2,7 @@ import React from 'react';
 import { useStore } from '../store/useStore';
 import { calculateBudget } from '../features/budget/budgetEngine';
 import { useCurrentDate } from '../hooks/useCurrentDate';
-import { format } from 'date-fns';
+import { format, startOfDay } from 'date-fns';
 import { cn } from '../utils/cn';
 import { Card, CardTitle } from '../components/ui/Card';
 import { 
@@ -41,7 +41,7 @@ const getCategoryIcon = (category: string) => {
 const formatCurrency = (amount: number) => `₹${Math.round(amount).toLocaleString('en-IN')}`;
 
 // Extracted to prevent entire Insights page re-rendering on hover
-const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
+const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats: any; endLabel?: string }) => {
   const [hoverIndex, setHoverIndex] = React.useState<number | null>(null);
 
   // Y-axis: 100 is bottom (0 spent), 0 is top (max spent)
@@ -222,7 +222,7 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
       </div>
       <div className="flex justify-between mt-4 text-[11px] font-medium text-[var(--color-gray-dark)]">
         <span>Start</span>
-        <span>End of Month</span>
+        <span>{endLabel}</span>
       </div>
     </Card>
   );
@@ -235,43 +235,62 @@ export function Insights() {
   // 'week' = This Week, 'current' = This Month, 'last1' = Last Month, 'last2' = 2 Months Ago
   const [timeFilter, setTimeFilter] = React.useState<string>('current');
 
-  const stats = React.useMemo(() => {
+  const { stats, activeDateRange } = React.useMemo(() => {
+    let start: Date;
+    let end: Date;
+
     if (timeFilter === 'current') {
-      return calculateBudget(config, transactions, todayDateStr);
+      start = startOfDay(new Date(config.startDate));
+      end = startOfDay(new Date(config.endDate));
+      const calculatedStats = calculateBudget(config, transactions, todayDateStr);
+      return { stats: calculatedStats, activeDateRange: { start, end } };
     }
     
     if (timeFilter === 'week') {
-      const now = new Date();
-      // start of week (monday)
-      const start = new Date(now);
-      const day = start.getDay();
-      const diff = start.getDate() - day + (day === 0 ? -6 : 1);
-      start.setDate(diff);
-      start.setHours(0,0,0,0);
+      const now = startOfDay(new Date(todayDateStr));
+      const day = now.getDay();
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+      start = startOfDay(new Date(now.getFullYear(), now.getMonth(), diff));
+      end = startOfDay(new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6));
       
-      const end = new Date(start);
-      end.setDate(start.getDate() + 6);
-      end.setHours(23,59,59,999);
-      
-      // prorate total money based on days in current month
       const monthDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
       const proratedMoney = (config.totalMoney / monthDays) * 7;
       
-      const syntheticConfig = { ...config, totalMoney: proratedMoney, startDate: start.toISOString(), endDate: end.toISOString() };
-      return calculateBudget(syntheticConfig, transactions, todayDateStr);
+      const syntheticConfig = { 
+        ...config, 
+        totalMoney: proratedMoney, 
+        startDate: start.toISOString(), 
+        endDate: end.toISOString() 
+      };
+      const calculatedStats = calculateBudget(syntheticConfig, transactions, todayDateStr);
+      return { stats: calculatedStats, activeDateRange: { start, end } };
     }
     
     // Calculate boundaries for past months
     const offset = timeFilter === 'last1' ? 1 : 2;
-    const targetDate = new Date();
-    targetDate.setMonth(targetDate.getMonth() - offset);
+    const now = new Date(todayDateStr);
+    const targetDate = new Date(now.getFullYear(), now.getMonth() - offset, 1);
     
-    const startDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1).toISOString();
-    const endDate = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
+    start = startOfDay(new Date(targetDate.getFullYear(), targetDate.getMonth(), 1));
+    end = startOfDay(new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0));
     
-    const syntheticConfig = { ...config, startDate, endDate };
-    return calculateBudget(syntheticConfig, transactions, endDate);
+    const syntheticConfig = { 
+      ...config, 
+      startDate: start.toISOString(), 
+      endDate: end.toISOString() 
+    };
+    const calculatedStats = calculateBudget(syntheticConfig, transactions, end.toISOString());
+    return { stats: calculatedStats, activeDateRange: { start, end } };
   }, [config, transactions, todayDateStr, timeFilter]);
+
+  // Filter expenses strictly inside activeDateRange for period-accurate category and splurge analytics
+  const periodExpenses = React.useMemo(() => {
+    return transactions.filter(t => {
+      if (t.type !== 'expense') return false;
+      const tDate = startOfDay(new Date(t.date));
+      return tDate.getTime() >= activeDateRange.start.getTime() && tDate.getTime() <= activeDateRange.end.getTime();
+    });
+  }, [transactions, activeDateRange]);
   
   // 1. Pacing Narrative Logic
   const avgDailyDiscretionary = Math.round(stats.totalDiscretionarySpent / Math.max(1, stats.daysPassed));
@@ -300,34 +319,47 @@ export function Insights() {
     heroMessage = <>Perfect: <span className="font-bold text-[var(--color-success)]">{formatCurrency(avgDailyDiscretionary)}</span>/d</>;
   }
 
-  // 2. Discretionary Categories (Leakage)
-  const categoryMap = transactions
-    .filter(t => t.type === 'expense')
-    .reduce((acc, t) => {
+  // 2. Discretionary Categories (Scoped to active period)
+  const categoryBreakdown = React.useMemo(() => {
+    const categoryMap = periodExpenses.reduce((acc, t) => {
       const cat = t.category || 'Other';
       acc[cat] = (acc[cat] || 0) + t.amount;
       return acc;
     }, {} as Record<string, number>);
 
-  const categoryBreakdown = Object.entries(categoryMap)
-    .map(([category, amount]) => ({
-      category,
-      amount,
-      percentage: stats.totalDiscretionarySpent > 0 ? Math.round((amount / stats.totalDiscretionarySpent) * 100) : 0,
-    }))
-    .sort((a, b) => b.amount - a.amount);
+    return Object.entries(categoryMap)
+      .map(([category, amount]) => ({
+        category,
+        amount,
+        percentage: stats.totalDiscretionarySpent > 0 
+          ? Math.round((amount / stats.totalDiscretionarySpent) * 100) 
+          : 0,
+      }))
+      .sort((a, b) => b.amount - a.amount);
+  }, [periodExpenses, stats.totalDiscretionarySpent]);
 
-  // 3. Largest Splurges
-  const largestSplurges = transactions
-    .filter(t => t.type === 'expense')
-    .sort((a, b) => b.amount - a.amount)
-    .slice(0, 3);
+  // 3. Largest Splurges (Scoped to active period)
+  const largestSplurges = React.useMemo(() => {
+    return [...periodExpenses]
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 3);
+  }, [periodExpenses]);
 
-  // 4. IOUs and Buffer
+  // 4. Dynamic Chart End Label
+  const chartEndLabel = React.useMemo(() => {
+    if (timeFilter === 'week') return 'End of Week';
+    if (timeFilter === 'current') return 'End of Month';
+    return `End of ${format(activeDateRange.end, 'MMM yyyy')}`;
+  }, [timeFilter, activeDateRange.end]);
+
+  // 5. IOUs and Buffer
   const friendsOweYou = people.filter(p => p.balance > 0).reduce((sum, p) => sum + p.balance, 0);
 
-  // 5. Projected Rollover
-  const projectedRollover = stats.moneyLeft - (avgDailyDiscretionary * stats.daysRemaining);
+  // 6. Projected Rollover (Active vs Completed Historical Periods)
+  const isHistoricalPeriod = timeFilter === 'last1' || timeFilter === 'last2';
+  const projectedRollover = isHistoricalPeriod
+    ? stats.moneyLeft
+    : stats.moneyLeft - (avgDailyDiscretionary * stats.daysRemaining);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-8 sm:pb-0">
@@ -397,9 +429,9 @@ export function Insights() {
       </div>
 
       {/* Burn-down Chart */}
-      <BurnDownChart stats={stats} />
+      <BurnDownChart stats={stats} endLabel={chartEndLabel} />
 
-      {/* Zero-Spend Streak & Projected Rollover Side-by-Side */}
+      {/* Zero-Spend Days & Projected Rollover Side-by-Side */}
       <div className="grid grid-cols-2 gap-3 sm:gap-6">
         {/* Zero-Spend Days */}
         <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-3.5 sm:p-6 min-w-0">
@@ -407,7 +439,7 @@ export function Insights() {
             <Star size={18} className="text-[var(--color-primary)] shrink-0 sm:w-5 sm:h-5" />
             <span className="text-base sm:text-xl">🔥</span>
           </div>
-          <CardTitle className="mb-1 text-xs sm:text-base truncate">Zero-Spend Streak</CardTitle>
+          <CardTitle className="mb-1 text-xs sm:text-base truncate">Zero-Spend Days</CardTitle>
           <div className="text-xl sm:text-[32px] font-bold text-[var(--color-primary)] leading-tight tracking-tight truncate">{stats.zeroSpendDays} Days</div>
           <p className="text-[10px] sm:text-[11px] font-medium text-[var(--color-gray-dark)] mt-2 sm:mt-4 truncate">Current Cycle</p>
         </Card>
@@ -417,14 +449,18 @@ export function Insights() {
           <div className="flex justify-between items-start mb-2 sm:mb-4">
             <Wallet size={18} className="text-[var(--color-gray-dark)] shrink-0 sm:w-5 sm:h-5" />
           </div>
-          <CardTitle className="mb-1 text-xs sm:text-base truncate">Projected Rollover</CardTitle>
+          <CardTitle className="mb-1 text-xs sm:text-base truncate">
+            {isHistoricalPeriod ? "Final Rollover" : "Projected Rollover"}
+          </CardTitle>
           <div className={cn(
             "text-xl sm:text-[32px] font-bold leading-tight tracking-tight truncate",
             projectedRollover > 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"
           )}>
             {formatCurrency(projectedRollover)}
           </div>
-          <p className="text-[10px] sm:text-[11px] font-medium text-[var(--color-gray-dark)] mt-2 sm:mt-4 truncate">Estimated next month</p>
+          <p className="text-[10px] sm:text-[11px] font-medium text-[var(--color-gray-dark)] mt-2 sm:mt-4 truncate">
+            {isHistoricalPeriod ? "Actual final balance" : "Estimated next month"}
+          </p>
         </Card>
       </div>
 
