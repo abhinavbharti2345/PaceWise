@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Transaction, BudgetConfig } from '../features/budget/budgetEngine';
+import { calculateBudget, type Transaction, type BudgetConfig } from '../features/budget/budgetEngine';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from './useAuthStore';
 
@@ -81,9 +81,37 @@ export const useStore = create<AppState>()(
       setConfig: (config) => set({ config }),
       
       updateConfig: (partial) => {
+        const oldConfig = useStore.getState().config;
+        const oldTransactions = useStore.getState().transactions;
+        const isNewMonth = partial.startDate && new Date(partial.startDate).getTime() > new Date(oldConfig.startDate).getTime();
+        
+        let rolloverTx: Omit<Transaction, 'id'> | null = null;
+        
+        if (isNewMonth) {
+          // Calculate the exact final state of the previous budget period
+          const finalStats = calculateBudget(oldConfig, oldTransactions, oldConfig.endDate);
+          const unusedAmount = finalStats.todaysAvailable - finalStats.spentToday;
+          
+          if (unusedAmount > 0) {
+            rolloverTx = {
+              type: 'income',
+              amount: unusedAmount,
+              date: partial.startDate!, // Drop it on the first day of the new month
+              category: 'Rollover',
+              reason: 'Rollover from previous month',
+              source: 'other',
+            };
+          }
+        }
+
         set((state) => ({
           config: { ...state.config, ...partial }
         }));
+        
+        // If there's a rollover, add it using the existing action so it syncs properly
+        if (rolloverTx) {
+          useStore.getState().addTransaction(rolloverTx);
+        }
         
         const userId = useAuthStore.getState().user?.id;
         if (userId) {

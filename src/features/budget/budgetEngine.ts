@@ -66,6 +66,12 @@ export function calculateBudget(
 
   for (const t of transactions) {
     const tDate = startOfDay(new Date(t.date));
+    
+    // Ignore transactions that occurred before the current budget period start date
+    if (tDate.getTime() < start.getTime()) {
+      continue;
+    }
+
     const isToday = tDate.getTime() === today.getTime();
     const isBeforeToday = tDate.getTime() < today.getTime();
 

@@ -52,28 +52,16 @@
       "source_location": "L8"
     },
     {
-      "id": "src_components_modals_persontransactionmodal_persontransactionmodalprops",
-      "label": "PersonTransactionModalProps",
+      "id": "src_components_ui_badge_badgeprops",
+      "label": "BadgeProps",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 0,
       "file_type": "code",
-      "norm_label": "persontransactionmodalprops",
-      "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L9"
-    },
-    {
-      "id": "src_components_modals_settlemodal_settlemodalprops",
-      "label": "SettleModalProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "settlemodalprops",
-      "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L8"
+      "norm_label": "badgeprops",
+      "source_file": "src/components/ui/Badge.tsx",
+      "source_location": "L4"
     },
     {
       "id": "src_components_ui_button_buttonprops",
@@ -85,6 +73,18 @@
       "file_type": "code",
       "norm_label": "buttonprops",
       "source_file": "src/components/ui/Button.tsx",
+      "source_location": "L4"
+    },
+    {
+      "id": "src_components_ui_card_cardprops",
+      "label": "CardProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "cardprops",
+      "source_file": "src/components/ui/Card.tsx",
       "source_location": "L4"
     },
     {
@@ -136,18 +136,6 @@
       "source_location": "L15"
     },
     {
-      "id": "src_store_usestore_person",
-      "label": "Person",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "person",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L7"
-    },
-    {
       "id": "src_utils_categoryhelpers_categorymeta",
       "label": "CategoryMeta",
       "_callable": true,
@@ -160,64 +148,28 @@
       "source_location": "L3"
     },
     {
-      "id": "src_components_ui_badge_badgeprops",
-      "label": "BadgeProps",
+      "id": "src_app_errorboundaryprops",
+      "label": "ErrorBoundaryProps",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "badgeprops",
-      "source_file": "src/components/ui/Badge.tsx",
-      "source_location": "L4"
+      "norm_label": "errorboundaryprops",
+      "source_file": "src/App.tsx",
+      "source_location": "L19"
     },
     {
-      "id": "src_features_budget_budgetengine_budgetconfig",
-      "label": "BudgetConfig",
+      "id": "src_app_errorboundarystate",
+      "label": "ErrorBoundaryState",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "budgetconfig",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L21"
-    },
-    {
-      "id": "src_features_budget_budgetengine_budgetstats",
-      "label": "BudgetStats",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "budgetstats",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L29"
-    },
-    {
-      "id": "src_features_budget_budgetengine_transaction",
-      "label": "Transaction",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "transaction",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L5"
-    },
-    {
-      "id": "src_features_budget_budgetengine_transactiontype",
-      "label": "TransactionType",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "transactiontype",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L3"
+      "norm_label": "errorboundarystate",
+      "source_file": "src/App.tsx",
+      "source_location": "L23"
     },
     {
       "id": "src_store_useauthstore_authstate",
@@ -232,28 +184,112 @@
       "source_location": "L6"
     },
     {
+      "id": "src_features_budget_budgetengine_budgetconfig",
+      "label": "BudgetConfig",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "budgetconfig",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "src_features_budget_budgetengine_budgetstats",
+      "label": "BudgetStats",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "budgetstats",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "src_features_budget_budgetengine_transaction",
+      "label": "Transaction",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "transaction",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "src_features_budget_budgetengine_transactiontype",
+      "label": "TransactionType",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "transactiontype",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L3"
+    },
+    {
       "id": "src_store_usestore_appstate",
       "label": "AppState",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 1,
+      "community": 6,
       "file_type": "code",
       "norm_label": "appstate",
       "source_file": "src/store/useStore.ts",
       "source_location": "L14"
     },
     {
-      "id": "src_components_ui_card_cardprops",
-      "label": "CardProps",
+      "id": "src_app_errorboundary",
+      "label": "ErrorBoundary",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "file_type": "code",
-      "norm_label": "cardprops",
-      "source_file": "src/components/ui/Card.tsx",
-      "source_location": "L4"
+      "norm_label": "errorboundary",
+      "source_file": "src/App.tsx",
+      "source_location": "L28"
+    },
+    {
+      "id": "src_components_modals_persontransactionmodal_persontransactionmodalprops",
+      "label": "PersonTransactionModalProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "file_type": "code",
+      "norm_label": "persontransactionmodalprops",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
+      "source_location": "L9"
+    },
+    {
+      "id": "src_components_modals_settlemodal_settlemodalprops",
+      "label": "SettleModalProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "file_type": "code",
+      "norm_label": "settlemodalprops",
+      "source_file": "src/components/modals/SettleModal.tsx",
+      "source_location": "L8"
+    },
+    {
+      "id": "src_store_usestore_person",
+      "label": "Person",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 8,
+      "file_type": "code",
+      "norm_label": "person",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L7"
     },
     {
       "id": "src_components_modals_addbillmodal_addbillmodal",
@@ -300,17 +336,6 @@
       "source_location": "L13"
     },
     {
-      "id": "src_components_modals_persontransactionmodal_persontransactionmodal",
-      "label": "PersonTransactionModal()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "persontransactionmodal()",
-      "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L16"
-    },
-    {
       "id": "src_components_modals_settlemodal_settlemodal",
       "label": "SettleModal()",
       "_callable": true,
@@ -320,6 +345,17 @@
       "norm_label": "settlemodal()",
       "source_file": "src/components/modals/SettleModal.tsx",
       "source_location": "L14"
+    },
+    {
+      "id": "src_components_ui_badge_badge",
+      "label": "Badge()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "badge()",
+      "source_file": "src/components/ui/Badge.tsx",
+      "source_location": "L9"
     },
     {
       "id": "src_components_ui_button_button",
@@ -333,6 +369,39 @@
       "source_location": "L9"
     },
     {
+      "id": "src_components_ui_card_card",
+      "label": "Card()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "card()",
+      "source_file": "src/components/ui/Card.tsx",
+      "source_location": "L8"
+    },
+    {
+      "id": "src_components_ui_card_cardheader",
+      "label": "CardHeader()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "cardheader()",
+      "source_file": "src/components/ui/Card.tsx",
+      "source_location": "L22"
+    },
+    {
+      "id": "src_components_ui_card_cardtitle",
+      "label": "CardTitle()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "cardtitle()",
+      "source_file": "src/components/ui/Card.tsx",
+      "source_location": "L30"
+    },
+    {
       "id": "src_components_ui_iconbadge_iconbadge",
       "label": "IconBadge()",
       "_callable": true,
@@ -342,50 +411,6 @@
       "norm_label": "iconbadge()",
       "source_file": "src/components/ui/IconBadge.tsx",
       "source_location": "L12"
-    },
-    {
-      "id": "src_pages_people_people",
-      "label": "People()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "people()",
-      "source_file": "src/pages/People.tsx",
-      "source_location": "L10"
-    },
-    {
-      "id": "src_pages_persondetails_persondetails",
-      "label": "PersonDetails()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "persondetails()",
-      "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L21"
-    },
-    {
-      "id": "src_pages_transactions_transactions",
-      "label": "Transactions()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "transactions()",
-      "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L17"
-    },
-    {
-      "id": "src_utils_categoryhelpers_getcategorymeta",
-      "label": "getCategoryMeta()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "getcategorymeta()",
-      "source_file": "src/utils/categoryHelpers.ts",
-      "source_location": "L41"
     },
     {
       "id": "src_utils_cn_cn",
@@ -399,6 +424,28 @@
       "source_location": "L4"
     },
     {
+      "id": "src_app_app",
+      "label": "App()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "app()",
+      "source_file": "src/App.tsx",
+      "source_location": "L141"
+    },
+    {
+      "id": "src_app_appcontent",
+      "label": "AppContent()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "appcontent()",
+      "source_file": "src/App.tsx",
+      "source_location": "L71"
+    },
+    {
       "id": "src_components_layout_applayout_applayout",
       "label": "AppLayout()",
       "_callable": true,
@@ -410,28 +457,6 @@
       "source_location": "L16"
     },
     {
-      "id": "src_components_ui_badge_badge",
-      "label": "Badge()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "badge()",
-      "source_file": "src/components/ui/Badge.tsx",
-      "source_location": "L9"
-    },
-    {
-      "id": "src_features_budget_budgetengine_calculatebudget",
-      "label": "calculateBudget()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "calculatebudget()",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L44"
-    },
-    {
       "id": "src_lib_supabasesync_addpersontosupabase",
       "label": "addPersonToSupabase()",
       "_callable": true,
@@ -440,7 +465,7 @@
       "file_type": "code",
       "norm_label": "addpersontosupabase()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L256"
+      "source_location": "L266"
     },
     {
       "id": "src_lib_supabasesync_addtransactiontosupabase",
@@ -451,7 +476,7 @@
       "file_type": "code",
       "norm_label": "addtransactiontosupabase()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L214"
+      "source_location": "L224"
     },
     {
       "id": "src_lib_supabasesync_deletepersonfromsupabase",
@@ -462,7 +487,7 @@
       "file_type": "code",
       "norm_label": "deletepersonfromsupabase()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L277"
+      "source_location": "L287"
     },
     {
       "id": "src_lib_supabasesync_deletetransactionfromsupabase",
@@ -473,7 +498,7 @@
       "file_type": "code",
       "norm_label": "deletetransactionfromsupabase()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L244"
+      "source_location": "L254"
     },
     {
       "id": "src_lib_supabasesync_updatepersonbalanceinsupabase",
@@ -484,7 +509,40 @@
       "file_type": "code",
       "norm_label": "updatepersonbalanceinsupabase()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L289"
+      "source_location": "L299"
+    },
+    {
+      "id": "src_lib_supabasesync_usesupabasesync",
+      "label": "useSupabaseSync()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "usesupabasesync()",
+      "source_file": "src/lib/supabaseSync.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "src_pages_auth_authpage",
+      "label": "AuthPage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "authpage()",
+      "source_file": "src/pages/Auth.tsx",
+      "source_location": "L9"
+    },
+    {
+      "id": "src_pages_dashboard_dashboard",
+      "label": "Dashboard()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "dashboard()",
+      "source_file": "src/pages/Dashboard.tsx",
+      "source_location": "L25"
     },
     {
       "id": "src_pages_insights_insights",
@@ -498,110 +556,33 @@
       "source_location": "L15"
     },
     {
-      "id": "src_store_usestore_getmonthdates",
-      "label": "getMonthDates()",
+      "id": "src_pages_people_people",
+      "label": "People()",
       "_callable": true,
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "getmonthdates()",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L53"
+      "norm_label": "people()",
+      "source_file": "src/pages/People.tsx",
+      "source_location": "L10"
     },
     {
-      "id": "src_app_app",
-      "label": "App()",
+      "id": "src_pages_persondetails_persondetails",
+      "label": "PersonDetails()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "file_type": "code",
-      "norm_label": "app()",
-      "source_file": "src/App.tsx",
-      "source_location": "L72"
-    },
-    {
-      "id": "src_app_appcontent",
-      "label": "AppContent()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "appcontent()",
-      "source_file": "src/App.tsx",
-      "source_location": "L17"
-    },
-    {
-      "id": "src_components_ui_card_card",
-      "label": "Card()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "card()",
-      "source_file": "src/components/ui/Card.tsx",
-      "source_location": "L8"
-    },
-    {
-      "id": "src_components_ui_card_cardheader",
-      "label": "CardHeader()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "cardheader()",
-      "source_file": "src/components/ui/Card.tsx",
-      "source_location": "L22"
-    },
-    {
-      "id": "src_components_ui_card_cardtitle",
-      "label": "CardTitle()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "cardtitle()",
-      "source_file": "src/components/ui/Card.tsx",
-      "source_location": "L30"
-    },
-    {
-      "id": "src_lib_supabasesync_usesupabasesync",
-      "label": "useSupabaseSync()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "usesupabasesync()",
-      "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L15"
-    },
-    {
-      "id": "src_pages_auth_authpage",
-      "label": "AuthPage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "authpage()",
-      "source_file": "src/pages/Auth.tsx",
-      "source_location": "L9"
-    },
-    {
-      "id": "src_pages_dashboard_dashboard",
-      "label": "Dashboard()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "dashboard()",
-      "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L25"
+      "norm_label": "persondetails()",
+      "source_file": "src/pages/PersonDetails.tsx",
+      "source_location": "L21"
     },
     {
       "id": "src_pages_profile_profile",
       "label": "Profile()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "file_type": "code",
       "norm_label": "profile()",
       "source_file": "src/pages/Profile.tsx",
@@ -612,11 +593,121 @@
       "label": "Settings()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "file_type": "code",
       "norm_label": "settings()",
       "source_file": "src/pages/Settings.tsx",
       "source_location": "L21"
+    },
+    {
+      "id": "src_pages_transactions_transactions",
+      "label": "Transactions()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "transactions()",
+      "source_file": "src/pages/Transactions.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "src_store_useauthstore_fetchandsetprofile",
+      "label": "fetchAndSetProfile()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "fetchandsetprofile()",
+      "source_file": "src/store/useAuthStore.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "src_utils_categoryhelpers_getcategorymeta",
+      "label": "getCategoryMeta()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "getcategorymeta()",
+      "source_file": "src/utils/categoryHelpers.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "src_features_budget_budgetengine_calculatebudget",
+      "label": "calculateBudget()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "calculatebudget()",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "src_store_usestore_getmonthdates",
+      "label": "getMonthDates()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "getmonthdates()",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L55"
+    },
+    {
+      "id": "src_app_errorboundary_componentdidcatch",
+      "label": ".componentDidCatch()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "file_type": "code",
+      "norm_label": ".componentdidcatch()",
+      "source_file": "src/App.tsx",
+      "source_location": "L38"
+    },
+    {
+      "id": "src_app_errorboundary_constructor",
+      "label": ".constructor()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "file_type": "code",
+      "norm_label": ".constructor()",
+      "source_file": "src/App.tsx",
+      "source_location": "L29"
+    },
+    {
+      "id": "src_app_errorboundary_getderivedstatefromerror",
+      "label": ".getDerivedStateFromError()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "file_type": "code",
+      "norm_label": ".getderivedstatefromerror()",
+      "source_file": "src/App.tsx",
+      "source_location": "L34"
+    },
+    {
+      "id": "src_app_errorboundary_render",
+      "label": ".render()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "file_type": "code",
+      "norm_label": ".render()",
+      "source_file": "src/App.tsx",
+      "source_location": "L42"
+    },
+    {
+      "id": "src_components_modals_persontransactionmodal_persontransactionmodal",
+      "label": "PersonTransactionModal()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 8,
+      "file_type": "code",
+      "norm_label": "persontransactionmodal()",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
+      "source_location": "L16"
     },
     {
       "id": "src_components_modals_addbillmodal",
@@ -659,16 +750,6 @@
       "source_location": "L1"
     },
     {
-      "id": "src_components_modals_persontransactionmodal",
-      "label": "PersonTransactionModal.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "persontransactionmodal.tsx",
-      "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "src_components_modals_settlemodal",
       "label": "SettleModal.tsx",
       "_origin": "ast",
@@ -679,6 +760,16 @@
       "source_location": "L1"
     },
     {
+      "id": "src_components_ui_badge",
+      "label": "Badge.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "badge.tsx",
+      "source_file": "src/components/ui/Badge.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_components_ui_button",
       "label": "Button.tsx",
       "_origin": "ast",
@@ -686,6 +777,16 @@
       "file_type": "code",
       "norm_label": "button.tsx",
       "source_file": "src/components/ui/Button.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_ui_card",
+      "label": "Card.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "card.tsx",
+      "source_file": "src/components/ui/Card.tsx",
       "source_location": "L1"
     },
     {
@@ -719,6 +820,16 @@
       "source_location": "L9"
     },
     {
+      "id": "src_pages_auth",
+      "label": "Auth.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "auth.tsx",
+      "source_file": "src/pages/Auth.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_pages_dashboard",
       "label": "Dashboard.tsx",
       "_origin": "ast",
@@ -726,6 +837,16 @@
       "file_type": "code",
       "norm_label": "dashboard.tsx",
       "source_file": "src/pages/Dashboard.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_pages_insights",
+      "label": "Insights.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "insights.tsx",
+      "source_file": "src/pages/Insights.tsx",
       "source_location": "L1"
     },
     {
@@ -749,6 +870,16 @@
       "source_location": "L1"
     },
     {
+      "id": "src_pages_settings",
+      "label": "Settings.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "settings.tsx",
+      "source_file": "src/pages/Settings.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_pages_transactions",
       "label": "Transactions.tsx",
       "_origin": "ast",
@@ -757,16 +888,6 @@
       "norm_label": "transactions.tsx",
       "source_file": "src/pages/Transactions.tsx",
       "source_location": "L1"
-    },
-    {
-      "id": "src_store_usestore_usestore",
-      "label": "useStore",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "usestore",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L127"
     },
     {
       "id": "src_utils_categoryhelpers",
@@ -819,64 +940,14 @@
       "source_location": "L1"
     },
     {
-      "id": "concept_carry_forward",
-      "label": "Carry-Forward System",
+      "id": "src_app",
+      "label": "App.tsx",
       "_origin": "ast",
       "community": 1,
-      "community_name": "Build & Dev Tooling",
-      "file_type": "document",
-      "norm_label": "carry-forward system",
-      "source_file": "Docs/Student_Money_Tracker_PRD.md",
-      "source_location": "L53",
-      "summary": "Unused daily allowance carries forward to subsequent days, rewarding underspending without inflating base daily budget."
-    },
-    {
-      "id": "concept_daily_budget",
-      "label": "Base Daily Budget Calculation",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "Build & Dev Tooling",
-      "file_type": "document",
-      "norm_label": "base daily budget calculation",
-      "source_file": "Docs/Student_Money_Tracker_PRD.md",
-      "source_location": "L49",
-      "summary": "Daily spending allowance calculated from remaining monthly allowance divided by total/remaining budget days."
-    },
-    {
-      "id": "concept_dynamic_recalc",
-      "label": "Dynamic Recalculation on Bills",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "Build & Dev Tooling",
-      "file_type": "document",
-      "norm_label": "dynamic recalculation on bills",
-      "source_file": "Docs/Student_Money_Tracker_PRD.md",
-      "source_location": "L64",
-      "summary": "Fixed bills and non-discretionary payments reduce monthly budget and automatically adjust daily allowance."
-    },
-    {
-      "id": "concept_people_debts",
-      "label": "People & Settlements",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "Build & Dev Tooling",
-      "file_type": "document",
-      "norm_label": "people & settlements",
-      "source_file": "Docs/Student_Money_Tracker_PRD.md",
-      "source_location": "L125",
-      "summary": "Tracks informal lending/borrowing ('I gave money' vs 'I took money') with full/partial settlement history."
-    },
-    {
-      "id": "doc_prd",
-      "label": "Student Money Tracker PRD",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "Build & Dev Tooling",
-      "file_type": "document",
-      "norm_label": "student money tracker prd",
-      "source_file": "Docs/Student_Money_Tracker_PRD.md",
-      "source_location": "L1",
-      "summary": "Product Requirements Document defining core budget philosophy, dynamic daily budget pacing, carry-forward, bills, and informal debt tracking."
+      "file_type": "code",
+      "norm_label": "app.tsx",
+      "source_file": "src/App.tsx",
+      "source_location": "L1"
     },
     {
       "id": "src_components_layout_applayout",
@@ -897,26 +968,6 @@
       "norm_label": "navitems",
       "source_file": "src/components/layout/AppLayout.tsx",
       "source_location": "L8"
-    },
-    {
-      "id": "src_components_ui_badge",
-      "label": "Badge.tsx",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "badge.tsx",
-      "source_file": "src/components/ui/Badge.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_features_budget_budgetengine",
-      "label": "budgetEngine.ts",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "budgetengine.ts",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L1"
     },
     {
       "id": "src_lib_supabase",
@@ -949,6 +1000,26 @@
       "source_location": "L1"
     },
     {
+      "id": "src_main",
+      "label": "main.tsx",
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "main.tsx",
+      "source_file": "src/main.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_pages_profile",
+      "label": "Profile.tsx",
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "profile.tsx",
+      "source_file": "src/pages/Profile.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_store_useauthstore",
       "label": "useAuthStore.ts",
       "_origin": "ast",
@@ -959,120 +1030,104 @@
       "source_location": "L1"
     },
     {
-      "id": "src_store_usestore",
-      "label": "useStore.ts",
+      "id": "src_store_useauthstore_useauthstore",
+      "label": "useAuthStore",
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "usestore.ts",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L1"
+      "norm_label": "useauthstore",
+      "source_file": "src/store/useAuthStore.ts",
+      "source_location": "L64"
     },
     {
-      "id": "src_store_usestore_mockconfig",
-      "label": "mockConfig",
+      "id": "src_store_usestore_usestore",
+      "label": "useStore",
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "mockconfig",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L62"
-    },
-    {
-      "id": "src_store_usestore_mockpeople",
-      "label": "mockPeople",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "mockpeople",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L75"
-    },
-    {
-      "id": "src_store_usestore_mocktransactions",
-      "label": "mockTransactions",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "mocktransactions",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L81"
-    },
-    {
-      "id": "src_store_usestore_now",
-      "label": "now",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "now",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L70"
-    },
-    {
-      "id": "src_store_usestore_start_monthstart_end_monthend",
-      "label": "{ start: monthStart, end: monthEnd }",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "{ start: monthstart, end: monthend }",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L60"
-    },
-    {
-      "id": "src_store_usestore_todayiso",
-      "label": "todayIso",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "todayiso",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L71"
-    },
-    {
-      "id": "src_store_usestore_twodaysagoiso",
-      "label": "twoDaysAgoIso",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "twodaysagoiso",
+      "norm_label": "usestore",
       "source_file": "src/store/useStore.ts",
       "source_location": "L73"
     },
     {
-      "id": "src_store_usestore_yesterdayiso",
-      "label": "yesterdayIso",
+      "id": "tsconfig",
+      "label": "tsconfig.json",
       "_origin": "ast",
-      "community": 1,
+      "community": 10,
       "file_type": "code",
-      "norm_label": "yesterdayiso",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L72"
-    },
-    {
-      "id": "tests_budget_budgetengine_test",
-      "label": "budgetEngine.test.ts",
-      "_origin": "ast",
-      "community": 1,
-      "file_type": "code",
-      "norm_label": "budgetengine.test.ts",
-      "source_file": "tests/budget/budgetEngine.test.ts",
+      "norm_label": "tsconfig.json",
+      "source_file": "tsconfig.json",
       "source_location": "L1"
     },
     {
-      "id": "tests_budget_comprehensiveengine_test",
-      "label": "comprehensiveEngine.test.ts",
+      "id": "tsconfig_files",
+      "label": "files",
       "_origin": "ast",
-      "community": 1,
+      "community": 10,
       "file_type": "code",
-      "norm_label": "comprehensiveengine.test.ts",
-      "source_file": "tests/budget/comprehensiveEngine.test.ts",
+      "norm_label": "files",
+      "source_file": "tsconfig.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "tsconfig_references",
+      "label": "references",
+      "_origin": "ast",
+      "community": 10,
+      "file_type": "code",
+      "norm_label": "references",
+      "source_file": "tsconfig.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "concept_design_tokens",
+      "label": "Global Design Tokens",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Stitch Design System Tokens",
+      "file_type": "document",
+      "norm_label": "global design tokens",
+      "source_file": "Docs/Pace_Stitch_Design_Prompts.md",
+      "source_location": "L18",
+      "summary": "Fintech palette: Primary Red, Orange, Success Green, Dark Neutral, 16-20px rounded cards, 12px buttons/inputs."
+    },
+    {
+      "id": "doc_stitch_prompts",
+      "label": "Pace Stitch Design Prompts",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "Stitch Design System Tokens",
+      "file_type": "document",
+      "norm_label": "pace stitch design prompts",
+      "source_file": "Docs/Pace_Stitch_Design_Prompts.md",
+      "source_location": "L1",
+      "summary": "High-fidelity Stitch design prompts specifying color tokens (#FF3B30, #FFB400, #25C266, #14171A), typography, and component styling."
+    },
+    {
+      "id": "vercel",
+      "label": "vercel.json",
+      "_origin": "ast",
+      "community": 12,
+      "file_type": "code",
+      "norm_label": "vercel.json",
+      "source_file": "vercel.json",
       "source_location": "L1"
+    },
+    {
+      "id": "vercel_rewrites",
+      "label": "rewrites",
+      "_origin": "ast",
+      "community": 12,
+      "file_type": "code",
+      "norm_label": "rewrites",
+      "source_file": "vercel.json",
+      "source_location": "L2"
     },
     {
       "id": "vite_config",
       "label": "vite.config.ts",
       "_origin": "ast",
-      "community": 10,
+      "community": 13,
       "file_type": "code",
       "norm_label": "vite.config.ts",
       "source_file": "vite.config.ts",
@@ -2039,90 +2094,140 @@
       "source_location": "L5"
     },
     {
-      "id": "src_app",
-      "label": "App.tsx",
+      "id": "concept_carry_forward",
+      "label": "Carry-Forward System",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Build & Dev Tooling",
+      "file_type": "document",
+      "norm_label": "carry-forward system",
+      "source_file": "Docs/Student_Money_Tracker_PRD.md",
+      "source_location": "L53",
+      "summary": "Unused daily allowance carries forward to subsequent days, rewarding underspending without inflating base daily budget."
+    },
+    {
+      "id": "concept_daily_budget",
+      "label": "Base Daily Budget Calculation",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Build & Dev Tooling",
+      "file_type": "document",
+      "norm_label": "base daily budget calculation",
+      "source_file": "Docs/Student_Money_Tracker_PRD.md",
+      "source_location": "L49",
+      "summary": "Daily spending allowance calculated from remaining monthly allowance divided by total/remaining budget days."
+    },
+    {
+      "id": "concept_dynamic_recalc",
+      "label": "Dynamic Recalculation on Bills",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Build & Dev Tooling",
+      "file_type": "document",
+      "norm_label": "dynamic recalculation on bills",
+      "source_file": "Docs/Student_Money_Tracker_PRD.md",
+      "source_location": "L64",
+      "summary": "Fixed bills and non-discretionary payments reduce monthly budget and automatically adjust daily allowance."
+    },
+    {
+      "id": "concept_people_debts",
+      "label": "People & Settlements",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Build & Dev Tooling",
+      "file_type": "document",
+      "norm_label": "people & settlements",
+      "source_file": "Docs/Student_Money_Tracker_PRD.md",
+      "source_location": "L125",
+      "summary": "Tracks informal lending/borrowing ('I gave money' vs 'I took money') with full/partial settlement history."
+    },
+    {
+      "id": "doc_prd",
+      "label": "Student Money Tracker PRD",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "Build & Dev Tooling",
+      "file_type": "document",
+      "norm_label": "student money tracker prd",
+      "source_file": "Docs/Student_Money_Tracker_PRD.md",
+      "source_location": "L1",
+      "summary": "Product Requirements Document defining core budget philosophy, dynamic daily budget pacing, carry-forward, bills, and informal debt tracking."
+    },
+    {
+      "id": "src_features_budget_budgetengine",
+      "label": "budgetEngine.ts",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "app.tsx",
-      "source_file": "src/App.tsx",
+      "norm_label": "budgetengine.ts",
+      "source_file": "src/features/budget/budgetEngine.ts",
       "source_location": "L1"
     },
     {
-      "id": "src_components_ui_card",
-      "label": "Card.tsx",
+      "id": "src_store_usestore",
+      "label": "useStore.ts",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "card.tsx",
-      "source_file": "src/components/ui/Card.tsx",
+      "norm_label": "usestore.ts",
+      "source_file": "src/store/useStore.ts",
       "source_location": "L1"
     },
     {
-      "id": "src_main",
-      "label": "main.tsx",
+      "id": "src_store_usestore_defaultconfig",
+      "label": "defaultConfig",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "main.tsx",
-      "source_file": "src/main.tsx",
+      "norm_label": "defaultconfig",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "src_store_usestore_start_monthstart_end_monthend",
+      "label": "{ start: monthStart, end: monthEnd }",
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "{ start: monthstart, end: monthend }",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "tests_budget_budgetengine_test",
+      "label": "budgetEngine.test.ts",
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "budgetengine.test.ts",
+      "source_file": "tests/budget/budgetEngine.test.ts",
       "source_location": "L1"
     },
     {
-      "id": "src_pages_auth",
-      "label": "Auth.tsx",
+      "id": "tests_budget_comprehensiveengine_test",
+      "label": "comprehensiveEngine.test.ts",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "auth.tsx",
-      "source_file": "src/pages/Auth.tsx",
+      "norm_label": "comprehensiveengine.test.ts",
+      "source_file": "tests/budget/comprehensiveEngine.test.ts",
       "source_location": "L1"
     },
     {
-      "id": "src_pages_insights",
-      "label": "Insights.tsx",
+      "id": "src_components_modals_persontransactionmodal",
+      "label": "PersonTransactionModal.tsx",
       "_origin": "ast",
-      "community": 6,
+      "community": 8,
       "file_type": "code",
-      "norm_label": "insights.tsx",
-      "source_file": "src/pages/Insights.tsx",
+      "norm_label": "persontransactionmodal.tsx",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
       "source_location": "L1"
-    },
-    {
-      "id": "src_pages_profile",
-      "label": "Profile.tsx",
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "profile.tsx",
-      "source_file": "src/pages/Profile.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_pages_settings",
-      "label": "Settings.tsx",
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "settings.tsx",
-      "source_file": "src/pages/Settings.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_store_useauthstore_useauthstore",
-      "label": "useAuthStore",
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "useauthstore",
-      "source_file": "src/store/useAuthStore.ts",
-      "source_location": "L20"
     },
     {
       "id": "concept_dashboard_layout",
       "label": "Dashboard Visual Hierarchy",
       "_origin": "ast",
-      "community": 7,
+      "community": 9,
       "community_name": "Package Metadata",
       "file_type": "document",
       "norm_label": "dashboard visual hierarchy",
@@ -2134,7 +2239,7 @@
       "id": "concept_semantic_states",
       "label": "Semantic Money States",
       "_origin": "ast",
-      "community": 7,
+      "community": 9,
       "community_name": "Package Metadata",
       "file_type": "document",
       "norm_label": "semantic money states",
@@ -2146,67 +2251,13 @@
       "id": "doc_uiux_spec",
       "label": "UI/UX Design Specification",
       "_origin": "ast",
-      "community": 7,
+      "community": 9,
       "community_name": "Package Metadata",
       "file_type": "document",
       "norm_label": "ui/ux design specification",
       "source_file": "Docs/Student_Money_Tracker_UIUX.md",
       "source_location": "L1",
       "summary": "UI and navigation architecture: 5 primary sections (Dashboard, Transactions, People, Insights, Settings) with desktop sidebar and mobile bottom bar."
-    },
-    {
-      "id": "tsconfig",
-      "label": "tsconfig.json",
-      "_origin": "ast",
-      "community": 8,
-      "file_type": "code",
-      "norm_label": "tsconfig.json",
-      "source_file": "tsconfig.json",
-      "source_location": "L1"
-    },
-    {
-      "id": "tsconfig_files",
-      "label": "files",
-      "_origin": "ast",
-      "community": 8,
-      "file_type": "code",
-      "norm_label": "files",
-      "source_file": "tsconfig.json",
-      "source_location": "L2"
-    },
-    {
-      "id": "tsconfig_references",
-      "label": "references",
-      "_origin": "ast",
-      "community": 8,
-      "file_type": "code",
-      "norm_label": "references",
-      "source_file": "tsconfig.json",
-      "source_location": "L3"
-    },
-    {
-      "id": "concept_design_tokens",
-      "label": "Global Design Tokens",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "Stitch Design System Tokens",
-      "file_type": "document",
-      "norm_label": "global design tokens",
-      "source_file": "Docs/Pace_Stitch_Design_Prompts.md",
-      "source_location": "L18",
-      "summary": "Fintech palette: Primary Red, Orange, Success Green, Dark Neutral, 16-20px rounded cards, 12px buttons/inputs."
-    },
-    {
-      "id": "doc_stitch_prompts",
-      "label": "Pace Stitch Design Prompts",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "Stitch Design System Tokens",
-      "file_type": "document",
-      "norm_label": "pace stitch design prompts",
-      "source_file": "Docs/Pace_Stitch_Design_Prompts.md",
-      "source_location": "L1",
-      "summary": "High-fidelity Stitch design prompts specifying color tokens (#FF3B30, #FFB400, #25C266, #14171A), typography, and component styling."
     }
   ],
   "links": [
@@ -2219,7 +2270,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/App.tsx",
-      "source_location": "L18",
+      "source_location": "L72",
       "weight": 1.0
     },
     {
@@ -2231,7 +2282,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/App.tsx",
-      "source_location": "L19",
+      "source_location": "L73",
       "weight": 1.0
     },
     {
@@ -2243,7 +2294,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/App.tsx",
-      "source_location": "L22",
+      "source_location": "L76",
       "weight": 1.0
     },
     {
@@ -2531,19 +2582,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L16",
-      "weight": 1.0
-    },
-    {
-      "source": "src_lib_supabasesync_usesupabasesync",
-      "target": "src_store_usestore_usestore",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L17",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -2567,7 +2606,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L146",
+      "source_location": "L151",
       "weight": 1.0
     },
     {
@@ -2579,7 +2618,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L227",
+      "source_location": "L232",
       "weight": 1.0
     },
     {
@@ -2784,6 +2823,18 @@
       "context": "call",
       "source_file": "src/pages/Transactions.tsx",
       "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "src_store_useauthstore_useauthstore",
+      "target": "src_store_useauthstore_fetchandsetprofile",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/store/useAuthStore.ts",
+      "source_location": "L168",
       "weight": 1.0
     },
     {
@@ -3124,7 +3175,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_auth_authpage",
+      "target": "src_pages_settings_settings",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3136,7 +3187,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_profile_profile",
+      "target": "src_pages_auth_authpage",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3148,7 +3199,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_store_usestore_usestore",
+      "target": "src_pages_profile_profile",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3160,7 +3211,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_store_useauthstore_useauthstore",
+      "target": "src_store_usestore_usestore",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3172,7 +3223,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_lib_supabasesync_usesupabasesync",
+      "target": "src_store_useauthstore_useauthstore",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3184,19 +3235,19 @@
     },
     {
       "source": "src_app",
-      "target": "src_components_layout_applayout_applayout",
+      "target": "src_lib_supabasesync_usesupabasesync",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/App.tsx",
-      "source_location": "L3",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
       "source": "src_app",
-      "target": "src_pages_dashboard_dashboard",
+      "target": "src_components_layout_applayout_applayout",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3208,7 +3259,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_transactions_transactions",
+      "target": "src_pages_dashboard_dashboard",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3220,7 +3271,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_people_people",
+      "target": "src_pages_transactions_transactions",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3232,7 +3283,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_persondetails_persondetails",
+      "target": "src_pages_people_people",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3244,7 +3295,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_insights_insights",
+      "target": "src_pages_persondetails_persondetails",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3256,7 +3307,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_settings_settings",
+      "target": "src_pages_insights_insights",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4696,7 +4747,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_auth",
+      "target": "src_pages_settings",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4708,7 +4759,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_profile",
+      "target": "src_pages_auth",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4720,7 +4771,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_store_usestore",
+      "target": "src_pages_profile",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4732,7 +4783,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_store_useauthstore",
+      "target": "src_store_usestore",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4744,7 +4795,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_lib_supabasesync",
+      "target": "src_store_useauthstore",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4756,19 +4807,19 @@
     },
     {
       "source": "src_app",
-      "target": "src_components_layout_applayout",
+      "target": "src_lib_supabasesync",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/App.tsx",
-      "source_location": "L3",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
       "source": "src_app",
-      "target": "src_pages_dashboard",
+      "target": "src_components_layout_applayout",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4780,7 +4831,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_transactions",
+      "target": "src_pages_dashboard",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4792,7 +4843,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_people",
+      "target": "src_pages_transactions",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4804,7 +4855,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_persondetails",
+      "target": "src_pages_people",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4816,7 +4867,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_insights",
+      "target": "src_pages_persondetails",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4828,7 +4879,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_settings",
+      "target": "src_pages_insights",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -6373,24 +6424,57 @@
     },
     {
       "source": "src_app",
-      "target": "src_app_appcontent",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/App.tsx",
-      "source_location": "L17",
-      "weight": 1.0
-    },
-    {
-      "source": "src_app",
       "target": "src_app_app",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L72",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app",
+      "target": "src_app_errorboundaryprops",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/App.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app",
+      "target": "src_app_errorboundarystate",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/App.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app",
+      "target": "src_app_errorboundary",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/App.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app",
+      "target": "src_app_appcontent",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/App.tsx",
+      "source_location": "L71",
       "weight": 1.0
     },
     {
@@ -6747,24 +6831,13 @@
     },
     {
       "source": "src_lib_supabasesync",
-      "target": "src_lib_supabasesync_usesupabasesync",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L15",
-      "weight": 1.0
-    },
-    {
-      "source": "src_lib_supabasesync",
       "target": "src_lib_supabasesync_addtransactiontosupabase",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L214",
+      "source_location": "L224",
       "weight": 1.0
     },
     {
@@ -6775,7 +6848,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L244",
+      "source_location": "L254",
+      "weight": 1.0
+    },
+    {
+      "source": "src_lib_supabasesync",
+      "target": "src_lib_supabasesync_usesupabasesync",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/lib/supabaseSync.ts",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -6786,7 +6870,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L256",
+      "source_location": "L266",
       "weight": 1.0
     },
     {
@@ -6797,7 +6881,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L277",
+      "source_location": "L287",
       "weight": 1.0
     },
     {
@@ -6808,7 +6892,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L289",
+      "source_location": "L299",
       "weight": 1.0
     },
     {
@@ -6923,13 +7007,13 @@
     },
     {
       "source": "src_store_useauthstore",
-      "target": "src_store_useauthstore_useauthstore",
+      "target": "src_store_useauthstore_fetchandsetprofile",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useAuthStore.ts",
-      "source_location": "L20",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -6944,14 +7028,14 @@
       "weight": 1.0
     },
     {
-      "source": "src_store_usestore",
-      "target": "src_store_usestore_usestore",
+      "source": "src_store_useauthstore",
+      "target": "src_store_useauthstore_useauthstore",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L127",
+      "source_file": "src/store/useAuthStore.ts",
+      "source_location": "L64",
       "weight": 1.0
     },
     {
@@ -6973,7 +7057,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L53",
+      "source_location": "L55",
       "weight": 1.0
     },
     {
@@ -6984,18 +7068,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L60",
+      "source_location": "L62",
       "weight": 1.0
     },
     {
       "source": "src_store_usestore",
-      "target": "src_store_usestore_mockconfig",
+      "target": "src_store_usestore_defaultconfig",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L62",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -7011,68 +7095,13 @@
     },
     {
       "source": "src_store_usestore",
-      "target": "src_store_usestore_now",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L70",
-      "weight": 1.0
-    },
-    {
-      "source": "src_store_usestore",
-      "target": "src_store_usestore_todayiso",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L71",
-      "weight": 1.0
-    },
-    {
-      "source": "src_store_usestore",
-      "target": "src_store_usestore_yesterdayiso",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L72",
-      "weight": 1.0
-    },
-    {
-      "source": "src_store_usestore",
-      "target": "src_store_usestore_twodaysagoiso",
+      "target": "src_store_usestore_usestore",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
       "source_location": "L73",
-      "weight": 1.0
-    },
-    {
-      "source": "src_store_usestore",
-      "target": "src_store_usestore_mockpeople",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L75",
-      "weight": 1.0
-    },
-    {
-      "source": "src_store_usestore",
-      "target": "src_store_usestore_mocktransactions",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L81",
       "weight": 1.0
     },
     {
@@ -7549,6 +7578,61 @@
       "weight": 1.0
     },
     {
+      "source": "vercel",
+      "target": "vercel_rewrites",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "vercel.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_errorboundary",
+      "target": "src_app_errorboundary_constructor",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/App.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_errorboundary",
+      "target": "src_app_errorboundary_getderivedstatefromerror",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/App.tsx",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_errorboundary",
+      "target": "src_app_errorboundary_componentdidcatch",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/App.tsx",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_errorboundary",
+      "target": "src_app_errorboundary_render",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/App.tsx",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
       "source": "doc_prd",
       "target": "concept_carry_forward",
       "relation": "defines",
@@ -7649,5 +7733,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "65ec35d1e8ceb1dbd1688a41d8faad9866c79308"
+  "built_at_commit": "be2cfae4f403a610b15164dd5800b127971518b2"
 }
