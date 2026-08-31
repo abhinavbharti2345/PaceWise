@@ -21,7 +21,8 @@ import {
   Car,
   Home,
   Zap,
-  MoreHorizontal
+  MoreHorizontal,
+  ChevronDown
 } from 'lucide-react';
 
 // A mapping for category icons (using Lucide icons)
@@ -104,11 +105,14 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
 
   return (
     <Card className="lg:col-span-2 flex flex-col relative border border-[var(--color-gray-light)] p-5 sm:p-6">
-      <div className="flex justify-between items-center mb-6">
-        <CardTitle>Spend vs Ideal Path</CardTitle>
-        <select className="bg-[var(--color-surface)] border border-[var(--color-gray-light)] text-[var(--color-dark)] rounded-lg text-[11px] font-medium px-2 py-1 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none">
-          <option>This Month</option>
-        </select>
+      <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6 min-w-0">
+        <CardTitle className="text-xs sm:text-base truncate">Spend vs Ideal Path</CardTitle>
+        <div className="relative shrink-0">
+          <select className="appearance-none bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] text-[var(--color-dark)] rounded-xl text-[11px] font-bold pl-3 pr-7 py-1.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 cursor-pointer shadow-sm">
+            <option value="current">This Month</option>
+          </select>
+          <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--color-gray-dark)] pointer-events-none" />
+        </div>
       </div>
       <div 
         className="flex-grow relative min-h-[200px] rounded-b-lg border-b border-[var(--color-primary)]/30 bg-gradient-to-b from-[var(--color-primary)]/10 dark:from-[var(--color-primary)]/20 to-transparent flex items-end group/chart cursor-crosshair touch-pan-y"
