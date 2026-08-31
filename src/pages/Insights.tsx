@@ -160,7 +160,7 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
         {/* Interactive Tooltip */}
         {hoverIndex !== null && stats.dailyStats[hoverIndex] && (
           <div 
-            className="absolute top-0 bottom-0 border-l border-solid border-[var(--color-gray-dark)] z-20 pointer-events-none"
+            className="absolute top-0 bottom-0 border-l border-solid border-[var(--color-gray-dark)] z-20 pointer-events-none transition-all duration-150 ease-out"
             style={{ left: `${getX(hoverIndex)}%` }}
           >
             {/* Tooltip Card */}
@@ -215,7 +215,7 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
             {/* Point dot on line */}
             {!stats.dailyStats[hoverIndex].isFuture && (
               <div 
-                className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-surface)] border-2 border-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] pointer-events-none" 
+                className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-surface)] border-2 border-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] pointer-events-none transition-all duration-150 ease-out" 
                 style={{ top: `${getY(stats.dailyStats[hoverIndex].cumulativeDiscretionarySpent)}%` }}
               ></div>
             )}

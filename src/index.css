@@ -31,23 +31,23 @@
   /* Brand */
   --primary: #FF453A;
   --orange: #FF9F0A;
-  --success: #30A46C;
+  --success: #16A34A;
 
   /* Text */
-  --dark: #17181A;
-  --gray-dark: #6B7280;
+  --dark: #1A1918;
+  --gray-dark: #736F68;
 
   /* Surfaces & Structure */
-  --gray-light: #E2E4E8;
-  --surface: #FFFFFF;
-  --surface-light: #F0F1F3;
-  --bg-light: #F6F7F9;
+  --gray-light: #E3E0D8;
+  --surface: #FAF8F5;
+  --surface-light: #EFECE5;
+  --bg-light: #F7F5F0;
 
   /* Positive / Green semantic card tokens — fully opaque */
   --positive-bg: #EAF7F0;
   --positive-border: #C7E8D5;
-  --positive-text: #18794E;
-  --positive-accent: #30A46C;
+  --positive-text: #15803D;
+  --positive-accent: #16A34A;
 
   /* Negative / Red semantic card tokens — fully opaque */
   --negative-bg: #FFF0EF;
@@ -58,7 +58,7 @@
 .dark {
   --primary: #FF453A;
   --orange: #FFD60A;
-  --success: #32D74B;
+  --success: #4ADE80;
   --dark: #F5F5F7;
   --gray-dark: #AEAEB2;
   --gray-light: #48484A;
@@ -67,10 +67,10 @@
   --bg-light: #000000;
 
   /* Dark mode semantic card tokens */
-  --positive-bg: rgba(50, 215, 75, 0.08);
-  --positive-border: rgba(50, 215, 75, 0.18);
-  --positive-text: #32D74B;
-  --positive-accent: #32D74B;
+  --positive-bg: rgba(74, 222, 128, 0.08);
+  --positive-border: rgba(74, 222, 128, 0.18);
+  --positive-text: #4ADE80;
+  --positive-accent: #4ADE80;
 
   --negative-bg: rgba(255, 69, 58, 0.08);
   --negative-border: rgba(255, 69, 58, 0.18);
