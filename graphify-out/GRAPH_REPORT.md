@@ -1,16 +1,16 @@
 # Graph Report - PaceWise  (2026-08-31)
 
 ## Corpus Check
-- 159 files · ~133,091 words
+- 159 files · ~133,400 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1901 nodes · 2101 edges · 115 communities (101 shown, 11 thin omitted)
+- 1902 nodes · 2103 edges · 115 communities (101 shown, 11 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9f75ddbf`
+- Built from commit: `562d3fad`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -159,7 +159,7 @@
 
 ### Community 0 - "cn"
 Cohesion: 0.06
-Nodes (77): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+69 more)
+Nodes (78): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+70 more)
 
 ### Community 1 - "WCAG 2.2 Guidelines Reference"
 Cohesion: 0.05
@@ -572,7 +572,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `name`, `private`, `version` to the rest of the system?**
   _1306 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `cn` be split into smaller, more focused modules?**
-  _Cohesion score 0.061567434448790384 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06081754735792622 - nodes in this community are weakly interconnected._
 - **Should `WCAG 2.2 Guidelines Reference` be split into smaller, more focused modules?**
   _Cohesion score 0.047619047619047616 - nodes in this community are weakly interconnected._
 - **Should `TDD Cycle Orchestrator` be split into smaller, more focused modules?**

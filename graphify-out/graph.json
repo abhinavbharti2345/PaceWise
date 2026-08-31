@@ -569,6 +569,18 @@
       "file_type": "code",
       "norm_label": "installprompt()",
       "source_file": "src/components/ui/InstallPrompt.tsx",
+      "source_location": "L21"
+    },
+    {
+      "id": "src_components_ui_installprompt_safewritestorage",
+      "label": "safeWriteStorage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "safewritestorage()",
+      "source_file": "src/components/ui/InstallPrompt.tsx",
       "source_location": "L13"
     },
     {
@@ -23212,6 +23224,18 @@
       "weight": 1.0
     },
     {
+      "source": "src_components_ui_installprompt_installprompt",
+      "target": "src_components_ui_installprompt_safewritestorage",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/ui/InstallPrompt.tsx",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
       "source": "src_lib_supabasesync_usesupabasesync",
       "target": "src_store_useauthstore_useauthstore",
       "relation": "calls",
@@ -45328,13 +45352,24 @@
     },
     {
       "source": "src_components_ui_installprompt",
-      "target": "src_components_ui_installprompt_installprompt",
+      "target": "src_components_ui_installprompt_safewritestorage",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/ui/InstallPrompt.tsx",
       "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_ui_installprompt",
+      "target": "src_components_ui_installprompt_installprompt",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ui/InstallPrompt.tsx",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -46362,5 +46397,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "9f75ddbf555aabd63cc98d37ff0dcb4609b600f2"
+  "built_at_commit": "562d3fad799cb564a81b314f8200a594ff0304cb"
 }

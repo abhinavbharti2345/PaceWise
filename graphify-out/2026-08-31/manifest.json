@@ -96,10 +96,10 @@
     "semantic_hash": "2af75c2b9a962cb2369e0462d7e73066"
   },
   "src/components/layout/AppLayout.tsx": {
-    "mtime": 1788197963.1740396,
-    "seen": 1788198928.3722095,
-    "ast_hash": "d3eecd68af32b05265fb9b210d9476e3",
-    "semantic_hash": "d3eecd68af32b05265fb9b210d9476e3"
+    "mtime": 1788199057.0457835,
+    "seen": 1788199222.3921936,
+    "ast_hash": "c3283197488d9d66156febd94713d91e",
+    "semantic_hash": ""
   },
   "src/components/modals/AddExpenseModal.tsx": {
     "mtime": 1788198459.4345498,
@@ -156,10 +156,10 @@
     "semantic_hash": "689a0046c801513e0b2057d57139c589"
   },
   "src/pages/Insights.tsx": {
-    "mtime": 1788194596.0503457,
-    "seen": 1788195462.2106495,
-    "ast_hash": "6d6c6fa6ecc914d9cb1c6a27bdf0be96",
-    "semantic_hash": "6d6c6fa6ecc914d9cb1c6a27bdf0be96"
+    "mtime": 1788199200.8715508,
+    "seen": 1788199222.3922126,
+    "ast_hash": "2c69fd85f1657f72bff8bdf228397df3",
+    "semantic_hash": ""
   },
   "src/pages/People.tsx": {
     "mtime": 1788195399.8831162,
@@ -816,9 +816,9 @@
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1788174943.3528724,
-    "seen": 1788198037.2189767,
-    "ast_hash": "492bce945ecb8124148de0725ec2e365",
+    "mtime": 1788199019.6071773,
+    "seen": 1788199222.392304,
+    "ast_hash": "6c605b4dbf24cdeb49bc0eef0bc96543",
     "semantic_hash": ""
   },
   "src/components/modals/AddBillModal.tsx": {
@@ -951,6 +951,18 @@
     "mtime": 1788174966.6006856,
     "seen": 1788198037.2189775,
     "ast_hash": "7aff462d543b6f8ff56c7d58e8e05803",
+    "semantic_hash": ""
+  },
+  "public/manifest.json": {
+    "mtime": 1788199011.3731816,
+    "seen": 1788199222.3921897,
+    "ast_hash": "7cfbc9eaaa2d050879a6b98e45c7f27e",
+    "semantic_hash": ""
+  },
+  "src/components/ui/InstallPrompt.tsx": {
+    "mtime": 1788199071.512071,
+    "seen": 1788199222.3922062,
+    "ast_hash": "90bf03adbc751603fa5671b5581395de",
     "semantic_hash": ""
   }
 }
