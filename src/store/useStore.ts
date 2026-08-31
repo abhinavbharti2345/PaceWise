@@ -62,6 +62,18 @@ const getMonthDates = () => {
 
 const { start: monthStart, end: monthEnd } = getMonthDates();
 
+// Safe UUID generation that works on mobile devices over non-HTTPS local IP addresses
+export function generateId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 // Empty defaults — no mock data
 const defaultConfig: BudgetConfig = {
   totalMoney: 0,
@@ -174,7 +186,7 @@ export const useStore = create<AppState>()(
       },
       
       addTransaction: (transaction) => {
-        const id = crypto.randomUUID();
+        const id = generateId();
         const newTx = { ...transaction, id };
         set((state) => ({
           transactions: [newTx, ...state.transactions]
@@ -282,7 +294,7 @@ export const useStore = create<AppState>()(
       },
       
       addPerson: (person) => {
-        const id = crypto.randomUUID();
+        const id = generateId();
         const newPerson = { ...person, id };
         set((state) => ({
           people: [...state.people, newPerson]
@@ -381,7 +393,7 @@ export const useStore = create<AppState>()(
       recordPersonTransaction: ({ personId, personName, amount, direction, reason, date, note }) => {
         const txDate = date || new Date().toISOString();
         const balanceChange = direction === 'gave' ? amount : -amount;
-        const txId = crypto.randomUUID();
+        const txId = generateId();
 
         set((state) => ({
           people: state.people.map(p => 
@@ -444,7 +456,7 @@ export const useStore = create<AppState>()(
       },
 
       settleDebt: ({ personId, personName, amount, direction, note }) => {
-        const txId = crypto.randomUUID();
+        const txId = generateId();
         const txDate = new Date().toISOString();
         
         const txDirection = direction === 'received' ? 'took' : 'gave';

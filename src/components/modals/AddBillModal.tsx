@@ -55,11 +55,17 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center items-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-0 sm:p-4">
-      <div className="bg-[var(--color-surface)] w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-6 duration-300 max-h-[90vh] flex flex-col border border-[var(--color-gray-light)]">
+    <div 
+      className="fixed inset-0 z-[100] flex flex-col justify-end sm:justify-center items-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-0 sm:p-4 overflow-y-auto overscroll-y-contain touch-pan-y"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-[var(--color-surface)] w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-6 duration-300 max-h-[85dvh] sm:max-h-[90vh] flex flex-col border border-[var(--color-gray-light)] shrink-0"
+        onClick={(e) => e.stopPropagation()}
+      >
         
         {/* Header */}
-        <div className="p-4 sm:p-5 flex items-center justify-between border-b border-[var(--color-gray-light)]">
+        <div className="p-4 sm:p-5 flex items-center justify-between border-b border-[var(--color-gray-light)] shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-red-600" />
             <h2 className="font-bold text-[var(--color-dark)] text-lg">Pay / Record Bill</h2>
@@ -74,7 +80,7 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
         </div>
         
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-5 sm:p-6 overflow-y-auto space-y-5">
+        <form onSubmit={handleSubmit} className="p-5 sm:p-6 overflow-y-auto space-y-5 flex-1 min-h-0 overscroll-y-contain touch-pan-y scroll-smooth scroll-pb-28 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))]">
           {error && (
             <div className="flex items-center gap-2 p-3 text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-950/40 rounded-xl border border-red-200 dark:border-red-900">
               <AlertCircle size={16} className="shrink-0" />
@@ -166,7 +172,7 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs font-semibold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
             />
           </div>
 
@@ -180,7 +186,7 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
               placeholder="Due date reference, transaction ID, etc."
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2 text-xs text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
             />
           </div>
           

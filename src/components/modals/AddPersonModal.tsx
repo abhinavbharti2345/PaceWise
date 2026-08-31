@@ -11,7 +11,7 @@ interface AddPersonModalProps {
 }
 
 export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
-  const { addPerson, recordPersonTransaction } = useStore();
+  const { people, addPerson, recordPersonTransaction } = useStore();
   
   const [name, setName] = useState('');
   const [hasInitialBalance, setHasInitialBalance] = useState(false);
@@ -19,13 +19,23 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
   const [direction, setDirection] = useState<'gave' | 'took'>('gave');
   const [reason, setReason] = useState('');
   const [error, setError] = useState('');
+
+  const trimmedName = name.trim();
+  const existingPerson = trimmedName 
+    ? people.find(p => p.name.trim().toLowerCase() === trimmedName.toLowerCase())
+    : undefined;
   
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) {
+    if (!trimmedName) {
       setError('Please enter a friend / person name');
+      return;
+    }
+
+    if (existingPerson) {
+      setError(`A person named "${existingPerson.name}" already exists. Please use a unique name or nickname.`);
       return;
     }
 
@@ -42,7 +52,7 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
 
     // Add person with 0 initial balance first
     const personId = addPerson({
-      name: name.trim(),
+      name: trimmedName,
       balance: 0,
     });
 
@@ -50,7 +60,7 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
     if (hasInitialBalance && numAmount > 0) {
       recordPersonTransaction({
         personId,
-        personName: name.trim(),
+        personName: trimmedName,
         amount: numAmount,
         direction,
         reason: reason.trim(),
@@ -67,11 +77,17 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center items-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-0 sm:p-4">
-      <div className="bg-[var(--color-surface)] w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-6 duration-300 max-h-[90vh] flex flex-col border border-[var(--color-gray-light)]">
+    <div 
+      className="fixed inset-0 z-[100] flex flex-col justify-end sm:justify-center items-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-0 sm:p-4 overflow-y-auto overscroll-y-contain touch-pan-y"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-[var(--color-surface)] w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-6 duration-300 max-h-[85dvh] sm:max-h-[90vh] flex flex-col border border-[var(--color-gray-light)] shrink-0"
+        onClick={(e) => e.stopPropagation()}
+      >
         
         {/* Header */}
-        <div className="p-4 sm:p-5 flex items-center justify-between border-b border-[var(--color-gray-light)]">
+        <div className="p-4 sm:p-5 flex items-center justify-between border-b border-[var(--color-gray-light)] shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-blue-600" />
             <h2 className="font-bold text-[var(--color-dark)] text-lg">Add New Person</h2>
@@ -86,7 +102,7 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
         </div>
         
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-5 sm:p-6 overflow-y-auto space-y-5">
+        <form onSubmit={handleSubmit} className="p-5 sm:p-6 overflow-y-auto space-y-5 flex-1 min-h-0 overscroll-y-contain touch-pan-y scroll-smooth scroll-pb-28 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))]">
           {error && (
             <div className="flex items-center gap-2 p-3 text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-950/40 rounded-xl border border-red-200 dark:border-red-900">
               <AlertCircle size={16} className="shrink-0" />
@@ -103,8 +119,15 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
                 setName(e.target.value);
                 if (error) setError('');
               }}
-              autoFocus
             />
+            {existingPerson && (
+              <div className="mt-2 flex items-start gap-2 p-2.5 text-xs font-medium text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-900/60 animate-in fade-in duration-200">
+                <AlertCircle size={15} className="shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+                <span>
+                  <strong>"{existingPerson.name}"</strong> already exists in your People list. Use a nickname or last name to distinguish them.
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Optional Initial Balance Toggle */}

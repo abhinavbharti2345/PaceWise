@@ -80,7 +80,7 @@ export function ConfirmModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto overscroll-contain"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -89,7 +89,7 @@ export function ConfirmModal({
     >
       <div
         ref={modalRef}
-        className="bg-[var(--color-surface)] w-[calc(100%-2rem)] max-w-sm sm:max-w-md rounded-2xl sm:rounded-3xl shadow-2xl overflow-y-auto max-h-[90vh] animate-in zoom-in-95 fade-in duration-200 border border-[var(--color-gray-light)] p-5 sm:p-6 space-y-4"
+        className="bg-[var(--color-surface)] w-[calc(100%-2rem)] max-w-sm sm:max-w-md rounded-2xl sm:rounded-3xl shadow-2xl overflow-y-auto max-h-[88dvh] sm:max-h-[90vh] animate-in zoom-in-95 fade-in duration-200 border border-[var(--color-gray-light)] p-5 sm:p-6 space-y-4 my-auto shrink-0"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with Icon */}
