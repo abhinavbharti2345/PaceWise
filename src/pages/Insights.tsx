@@ -44,40 +44,44 @@ const formatCurrency = (amount: number) => `₹${Math.round(amount).toLocaleStri
 const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
   const [hoverIndex, setHoverIndex] = React.useState<number | null>(null);
 
-  // We want to show cumulative spending.
-  // 0% (top) means 0 spent. 100% (bottom) means total budget spent.
-  // So Y = (spent / budget) * 100.
-  // Wait, if Y=0 is TOP, then spent=0 -> Y=0 (top). spent=budget -> Y=100 (bottom).
-  // So the line starts at top left and goes down to bottom right. This represents cumulative spent accurately.
-  
+  // Y-axis: 100 is bottom (0 spent), 0 is top (max spent)
   const getX = React.useCallback((index: number) => {
     if (stats.totalDays <= 1) return 50;
     return (index / (stats.totalDays - 1)) * 100;
   }, [stats.totalDays]);
   
   const getY = React.useCallback((spent: number) => {
-    if (stats.effectiveTotalBudget <= 0) return 0;
+    if (stats.effectiveTotalBudget <= 0) return 100;
     const pct = (spent / stats.effectiveTotalBudget) * 100;
-    return Math.max(0, Math.min(100, pct));
+    return 100 - Math.max(0, Math.min(100, pct));
   }, [stats.effectiveTotalBudget]);
 
   const pastStats = React.useMemo(() => 
     stats.dailyStats.filter((s: any) => !s.isFuture || s.dayIndex === stats.daysPassed + 1),
   [stats.dailyStats, stats.daysPassed]);
 
+  // Ideal cumulative spend line
+  const idealPathD = React.useMemo(() => {
+    if (stats.dailyStats.length === 0) return 'M 0 100';
+    const points = stats.dailyStats.map((s: any) => [getX(s.dayIndex - 1), getY(s.cumulativeIdealSpent)]);
+    
+    let path = `M ${points[0][0]} ${points[0][1]}`;
+    for (let i = 1; i < points.length; i++) {
+      path += ` L ${points[i][0]} ${points[i][1]}`;
+    }
+    return path;
+  }, [stats.dailyStats, getX, getY]);
+
   // Actual cumulative spend line
   const actualPathD = React.useMemo(() => {
-    if (pastStats.length === 0) return 'M 0 0';
+    if (pastStats.length === 0) return 'M 0 100';
     const points = pastStats.map((s: any) => [getX(s.dayIndex - 1), getY(s.cumulativeDiscretionarySpent)]);
     
     if (points.length === 1) return `M ${points[0][0]} ${points[0][1]}`;
 
     let path = `M ${points[0][0]} ${points[0][1]}`;
     for (let i = 1; i < points.length; i++) {
-      const prev = points[i - 1];
-      const curr = points[i];
-      const cpX = (prev[0] + curr[0]) / 2;
-      path += ` C ${cpX},${prev[1]} ${cpX},${curr[1]} ${curr[0]},${curr[1]}`;
+      path += ` L ${points[i][0]} ${points[i][1]}`; // Use straight lines for cumulative graphs to prevent bezier overshoot
     }
     return path;
   }, [pastStats, getX, getY]);
@@ -85,10 +89,7 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
   const fillPathD = React.useMemo(() => {
     if (pastStats.length === 0) return 'M 0 100 L 0 100 Z';
     const lastX = getX(pastStats[pastStats.length - 1].dayIndex - 1);
-    // Fill from actual path down to bottom (100) or up to top?
-    // Usually fill is below the line. Since Y goes from 0 (top) to 100 (bottom),
-    // below the line is from Y to 0? No, 100 is bottom.
-    // If the line is at Y=20, below it is Y=100. 
+    // Fill from actual path down to bottom (100)
     return `${actualPathD} L ${lastX} 100 L 0 100 Z`;
   }, [actualPathD, pastStats, getX]);
 
@@ -128,17 +129,15 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
             </linearGradient>
           </defs>
           
-          {/* Ideal Line (Diagonal - from top left to bottom right) */}
-          <line
-            x1="0"
-            y1="0"
-            x2="100"
-            y2="100"
-            stroke="var(--color-gray-light)"
-            strokeWidth="1"
-            vectorEffect="non-scaling-stroke"
-            strokeDasharray="4 4"
-            opacity="0.8"
+          {/* Ideal Line (Mathematically accurate to baseDailyBudget) */}
+          <path 
+            d={idealPathD} 
+            fill="none" 
+            stroke="var(--color-gray-light)" 
+            strokeWidth="1" 
+            vectorEffect="non-scaling-stroke" 
+            strokeDasharray="4 4" 
+            opacity="0.8" 
           />
 
           {/* Actual Path Fill */}
@@ -149,15 +148,15 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
         </svg>
         
         {/* Today Indicator (only shown if not hovering) */}
-        {stats.daysPassed > 0 && hoverIndex === null && (
+        {hoverIndex === null && pastStats.length > 0 && (
           <div 
             className="absolute top-0 bottom-0 border-l border-dashed border-[var(--color-gray-light)] transition-opacity duration-200 pointer-events-none"
             style={{ left: `${getX(stats.daysPassed)}%` }}
           >
-            <div className="absolute -top-6 -translate-x-1/2 bg-[var(--color-surface)] border border-[var(--color-gray-light)] px-2 py-1 rounded text-[11px] font-medium text-[var(--color-dark)] shadow-sm">Today</div>
+            <div className="absolute -top-6 -translate-x-1/2 bg-[var(--color-surface)] border border-[var(--color-gray-light)] px-2 py-1 rounded text-[11px] font-medium text-[var(--color-dark)] shadow-sm z-10 whitespace-nowrap">Today</div>
             <div 
-              className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)]" 
-              style={{ top: `${getY(pastStats[pastStats.length - 1]?.cumulativeDiscretionarySpent || 0)}%` }}
+              className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)] z-10" 
+              style={{ top: `${getY(pastStats[pastStats.length - 1]?.cumulativeDiscretionarySpent || 0)}%`, transform: 'translateY(-50%)' }}
             ></div>
           </div>
         )}
@@ -220,8 +219,8 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
             {/* Point dot on line */}
             {!stats.dailyStats[hoverIndex].isFuture && (
               <div 
-                className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-surface)] border-2 border-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] pointer-events-none transition-all duration-150 ease-out" 
-                style={{ top: `${getY(stats.dailyStats[hoverIndex].cumulativeDiscretionarySpent)}%` }}
+                className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-surface)] border-2 border-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] pointer-events-none transition-all duration-150 ease-out z-10" 
+                style={{ top: `${getY(stats.dailyStats[hoverIndex].cumulativeDiscretionarySpent)}%`, transform: 'translateY(-50%)' }}
               ></div>
             )}
           </div>
