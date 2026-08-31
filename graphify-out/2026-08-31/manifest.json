@@ -138,10 +138,10 @@
     "semantic_hash": "cdc7d3e2b5edc540bac1ef864bc9dedc"
   },
   "src/features/budget/budgetEngine.ts": {
-    "mtime": 1788176647.2580042,
-    "seen": 1788179144.736947,
-    "ast_hash": "ace66efc2cda36919ffa3c134e7e1b4a",
-    "semantic_hash": "ace66efc2cda36919ffa3c134e7e1b4a"
+    "mtime": 1788183448.484874,
+    "seen": 1788184821.978598,
+    "ast_hash": "359b174323ae44e11473226a8179f3e4",
+    "semantic_hash": "359b174323ae44e11473226a8179f3e4"
   },
   "src/main.tsx": {
     "mtime": 1788129530.0720267,
@@ -150,16 +150,16 @@
     "semantic_hash": "fa535ad310524494d8f0e4b12962c74e"
   },
   "src/pages/Dashboard.tsx": {
-    "mtime": 1788176067.99778,
-    "seen": 1788176484.105207,
-    "ast_hash": "2950ccd0cdfae9511da85e7ae7304ca4",
-    "semantic_hash": "2950ccd0cdfae9511da85e7ae7304ca4"
+    "mtime": 1788181385.7349274,
+    "seen": 1788184821.9788709,
+    "ast_hash": "d8a687e17c41db6530a2462e6b1ceea8",
+    "semantic_hash": "d8a687e17c41db6530a2462e6b1ceea8"
   },
   "src/pages/Insights.tsx": {
-    "mtime": 1788130351.6578505,
-    "seen": 1788174916.7526863,
-    "ast_hash": "a711198eb9eb66a06cbe1c57177f39ce",
-    "semantic_hash": "a711198eb9eb66a06cbe1c57177f39ce"
+    "mtime": 1788183921.837082,
+    "seen": 1788184821.9788718,
+    "ast_hash": "9ada7f0ce0119df2df87413c9f703bb8",
+    "semantic_hash": "9ada7f0ce0119df2df87413c9f703bb8"
   },
   "src/pages/People.tsx": {
     "mtime": 1788130351.6588507,
@@ -192,10 +192,10 @@
     "semantic_hash": "0a3d688a6c4a897d87fc887b5e421c60"
   },
   "tests/budget/budgetEngine.test.ts": {
-    "mtime": 1788129530.0770628,
-    "seen": 1788129832.0271606,
-    "ast_hash": "83a0e6a655c0c36510155f13523fe75d",
-    "semantic_hash": "83a0e6a655c0c36510155f13523fe75d"
+    "mtime": 1788181435.4763021,
+    "seen": 1788184821.9795702,
+    "ast_hash": "f983f0477fca64f99a1f51f293627465",
+    "semantic_hash": "f983f0477fca64f99a1f51f293627465"
   },
   "tsconfig.app.json": {
     "mtime": 1788129530.07806,
@@ -852,10 +852,10 @@
     "semantic_hash": "28aa8e5d9c583a5a3df9d9ffec21a600"
   },
   "tests/budget/comprehensiveEngine.test.ts": {
-    "mtime": 1788129530.07806,
-    "seen": 1788129832.0271616,
-    "ast_hash": "dd42f35efd9098ef0f9f7b9a57ec1fe7",
-    "semantic_hash": "dd42f35efd9098ef0f9f7b9a57ec1fe7"
+    "mtime": 1788181274.70356,
+    "seen": 1788181318.3392649,
+    "ast_hash": "bf13ec7a7e68090852e9faa43f6fc064",
+    "semantic_hash": "bf13ec7a7e68090852e9faa43f6fc064"
   },
   "src/lib/supabase.ts": {
     "mtime": 1788133423.410076,

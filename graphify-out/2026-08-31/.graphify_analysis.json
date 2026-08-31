@@ -23,28 +23,29 @@
       "src_components_ui_button",
       "src_components_ui_button_button",
       "src_components_ui_button_buttonprops",
+      "src_components_ui_card",
+      "src_components_ui_card_card",
+      "src_components_ui_card_cardheader",
+      "src_components_ui_card_cardprops",
+      "src_components_ui_card_cardtitle",
       "src_components_ui_iconbadge",
       "src_components_ui_iconbadge_iconbadge",
       "src_components_ui_iconbadge_iconbadgeprops",
       "src_components_ui_input",
       "src_components_ui_input_input",
       "src_components_ui_input_inputprops",
+      "src_pages_auth",
       "src_pages_dashboard",
       "src_pages_people",
       "src_pages_people_people",
       "src_pages_persondetails",
       "src_pages_persondetails_persondetails",
+      "src_pages_profile",
+      "src_pages_settings",
       "src_pages_transactions",
       "src_pages_transactions_filtertype",
       "src_pages_transactions_timefilter",
-      "src_pages_transactions_transactions",
       "src_store_usestore_usestore",
-      "src_utils_categoryhelpers",
-      "src_utils_categoryhelpers_bill_categories",
-      "src_utils_categoryhelpers_categorymeta",
-      "src_utils_categoryhelpers_expense_categories",
-      "src_utils_categoryhelpers_getcategorymeta",
-      "src_utils_categoryhelpers_income_sources",
       "src_utils_cn",
       "src_utils_cn_cn"
     ],
@@ -82,60 +83,27 @@
       "zustand"
     ],
     "2": [
-      "concept_carry_forward",
-      "concept_daily_budget",
-      "concept_dynamic_recalc",
-      "concept_people_debts",
-      "doc_prd",
+      "src_app",
+      "src_app_app",
+      "src_app_appcontent",
+      "src_app_errorboundaryprops",
+      "src_app_errorboundarystate",
       "src_components_layout_applayout",
       "src_components_layout_applayout_applayout",
       "src_components_layout_applayout_navitems",
-      "src_components_modals_persontransactionmodal_persontransactionmodalprops",
-      "src_components_modals_settlemodal_settlemodalprops",
-      "src_features_budget_budgetengine",
-      "src_features_budget_budgetengine_budgetconfig",
-      "src_features_budget_budgetengine_budgetstats",
-      "src_features_budget_budgetengine_calculatebudget",
-      "src_features_budget_budgetengine_transaction",
-      "src_features_budget_budgetengine_transactiontype",
+      "src_lib_supabase",
+      "src_lib_supabase_supabase",
       "src_lib_supabasesync",
       "src_lib_supabasesync_addpersontosupabase",
       "src_lib_supabasesync_addtransactiontosupabase",
       "src_lib_supabasesync_deletepersonfromsupabase",
       "src_lib_supabasesync_deletetransactionfromsupabase",
       "src_lib_supabasesync_updatepersonbalanceinsupabase",
-      "src_pages_insights_insights",
-      "src_store_usestore",
-      "src_store_usestore_appstate",
-      "src_store_usestore_defaultconfig",
-      "src_store_usestore_getmonthdates",
-      "src_store_usestore_person",
-      "src_store_usestore_start_monthstart_end_monthend",
-      "tests_budget_budgetengine_test",
-      "tests_budget_comprehensiveengine_test"
-    ],
-    "3": [
-      "src_app",
-      "src_app_app",
-      "src_app_appcontent",
-      "src_app_errorboundaryprops",
-      "src_app_errorboundarystate",
-      "src_components_ui_card",
-      "src_components_ui_card_card",
-      "src_components_ui_card_cardheader",
-      "src_components_ui_card_cardprops",
-      "src_components_ui_card_cardtitle",
-      "src_lib_supabase",
-      "src_lib_supabase_supabase",
       "src_lib_supabasesync_usesupabasesync",
       "src_main",
-      "src_pages_auth",
       "src_pages_auth_authpage",
       "src_pages_dashboard_dashboard",
-      "src_pages_insights",
-      "src_pages_profile",
       "src_pages_profile_profile",
-      "src_pages_settings",
       "src_pages_settings_settings",
       "src_store_useauthstore",
       "src_store_useauthstore_authstate",
@@ -144,7 +112,7 @@
       "tests_integration_store_test",
       "tests_integration_store_test_localstoragemock"
     ],
-    "4": [
+    "3": [
       "ref_dom",
       "ref_src",
       "ref_vite_client",
@@ -169,6 +137,29 @@
       "tsconfig_app_compileroptions_verbatimmodulesyntax",
       "tsconfig_app_include",
       "tsconfig_app_json_ref_es2023"
+    ],
+    "4": [
+      "concept_carry_forward",
+      "concept_daily_budget",
+      "concept_dynamic_recalc",
+      "concept_people_debts",
+      "doc_prd",
+      "src_features_budget_budgetengine",
+      "src_features_budget_budgetengine_budgetconfig",
+      "src_features_budget_budgetengine_budgetstats",
+      "src_features_budget_budgetengine_calculatebudget",
+      "src_features_budget_budgetengine_transaction",
+      "src_features_budget_budgetengine_transactiontype",
+      "src_pages_insights",
+      "src_pages_insights_getcategoryicon",
+      "src_pages_insights_insights",
+      "src_store_usestore",
+      "src_store_usestore_appstate",
+      "src_store_usestore_defaultconfig",
+      "src_store_usestore_getmonthdates",
+      "src_store_usestore_start_monthstart_end_monthend",
+      "tests_budget_budgetengine_test",
+      "tests_budget_comprehensiveengine_test"
     ],
     "5": [
       "oxlint",
@@ -220,7 +211,14 @@
       "src_app_errorboundary_componentdidcatch",
       "src_app_errorboundary_constructor",
       "src_app_errorboundary_getderivedstatefromerror",
-      "src_app_errorboundary_render"
+      "src_app_errorboundary_render",
+      "src_pages_transactions_transactions",
+      "src_utils_categoryhelpers",
+      "src_utils_categoryhelpers_bill_categories",
+      "src_utils_categoryhelpers_categorymeta",
+      "src_utils_categoryhelpers_expense_categories",
+      "src_utils_categoryhelpers_getcategorymeta",
+      "src_utils_categoryhelpers_income_sources"
     ],
     "8": [
       "concept_dashboard_layout",
@@ -228,36 +226,42 @@
       "doc_uiux_spec"
     ],
     "9": [
+      "src_components_modals_persontransactionmodal_persontransactionmodalprops",
+      "src_components_modals_settlemodal_settlemodalprops",
+      "src_store_usestore_person"
+    ],
+    "10": [
       "tsconfig",
       "tsconfig_files",
       "tsconfig_references"
     ],
-    "10": [
+    "11": [
       "concept_design_tokens",
       "doc_stitch_prompts"
     ],
-    "11": [
+    "12": [
       "vercel",
       "vercel_rewrites"
     ],
-    "12": [
+    "13": [
       "vite_config"
     ]
   },
   "cohesion": {
-    "0": 0.15072463768115943,
+    "0": 0.1683626271970398,
     "1": 0.06451612903225806,
-    "2": 0.10752688172043011,
-    "3": 0.1693121693121693,
-    "4": 0.08333333333333333,
+    "2": 0.12698412698412698,
+    "3": 0.08333333333333333,
+    "4": 0.1761904761904762,
     "5": 0.09523809523809523,
     "6": 0.1,
-    "7": 0.4,
+    "7": 0.15151515151515152,
     "8": 0.6666666666666666,
     "9": 0.6666666666666666,
-    "10": 1.0,
+    "10": 0.6666666666666666,
     "11": 1.0,
-    "12": 1.0
+    "12": 1.0,
+    "13": 1.0
   },
   "gods": [
     {
@@ -281,14 +285,14 @@
       "degree": 18
     },
     {
-      "id": "src_components_ui_button_button",
-      "label": "Button()",
-      "degree": 15
-    },
-    {
       "id": "tsconfig_node_compileroptions",
       "label": "compilerOptions",
       "degree": 15
+    },
+    {
+      "id": "src_components_ui_button_button",
+      "label": "Button()",
+      "degree": 14
     },
     {
       "id": "src_features_budget_budgetengine_calculatebudget",
@@ -296,19 +300,19 @@
       "degree": 11
     },
     {
-      "id": "src_components_ui_card_card",
-      "label": "Card()",
-      "degree": 10
-    },
-    {
       "id": "src_components_ui_input_input",
       "label": "Input",
       "degree": 10
     },
     {
+      "id": "src_components_ui_card_card",
+      "label": "Card()",
+      "degree": 9
+    },
+    {
       "id": "src_components_ui_card_cardheader",
       "label": "CardHeader()",
-      "degree": 8
+      "degree": 7
     }
   ],
   "surprises": [
@@ -346,21 +350,21 @@
       "why": "peripheral node `Badge()` unexpectedly reaches hub `cn()`"
     },
     {
-      "source": "Dashboard()",
-      "target": "getCategoryMeta()",
+      "source": "Transactions()",
+      "target": "useStore",
       "source_files": [
-        "src/pages/Dashboard.tsx",
-        "src/utils/categoryHelpers.ts"
+        "src/pages/Transactions.tsx",
+        "src/store/useStore.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "bridges separate communities"
     },
     {
-      "source": "AppLayout()",
+      "source": "Transactions()",
       "target": "cn()",
       "source_files": [
-        "src/components/layout/AppLayout.tsx",
+        "src/pages/Transactions.tsx",
         "src/utils/cn.ts"
       ],
       "confidence": "EXTRACTED",

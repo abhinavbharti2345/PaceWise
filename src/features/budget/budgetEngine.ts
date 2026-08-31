@@ -40,6 +40,8 @@ export interface BudgetStats {
   totalBills: number;
   isOverspent: boolean;
   progressPercentage: number;
+  totalDiscretionarySpent: number;
+  zeroSpendDays: number;
 }
 
 export function calculateBudget(
@@ -64,6 +66,7 @@ export function calculateBudget(
   let totalBills = 0;
   let normalExpensesUpToYesterday = 0;
   let spentToday = 0;
+  const discretionarySpendByDate: Record<string, number> = {};
 
   for (const t of transactions) {
     const tDate = startOfDay(new Date(t.date));
@@ -82,6 +85,11 @@ export function calculateBudget(
     } else if (t.type === 'bill') {
       totalBills += t.amount;
     } else if (t.type === 'expense') {
+      const dateKey = tDate.getTime().toString();
+      if (isBeforeToday || isToday) {
+        discretionarySpendByDate[dateKey] = (discretionarySpendByDate[dateKey] || 0) + t.amount;
+      }
+      
       if (isBeforeToday) {
         normalExpensesUpToYesterday += t.amount;
       } else if (isToday) {
@@ -97,6 +105,11 @@ export function calculateBudget(
 
       // If user gave money (lent), it's treated as cash outflow (expense)
       if (t.direction === 'gave') {
+        const dateKey = tDate.getTime().toString();
+        if (isBeforeToday || isToday) {
+          discretionarySpendByDate[dateKey] = (discretionarySpendByDate[dateKey] || 0) + t.amount;
+        }
+
         if (isBeforeToday) {
           normalExpensesUpToYesterday += t.amount;
         } else if (isToday) {
@@ -134,6 +147,15 @@ export function calculateBudget(
     progressPercentage = 0; // If they have absolutely nothing, they have 0% left
   }
 
+  // 7. Discretionary Specifics
+  const totalDiscretionarySpent = normalExpensesUpToYesterday + spentToday;
+  
+  // Calculate zero spend days (total days up to today - days with discretionary spend)
+  // daysPassed is full days. +1 includes today.
+  const daysUpToToday = daysPassed + 1;
+  const activeSpendDays = Object.keys(discretionarySpendByDate).length;
+  const zeroSpendDays = Math.max(0, daysUpToToday - activeSpendDays);
+
   return {
     baseDailyBudget,
     carryForward,
@@ -148,5 +170,7 @@ export function calculateBudget(
     totalBills,
     isOverspent,
     progressPercentage,
+    totalDiscretionarySpent,
+    zeroSpendDays,
   };
 }

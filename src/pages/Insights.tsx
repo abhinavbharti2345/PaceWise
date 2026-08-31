@@ -1,45 +1,80 @@
-import { Card, CardHeader, CardTitle } from '../components/ui/Card';
+import React from 'react';
 import { useStore } from '../store/useStore';
 import { calculateBudget } from '../features/budget/budgetEngine';
-import { 
-  TrendingDown, 
-  PieChart, 
-  ArrowDownRight, 
-  CreditCard, 
-  ShieldCheck, 
-  AlertTriangle 
-} from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '../utils/cn';
+import { Card, CardTitle } from '../components/ui/Card';
+import { 
+  ShieldCheck, 
+  TrendingDown, 
+  Star, 
+  Wallet, 
+  PieChart, 
+  ShoppingBag, 
+  ArrowRightLeft, 
+  Users, 
+  CalendarDays,
+  Ticket,
+  Smartphone,
+  Coffee,
+  Car,
+  Home,
+  Zap,
+  MoreHorizontal
+} from 'lucide-react';
+
+// A mapping for category icons (using Lucide icons)
+const getCategoryIcon = (category: string) => {
+  const c = (category || '').toLowerCase();
+  if (c.includes('food') || c.includes('coffee') || c.includes('dining')) return <Coffee size={16} className="text-[var(--color-primary)]" />;
+  if (c.includes('transport') || c.includes('travel') || c.includes('cab')) return <Car size={16} className="text-[var(--color-orange)]" />;
+  if (c.includes('entertainment') || c.includes('movie') || c.includes('concert')) return <Ticket size={16} className="text-[#60dac4]" />;
+  if (c.includes('shopping') || c.includes('clothes')) return <ShoppingBag size={16} className="text-[var(--color-primary)]" />;
+  if (c.includes('tech') || c.includes('gadget') || c.includes('electronics')) return <Smartphone size={16} className="text-[var(--color-primary)]" />;
+  if (c.includes('home') || c.includes('rent')) return <Home size={16} className="text-[var(--color-gray-dark)]" />;
+  if (c.includes('utility') || c.includes('bill')) return <Zap size={16} className="text-[var(--color-orange)]" />;
+  return <MoreHorizontal size={16} className="text-[var(--color-gray-dark)]" />;
+};
 
 export function Insights() {
-  const { config, transactions } = useStore();
+  const { config, transactions, people } = useStore();
   const todayDateStr = new Date().toISOString();
   const stats = calculateBudget(config, transactions, todayDateStr);
 
   const formatCurrency = (amount: number) => `₹${Math.round(amount).toLocaleString('en-IN')}`;
-  const monthStr = format(new Date(), 'MMMM yyyy');
+  
+  // 1. Pacing Narrative Logic
+  const avgDailyDiscretionary = Math.round(stats.totalDiscretionarySpent / Math.max(1, stats.daysPassed));
+  let heroTitle = "Pacing Health";
+  let heroMessage: React.ReactNode = "";
+  let badgeText = "On Track";
+  let badgeColor = "text-[#60dac4]";
+  let badgeBg = "bg-[#60dac4]/10";
 
-  // Breakdown calculations
-  const totalNormalExpenses = transactions
-    .filter(t => t.type === 'expense' || (t.type === 'person' && t.direction === 'gave' && !t.isSettlement))
-    .reduce((sum, t) => sum + t.amount, 0);
+  if (stats.moneyLeft < 0) {
+    heroMessage = <>You are in a deficit of <span className="font-bold text-[var(--color-primary)]">{formatCurrency(Math.abs(stats.moneyLeft))}</span>.</>;
+    badgeText = "Critical Deficit";
+    badgeColor = "text-[var(--color-primary)]";
+    badgeBg = "bg-[var(--negative-bg)]";
+  } else if (stats.daysPassed === 0) {
+    heroMessage = <>Your safe daily limit is <span className="font-bold text-[#60dac4]">{formatCurrency(stats.baseDailyBudget)}</span>.</>;
+    badgeText = "Fresh Start";
+  } else if (stats.isOverspent) {
+    heroMessage = <>You're spending <span className="font-bold text-[var(--color-primary)]">{formatCurrency(avgDailyDiscretionary)}/day</span>, above target.</>;
+    badgeText = "Overspending";
+    badgeColor = "text-[var(--color-primary)]";
+    badgeBg = "bg-[var(--negative-bg)]";
+  } else if (stats.carryForward > 0) {
+    heroMessage = <>Great pacing! You've accumulated <span className="font-bold text-[var(--color-primary)]">{formatCurrency(stats.carryForward)}</span> in carry-forward.</>;
+  } else {
+    heroMessage = <>You are pacing perfectly at <span className="font-bold text-[#60dac4]">{formatCurrency(avgDailyDiscretionary)}/day</span>.</>;
+  }
 
-  const totalBills = transactions
-    .filter(t => t.type === 'bill')
-    .reduce((sum, t) => sum + t.amount, 0);
-
-  const totalIncome = transactions
-    .filter(t => t.type === 'income' || (t.type === 'person' && t.direction === 'took' && t.isSettlement))
-    .reduce((sum, t) => sum + t.amount, 0);
-
-  const totalAllSpending = totalNormalExpenses + totalBills;
-
-  // Category breakdown
+  // 2. Discretionary Categories (Leakage)
   const categoryMap = transactions
-    .filter(t => t.type === 'expense' || t.type === 'bill')
+    .filter(t => t.type === 'expense')
     .reduce((acc, t) => {
-      const cat = t.category || (t.type === 'bill' ? 'Bills' : 'Other');
+      const cat = t.category || 'Other';
       acc[cat] = (acc[cat] || 0) + t.amount;
       return acc;
     }, {} as Record<string, number>);
@@ -48,208 +83,258 @@ export function Insights() {
     .map(([category, amount]) => ({
       category,
       amount,
-      percentage: totalAllSpending > 0 ? Math.round((amount / totalAllSpending) * 100) : 0,
+      percentage: stats.totalDiscretionarySpent > 0 ? Math.round((amount / stats.totalDiscretionarySpent) * 100) : 0,
     }))
     .sort((a, b) => b.amount - a.amount);
 
-  // Largest expenses
-  const largestExpenses = [...transactions]
-    .filter(t => t.type === 'expense' || t.type === 'bill')
+  // 3. Largest Splurges
+  const largestSplurges = transactions
+    .filter(t => t.type === 'expense')
     .sort((a, b) => b.amount - a.amount)
-    .slice(0, 4);
+    .slice(0, 3);
 
-  const currentDayOfMonth = Math.max(1, new Date().getDate());
-  const avgDailySpend = Math.round(totalAllSpending / currentDayOfMonth);
+  // 4. IOUs and Buffer
+  const friendsOweYou = people.filter(p => p.balance > 0).reduce((sum, p) => sum + p.balance, 0);
+
+  // 5. Projected Rollover
+  const projectedRollover = stats.moneyLeft - (avgDailyDiscretionary * stats.daysRemaining);
+
+  // Dynamic Chart Points
+  const currentX = stats.totalDays > 0 ? Math.min(100, Math.max(0, (stats.daysPassed / stats.totalDays) * 100)) : 0;
+  const currentY = stats.effectiveTotalBudget > 0 ? Math.min(100, Math.max(0, (stats.totalDiscretionarySpent / stats.effectiveTotalBudget) * 100)) : 0;
+  
+  const actualPathD = `M 0 0 L ${currentX} ${currentY}`;
+  const fillPathD = `M 0 100 L 0 0 L ${currentX} ${currentY} L ${currentX} 100 Z`;
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-6 animate-in fade-in duration-300 pb-8 sm:pb-0">
+      {/* Page Header */}
       <header>
-        <h1 className="text-2xl font-bold">Insights & Analytics</h1>
-        <p className="text-[var(--color-gray-dark)] text-sm">{monthStr} Budget Breakdown & Spending Habits</p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-dark)] tracking-tight">Insights & Analytics</h1>
+        <p className="text-[var(--color-gray-dark)] text-sm mt-0.5">Deep dive into your financial pacing and habits.</p>
       </header>
-
-      {/* Row 1: Key Monthly Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="p-5 border border-[var(--color-gray-light)]">
-          <p className="text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider">Starting Allowance</p>
-          <h3 className="text-2xl font-extrabold text-[var(--color-dark)] mt-1.5">{formatCurrency(config.totalMoney)}</h3>
-          <p className="text-[11px] text-[var(--color-gray-dark)] mt-1">Allocated for the month</p>
-        </Card>
-
-        <Card className="p-5 border border-[var(--color-gray-light)]">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-bold uppercase tracking-wider" style={{color: 'var(--positive-text)'}}>Extra Income</p>
-            <ArrowDownRight size={16} style={{color: 'var(--positive-accent)'}} />
-          </div>
-          <h3 className="text-2xl font-extrabold text-[var(--color-success)] mt-1.5">+{formatCurrency(totalIncome)}</h3>
-          <p className="text-[11px] text-[var(--color-gray-dark)] mt-1">Pocket money, gigs & repayments</p>
-        </Card>
-
-        <Card className="p-5 border border-[var(--color-gray-light)]">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-bold text-red-700 dark:text-red-400 uppercase tracking-wider">Bills & Fixed</p>
-            <CreditCard size={16} className="text-red-600 dark:text-red-400" />
-          </div>
-          <h3 className="text-2xl font-extrabold text-[var(--color-primary)] mt-1.5">−{formatCurrency(totalBills)}</h3>
-          <p className="text-[11px] text-[var(--color-gray-dark)] mt-1">Rent, credit card & utilities</p>
-        </Card>
-
-        <Card className="p-5 border border-[var(--color-gray-light)]">
-          <p className="text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider">Discretionary Spend</p>
-          <h3 className="text-2xl font-extrabold text-[var(--color-dark)] mt-1.5">{formatCurrency(totalNormalExpenses)}</h3>
-          <p className="text-[11px] text-[var(--color-gray-dark)] mt-1">Food, travel, shopping, etc.</p>
-        </Card>
-      </div>
-
-      {/* Row 2: Pacing Health & Daily Average Comparison */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <Card className="border border-[var(--color-gray-light)]">
-          <CardHeader>
-            <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-2">
-                <PieChart size={18} className="text-blue-500" />
-                <CardTitle>Pacing Health</CardTitle>
-              </div>
-              {stats.isOverspent ? (
-                <span
-                  className="text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1"
-                  style={{background: 'var(--negative-bg)', color: 'var(--negative-text)', border: '1px solid var(--negative-border)'}}
-                >
-                  <AlertTriangle size={12} /> Over Daily Pace
-                </span>
-              ) : (
-                <span
-                  className="text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1"
-                  style={{background: 'var(--positive-bg)', color: 'var(--positive-text)', border: '1px solid var(--positive-border)'}}
-                >
-                  <ShieldCheck size={12} /> Healthy Pacing
-                </span>
-              )}
-            </div>
-          </CardHeader>
-
-          <div className="space-y-4 mt-3">
-            <div>
-              <div className="flex justify-between text-xs font-bold mb-1.5">
-                <span className="text-[var(--color-gray-dark)]">Month Budget Consumed</span>
-                <span className="text-[var(--color-dark)]">
-                  {100 - stats.progressPercentage}%
-                </span>
-              </div>
-              <div className="w-full bg-[var(--color-surface-light)] rounded-full h-3 overflow-hidden">
-                <div 
-                  className={cn(
-                    "h-full rounded-full transition-all duration-700",
-                    stats.moneyLeft <= 0 ? "bg-red-600" : "bg-[var(--color-primary)]"
-                  )}
-                  style={{ width: `${100 - stats.progressPercentage}%` }}
-                />
-              </div>
-            </div>
-
-            <div className="p-4 bg-[var(--color-surface-light)] rounded-2xl space-y-1.5 text-xs text-[var(--color-dark)]">
-              <p className="font-bold flex items-center gap-1.5">
-                💡 Pacing Recommendation:
-              </p>
-              <p className="text-[var(--color-gray-dark)] leading-relaxed">
-                You have <strong className="text-[var(--color-dark)]">{formatCurrency(stats.moneyLeft)}</strong> remaining across <strong className="text-[var(--color-dark)]">{stats.daysRemaining} days</strong>. Safe recommended daily allowance is <strong className="text-[var(--color-dark)]">{formatCurrency(stats.baseDailyBudget)}/day</strong>.
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        {/* Daily Spending Rate Card */}
-        <Card className="border border-[var(--color-gray-light)]">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <TrendingDown size={18} className="text-amber-500" />
-              <CardTitle>Daily Spending Rate</CardTitle>
-            </div>
-          </CardHeader>
-
-          <div className="mt-3 grid grid-cols-2 gap-4">
-            <div className="p-4 rounded-2xl bg-[var(--color-surface-light)]">
-              <p className="text-xs font-bold text-[var(--color-gray-dark)] uppercase">Actual Avg. Spend</p>
-              <h4 className="text-3xl font-extrabold text-[var(--color-dark)] mt-1">{formatCurrency(avgDailySpend)}</h4>
-              <p className="text-[10px] text-[var(--color-gray-dark)] mt-0.5">per day so far</p>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-[var(--color-surface-light)]">
-              <p className="text-xs font-bold text-[var(--color-gray-dark)] uppercase">Target Base Daily</p>
-              <h4 className="text-3xl font-extrabold text-[var(--color-primary)] mt-1">{formatCurrency(stats.baseDailyBudget)}</h4>
-              <p className="text-[10px] text-[var(--color-gray-dark)] mt-0.5">recommended limit</p>
-            </div>
-          </div>
-
-          <p className="text-xs text-[var(--color-gray-dark)] mt-4">
-            {avgDailySpend <= stats.baseDailyBudget 
-              ? " Great job! Your average spending is below your daily target budget."
-              : "⚠️ Your actual daily spend exceeds your target. Consider trimming discretionary expenses to avoid month-end deficits."}
+      
+      {/* Top Row: Hero & Chart */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        {/* Pacing Health Hero */}
+        <Card className="lg:col-span-1 flex flex-col justify-center relative overflow-hidden group border border-[var(--color-gray-light)] p-5 sm:p-6">
+          <div className="absolute inset-0 bg-[var(--color-primary)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <ShieldCheck className="text-[#60dac4] mb-4 relative z-10" size={36} />
+          <h3 className="text-lg sm:text-xl font-semibold text-[var(--color-dark)] mb-2 relative z-10">{heroTitle}</h3>
+          <p className="text-xl sm:text-2xl font-semibold text-[#60dac4] leading-tight relative z-10">
+             {heroMessage}
           </p>
-        </Card>
-      </div>
-
-      {/* Row 3: Category Breakdown & Top Expenses */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Category Breakdown */}
-        <Card className="border border-[var(--color-gray-light)]">
-          <CardHeader>
-            <CardTitle>Spending by Category</CardTitle>
-          </CardHeader>
-
-          <div className="mt-4 space-y-3.5">
-            {categoryBreakdown.map((item) => (
-              <div key={item.category} className="space-y-1.5">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-[var(--color-dark)] flex items-center gap-1.5">
-                    <span>{item.category}</span>
-                  </span>
-                  <span className="text-[var(--color-gray-dark)]">
-                    {formatCurrency(item.amount)} ({item.percentage}%)
-                  </span>
-                </div>
-                <div className="w-full bg-[var(--color-surface-light)] rounded-full h-2 overflow-hidden">
-                  <div 
-                    className="bg-[var(--color-primary)] h-full rounded-full transition-all duration-500" 
-                    style={{ width: `${item.percentage}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-
-            {categoryBreakdown.length === 0 && (
-              <p className="text-sm text-[var(--color-gray-dark)] py-8 text-center">No expense categories to display yet.</p>
-            )}
+          <div className="mt-6 flex items-center gap-2 relative z-10">
+            <span className={cn("inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium", badgeBg, badgeColor)}>
+              <TrendingDown size={14} /> {badgeText}
+            </span>
           </div>
         </Card>
 
-        {/* Largest Expenses */}
-        <Card className="border border-[var(--color-gray-light)]">
-          <CardHeader>
-            <CardTitle>Largest Outflows</CardTitle>
-          </CardHeader>
+        {/* Burn-down Chart */}
+        <Card className="lg:col-span-2 flex flex-col relative border border-[var(--color-gray-light)] p-5 sm:p-6">
+          <div className="flex justify-between items-center mb-6">
+            <CardTitle>Spend vs Ideal Path</CardTitle>
+            <select className="bg-[var(--color-surface)] border border-[var(--color-gray-light)] text-[var(--color-dark)] rounded-lg text-[11px] font-medium px-2 py-1 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none">
+              <option>This Month</option>
+            </select>
+          </div>
+          <div className="flex-grow relative min-h-[200px] rounded-b-lg border-b border-[var(--color-primary)]/30 bg-gradient-to-b from-[var(--color-primary)]/10 dark:from-[var(--color-primary)]/20 to-transparent flex items-end">
+            
+            <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="grad" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor="var(--color-primary)"></stop>
+                  <stop offset="100%" stopColor="transparent"></stop>
+                </linearGradient>
+              </defs>
+              
+              {/* Ideal Line (Diagonal) */}
+              <line
+                x1="0"
+                y1="100"
+                x2="100"
+                y2="0"
+                stroke="var(--color-gray-light)"
+                strokeWidth="1"
+                vectorEffect="non-scaling-stroke"
+                strokeDasharray="4 4"
+                opacity="0.8"
+              />
 
-          <div className="mt-3 divide-y divide-[var(--color-gray-light)]">
-            {largestExpenses.map((t) => (
-              <div key={t.id} className="py-3 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center font-bold text-xs">
-                    ₹
+              {/* Actual Path Fill */}
+              <path d={fillPathD} fill="url(#grad)" className="opacity-40" />
+              
+              {/* Actual Path Stroke */}
+              <path d={actualPathD} fill="none" stroke="var(--color-primary)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+            </svg>
+            
+            {/* Today Indicator */}
+            {stats.daysPassed > 0 && (
+              <div 
+                className="absolute top-0 bottom-0 border-l border-dashed border-[var(--color-gray-light)]"
+                style={{ left: `${currentX}%` }}
+              >
+                <div className="absolute -top-6 -translate-x-1/2 bg-[var(--color-surface)] border border-[var(--color-gray-light)] px-2 py-1 rounded text-[11px] font-medium text-[var(--color-dark)] shadow-sm">Today</div>
+                <div 
+                  className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)]" 
+                  style={{ top: `${currentY}%` }}
+                ></div>
+              </div>
+            )}
+          </div>
+          <div className="flex justify-between mt-4 text-[11px] font-medium text-[var(--color-gray-dark)]">
+            <span>Start</span>
+            <span>End of Month</span>
+          </div>
+        </Card>
+      </div>
+
+      {/* Mid Row: Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+        {/* Daily Spend Engine */}
+        <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-5 sm:p-6">
+          <div className="flex justify-between items-start mb-4">
+            <TrendingDown size={20} className="text-[var(--color-gray-dark)]" />
+            <span className={cn(
+              "inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium",
+              avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[#0ba38f]/10 text-[#60dac4]" : "bg-[var(--negative-bg)] text-[var(--color-primary)]"
+            )}>
+              {avgDailyDiscretionary <= stats.baseDailyBudget ? "Better" : "Worse"}
+            </span>
+          </div>
+          <CardTitle className="mb-1">Daily Spend Engine</CardTitle>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl sm:text-[32px] font-bold text-[var(--color-dark)] leading-tight tracking-tight">{formatCurrency(avgDailyDiscretionary)}</span>
+            <span className="text-sm text-[var(--color-gray-dark)] line-through">/ {formatCurrency(stats.baseDailyBudget)}</span>
+          </div>
+          <div className="mt-4 w-full h-1.5 bg-[var(--color-surface-light)] rounded-full overflow-hidden">
+            <div 
+              className={cn("h-full", avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[#60dac4]" : "bg-[var(--color-primary)]")} 
+              style={{ width: `${Math.min(100, stats.baseDailyBudget > 0 ? (avgDailyDiscretionary / stats.baseDailyBudget) * 100 : 0)}%` }}
+            ></div>
+          </div>
+        </Card>
+        
+        {/* Zero-Spend Days */}
+        <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-5 sm:p-6">
+          <div className="flex justify-between items-start mb-4">
+            <Star size={20} className="text-[var(--color-primary)]" />
+            <span className="text-xl">🔥</span>
+          </div>
+          <CardTitle className="mb-1">Zero-Spend Streak</CardTitle>
+          <div className="text-3xl sm:text-[32px] font-bold text-[var(--color-primary)] leading-tight tracking-tight">{stats.zeroSpendDays} Days</div>
+          <p className="text-[11px] font-medium text-[var(--color-gray-dark)] mt-4">Current Cycle</p>
+        </Card>
+        
+        {/* Projected Rollover */}
+        <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-5 sm:p-6">
+          <div className="flex justify-between items-start mb-4">
+            <Wallet size={20} className="text-[var(--color-gray-dark)]" />
+          </div>
+          <CardTitle className="mb-1">Projected Rollover</CardTitle>
+          <div className={cn(
+            "text-3xl sm:text-[32px] font-bold leading-tight tracking-tight",
+            projectedRollover > 0 ? "text-[#60dac4]" : "text-[var(--color-primary)]"
+          )}>
+            {formatCurrency(projectedRollover)}
+          </div>
+          <p className="text-[11px] font-medium text-[var(--color-gray-dark)] mt-4">Estimated for next month</p>
+        </Card>
+      </div>
+
+      {/* Bottom Row: Categories, Splurges, IOUs */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        {/* Where it's going */}
+        <Card className="flex flex-col border border-[var(--color-gray-light)] p-5 sm:p-6">
+          <CardTitle className="mb-6 flex items-center gap-2">
+            <PieChart size={16} /> Where it's going
+          </CardTitle>
+          <div className="flex flex-col gap-4">
+            {categoryBreakdown.length > 0 ? categoryBreakdown.map((item, idx) => {
+              const colors = [
+                { bg: 'bg-[var(--color-primary)]', text: 'text-[var(--color-primary)]' },
+                { bg: 'bg-[var(--color-orange)]', text: 'text-[var(--color-orange)]' },
+                { bg: 'bg-[#60dac4]', text: 'text-[#60dac4]' },
+                { bg: 'bg-[var(--color-gray-dark)]', text: 'text-[var(--color-gray-dark)]' },
+              ];
+              const c = colors[idx % colors.length];
+              
+              return (
+                <div key={item.category}>
+                  <div className="flex justify-between text-[11px] font-medium mb-1">
+                    <span className="text-[var(--color-dark)]">{item.category}</span>
+                    <span className={cn("font-bold", c.text)}>{item.percentage}%</span>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-[var(--color-dark)]">{t.reason || t.category || t.type}</p>
-                    <p className="text-[10px] text-[var(--color-gray-dark)]">{format(new Date(t.date), 'dd MMM yyyy')} • {t.category || t.type}</p>
+                  <div className="w-full h-2 bg-[var(--color-surface-light)] rounded-full overflow-hidden">
+                    <div className={cn("h-full", c.bg)} style={{ width: `${item.percentage}%` }}></div>
                   </div>
                 </div>
-                <span className="text-sm font-extrabold text-[var(--color-primary)]">
-                  {formatCurrency(t.amount)}
-                </span>
-              </div>
-            ))}
-
-            {largestExpenses.length === 0 && (
-              <p className="text-sm text-[var(--color-gray-dark)] py-8 text-center">No expenses recorded yet.</p>
+              );
+            }) : (
+              <p className="text-sm text-[var(--color-gray-dark)] py-2">No discretionary expenses yet.</p>
             )}
+          </div>
+        </Card>
+        
+        {/* Largest Splurges */}
+        <Card className="flex flex-col border border-[var(--color-gray-light)] p-5 sm:p-6">
+          <CardTitle className="mb-6 flex items-center gap-2">
+            <ShoppingBag size={16} /> Largest Splurges
+          </CardTitle>
+          <div className="flex flex-col gap-4">
+            {largestSplurges.length > 0 ? largestSplurges.map(t => (
+              <div key={t.id} className="flex items-center justify-between p-3 rounded-xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] hover:border-[var(--color-primary)]/20 transition-colors">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-8 h-8 rounded-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] flex items-center justify-center shrink-0">
+                    {getCategoryIcon(t.category || t.type)}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[11px] font-medium text-[var(--color-dark)] truncate">{t.reason || t.category || 'Purchase'}</div>
+                    <div className="text-[10px] font-medium text-[var(--color-gray-dark)]">
+                      {format(new Date(t.date), 'MMM dd')} • {t.category || t.type}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-[12px] font-semibold text-[var(--color-primary)] tracking-wide shrink-0 ml-2">- {formatCurrency(t.amount)}</div>
+              </div>
+            )) : (
+              <p className="text-sm text-[var(--color-gray-dark)] py-2">No expenses to show.</p>
+            )}
+          </div>
+        </Card>
+        
+        {/* IOUs & Hidden Liquidity */}
+        <Card className="flex flex-col border border-[var(--color-gray-light)] p-5 sm:p-6">
+          <CardTitle className="mb-6 flex items-center gap-2">
+            <ArrowRightLeft size={16} /> IOUs & Hidden Liquidity
+          </CardTitle>
+          <div className="flex flex-col gap-4">
+            {/* Friends Owe You */}
+            <div
+              className="flex items-center justify-between p-4 rounded-xl relative overflow-hidden"
+              style={{ background: 'var(--positive-bg)', border: '1px solid var(--positive-border)' }}
+            >
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--color-success)]" />
+              <div>
+                <div className="text-[11px] font-medium" style={{ color: 'var(--positive-text)' }}>Friends owe you</div>
+                <div className="text-xl font-semibold text-[var(--color-success)] leading-7 mt-1">+{formatCurrency(friendsOweYou)}</div>
+              </div>
+              <Users size={30} className="text-[var(--color-success)] opacity-50" />
+            </div>
+            
+            {/* Fixed Bills Paid */}
+            <div
+              className="flex items-center justify-between p-4 rounded-xl relative overflow-hidden"
+              style={{ background: 'var(--negative-bg)', border: '1px solid var(--negative-border)' }}
+            >
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--color-primary)]" />
+              <div>
+                <div className="text-[11px] font-medium" style={{ color: 'var(--negative-text)' }}>Fixed Bills Paid</div>
+                <div className="text-xl font-semibold text-[var(--color-dark)] leading-7 mt-1">{formatCurrency(stats.totalBills)}</div>
+              </div>
+              <CalendarDays size={30} className="text-[var(--color-primary)] opacity-50" />
+            </div>
           </div>
         </Card>
       </div>
