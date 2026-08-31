@@ -299,77 +299,79 @@ export function Insights() {
         <p className="text-[var(--color-gray-dark)] text-sm mt-0.5">Deep dive into your financial pacing and habits.</p>
       </header>
       
-      {/* Top Row: Hero & Chart */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+      {/* Top Row: Pacing Health & Daily Spend Engine Side-by-Side */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-6">
         {/* Pacing Health Hero */}
-        <Card className="lg:col-span-1 flex flex-col justify-center relative overflow-hidden group border border-[var(--color-gray-light)] p-5 sm:p-6">
+        <Card className="flex flex-col justify-between relative overflow-hidden group border border-[var(--color-gray-light)] p-3.5 sm:p-6 min-w-0">
           <div className="absolute inset-0 bg-[var(--color-primary)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-          <ShieldCheck className="text-[var(--color-success)] mb-4 relative z-10" size={36} />
-          <h3 className="text-lg sm:text-xl font-semibold text-[var(--color-dark)] mb-2 relative z-10">{heroTitle}</h3>
-          <p className="text-xl sm:text-2xl font-semibold text-[var(--color-success)] leading-tight relative z-10">
-             {heroMessage}
-          </p>
-          <div className="mt-6 flex items-center gap-2 relative z-10">
-            <span className={cn("inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium", badgeBg, badgeColor)}>
-              <TrendingDown size={14} /> {badgeText}
+          <div className="flex justify-between items-start mb-2 sm:mb-4">
+            <ShieldCheck className="text-[var(--color-success)] shrink-0 sm:w-8 sm:h-8" size={22} />
+            <span className={cn("inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[9px] sm:text-[11px] font-medium shrink-0", badgeBg, badgeColor)}>
+              <TrendingDown size={12} className="sm:w-3.5 sm:h-3.5" /> {badgeText}
             </span>
+          </div>
+          <div>
+            <h3 className="text-xs sm:text-lg font-bold text-[var(--color-dark)] mb-1 truncate">{heroTitle}</h3>
+            <p className="text-sm sm:text-xl font-extrabold text-[var(--color-success)] leading-tight truncate">
+              {heroMessage}
+            </p>
           </div>
         </Card>
 
-        {/* Burn-down Chart Extracted */}
-        <BurnDownChart stats={stats} />
-      </div>
-
-      {/* Mid Row: Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         {/* Daily Spend Engine */}
-        <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-5 sm:p-6">
-          <div className="flex justify-between items-start mb-4">
-            <TrendingDown size={20} className="text-[var(--color-gray-dark)]" />
+        <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-3.5 sm:p-6 min-w-0">
+          <div className="flex justify-between items-start mb-2 sm:mb-4">
+            <TrendingDown size={20} className="text-[var(--color-gray-dark)] shrink-0 sm:w-5 sm:h-5" />
             <span className={cn(
-              "inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium",
+              "inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[9px] sm:text-[11px] font-medium shrink-0",
               avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[var(--color-positive-bg)] text-[var(--color-success)]" : "bg-[var(--negative-bg)] text-[var(--color-primary)]"
             )}>
               {avgDailyDiscretionary <= stats.baseDailyBudget ? "Better" : "Worse"}
             </span>
           </div>
-          <CardTitle className="mb-1">Daily Spend Engine</CardTitle>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl sm:text-[32px] font-bold text-[var(--color-dark)] leading-tight tracking-tight">{formatCurrency(avgDailyDiscretionary)}</span>
-            <span className="text-sm text-[var(--color-gray-dark)] line-through">/ {formatCurrency(stats.baseDailyBudget)}</span>
+          <CardTitle className="mb-1 text-xs sm:text-base truncate">Daily Spend Engine</CardTitle>
+          <div className="flex items-baseline gap-1 sm:gap-2 truncate">
+            <span className="text-lg sm:text-[32px] font-bold text-[var(--color-dark)] leading-tight tracking-tight truncate">{formatCurrency(avgDailyDiscretionary)}</span>
+            <span className="text-[10px] sm:text-sm text-[var(--color-gray-dark)] line-through shrink-0">/ {formatCurrency(stats.baseDailyBudget)}</span>
           </div>
-          <div className="mt-4 w-full h-1.5 bg-[var(--color-surface-light)] rounded-full overflow-hidden">
+          <div className="mt-2 sm:mt-4 w-full h-1.5 bg-[var(--color-surface-light)] rounded-full overflow-hidden">
             <div 
               className={cn("h-full", avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[var(--color-success)]" : "bg-[var(--color-primary)]")} 
               style={{ width: `${Math.min(100, stats.baseDailyBudget > 0 ? (avgDailyDiscretionary / stats.baseDailyBudget) * 100 : 0)}%` }}
             ></div>
           </div>
         </Card>
-        
+      </div>
+
+      {/* Burn-down Chart */}
+      <BurnDownChart stats={stats} />
+
+      {/* Zero-Spend Streak & Projected Rollover Side-by-Side */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-6">
         {/* Zero-Spend Days */}
-        <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-5 sm:p-6">
-          <div className="flex justify-between items-start mb-4">
-            <Star size={20} className="text-[var(--color-primary)]" />
-            <span className="text-xl">🔥</span>
+        <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-3.5 sm:p-6 min-w-0">
+          <div className="flex justify-between items-start mb-2 sm:mb-4">
+            <Star size={18} className="text-[var(--color-primary)] shrink-0 sm:w-5 sm:h-5" />
+            <span className="text-base sm:text-xl">🔥</span>
           </div>
-          <CardTitle className="mb-1">Zero-Spend Streak</CardTitle>
-          <div className="text-3xl sm:text-[32px] font-bold text-[var(--color-primary)] leading-tight tracking-tight">{stats.zeroSpendDays} Days</div>
-          <p className="text-[11px] font-medium text-[var(--color-gray-dark)] mt-4">Current Cycle</p>
+          <CardTitle className="mb-1 text-xs sm:text-base truncate">Zero-Spend Streak</CardTitle>
+          <div className="text-xl sm:text-[32px] font-bold text-[var(--color-primary)] leading-tight tracking-tight truncate">{stats.zeroSpendDays} Days</div>
+          <p className="text-[10px] sm:text-[11px] font-medium text-[var(--color-gray-dark)] mt-2 sm:mt-4 truncate">Current Cycle</p>
         </Card>
         
         {/* Projected Rollover */}
-        <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-5 sm:p-6">
-          <div className="flex justify-between items-start mb-4">
-            <Wallet size={20} className="text-[var(--color-gray-dark)]" />
+        <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-3.5 sm:p-6 min-w-0">
+          <div className="flex justify-between items-start mb-2 sm:mb-4">
+            <Wallet size={18} className="text-[var(--color-gray-dark)] shrink-0 sm:w-5 sm:h-5" />
           </div>
-          <CardTitle className="mb-1">Projected Rollover</CardTitle>
+          <CardTitle className="mb-1 text-xs sm:text-base truncate">Projected Rollover</CardTitle>
           <div className={cn(
-            "text-3xl sm:text-[32px] font-bold leading-tight tracking-tight",
+            "text-xl sm:text-[32px] font-bold leading-tight tracking-tight truncate",
             projectedRollover > 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"
           )}>
             {formatCurrency(projectedRollover)}
           </div>
-          <p className="text-[11px] font-medium text-[var(--color-gray-dark)] mt-4">Estimated for next month</p>
+          <p className="text-[10px] sm:text-[11px] font-medium text-[var(--color-gray-dark)] mt-2 sm:mt-4 truncate">Estimated next month</p>
         </Card>
       </div>
 

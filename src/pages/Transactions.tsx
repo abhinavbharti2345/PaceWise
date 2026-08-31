@@ -136,7 +136,7 @@ export function Transactions() {
       </div>
 
       {/* Type Filter Pills */}
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div className="flex gap-2 overflow-x-auto py-2 my-1 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
         {[
           { id: 'all', label: 'All Activities' },
           { id: 'expense', label: 'Expenses' },
