@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Transaction, BudgetConfig } from '../features/budget/budgetEngine';
+import { supabase } from '../lib/supabase';
+import { useAuthStore } from './useAuthStore';
 
 export interface Person {
   id: string;
@@ -131,44 +133,128 @@ export const useStore = create<AppState>()(
 
       setConfig: (config) => set({ config }),
       
-      updateConfig: (partial) => set((state) => ({
-        config: { ...state.config, ...partial }
-      })),
+      updateConfig: (partial) => {
+        set((state) => ({
+          config: { ...state.config, ...partial }
+        }));
+        
+        const userId = useAuthStore.getState().user?.id;
+        if (userId) {
+          const newConfig = useStore.getState().config;
+          supabase.from('budget_configs').update({
+            total_money: newConfig.totalMoney,
+            start_date: newConfig.startDate,
+            end_date: newConfig.endDate,
+            currency: newConfig.currency,
+            theme: newConfig.theme,
+            updated_at: new Date().toISOString(),
+          }).eq('user_id', userId).then(({ error }) => {
+            if (error) console.error('Failed to sync config', error);
+          });
+        }
+      },
       
-      addTransaction: (transaction) => set((state) => ({
-        transactions: [
-          { ...transaction, id: 'tx_' + Math.random().toString(36).substring(2, 9) },
-          ...state.transactions
-        ]
-      })),
+      addTransaction: (transaction) => {
+        const id = crypto.randomUUID();
+        const newTx = { ...transaction, id };
+        set((state) => ({
+          transactions: [newTx, ...state.transactions]
+        }));
 
-      deleteTransaction: (id) => set((state) => ({
-        transactions: state.transactions.filter(t => t.id !== id)
-      })),
+        const userId = useAuthStore.getState().user?.id;
+        if (userId) {
+          supabase.from('transactions').insert({
+            id,
+            user_id: userId,
+            type: newTx.type,
+            amount: newTx.amount,
+            date: newTx.date,
+            category: newTx.category,
+            reason: newTx.reason,
+            source: newTx.source,
+            person_id: newTx.personId,
+            person_name: newTx.personName,
+            direction: newTx.direction,
+            is_settlement: newTx.isSettlement,
+            payment_method: newTx.paymentMethod,
+            note: newTx.note,
+          }).then(({ error }) => {
+            if (error) console.error('Failed to sync transaction', error);
+          });
+        }
+      },
+
+      deleteTransaction: (id) => {
+        set((state) => ({
+          transactions: state.transactions.filter(t => t.id !== id)
+        }));
+        
+        const userId = useAuthStore.getState().user?.id;
+        if (userId) {
+          supabase.from('transactions').delete().eq('id', id).then(({ error }) => {
+            if (error) console.error('Failed to delete transaction', error);
+          });
+        }
+      },
       
       addPerson: (person) => {
-        const id = 'p_' + Math.random().toString(36).substring(2, 9);
+        const id = crypto.randomUUID();
+        const newPerson = { ...person, id };
         set((state) => ({
-          people: [...state.people, { ...person, id }]
+          people: [...state.people, newPerson]
         }));
+        
+        const userId = useAuthStore.getState().user?.id;
+        if (userId) {
+          supabase.from('people').insert({
+            id,
+            user_id: userId,
+            name: newPerson.name,
+            avatar_url: newPerson.avatarUrl,
+            balance: newPerson.balance,
+          }).then(({ error }) => {
+            if (error) console.error('Failed to sync person', error);
+          });
+        }
+        
         return id;
       },
 
-      deletePerson: (id) => set((state) => ({
-        people: state.people.filter(p => p.id !== id)
-      })),
+      deletePerson: (id) => {
+        set((state) => ({
+          people: state.people.filter(p => p.id !== id)
+        }));
+        
+        const userId = useAuthStore.getState().user?.id;
+        if (userId) {
+          supabase.from('people').delete().eq('id', id).then(({ error }) => {
+            if (error) console.error('Failed to delete person', error);
+          });
+        }
+      },
 
-      updatePersonBalance: (personId, amountChange) => set((state) => ({
-        people: state.people.map(p => 
-          p.id === personId ? { ...p, balance: p.balance + amountChange } : p
-        )
-      })),
+      updatePersonBalance: (personId, amountChange) => {
+        set((state) => ({
+          people: state.people.map(p => 
+            p.id === personId ? { ...p, balance: p.balance + amountChange } : p
+          )
+        }));
+        
+        const userId = useAuthStore.getState().user?.id;
+        if (userId) {
+          const person = useStore.getState().people.find(p => p.id === personId);
+          if (person) {
+            supabase.from('people').update({ balance: person.balance }).eq('id', personId).then(({ error }) => {
+              if (error) console.error('Failed to update person balance', error);
+            });
+          }
+        }
+      },
 
       recordPersonTransaction: ({ personId, personName, amount, direction, reason, date, note }) => {
         const txDate = date || new Date().toISOString();
-        // If direction is 'gave', person owes user (+amount)
-        // If direction is 'took', user owes person (-amount)
         const balanceChange = direction === 'gave' ? amount : -amount;
+        const txId = crypto.randomUUID();
 
         set((state) => ({
           people: state.people.map(p => 
@@ -176,7 +262,7 @@ export const useStore = create<AppState>()(
           ),
           transactions: [
             {
-              id: 'tx_' + Math.random().toString(36).substring(2, 9),
+              id: txId,
               type: 'person',
               amount,
               category: 'People',
@@ -190,13 +276,37 @@ export const useStore = create<AppState>()(
             ...state.transactions
           ]
         }));
+
+        const userId = useAuthStore.getState().user?.id;
+        if (userId) {
+          const person = useStore.getState().people.find(p => p.id === personId);
+          const newTx = useStore.getState().transactions.find(t => t.id === txId);
+          
+          if (person && newTx) {
+            Promise.all([
+              supabase.from('people').update({ balance: person.balance }).eq('id', personId),
+              supabase.from('transactions').insert({
+                id: txId,
+                user_id: userId,
+                type: newTx.type,
+                amount: newTx.amount,
+                date: newTx.date,
+                category: newTx.category,
+                reason: newTx.reason,
+                person_id: newTx.personId,
+                person_name: newTx.personName,
+                direction: newTx.direction,
+                note: newTx.note,
+              })
+            ]).catch(err => console.error('Failed to sync recordPersonTransaction', err));
+          }
+        }
       },
 
       settleDebt: ({ personId, personName, amount, direction, note }) => {
         const txDate = new Date().toISOString();
-        // If user 'received' settlement (person was owing user, balance reduces by amount)
-        // If user 'paid' settlement (user owed person, balance increases toward 0 by amount)
         const balanceChange = direction === 'received' ? -amount : amount;
+        const txId = crypto.randomUUID();
 
         set((state) => ({
           people: state.people.map(p => 
@@ -204,7 +314,7 @@ export const useStore = create<AppState>()(
           ),
           transactions: [
             {
-              id: 'tx_' + Math.random().toString(36).substring(2, 9),
+              id: txId,
               type: 'person',
               amount,
               category: 'Settlement',
@@ -221,6 +331,32 @@ export const useStore = create<AppState>()(
             ...state.transactions
           ]
         }));
+
+        const userId = useAuthStore.getState().user?.id;
+        if (userId) {
+          const person = useStore.getState().people.find(p => p.id === personId);
+          const newTx = useStore.getState().transactions.find(t => t.id === txId);
+          
+          if (person && newTx) {
+            Promise.all([
+              supabase.from('people').update({ balance: person.balance }).eq('id', personId),
+              supabase.from('transactions').insert({
+                id: txId,
+                user_id: userId,
+                type: newTx.type,
+                amount: newTx.amount,
+                date: newTx.date,
+                category: newTx.category,
+                reason: newTx.reason,
+                person_id: newTx.personId,
+                person_name: newTx.personName,
+                direction: newTx.direction,
+                is_settlement: newTx.isSettlement,
+                note: newTx.note,
+              })
+            ]).catch(err => console.error('Failed to sync settleDebt', err));
+          }
+        }
       },
       
       clearAllData: () => set({
