@@ -53,14 +53,13 @@ interface AppState {
   setHydrated: (value: boolean) => void;
 }
 
-const getMonthDates = () => {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString();
+export const getBudgetDatesForDate = (date: Date) => {
+  const start = new Date(date.getFullYear(), date.getMonth(), 1).toISOString();
+  const end = new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString();
   return { start, end };
 };
 
-const { start: monthStart, end: monthEnd } = getMonthDates();
+const { start: monthStart, end: monthEnd } = getBudgetDatesForDate(new Date());
 
 // Safe UUID generation that works on mobile devices over non-HTTPS local IP addresses
 export function generateId(): string {

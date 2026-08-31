@@ -13,6 +13,7 @@ import { Profile } from './pages/Profile';
 import { useStore } from './store/useStore';
 import { useAuthStore } from './store/useAuthStore';
 import { useSupabaseSync } from './lib/supabaseSync';
+import { useMonthRollover } from './hooks/useMonthRollover';
 import { Loader } from 'lucide-react';
 
 // ── Error Boundary ───────────────────────────────────────────────────
@@ -74,6 +75,9 @@ function AppContent() {
 
   // Initialize Supabase sync (hook handles auth state internally)
   useSupabaseSync();
+  
+  // Enable automatic month rollover check
+  useMonthRollover();
 
   useEffect(() => {
     checkAuthStatus();

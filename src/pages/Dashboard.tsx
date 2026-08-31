@@ -5,10 +5,12 @@ import { useAuthStore } from '../store/useAuthStore';
 import { calculateBudget } from '../features/budget/budgetEngine';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
 import { IconBadge } from '../components/ui/IconBadge';
+import { LiveClock } from '../components/ui/LiveClock';
 import { AddExpenseModal } from '../components/modals/AddExpenseModal';
 import { AddMoneyModal } from '../components/modals/AddMoneyModal';
 import { AddBillModal } from '../components/modals/AddBillModal';
 import { AddPersonModal } from '../components/modals/AddPersonModal';
+import { useCurrentDate } from '../hooks/useCurrentDate';
 import { format } from 'date-fns';
 import { 
   TrendingUp, 
@@ -31,13 +33,11 @@ export function Dashboard() {
   const [isBillModalOpen, setIsBillModalOpen] = useState(false);
   const [isPersonModalOpen, setIsPersonModalOpen] = useState(false);
   
-  const todayDateStr = useMemo(() => new Date().toISOString(), []);
+  const todayDateStr = useCurrentDate();
   const stats = useMemo(() => calculateBudget(config, transactions, todayDateStr), [config, transactions, todayDateStr]);
 
   const currencySymbol = config.currency || '₹';
   const formatCurrency = (amount: number) => `${currencySymbol}${Math.round(amount).toLocaleString('en-IN')}`;
-
-  const todayStr = format(new Date(), 'EEEE, d MMMM yyyy');
 
   // People calculations
   const toReceive = people.filter(p => (p.balance || 0) > 0).reduce((sum, p) => sum + p.balance, 0);
@@ -73,7 +73,7 @@ export function Dashboard() {
       <header>
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-dark)] tracking-tight">Good day, {displayName} 👋</h1>
-          <p className="text-[var(--color-gray-dark)] text-sm mt-0.5">{todayStr}</p>
+          <LiveClock />
         </div>
       </header>
 

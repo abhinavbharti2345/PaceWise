@@ -1,6 +1,7 @@
 import React from 'react';
 import { useStore } from '../store/useStore';
 import { calculateBudget } from '../features/budget/budgetEngine';
+import { useCurrentDate } from '../hooks/useCurrentDate';
 import { format } from 'date-fns';
 import { cn } from '../utils/cn';
 import { Card, CardTitle } from '../components/ui/Card';
@@ -232,7 +233,7 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
 
 export function Insights() {
   const { config, transactions, people } = useStore();
-  const todayDateStr = new Date().toISOString();
+  const todayDateStr = useCurrentDate();
   const stats = calculateBudget(config, transactions, todayDateStr);
   
   // 1. Pacing Narrative Logic
