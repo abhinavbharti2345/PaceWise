@@ -97,15 +97,15 @@
   },
   "src/components/layout/AppLayout.tsx": {
     "mtime": 1788197963.1740396,
-    "seen": 1788198037.2187915,
+    "seen": 1788198928.3722095,
     "ast_hash": "d3eecd68af32b05265fb9b210d9476e3",
-    "semantic_hash": ""
+    "semantic_hash": "d3eecd68af32b05265fb9b210d9476e3"
   },
   "src/components/modals/AddExpenseModal.tsx": {
     "mtime": 1788198459.4345498,
-    "seen": 1788198511.34683,
+    "seen": 1788198928.3722124,
     "ast_hash": "0959f961bca891d03dd5637d382e480a",
-    "semantic_hash": ""
+    "semantic_hash": "0959f961bca891d03dd5637d382e480a"
   },
   "src/components/ui/Badge.tsx": {
     "mtime": 1788129530.0690274,
@@ -115,9 +115,9 @@
   },
   "src/components/ui/Button.tsx": {
     "mtime": 1788198341.6792698,
-    "seen": 1788198410.218446,
+    "seen": 1788198928.3723392,
     "ast_hash": "e5b28f5daa419f670d889f0b9d06b631",
-    "semantic_hash": ""
+    "semantic_hash": "e5b28f5daa419f670d889f0b9d06b631"
   },
   "src/components/ui/Card.tsx": {
     "mtime": 1788193717.7514136,
@@ -133,9 +133,9 @@
   },
   "src/components/ui/Input.tsx": {
     "mtime": 1788198429.9248457,
-    "seen": 1788198511.3468401,
+    "seen": 1788198928.3725288,
     "ast_hash": "b2c2db109868be8375edfd5627332ade",
-    "semantic_hash": ""
+    "semantic_hash": "b2c2db109868be8375edfd5627332ade"
   },
   "src/features/budget/budgetEngine.ts": {
     "mtime": 1788191469.7574632,
@@ -151,9 +151,9 @@
   },
   "src/pages/Dashboard.tsx": {
     "mtime": 1788197531.2473059,
-    "seen": 1788198037.218821,
+    "seen": 1788198928.3727925,
     "ast_hash": "689a0046c801513e0b2057d57139c589",
-    "semantic_hash": ""
+    "semantic_hash": "689a0046c801513e0b2057d57139c589"
   },
   "src/pages/Insights.tsx": {
     "mtime": 1788194596.0503457,
@@ -181,9 +181,9 @@
   },
   "src/store/useStore.ts": {
     "mtime": 1788198357.8630204,
-    "seen": 1788198410.2184613,
+    "seen": 1788198928.3731673,
     "ast_hash": "cbfd1c4d1283c5d1ecb8bec9ab3865df",
-    "semantic_hash": ""
+    "semantic_hash": "cbfd1c4d1283c5d1ecb8bec9ab3865df"
   },
   "src/utils/cn.ts": {
     "mtime": 1788129530.076059,
@@ -223,15 +223,15 @@
   },
   "src/components/modals/AddMoneyModal.tsx": {
     "mtime": 1788198469.8632855,
-    "seen": 1788198511.346831,
+    "seen": 1788198928.3722134,
     "ast_hash": "a683284c92b69ba96e30a098432df0e6",
-    "semantic_hash": ""
+    "semantic_hash": "a683284c92b69ba96e30a098432df0e6"
   },
   "src/components/modals/AddPersonModal.tsx": {
-    "mtime": 1788198449.9114845,
-    "seen": 1788198511.3468318,
-    "ast_hash": "ea82b0db3b939482bfa3ba24f04fff0b",
-    "semantic_hash": ""
+    "mtime": 1788198608.1381538,
+    "seen": 1788198928.3722143,
+    "ast_hash": "5f3eadbdc1e79b489be16a51c953ef49",
+    "semantic_hash": "5f3eadbdc1e79b489be16a51c953ef49"
   },
   ".agents/plugins/code-documentation/agents/code-reviewer.md": {
     "mtime": 1788129525.1307685,
@@ -823,21 +823,21 @@
   },
   "src/components/modals/AddBillModal.tsx": {
     "mtime": 1788198480.7046156,
-    "seen": 1788198511.3468287,
+    "seen": 1788198928.3722112,
     "ast_hash": "e368fa4ce648930a32e9a0a3e3914d35",
-    "semantic_hash": ""
+    "semantic_hash": "e368fa4ce648930a32e9a0a3e3914d35"
   },
   "src/components/modals/PersonTransactionModal.tsx": {
     "mtime": 1788198441.6307986,
-    "seen": 1788198511.3468347,
+    "seen": 1788198928.3722172,
     "ast_hash": "7e44c84dcda9da37a25641b9cba0f9a4",
-    "semantic_hash": ""
+    "semantic_hash": "7e44c84dcda9da37a25641b9cba0f9a4"
   },
   "src/components/modals/SettleModal.tsx": {
     "mtime": 1788198488.3528833,
-    "seen": 1788198511.3468356,
+    "seen": 1788198928.3722181,
     "ast_hash": "b6a471f2ffff26de77dc9c0c473c4f45",
-    "semantic_hash": ""
+    "semantic_hash": "b6a471f2ffff26de77dc9c0c473c4f45"
   },
   "src/pages/PersonDetails.tsx": {
     "mtime": 1788193094.4782298,
@@ -865,9 +865,9 @@
   },
   "src/lib/supabaseSync.ts": {
     "mtime": 1788195872.932065,
-    "seen": 1788198037.218817,
+    "seen": 1788198928.3726609,
     "ast_hash": "70156cbd54d21798828702c2cab8ff1d",
-    "semantic_hash": ""
+    "semantic_hash": "70156cbd54d21798828702c2cab8ff1d"
   },
   "src/pages/Auth.tsx": {
     "mtime": 1788193816.2199545,
@@ -883,9 +883,9 @@
   },
   "src/pages/Profile.tsx": {
     "mtime": 1788195935.4448097,
-    "seen": 1788198037.2188272,
+    "seen": 1788198928.3729806,
     "ast_hash": "b2fcde6ad9cfea8ca676cb19eefdecbc",
-    "semantic_hash": ""
+    "semantic_hash": "b2fcde6ad9cfea8ca676cb19eefdecbc"
   },
   "vercel.json": {
     "mtime": 1788176124.4624636,
@@ -901,15 +901,15 @@
   },
   "src/components/modals/ConfirmModal.tsx": {
     "mtime": 1788198016.0500243,
-    "seen": 1788198037.2188003,
+    "seen": 1788198928.3722153,
     "ast_hash": "3b454b9efd765c32fc484c91e810ca0b",
-    "semantic_hash": ""
+    "semantic_hash": "3b454b9efd765c32fc484c91e810ca0b"
   },
   "src/components/modals/EditTransactionModal.tsx": {
     "mtime": 1788198496.4109993,
-    "seen": 1788198511.3468337,
+    "seen": 1788198928.3722162,
     "ast_hash": "34e6a7bfa6e9bf4aa1f5dce6eaf45996",
-    "semantic_hash": ""
+    "semantic_hash": "34e6a7bfa6e9bf4aa1f5dce6eaf45996"
   },
   "scratch/check_schema.ts": {
     "mtime": 1788195076.995039,
@@ -919,15 +919,15 @@
   },
   "supabase/functions/delete-user/index.ts": {
     "mtime": 1788195957.8404603,
-    "seen": 1788198037.2188394,
+    "seen": 1788198928.3732939,
     "ast_hash": "2a3e588d2d5f21dde87e27768c92c0d2",
-    "semantic_hash": ""
+    "semantic_hash": "2a3e588d2d5f21dde87e27768c92c0d2"
   },
   "supabase/.temp/linked-project.json": {
     "mtime": 1788197027.2304087,
-    "seen": 1788198037.2188375,
+    "seen": 1788198928.3732927,
     "ast_hash": "4be2b3bcb1380ac9de24a10cbbf7c8f1",
-    "semantic_hash": ""
+    "semantic_hash": "4be2b3bcb1380ac9de24a10cbbf7c8f1"
   },
   ".github/copilot-instructions.md": {
     "mtime": 1788129525.1879694,

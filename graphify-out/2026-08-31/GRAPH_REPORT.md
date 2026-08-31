@@ -1,7 +1,7 @@
 # Graph Report - PaceWise  (2026-08-31)
 
 ## Corpus Check
-- 157 files · ~132,351 words
+- 157 files · ~132,435 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary

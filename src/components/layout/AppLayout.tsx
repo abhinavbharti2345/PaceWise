@@ -4,6 +4,7 @@ import { cn } from '../../utils/cn';
 import { useStore } from '../../store/useStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { calculateBudget } from '../../features/budget/budgetEngine';
+import { InstallPrompt } from '../ui/InstallPrompt';
 
 const navItems = [
   { name: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -144,6 +145,8 @@ export function AppLayout() {
           </NavLink>
         </div>
       </nav>
+
+      <InstallPrompt />
     </div>
   );
 }

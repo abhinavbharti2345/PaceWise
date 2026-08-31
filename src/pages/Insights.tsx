@@ -244,22 +244,22 @@ export function Insights() {
   let badgeBg = "bg-[var(--color-positive-bg)]";
 
   if (stats.moneyLeft < 0) {
-    heroMessage = <>You are in a deficit of <span className="font-bold text-[var(--color-primary)]">{formatCurrency(Math.abs(stats.moneyLeft))}</span>.</>;
+    heroMessage = <>Deficit: <span className="font-bold text-[var(--color-primary)]">{formatCurrency(Math.abs(stats.moneyLeft))}</span></>;
     badgeText = "Critical Deficit";
     badgeColor = "text-[var(--color-primary)]";
     badgeBg = "bg-[var(--negative-bg)]";
   } else if (stats.daysPassed === 0) {
-    heroMessage = <>Your safe daily limit is <span className="font-bold text-[var(--color-success)]">{formatCurrency(stats.baseDailyBudget)}</span>.</>;
+    heroMessage = <>Limit: <span className="font-bold text-[var(--color-success)]">{formatCurrency(stats.baseDailyBudget)}</span>/d</>;
     badgeText = "Fresh Start";
   } else if (stats.isOverspent) {
-    heroMessage = <>You're spending <span className="font-bold text-[var(--color-primary)]">{formatCurrency(avgDailyDiscretionary)}/day</span>, above target.</>;
+    heroMessage = <><span className="font-bold text-[var(--color-primary)]">{formatCurrency(avgDailyDiscretionary)}</span>/d (High)</>;
     badgeText = "Overspending";
     badgeColor = "text-[var(--color-primary)]";
     badgeBg = "bg-[var(--negative-bg)]";
   } else if (stats.carryForward > 0) {
-    heroMessage = <>Great pacing! You've accumulated <span className="font-bold text-[var(--color-primary)]">{formatCurrency(stats.carryForward)}</span> in carry-forward.</>;
+    heroMessage = <>Saved <span className="font-bold text-[var(--color-primary)]">{formatCurrency(stats.carryForward)}</span> extra</>;
   } else {
-    heroMessage = <>You are pacing perfectly at <span className="font-bold text-[var(--color-success)]">{formatCurrency(avgDailyDiscretionary)}/day</span>.</>;
+    heroMessage = <>Perfect: <span className="font-bold text-[var(--color-success)]">{formatCurrency(avgDailyDiscretionary)}</span>/d</>;
   }
 
   // 2. Discretionary Categories (Leakage)
@@ -312,7 +312,7 @@ export function Insights() {
           </div>
           <div>
             <h3 className="text-xs sm:text-lg font-bold text-[var(--color-dark)] mb-1 truncate">{heroTitle}</h3>
-            <p className="text-sm sm:text-xl font-extrabold text-[var(--color-success)] leading-tight truncate">
+            <p className="text-[13px] sm:text-xl font-extrabold text-[var(--color-success)] leading-tight sm:truncate break-words line-clamp-2 sm:line-clamp-none">
               {heroMessage}
             </p>
           </div>
