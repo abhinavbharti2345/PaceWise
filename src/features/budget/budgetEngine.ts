@@ -78,7 +78,12 @@ export function calculateBudget(
   let totalBills = 0;
   let normalExpensesUpToYesterday = 0;
   let spentToday = 0;
+  
+  let netPersonCashFlowUpToYesterday = 0;
+  let netPersonCashFlowToday = 0;
+
   const discretionarySpendByDate: Record<string, number> = {};
+  const netPersonCashFlowByDate: Record<string, number> = {};
 
   for (const t of transactions) {
     const tDate = startOfDay(new Date(t.date));
@@ -91,13 +96,13 @@ export function calculateBudget(
 
     const isToday = tDate.getTime() === today.getTime();
     const isBeforeToday = tDate.getTime() < today.getTime();
+    const dateKey = tDate.getTime().toString();
 
     if (t.type === 'income') {
       totalAddedMoney += t.amount;
     } else if (t.type === 'bill') {
       totalBills += t.amount;
     } else if (t.type === 'expense') {
-      const dateKey = tDate.getTime().toString();
       if (isBeforeToday || isToday) {
         discretionarySpendByDate[dateKey] = (discretionarySpendByDate[dateKey] || 0) + t.amount;
       }
@@ -108,26 +113,25 @@ export function calculateBudget(
         spentToday += t.amount;
       }
     } else if (t.type === 'person') {
-      // If user gave money (lent or paid settlement), it's treated as cash outflow (expense)
-      if (t.direction === 'gave') {
-        const dateKey = tDate.getTime().toString();
-        if (isBeforeToday || isToday) {
-          discretionarySpendByDate[dateKey] = (discretionarySpendByDate[dateKey] || 0) + t.amount;
-        }
+      // All person transactions are treated strictly as cash flow, not discretionary expenses.
+      // direction === 'gave': User lent money or paid a settlement (Cash OUT).
+      // direction === 'took': User borrowed money or received a settlement (Cash IN).
+      const flow = t.direction === 'took' ? t.amount : -t.amount;
+      
+      if (isBeforeToday || isToday) {
+        netPersonCashFlowByDate[dateKey] = (netPersonCashFlowByDate[dateKey] || 0) + flow;
+      }
 
-        if (isBeforeToday) {
-          normalExpensesUpToYesterday += t.amount;
-        } else if (isToday) {
-          spentToday += t.amount;
-        }
-      } else if (t.direction === 'took') {
-        // If user took money (borrowed), it's cash inflow that increases available budget
-        totalAddedMoney += t.amount;
+      if (isBeforeToday) {
+        netPersonCashFlowUpToYesterday += flow;
+      } else if (isToday) {
+        netPersonCashFlowToday += flow;
       }
     }
   }
 
   // 1. Effective Total Budget
+  // We ONLY include config money, income, and bills. Person transactions are immediate cash adjustments.
   const effectiveTotalBudget = config.totalMoney + totalAddedMoney - totalBills;
 
   // 2. Base Daily Budget
@@ -135,18 +139,21 @@ export function calculateBudget(
 
   // 3. Carry Forward
   const totalAllowanceUpToYesterday = baseDailyBudget * daysPassed;
-  const carryForward = totalAllowanceUpToYesterday - normalExpensesUpToYesterday;
+  // Apply past net person cash flow to the carry forward (so borrowed money gives extra allowance, lent money reduces it).
+  const carryForward = totalAllowanceUpToYesterday - normalExpensesUpToYesterday + netPersonCashFlowUpToYesterday;
 
   // 4. Today's Available
-  const todaysAvailable = baseDailyBudget + carryForward;
+  // Apply today's net person cash flow to today's available budget.
+  const todaysAvailable = baseDailyBudget + carryForward + netPersonCashFlowToday;
 
   // 5. Money Left (Actual Cash)
-  const moneyLeft = effectiveTotalBudget - normalExpensesUpToYesterday - spentToday;
+  const moneyLeft = effectiveTotalBudget - normalExpensesUpToYesterday - spentToday + netPersonCashFlowUpToYesterday + netPersonCashFlowToday;
 
   const isOverspent = spentToday > todaysAvailable;
 
   // 6. Progress Percentage
-  // Use effectiveTotalBudget, clamped between 0-100%
+  // Using effectiveTotalBudget (the planned budget pool) to calculate progress.
+  // Note: Since moneyLeft now includes netPersonCashFlow, this percentage can correctly exceed 100% or drop sharply based on borrowing/lending.
   let progressPercentage = 0;
   if (effectiveTotalBudget > 0) {
     progressPercentage = Math.round((moneyLeft / effectiveTotalBudget) * 100);
@@ -159,27 +166,29 @@ export function calculateBudget(
   const totalDiscretionarySpent = normalExpensesUpToYesterday + spentToday;
   
   // Calculate zero spend days (total days up to today - days with discretionary spend)
-  // daysPassed is full days. +1 includes today.
   const daysUpToToday = daysPassed + 1;
   const activeSpendDays = Object.keys(discretionarySpendByDate).length;
   const zeroSpendDays = Math.max(0, daysUpToToday - activeSpendDays);
 
   const dailyStats: DailyBudgetStat[] = [];
   let cumulativeDiscretionarySpent = 0;
+  let cumulativeNetPersonCashFlow = 0;
 
   for (let i = 0; i < totalDays; i++) {
     const d = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
     const dateKey = d.getTime().toString();
     const daySpent = discretionarySpendByDate[dateKey] || 0;
+    const dayPersonFlow = netPersonCashFlowByDate[dateKey] || 0;
     
     const isFuture = d.getTime() > today.getTime();
     
     if (!isFuture) {
       cumulativeDiscretionarySpent += daySpent;
+      cumulativeNetPersonCashFlow += dayPersonFlow;
     }
     
     const idealRemaining = effectiveTotalBudget - (baseDailyBudget * (i + 1));
-    const actualRemaining = isFuture ? 0 : effectiveTotalBudget - cumulativeDiscretionarySpent;
+    const actualRemaining = isFuture ? 0 : effectiveTotalBudget - cumulativeDiscretionarySpent + cumulativeNetPersonCashFlow;
 
     dailyStats.push({
       dayIndex: i + 1,

@@ -22,14 +22,14 @@ describe('Comprehensive Budget & Debt Calculations', () => {
     expect(stats.moneyLeft).toBe(6500);
   });
 
-  it('handles lending (gave) as cash expense and debt repayment as cash inflow', () => {
+  it('handles lending (gave) as an immediate reduction in moneyLeft, NOT as discretionary spentToday', () => {
     const config: BudgetConfig = {
       totalMoney: 5000,
       startDate: '2026-08-01',
       endDate: '2026-08-30'
     };
 
-    // Lent ₹500 to friend on day 1 (cash outflow)
+    // Lent ₹500 to friend on day 1
     const t1: Transaction = { 
       id: '1', 
       type: 'person', 
@@ -39,12 +39,12 @@ describe('Comprehensive Budget & Debt Calculations', () => {
     };
 
     const day1Stats = calculateBudget(config, [t1], '2026-08-01');
-    expect(day1Stats.spentToday).toBe(500);
-    expect(day1Stats.moneyLeft).toBe(4500);
+    expect(day1Stats.spentToday).toBe(0); // MUST be 0! Not a discretionary expense
+    expect(day1Stats.moneyLeft).toBe(4500); // 5000 - 500
+    expect(day1Stats.todaysAvailable).toBeCloseTo(166.66 - 500, 1); // Reduced immediately
 
     // Day 2: friend repaid ₹300.
-    // In V1, the user must manually record an Income transaction for this.
-    // The settlement transaction itself should NOT affect the budget.
+    // The settlement transaction directly affects the budget without needing a manual Income transaction.
     const t2: Transaction = { 
       id: '2', 
       type: 'person', 
@@ -53,19 +53,9 @@ describe('Comprehensive Budget & Debt Calculations', () => {
       isSettlement: true, 
       date: '2026-08-02' 
     };
-    
-    // User manually creates an Income transaction
-    const t3: Transaction = {
-      id: '3',
-      type: 'income',
-      amount: 300,
-      date: '2026-08-02'
-    };
 
-    const day2Stats = calculateBudget(config, [t1, t2, t3], '2026-08-02');
-    // Effective total = 5000 + 300 = 5300
-    // Expenses up to yesterday = 500
-    // Money left = 5300 - 500 - 0 = 4800
+    const day2Stats = calculateBudget(config, [t1, t2], '2026-08-02');
+    // Money left = 5000 - 500 (lent) + 300 (settlement) = 4800
     expect(day2Stats.moneyLeft).toBe(4800);
   });
 
