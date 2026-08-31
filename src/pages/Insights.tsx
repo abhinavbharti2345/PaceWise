@@ -66,8 +66,18 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
   // Actual cumulative spend line
   const actualPathD = React.useMemo(() => {
     if (pastStats.length === 0) return 'M 0 0';
-    const points = pastStats.map((s: any) => `${getX(s.dayIndex - 1)} ${getY(s.cumulativeDiscretionarySpent)}`);
-    return `M ${points[0]} ` + points.slice(1).map((p: string) => `L ${p}`).join(' ');
+    const points = pastStats.map((s: any) => [getX(s.dayIndex - 1), getY(s.cumulativeDiscretionarySpent)]);
+    
+    if (points.length === 1) return `M ${points[0][0]} ${points[0][1]}`;
+
+    let path = `M ${points[0][0]} ${points[0][1]}`;
+    for (let i = 1; i < points.length; i++) {
+      const prev = points[i - 1];
+      const curr = points[i];
+      const cpX = (prev[0] + curr[0]) / 2;
+      path += ` C ${cpX},${prev[1]} ${cpX},${curr[1]} ${curr[0]},${curr[1]}`;
+    }
+    return path;
   }, [pastStats, getX, getY]);
 
   const fillPathD = React.useMemo(() => {
@@ -154,7 +164,12 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
             style={{ left: `${getX(hoverIndex)}%` }}
           >
             {/* Tooltip Card */}
-            <div className="absolute top-4 -translate-x-1/2 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-lg shadow-xl p-3 min-w-[170px] whitespace-nowrap z-30 pointer-events-none">
+            <div 
+              className={cn(
+                "absolute top-4 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-lg shadow-xl p-3 min-w-[170px] whitespace-nowrap z-30 pointer-events-none",
+                getX(hoverIndex) > 80 ? "right-2" : getX(hoverIndex) < 20 ? "left-2" : "-translate-x-1/2"
+              )}
+            >
               <div className="flex justify-between items-center text-[11px] font-bold text-[var(--color-dark)] mb-3 uppercase tracking-wide border-b border-[var(--color-gray-light)] pb-1">
                 <span>Day {stats.dailyStats[hoverIndex].dayIndex}</span>
                 <span className="text-[var(--color-gray-dark)] font-medium">{format(new Date(stats.dailyStats[hoverIndex].date), 'MMM dd')}</span>
