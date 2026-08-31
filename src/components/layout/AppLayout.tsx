@@ -102,14 +102,14 @@ export function AppLayout() {
 
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[var(--color-surface)] border-t border-[var(--color-gray-light)] pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_24px_rgba(20,23,26,0.08)] z-50">
-        <div className="flex items-center justify-around px-2 py-1.5">
+        <div className="flex items-center justify-around px-1 sm:px-2 py-1 sm:py-1.5">
           {navItems.map((item) => (
             <NavLink
               key={item.name}
               to={item.path}
               className={({ isActive }) =>
                 cn(
-                  'flex flex-col items-center py-1.5 px-3 rounded-xl gap-1 transition-all',
+                  'flex flex-col items-center py-1 px-1.5 sm:px-3 rounded-xl gap-0.5 sm:gap-1 transition-all shrink-0',
                   isActive
                     ? 'text-[var(--color-primary)] font-bold'
                     : 'text-[var(--color-gray-dark)] font-medium'
@@ -118,8 +118,8 @@ export function AppLayout() {
             >
               {({ isActive }) => (
                 <>
-                  <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-                  <span className="text-[10px] font-bold">{item.name}</span>
+                  <item.icon size={20} className="sm:w-[22px] sm:h-[22px]" strokeWidth={isActive ? 2.5 : 2} />
+                  <span className="text-[9px] sm:text-[10px] font-bold">{item.name}</span>
                 </>
               )}
             </NavLink>
@@ -128,7 +128,7 @@ export function AppLayout() {
             to="/profile"
             className={({ isActive }) =>
               cn(
-                'flex flex-col items-center py-1.5 px-3 rounded-xl gap-1 transition-all',
+                'flex flex-col items-center py-1 px-1.5 sm:px-3 rounded-xl gap-0.5 sm:gap-1 transition-all shrink-0',
                 isActive
                   ? 'text-[var(--color-primary)] font-bold'
                   : 'text-[var(--color-gray-dark)] font-medium'
@@ -137,8 +137,8 @@ export function AppLayout() {
           >
             {({ isActive }) => (
               <>
-                <User size={22} strokeWidth={isActive ? 2.5 : 2} />
-                <span className="text-[10px] font-bold">Profile</span>
+                <User size={20} className="sm:w-[22px] sm:h-[22px]" strokeWidth={isActive ? 2.5 : 2} />
+                <span className="text-[9px] sm:text-[10px] font-bold">Profile</span>
               </>
             )}
           </NavLink>

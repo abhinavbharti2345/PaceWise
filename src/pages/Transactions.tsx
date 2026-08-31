@@ -174,29 +174,30 @@ export function Transactions() {
                   const isIncome = t.type === 'income' || (t.type === 'person' && t.direction === 'took' && t.isSettlement);
 
                   return (
-                    <div key={t.id} className="flex items-center justify-between p-4 hover:bg-[var(--color-surface-light)] transition-colors group">
-                      <div className="flex items-center gap-3.5">
+                    <div key={t.id} className="flex items-center justify-between p-3 sm:p-4 hover:bg-[var(--color-surface-light)] transition-colors group gap-2">
+                      <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
                         <IconBadge 
                           iconName={meta.icon} 
                           color={meta.color} 
+                          className="shrink-0"
                         />
-                        <div>
-                          <p className="text-sm font-bold text-[var(--color-dark)]">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs sm:text-sm font-bold text-[var(--color-dark)] truncate">
                             {t.reason || t.category || t.type}
                           </p>
-                          <p className="text-xs text-[var(--color-gray-dark)] flex items-center gap-2 mt-0.5">
-                            <span className="font-semibold text-[var(--color-dark)] capitalize">{t.category || t.type}</span>
+                          <p className="text-[10px] sm:text-xs text-[var(--color-gray-dark)] flex items-center gap-1 sm:gap-2 mt-0.5 truncate">
+                            <span className="font-semibold text-[var(--color-dark)] capitalize shrink-0">{t.category || t.type}</span>
                             <span>•</span>
-                            <span>{format(new Date(t.date), 'h:mm a')}</span>
-                            {t.paymentMethod && <span>• {t.paymentMethod}</span>}
-                            {t.personName && <span>• Friend: {t.personName}</span>}
+                            <span className="shrink-0">{format(new Date(t.date), 'h:mm a')}</span>
+                            {t.paymentMethod && <span className="truncate hidden sm:inline">• {t.paymentMethod}</span>}
+                            {t.personName && <span className="truncate hidden sm:inline">• Friend: {t.personName}</span>}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
                         <span className={cn(
-                          'text-base font-extrabold', 
+                          'text-xs sm:text-base font-extrabold', 
                           isIncome ? 'text-[var(--color-success)]' : 'text-[var(--color-primary)]'
                         )}>
                           {isIncome ? '+' : '−'}{formatCurrency(t.amount)}

@@ -166,8 +166,8 @@ const BurnDownChart = React.memo(({ stats }: { stats: any }) => {
             {/* Tooltip Card */}
             <div 
               className={cn(
-                "absolute top-4 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-lg shadow-xl p-3 min-w-[170px] whitespace-nowrap z-30 pointer-events-none",
-                getX(hoverIndex) > 80 ? "right-2" : getX(hoverIndex) < 20 ? "left-2" : "-translate-x-1/2"
+                "absolute top-4 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl shadow-xl p-2.5 sm:p-3 min-w-[150px] sm:min-w-[170px] whitespace-nowrap z-30 pointer-events-none",
+                getX(hoverIndex) > 70 ? "right-2" : getX(hoverIndex) < 30 ? "left-2" : "-translate-x-1/2"
               )}
             >
               <div className="flex justify-between items-center text-[11px] font-bold text-[var(--color-dark)] mb-3 uppercase tracking-wide border-b border-[var(--color-gray-light)] pb-1">

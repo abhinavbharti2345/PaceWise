@@ -212,27 +212,27 @@ export function Dashboard() {
                 const isIncome = t.type === 'income' || (t.type === 'person' && t.direction === 'took' && t.isSettlement);
 
                 return (
-                  <div key={t.id} className="py-2.5 sm:py-3 flex items-center justify-between hover:bg-[var(--color-surface-light)] px-1 sm:px-3 -mx-1 sm:-mx-3 rounded-xl transition-colors">
-                    <div className="flex items-center gap-3">
+                  <div key={t.id} className="py-2.5 sm:py-3 flex items-center justify-between hover:bg-[var(--color-surface-light)] px-1 sm:px-3 -mx-1 sm:-mx-3 rounded-xl transition-colors gap-2">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                       <IconBadge 
                         iconName={meta.icon} 
                         color={meta.color} 
-                        className="scale-90 sm:scale-100"
+                        className="scale-90 sm:scale-100 shrink-0"
                       />
-                      <div>
-                        <p className="text-xs sm:text-sm font-bold text-[var(--color-dark)] leading-tight">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm font-bold text-[var(--color-dark)] leading-tight truncate">
                           {t.reason || t.category || t.type}
                         </p>
-                        <p className="text-[10px] sm:text-xs text-[var(--color-gray-dark)] flex items-center gap-1 mt-0.5">
-                          <span className="capitalize font-semibold text-[var(--color-dark)]">{t.category || t.type}</span>
+                        <p className="text-[10px] sm:text-xs text-[var(--color-gray-dark)] flex items-center gap-1 mt-0.5 truncate">
+                          <span className="capitalize font-semibold text-[var(--color-dark)] shrink-0">{t.category || t.type}</span>
                           <span>•</span>
-                          <span>{format(new Date(t.date), 'd MMM, h:mm a')}</span>
+                          <span className="shrink-0">{format(new Date(t.date), 'd MMM, h:mm a')}</span>
                         </p>
                       </div>
                     </div>
 
                     <span className={cn(
-                      'text-sm sm:text-base font-extrabold', 
+                      'text-sm sm:text-base font-extrabold shrink-0', 
                       isIncome ? 'text-[var(--color-success)]' : 'text-[var(--color-primary)]'
                     )}>
                       {isIncome ? '+' : '−'}{formatCurrency(t.amount)}

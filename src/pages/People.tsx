@@ -114,25 +114,25 @@ export function People() {
             <Card 
               key={person.id} 
               onClick={() => navigate(`/people/${person.id}`)}
-              className="p-4 hover:shadow-md transition-all cursor-pointer flex items-center justify-between group border border-[var(--color-gray-light)] hover:border-gray-400"
+              className="p-3.5 sm:p-4 hover:shadow-md transition-all cursor-pointer flex items-center justify-between group border border-[var(--color-gray-light)] hover:border-gray-400 gap-2"
             >
-              <div className="flex items-center gap-3.5">
-                <div className="w-11 h-11 rounded-full bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex items-center justify-center text-[var(--color-dark)] font-extrabold text-base group-hover:scale-105 transition-transform">
+              <div className="flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex items-center justify-center text-[var(--color-dark)] font-extrabold text-sm sm:text-base group-hover:scale-105 transition-transform shrink-0">
                   {person.name.charAt(0).toUpperCase()}
                 </div>
-                <div>
-                  <p className="font-bold text-[var(--color-dark)] text-base group-hover:text-[var(--color-primary)] transition-colors">{person.name}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold text-[var(--color-dark)] text-sm sm:text-base group-hover:text-[var(--color-primary)] transition-colors truncate">{person.name}</p>
                   {balance === 0 ? (
-                    <p className="text-xs font-semibold text-[var(--color-gray-dark)]">Settled up</p>
+                    <p className="text-[10px] sm:text-xs font-semibold text-[var(--color-gray-dark)]">Settled up</p>
                   ) : (
-                    <p className={cn("text-xs font-semibold flex items-center gap-1", balance > 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]")}>
+                    <p className={cn("text-[10px] sm:text-xs font-semibold flex items-center gap-1", balance > 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]")}>
                       {balance > 0 ? "Owes you" : "You owe"}
                     </p>
                   )}
                 </div>
               </div>
               
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-4 shrink-0">
                 <div className="text-right">
                   <span className={cn(
                     "font-extrabold text-lg block",

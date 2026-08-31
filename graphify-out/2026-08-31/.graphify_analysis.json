@@ -17,9 +17,6 @@
       "src_components_modals_persontransactionmodal_persontransactionmodal",
       "src_components_modals_settlemodal",
       "src_components_modals_settlemodal_settlemodal",
-      "src_components_ui_badge",
-      "src_components_ui_badge_badge",
-      "src_components_ui_badge_badgeprops",
       "src_components_ui_button",
       "src_components_ui_button_button",
       "src_components_ui_button_buttonprops",
@@ -45,11 +42,57 @@
       "src_pages_transactions",
       "src_pages_transactions_filtertype",
       "src_pages_transactions_timefilter",
+      "src_pages_transactions_transactions",
       "src_store_usestore_usestore",
+      "src_utils_categoryhelpers",
+      "src_utils_categoryhelpers_bill_categories",
+      "src_utils_categoryhelpers_categorymeta",
+      "src_utils_categoryhelpers_expense_categories",
+      "src_utils_categoryhelpers_getcategorymeta",
+      "src_utils_categoryhelpers_income_sources",
       "src_utils_cn",
       "src_utils_cn_cn"
     ],
     "1": [
+      "concept_carry_forward",
+      "concept_daily_budget",
+      "concept_dynamic_recalc",
+      "concept_people_debts",
+      "doc_prd",
+      "src_components_modals_persontransactionmodal_persontransactionmodalprops",
+      "src_components_modals_settlemodal_settlemodalprops",
+      "src_features_budget_budgetengine",
+      "src_features_budget_budgetengine_budgetconfig",
+      "src_features_budget_budgetengine_budgetstats",
+      "src_features_budget_budgetengine_calculatebudget",
+      "src_features_budget_budgetengine_transaction",
+      "src_features_budget_budgetengine_transactiontype",
+      "src_lib_supabase",
+      "src_lib_supabase_supabase",
+      "src_lib_supabasesync",
+      "src_lib_supabasesync_addpersontosupabase",
+      "src_lib_supabasesync_addtransactiontosupabase",
+      "src_lib_supabasesync_deletepersonfromsupabase",
+      "src_lib_supabasesync_deletetransactionfromsupabase",
+      "src_lib_supabasesync_updatepersonbalanceinsupabase",
+      "src_pages_insights",
+      "src_pages_insights_getcategoryicon",
+      "src_pages_insights_insights",
+      "src_store_useauthstore",
+      "src_store_useauthstore_authstate",
+      "src_store_useauthstore_fetchandsetprofile",
+      "src_store_usestore",
+      "src_store_usestore_appstate",
+      "src_store_usestore_defaultconfig",
+      "src_store_usestore_getmonthdates",
+      "src_store_usestore_person",
+      "src_store_usestore_start_monthstart_end_monthend",
+      "tests_budget_budgetengine_test",
+      "tests_budget_comprehensiveengine_test",
+      "tests_integration_store_test",
+      "tests_integration_store_test_localstoragemock"
+    ],
+    "2": [
       "clsx",
       "date_fns",
       "lucide_react",
@@ -82,36 +125,6 @@
       "tailwind_merge",
       "zustand"
     ],
-    "2": [
-      "src_app",
-      "src_app_app",
-      "src_app_appcontent",
-      "src_app_errorboundaryprops",
-      "src_app_errorboundarystate",
-      "src_components_layout_applayout",
-      "src_components_layout_applayout_applayout",
-      "src_components_layout_applayout_navitems",
-      "src_lib_supabase",
-      "src_lib_supabase_supabase",
-      "src_lib_supabasesync",
-      "src_lib_supabasesync_addpersontosupabase",
-      "src_lib_supabasesync_addtransactiontosupabase",
-      "src_lib_supabasesync_deletepersonfromsupabase",
-      "src_lib_supabasesync_deletetransactionfromsupabase",
-      "src_lib_supabasesync_updatepersonbalanceinsupabase",
-      "src_lib_supabasesync_usesupabasesync",
-      "src_main",
-      "src_pages_auth_authpage",
-      "src_pages_dashboard_dashboard",
-      "src_pages_profile_profile",
-      "src_pages_settings_settings",
-      "src_store_useauthstore",
-      "src_store_useauthstore_authstate",
-      "src_store_useauthstore_fetchandsetprofile",
-      "src_store_useauthstore_useauthstore",
-      "tests_integration_store_test",
-      "tests_integration_store_test_localstoragemock"
-    ],
     "3": [
       "ref_dom",
       "ref_src",
@@ -139,29 +152,6 @@
       "tsconfig_app_json_ref_es2023"
     ],
     "4": [
-      "concept_carry_forward",
-      "concept_daily_budget",
-      "concept_dynamic_recalc",
-      "concept_people_debts",
-      "doc_prd",
-      "src_features_budget_budgetengine",
-      "src_features_budget_budgetengine_budgetconfig",
-      "src_features_budget_budgetengine_budgetstats",
-      "src_features_budget_budgetengine_calculatebudget",
-      "src_features_budget_budgetengine_transaction",
-      "src_features_budget_budgetengine_transactiontype",
-      "src_pages_insights",
-      "src_pages_insights_getcategoryicon",
-      "src_pages_insights_insights",
-      "src_store_usestore",
-      "src_store_usestore_appstate",
-      "src_store_usestore_defaultconfig",
-      "src_store_usestore_getmonthdates",
-      "src_store_usestore_start_monthstart_end_monthend",
-      "tests_budget_budgetengine_test",
-      "tests_budget_comprehensiveengine_test"
-    ],
-    "5": [
       "oxlint",
       "package_devdependencies",
       "package_devdependencies_oxlint",
@@ -184,7 +174,7 @@
       "vitejs_plugin_react",
       "vitest"
     ],
-    "6": [
+    "5": [
       "ref_node",
       "ref_vite_config_ts",
       "tsconfig_node",
@@ -206,62 +196,69 @@
       "tsconfig_node_include",
       "tsconfig_node_json_ref_es2023"
     ],
-    "7": [
+    "6": [
+      "src_app",
+      "src_app_app",
+      "src_app_appcontent",
       "src_app_errorboundary",
       "src_app_errorboundary_componentdidcatch",
       "src_app_errorboundary_constructor",
       "src_app_errorboundary_getderivedstatefromerror",
       "src_app_errorboundary_render",
-      "src_pages_transactions_transactions",
-      "src_utils_categoryhelpers",
-      "src_utils_categoryhelpers_bill_categories",
-      "src_utils_categoryhelpers_categorymeta",
-      "src_utils_categoryhelpers_expense_categories",
-      "src_utils_categoryhelpers_getcategorymeta",
-      "src_utils_categoryhelpers_income_sources"
+      "src_app_errorboundaryprops",
+      "src_app_errorboundarystate",
+      "src_components_layout_applayout",
+      "src_components_layout_applayout_applayout",
+      "src_components_layout_applayout_navitems",
+      "src_lib_supabasesync_usesupabasesync",
+      "src_main",
+      "src_pages_auth_authpage",
+      "src_pages_dashboard_dashboard",
+      "src_pages_profile_profile",
+      "src_pages_settings_settings",
+      "src_store_useauthstore_useauthstore"
     ],
-    "8": [
+    "7": [
       "concept_dashboard_layout",
       "concept_semantic_states",
       "doc_uiux_spec"
     ],
-    "9": [
-      "src_components_modals_persontransactionmodal_persontransactionmodalprops",
-      "src_components_modals_settlemodal_settlemodalprops",
-      "src_store_usestore_person"
+    "8": [
+      "src_components_ui_badge",
+      "src_components_ui_badge_badge",
+      "src_components_ui_badge_badgeprops"
     ],
-    "10": [
+    "9": [
       "tsconfig",
       "tsconfig_files",
       "tsconfig_references"
     ],
-    "11": [
+    "10": [
       "concept_design_tokens",
       "doc_stitch_prompts"
     ],
-    "12": [
+    "11": [
       "vercel",
       "vercel_rewrites"
     ],
-    "13": [
+    "12": [
       "vite_config"
     ]
   },
   "cohesion": {
-    "0": 0.1683626271970398,
-    "1": 0.06451612903225806,
-    "2": 0.12698412698412698,
+    "0": 0.15372549019607842,
+    "1": 0.0960960960960961,
+    "2": 0.06451612903225806,
     "3": 0.08333333333333333,
-    "4": 0.1761904761904762,
-    "5": 0.09523809523809523,
-    "6": 0.1,
-    "7": 0.15151515151515152,
+    "4": 0.09523809523809523,
+    "5": 0.1,
+    "6": 0.15789473684210525,
+    "7": 0.6666666666666666,
     "8": 0.6666666666666666,
     "9": 0.6666666666666666,
-    "10": 0.6666666666666666,
+    "10": 1.0,
     "11": 1.0,
-    "12": 1.0,
-    "13": 1.0
+    "12": 1.0
   },
   "gods": [
     {
@@ -300,14 +297,14 @@
       "degree": 11
     },
     {
-      "id": "src_components_ui_input_input",
-      "label": "Input",
+      "id": "src_components_ui_card_card",
+      "label": "Card()",
       "degree": 10
     },
     {
-      "id": "src_components_ui_card_card",
-      "label": "Card()",
-      "degree": 9
+      "id": "src_components_ui_input_input",
+      "label": "Input",
+      "degree": 10
     },
     {
       "id": "src_components_ui_card_cardheader",
@@ -316,6 +313,17 @@
     }
   ],
   "surprises": [
+    {
+      "source": "Badge()",
+      "target": "cn()",
+      "source_files": [
+        "src/components/ui/Badge.tsx",
+        "src/utils/cn.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities; peripheral node `Badge()` unexpectedly reaches hub `cn()`"
+    },
     {
       "source": "PersonTransactionModalProps",
       "target": "Person",
@@ -339,32 +347,21 @@
       "why": "peripheral node `SettleModalProps` unexpectedly reaches hub `Person`"
     },
     {
-      "source": "Badge()",
+      "source": "AppLayout()",
       "target": "cn()",
       "source_files": [
-        "src/components/ui/Badge.tsx",
+        "src/components/layout/AppLayout.tsx",
         "src/utils/cn.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "peripheral node `Badge()` unexpectedly reaches hub `cn()`"
-    },
-    {
-      "source": "Transactions()",
-      "target": "useStore",
-      "source_files": [
-        "src/pages/Transactions.tsx",
-        "src/store/useStore.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "bridges separate communities"
     },
     {
-      "source": "Transactions()",
+      "source": "Dashboard()",
       "target": "cn()",
       "source_files": [
-        "src/pages/Transactions.tsx",
+        "src/pages/Dashboard.tsx",
         "src/utils/cn.ts"
       ],
       "confidence": "EXTRACTED",
