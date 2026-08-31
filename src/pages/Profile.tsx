@@ -6,12 +6,15 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { User, Mail, LogOut, Check, Pencil, Shield, AlertTriangle } from 'lucide-react';
 
+import { ConfirmModal } from '../components/modals/ConfirmModal';
+
 export function Profile() {
   const { user, profile, updateProfile, signOut } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(profile?.displayName || '');
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [isSignOutConfirmOpen, setIsSignOutConfirmOpen] = useState(false);
 
   // Keep displayName in sync when profile loads asynchronously
   useEffect(() => {
@@ -215,17 +218,24 @@ export function Profile() {
           <Button 
             variant="outline" 
             className="w-full sm:w-auto h-11 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:hover:bg-red-900/20 font-bold gap-2 shadow-sm whitespace-nowrap justify-center"
-            onClick={() => {
-              if (window.confirm('Are you sure you want to sign out?')) {
-                signOut();
-              }
-            }}
+            onClick={() => setIsSignOutConfirmOpen(true)}
           >
             <LogOut size={18} /> Sign Out
           </Button>
         </div>
       </Card>
-      
+
+      <ConfirmModal
+        isOpen={isSignOutConfirmOpen}
+        onClose={() => setIsSignOutConfirmOpen(false)}
+        onConfirm={signOut}
+        title="Sign Out of PaceWise?"
+        description="Are you sure you want to sign out? You will need to sign back in to access your budget and transactions."
+        confirmText="Sign Out"
+        cancelText="Cancel"
+        variant="destructive"
+        icon={<LogOut size={20} />}
+      />
     </div>
   );
 }

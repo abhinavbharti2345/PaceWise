@@ -10,6 +10,8 @@ import { getCategoryMeta } from '../utils/categoryHelpers';
 import { AddExpenseModal } from '../components/modals/AddExpenseModal';
 import { AddMoneyModal } from '../components/modals/AddMoneyModal';
 import { AddBillModal } from '../components/modals/AddBillModal';
+import { ConfirmModal } from '../components/modals/ConfirmModal';
+import type { Transaction } from '../features/budget/budgetEngine';
 
 type FilterType = 'all' | 'expense' | 'income' | 'bill' | 'person';
 type TimeFilter = 'all' | 'today' | 'week' | 'month';
@@ -23,6 +25,7 @@ export function Transactions() {
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [isMoneyModalOpen, setIsMoneyModalOpen] = useState(false);
   const [isBillModalOpen, setIsBillModalOpen] = useState(false);
+  const [deletingTransaction, setDeletingTransaction] = useState<Transaction | null>(null);
 
   const formatCurrency = (amount: number) => `₹${Math.round(amount).toLocaleString('en-IN')}`;
 
@@ -57,10 +60,8 @@ export function Transactions() {
     }, {} as Record<string, typeof transactions>);
   }, [filteredTransactions]);
 
-  const handleDelete = (id: string, name: string) => {
-    if (window.confirm(`Delete transaction "${name}"?`)) {
-      deleteTransaction(id);
-    }
+  const handleDelete = (t: Transaction) => {
+    setDeletingTransaction(t);
   };
 
   return (
@@ -200,7 +201,7 @@ export function Transactions() {
                         </span>
 
                         <button 
-                          onClick={() => handleDelete(t.id, t.reason || t.category || 'Transaction')}
+                          onClick={() => handleDelete(t)}
                           className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 text-[var(--color-gray-dark)] hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/20 transition-all"
                           title="Delete transaction"
                         >
@@ -236,6 +237,47 @@ export function Transactions() {
       <AddBillModal
         isOpen={isBillModalOpen}
         onClose={() => setIsBillModalOpen(false)}
+      />
+      <ConfirmModal
+        isOpen={!!deletingTransaction}
+        onClose={() => setDeletingTransaction(null)}
+        onConfirm={() => {
+          if (deletingTransaction) {
+            deleteTransaction(deletingTransaction.id);
+            setDeletingTransaction(null);
+          }
+        }}
+        title="Delete transaction?"
+        description={
+          <>
+            Are you sure you want to delete{' '}
+            <span className="font-bold text-[var(--color-dark)]">
+              "{deletingTransaction?.reason || deletingTransaction?.category || 'Transaction'}"
+            </span>
+            ? This action cannot be undone.
+          </>
+        }
+        details={
+          deletingTransaction ? (
+            <div className="flex items-center justify-between font-medium">
+              <span className="text-[var(--color-gray-dark)]">
+                {deletingTransaction.category || deletingTransaction.type} • {format(new Date(deletingTransaction.date), 'MMM dd')}
+              </span>
+              <span className={cn(
+                'font-bold',
+                deletingTransaction.type === 'income' || (deletingTransaction.type === 'person' && deletingTransaction.direction === 'took' && deletingTransaction.isSettlement)
+                  ? 'text-[var(--color-success)]'
+                  : 'text-[var(--color-primary)]'
+              )}>
+                {deletingTransaction.type === 'income' || (deletingTransaction.type === 'person' && deletingTransaction.direction === 'took' && deletingTransaction.isSettlement) ? '+' : '−'}
+                {formatCurrency(deletingTransaction.amount)}
+              </span>
+            </div>
+          ) : null
+        }
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
       />
     </div>
   );

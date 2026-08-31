@@ -17,6 +17,7 @@ import {
 import { cn } from '../utils/cn';
 import { PersonTransactionModal } from '../components/modals/PersonTransactionModal';
 import { SettleModal } from '../components/modals/SettleModal';
+import { ConfirmModal } from '../components/modals/ConfirmModal';
 
 export function PersonDetails() {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +29,7 @@ export function PersonDetails() {
   const [isTxModalOpen, setIsTxModalOpen] = useState(false);
   const [txDirection, setTxDirection] = useState<'gave' | 'took'>('gave');
   const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   if (!person) {
     return (
@@ -53,10 +55,7 @@ export function PersonDetails() {
   const isSettled = person.balance === 0;
 
   const handleDelete = () => {
-    if (window.confirm(`Are you sure you want to delete ${person.name} from your People list?`)) {
-      deletePerson(person.id);
-      navigate('/people');
-    }
+    setIsDeleteConfirmOpen(true);
   };
 
   const handleOpenTransaction = (direction: 'gave' | 'took') => {
@@ -251,6 +250,26 @@ export function PersonDetails() {
         isOpen={isSettleModalOpen}
         onClose={() => setIsSettleModalOpen(false)}
         person={person}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        onConfirm={() => {
+          deletePerson(person.id);
+          navigate('/people');
+        }}
+        title="Delete person?"
+        description={
+          <>
+            Are you sure you want to delete{' '}
+            <span className="font-bold text-[var(--color-dark)]">"{person.name}"</span> from your People list?
+            This action cannot be undone.
+          </>
+        }
+        confirmText="Delete Person"
+        cancelText="Cancel"
+        variant="destructive"
       />
     </div>
   );
