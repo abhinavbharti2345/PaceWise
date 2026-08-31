@@ -24,7 +24,7 @@ export function AppLayout() {
   return (
     <div className="flex h-screen bg-[var(--color-bg-light)] text-[var(--color-dark)] overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 bg-[var(--color-surface)] border-r border-[var(--color-gray-light)] shadow-sm shrink-0">
+      <aside className="hidden md:flex flex-col w-64 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-3xl my-3 ml-3 shadow-sm shrink-0 overflow-hidden">
         <div className="p-6 flex items-center gap-3 border-b border-[var(--color-gray-light)]">
           <div className="w-9 h-9 bg-[var(--color-primary)] rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md">
             P

@@ -203,14 +203,14 @@ export function Profile() {
       </Card>
       
       {/* Account Actions / Danger Zone */}
-      <Card className="border border-red-100 dark:border-red-900/30 shadow-sm overflow-hidden">
-        <CardHeader className="bg-red-50/50 dark:bg-red-900/10 border-b border-red-100 dark:border-red-900/30 pb-3 sm:pb-4">
+      <Card>
+        <CardHeader>
           <div className="flex items-center gap-2">
             <AlertTriangle size={18} className="text-red-500" />
             <CardTitle className="text-base sm:text-lg text-red-600 dark:text-red-400">Account Actions</CardTitle>
           </div>
         </CardHeader>
-        <div className="p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="w-full sm:w-auto">
             <p className="font-semibold text-base text-[var(--color-dark)]">Sign Out of PaceWise</p>
             <p className="text-xs sm:text-sm text-[var(--color-gray-dark)] mt-0.5">You will need to sign back in to access your data.</p>

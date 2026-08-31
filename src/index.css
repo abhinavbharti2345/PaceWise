@@ -61,7 +61,7 @@
   --success: #4ADE80;
   --dark: #FAFAFA;
   --gray-dark: #A1A1AA;
-  --gray-light: #27272A;
+  --gray-light: rgba(255, 255, 255, 0.08);
   --surface: #18181B;
   --surface-light: #27272A;
   --bg-light: #09090B;
