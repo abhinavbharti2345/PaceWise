@@ -333,7 +333,7 @@ export function Insights() {
           <CardTitle className="mb-1 text-xs sm:text-base truncate">Daily Spend Engine</CardTitle>
           <div className="flex items-baseline gap-1 sm:gap-2 truncate">
             <span className="text-lg sm:text-[32px] font-bold text-[var(--color-dark)] leading-tight tracking-tight truncate">{formatCurrency(avgDailyDiscretionary)}</span>
-            <span className="text-[10px] sm:text-sm text-[var(--color-gray-dark)] line-through shrink-0">/ {formatCurrency(stats.baseDailyBudget)}</span>
+            <span className="text-[10px] sm:text-sm text-[var(--color-gray-dark)] shrink-0">/ {formatCurrency(stats.baseDailyBudget)}</span>
           </div>
           <div className="mt-2 sm:mt-4 w-full h-1.5 bg-[var(--color-surface-light)] rounded-full overflow-hidden">
             <div 

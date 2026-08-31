@@ -217,4 +217,36 @@ describe('budgetEngine', () => {
       expect(stats.dailyStats[2].actualRemaining).toBe(0); // Future day is 0
     });
   });
+
+  describe('Borrowed Money Cash Flow Regression Tests', () => {
+    it('increases available budget and moneyLeft when money is borrowed (direction: took)', () => {
+      const config: BudgetConfig = {
+        totalMoney: 5000,
+        startDate: '2026-08-01',
+        endDate: '2026-08-31'
+      };
+
+      const transactions: Transaction[] = [
+        {
+          id: 'b1',
+          type: 'person',
+          direction: 'took',
+          amount: 1000,
+          date: '2026-08-10',
+          personId: 'p1',
+          personName: 'Rahul'
+        }
+      ];
+
+      const stats = calculateBudget(config, transactions, '2026-08-10');
+
+      // Starting budget (5000) + borrowed money (1000) = 6000 effective budget
+      expect(stats.effectiveTotalBudget).toBe(6000);
+      expect(stats.moneyLeft).toBe(6000);
+      // spentToday and totalDiscretionarySpent MUST remain 0
+      expect(stats.spentToday).toBe(0);
+      expect(stats.totalDiscretionarySpent).toBe(0);
+    });
+  });
 });
+

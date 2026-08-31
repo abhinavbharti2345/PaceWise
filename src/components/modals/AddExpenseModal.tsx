@@ -5,6 +5,8 @@ import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { EXPENSE_CATEGORIES } from '../../utils/categoryHelpers';
+import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
+import { useEffect } from 'react';
 
 interface AddExpenseModalProps {
   isOpen: boolean;
@@ -18,10 +20,16 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
   const [reason, setReason] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(EXPENSE_CATEGORIES[0].name);
   const [customCategory, setCustomCategory] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(getTodayDateString());
   const [paymentMethod, setPaymentMethod] = useState('UPI / Card');
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setDate(getTodayDateString());
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -46,7 +54,7 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
       amount: numAmount,
       category: finalCategory,
       reason: reason.trim(),
-      date: new Date(date).toISOString(),
+      date: parseLocalDate(date).toISOString(),
       paymentMethod,
       note: note.trim() || undefined,
     });

@@ -5,6 +5,7 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import type { Transaction } from '../../features/budget/budgetEngine';
 import { EXPENSE_CATEGORIES } from '../../utils/categoryHelpers';
+import { parseLocalDate } from '../../utils/dateUtils';
 
 interface EditTransactionModalProps {
   isOpen: boolean;
@@ -53,7 +54,7 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
       amount: numAmount,
       reason: reason.trim(),
       category: category.trim() || 'Other',
-      date: new Date(date).toISOString(),
+      date: parseLocalDate(date).toISOString(),
       paymentMethod: paymentMethod || undefined,
       note: note.trim() || undefined,
     });

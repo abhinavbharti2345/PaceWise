@@ -4,7 +4,9 @@ import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { INCOME_SOURCES } from '../../utils/categoryHelpers';
+import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
+import { useEffect } from 'react';
 
 interface AddMoneyModalProps {
   isOpen: boolean;
@@ -18,9 +20,15 @@ export function AddMoneyModal({ isOpen, onClose }: AddMoneyModalProps) {
   const [selectedSource, setSelectedSource] = useState(INCOME_SOURCES[0].name);
   const [customSource, setCustomSource] = useState('');
   const [reason, setReason] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(getTodayDateString());
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setDate(getTodayDateString());
+    }
+  }, [isOpen]);
   
   if (!isOpen) return null;
 
@@ -43,7 +51,7 @@ export function AddMoneyModal({ isOpen, onClose }: AddMoneyModalProps) {
       category: finalSource,
       source: finalSource,
       reason: reason.trim() || `Received money from ${finalSource}`,
-      date: new Date(date).toISOString(),
+      date: parseLocalDate(date).toISOString(),
       note: note.trim() || undefined,
     });
     

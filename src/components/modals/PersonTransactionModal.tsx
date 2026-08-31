@@ -4,7 +4,9 @@ import { useStore } from '../../store/useStore';
 import type { Person } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
+import { useEffect } from 'react';
 
 interface PersonTransactionModalProps {
   isOpen: boolean;
@@ -24,9 +26,16 @@ export function PersonTransactionModal({
   const [amount, setAmount] = useState('');
   const [direction, setDirection] = useState<'gave' | 'took'>(defaultDirection);
   const [reason, setReason] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(getTodayDateString());
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setDate(getTodayDateString());
+      setDirection(defaultDirection);
+    }
+  }, [isOpen, defaultDirection]);
 
   if (!isOpen) return null;
 
@@ -48,7 +57,7 @@ export function PersonTransactionModal({
       amount: numAmount,
       direction,
       reason: reason.trim(),
-      date: new Date(date).toISOString(),
+      date: parseLocalDate(date).toISOString(),
       note: note.trim() || undefined,
     });
 

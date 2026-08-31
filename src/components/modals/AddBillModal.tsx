@@ -4,7 +4,9 @@ import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { BILL_CATEGORIES } from '../../utils/categoryHelpers';
+import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
+import { useEffect } from 'react';
 
 interface AddBillModalProps {
   isOpen: boolean;
@@ -18,9 +20,15 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
   const [selectedCategory, setSelectedCategory] = useState(BILL_CATEGORIES[0].name);
   const [customCategory, setCustomCategory] = useState('');
   const [reason, setReason] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(getTodayDateString());
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setDate(getTodayDateString());
+    }
+  }, [isOpen]);
   
   if (!isOpen) return null;
 
@@ -42,7 +50,7 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
       amount: val,
       category: finalCategory,
       reason: reason.trim() || `${finalCategory} Bill Payment`,
-      date: new Date(date).toISOString(),
+      date: parseLocalDate(date).toISOString(),
       note: note.trim() || undefined,
     });
     
@@ -89,17 +97,23 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
           )}
 
           {/* Amount Card */}
-          <div className="bg-red-50/50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/40 p-4 rounded-2xl">
+          <div 
+            className="p-4 rounded-2xl"
+            style={{background: 'var(--negative-bg)', border: '1px solid var(--negative-border)'}}
+          >
             <div className="flex justify-between items-center mb-1">
-              <label className="block text-xs font-bold uppercase tracking-wider text-red-700 dark:text-red-400">
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1" style={{color: 'var(--negative-text)'}}>
                 Bill Amount
               </label>
-              <span className="text-[10px] font-bold text-red-600 bg-red-100 dark:bg-red-900/50 px-2 py-0.5 rounded-full">
+              <span 
+                className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                style={{background: 'var(--negative-bg)', color: 'var(--negative-text)', border: '1px solid var(--negative-border)'}}
+              >
                 Reduces Monthly Pool
               </span>
             </div>
             <div className="flex items-center text-4xl sm:text-5xl font-extrabold text-[var(--color-primary)]">
-              <span className="text-red-300 mr-2 font-normal">₹</span>
+              <span className="mr-2 font-normal" style={{color: 'var(--negative-text)', opacity: 0.7}}>₹</span>
               <input 
                 type="number" 
                 inputMode="decimal"
@@ -108,7 +122,7 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
                   setAmount(e.target.value);
                   if (error) setError('');
                 }}
-                className="w-full bg-transparent border-none outline-none focus:ring-0 p-0 text-left placeholder:text-red-200 text-[var(--color-primary)]"
+                className="w-full bg-transparent border-none outline-none focus:ring-0 p-0 text-left placeholder:text-[var(--color-gray-light)] text-[var(--color-primary)]"
                 placeholder="0"
                 autoFocus
               />

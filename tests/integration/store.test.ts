@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useStore } from '../../src/store/useStore';
 import { useAuthStore } from '../../src/store/useAuthStore';
+import { parseLocalDate } from '../../src/utils/dateUtils';
 
 // Mock Supabase
 vi.mock('../../src/lib/supabase', () => {
@@ -305,5 +306,68 @@ describe('Hardening & Cascade Deletion Logic', () => {
     expect(updatedTx?.amount).toBe(250);
     expect(updatedTx?.reason).toBe('Fancy Dinner');
   });
+
+  it('15. Deleting a person transaction recalculates person balance correctly', () => {
+    const store = useStore.getState();
+    const personId = store.addPerson({ name: 'Rahul', balance: 0 });
+
+    // Lend Rahul 500
+    store.recordPersonTransaction({
+      personId,
+      personName: 'Rahul',
+      amount: 500,
+      direction: 'gave',
+      reason: 'Movie tickets',
+    });
+
+    expect(useStore.getState().people[0].balance).toBe(500);
+
+    // Lend Rahul another 200
+    store.recordPersonTransaction({
+      personId,
+      personName: 'Rahul',
+      amount: 200,
+      direction: 'gave',
+      reason: 'Snacks',
+    });
+
+    expect(useStore.getState().people[0].balance).toBe(700);
+
+    // Delete the 500 transaction
+    const tx500 = useStore.getState().transactions.find(t => t.amount === 500)!;
+    store.deleteTransaction(tx500.id);
+
+    // Rahul's balance MUST automatically resync to 200
+    expect(useStore.getState().people[0].balance).toBe(200);
+  });
+
+  it('16. Editing a person transaction recalculates person balance correctly', () => {
+    const store = useStore.getState();
+    const personId = store.addPerson({ name: 'Ankit', balance: 0 });
+
+    store.recordPersonTransaction({
+      personId,
+      personName: 'Ankit',
+      amount: 200,
+      direction: 'gave',
+      reason: 'Cab fare',
+    });
+
+    expect(useStore.getState().people[0].balance).toBe(200);
+
+    const txId = useStore.getState().transactions[0].id;
+    store.updateTransaction(txId, { amount: 300 });
+
+    // Ankit's balance MUST automatically update to 300
+    expect(useStore.getState().people[0].balance).toBe(300);
+  });
+
+  it('17. parseLocalDate preserves calendar day regardless of timezone', () => {
+    const d = parseLocalDate('2026-09-01');
+    expect(d.getFullYear()).toBe(2026);
+    expect(d.getMonth()).toBe(8); // September is month 8
+    expect(d.getDate()).toBe(1);
+  });
 });
+
 

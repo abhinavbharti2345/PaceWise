@@ -59,6 +59,12 @@ export const getBudgetDatesForDate = (date: Date) => {
   return { start, end };
 };
 
+export function calculatePersonBalance(personId: string, transactions: Transaction[]): number {
+  return transactions
+    .filter(t => t.personId === personId)
+    .reduce((sum, t) => sum + (t.direction === 'gave' ? t.amount : -t.amount), 0);
+}
+
 const { start: monthStart, end: monthEnd } = getBudgetDatesForDate(new Date());
 
 // Safe UUID generation that works on mobile devices over non-HTTPS local IP addresses
@@ -234,11 +240,42 @@ export const useStore = create<AppState>()(
       },
 
       updateTransaction: (id, updated) => {
-        set((state) => ({
-          transactions: state.transactions.map((t) =>
-            t.id === id ? { ...t, ...updated } : t
-          ),
-        }));
+        const state = useStore.getState();
+        const oldTx = state.transactions.find(t => t.id === id);
+        const newTransactions = state.transactions.map((t) =>
+          t.id === id ? { ...t, ...updated } : t
+        );
+
+        // Recalculate balances for any affected personId
+        const affectedPersonIds = new Set<string>();
+        if (oldTx?.personId) affectedPersonIds.add(oldTx.personId);
+        if (updated.personId) affectedPersonIds.add(updated.personId);
+
+        let newPeople = state.people;
+        if (affectedPersonIds.size > 0) {
+          newPeople = state.people.map(p => {
+            if (affectedPersonIds.has(p.id)) {
+              return { ...p, balance: calculatePersonBalance(p.id, newTransactions) };
+            }
+            return p;
+          });
+
+          const userId = useAuthStore.getState().user?.id;
+          if (userId) {
+            affectedPersonIds.forEach(pId => {
+              const b = calculatePersonBalance(pId, newTransactions);
+              supabase.from('people').update({ balance: b, updated_at: new Date().toISOString() })
+                .eq('id', pId).eq('user_id', userId).then(({ error }) => {
+                  if (error) console.error('[PaceWise DB] Failed to update person balance on tx update:', error);
+                });
+            });
+          }
+        }
+
+        set({
+          transactions: newTransactions,
+          people: newPeople,
+        });
 
         const user = useAuthStore.getState().user;
         if (!user?.id) return;
@@ -263,10 +300,29 @@ export const useStore = create<AppState>()(
       },
 
       deleteTransaction: (id) => {
-        set((state) => ({
-          transactions: state.transactions.filter(t => t.id !== id)
-        }));
-        
+        const state = useStore.getState();
+        const targetTx = state.transactions.find(t => t.id === id);
+        const newTransactions = state.transactions.filter(t => t.id !== id);
+
+        let newPeople = state.people;
+        if (targetTx?.personId) {
+          const newBalance = calculatePersonBalance(targetTx.personId, newTransactions);
+          newPeople = state.people.map(p => p.id === targetTx.personId ? { ...p, balance: newBalance } : p);
+
+          const userId = useAuthStore.getState().user?.id;
+          if (userId) {
+            supabase.from('people').update({ balance: newBalance, updated_at: new Date().toISOString() })
+              .eq('id', targetTx.personId).eq('user_id', userId).then(({ error }) => {
+                if (error) console.error('[PaceWise DB] Failed to update person balance on tx delete:', error);
+              });
+          }
+        }
+
+        set({
+          transactions: newTransactions,
+          people: newPeople,
+        });
+
         const user = useAuthStore.getState().user;
         console.log('[PaceWise DB] Current user for deleteTransaction:', user?.id);
 
@@ -391,46 +447,39 @@ export const useStore = create<AppState>()(
 
       recordPersonTransaction: ({ personId, personName, amount, direction, reason, date, note }) => {
         const txDate = date || new Date().toISOString();
-        const balanceChange = direction === 'gave' ? amount : -amount;
         const txId = generateId();
 
-        set((state) => ({
+        const newTx: Transaction = {
+          id: txId,
+          type: 'person',
+          amount,
+          category: 'People',
+          reason: reason || (direction === 'gave' ? `Lent money to ${personName}` : `Borrowed from ${personName}`),
+          personId,
+          personName,
+          direction,
+          date: txDate,
+          note
+        };
+
+        const state = useStore.getState();
+        const newTransactions = [newTx, ...state.transactions];
+        const newBalance = calculatePersonBalance(personId, newTransactions);
+
+        set({
           people: state.people.map(p => 
-            p.id === personId ? { ...p, balance: p.balance + balanceChange } : p
+            p.id === personId ? { ...p, balance: newBalance } : p
           ),
-          transactions: [
-            {
-              id: txId,
-              type: 'person',
-              amount,
-              category: 'People',
-              reason: reason || (direction === 'gave' ? `Lent money to ${personName}` : `Borrowed from ${personName}`),
-              personId,
-              personName,
-              direction,
-              date: txDate,
-              note
-            },
-            ...state.transactions
-          ]
-        }));
+          transactions: newTransactions
+        });
 
         const userId = useAuthStore.getState().user?.id;
         if (userId) {
-          const person = useStore.getState().people.find(p => p.id === personId);
-          
-          const promises: PromiseLike<unknown>[] = [];
-          
-          if (person) {
-            promises.push(
-              supabase.from('people').update({ balance: person.balance, updated_at: new Date().toISOString() })
-                .eq('id', personId).eq('user_id', userId).then(({ error }) => {
-                  if (error) console.error('[PaceWise] Failed to update person balance:', error);
-                })
-            );
-          }
-          
-          promises.push(
+          const promises: PromiseLike<unknown>[] = [
+            supabase.from('people').update({ balance: newBalance, updated_at: new Date().toISOString() })
+              .eq('id', personId).eq('user_id', userId).then(({ error }) => {
+                if (error) console.error('[PaceWise] Failed to update person balance:', error);
+              }),
             supabase.from('transactions').insert({
               id: txId,
               user_id: userId,
@@ -438,7 +487,7 @@ export const useStore = create<AppState>()(
               amount,
               date: txDate,
               category: 'People',
-              reason: reason || (direction === 'gave' ? `Lent money to ${personName}` : `Borrowed from ${personName}`),
+              reason: newTx.reason,
               person_id: personId,
               person_name: personName,
               direction,
@@ -446,8 +495,8 @@ export const useStore = create<AppState>()(
             }).then(({ error }) => {
               if (error) console.error('[PaceWise] Failed to insert person transaction:', error);
             })
-          );
-          
+          ];
+
           Promise.all(promises).catch(err => 
             console.error('[PaceWise] Failed to sync recordPersonTransaction:', err)
           );
@@ -457,35 +506,36 @@ export const useStore = create<AppState>()(
       settleDebt: ({ personId, personName, amount, direction, note }) => {
         const txId = generateId();
         const txDate = new Date().toISOString();
-        
         const txDirection = direction === 'received' ? 'took' : 'gave';
-        const balanceChange = direction === 'received' ? -amount : amount;
         
         const txReason = direction === 'received' 
           ? `Received settlement from ${personName}` 
           : `Paid settlement to ${personName}`;
 
-        set((state) => ({
+        const newTx: Transaction = {
+          id: txId,
+          type: 'person',
+          amount,
+          category: 'Settlement',
+          reason: txReason,
+          personId,
+          personName,
+          direction: txDirection,
+          isSettlement: true,
+          date: txDate,
+          note
+        };
+
+        const state = useStore.getState();
+        const newTransactions = [newTx, ...state.transactions];
+        const newBalance = calculatePersonBalance(personId, newTransactions);
+
+        set({
           people: state.people.map(p => 
-            p.id === personId ? { ...p, balance: p.balance + balanceChange } : p
+            p.id === personId ? { ...p, balance: newBalance } : p
           ),
-          transactions: [
-            {
-              id: txId,
-              type: 'person',
-              amount,
-              category: 'Settlement',
-              reason: txReason,
-              personId,
-              personName,
-              direction: txDirection,
-              isSettlement: true,
-              date: txDate,
-              note
-            },
-            ...state.transactions
-          ]
-        }));
+          transactions: newTransactions
+        });
 
         const user = useAuthStore.getState().user;
         console.log('[PaceWise DB] Current user for settleDebt:', user?.id);
@@ -495,24 +545,13 @@ export const useStore = create<AppState>()(
           return;
         }
 
-        const person = useStore.getState().people.find(p => p.id === personId);
-        
-        const promises: PromiseLike<unknown>[] = [];
-        
-        if (person) {
-          console.log(`[PaceWise DB] Updating person balance for ${personId}...`);
-          promises.push(
-            supabase.from('people').update({ balance: person.balance, updated_at: new Date().toISOString() })
-              .eq('id', personId).eq('user_id', user.id).then(({ error }) => {
-                if (error) {
-                  console.error('[PaceWise DB] Failed to update person balance', { error, code: error?.code });
-                }
-              })
-          );
-        }
-        
-        console.log('[PaceWise DB] Inserting settlement transaction...');
-        promises.push(
+        const promises: PromiseLike<unknown>[] = [
+          supabase.from('people').update({ balance: newBalance, updated_at: new Date().toISOString() })
+            .eq('id', personId).eq('user_id', user.id).then(({ error }) => {
+              if (error) {
+                console.error('[PaceWise DB] Failed to update person balance', { error, code: error?.code });
+              }
+            }),
           supabase.from('transactions').insert({
             id: txId,
             user_id: user.id,
@@ -533,7 +572,7 @@ export const useStore = create<AppState>()(
               console.log('[PaceWise DB] Settle debt SUCCESS');
             }
           })
-        );
+        ];
         
         Promise.all(promises).catch((error: any) => {
           console.error('[PaceWise DB] Failed to sync settleDebt', {

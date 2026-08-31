@@ -127,6 +127,9 @@ export function calculateBudget(
         } else if (isToday) {
           spentToday += t.amount;
         }
+      } else if (t.direction === 'took') {
+        // If user took money (borrowed), it's cash inflow that increases available budget
+        totalAddedMoney += t.amount;
       }
     }
   }
