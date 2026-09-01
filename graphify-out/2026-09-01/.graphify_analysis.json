@@ -50,6 +50,12 @@
       "src_components_ui_input",
       "src_components_ui_input_input",
       "src_components_ui_input_inputprops",
+      "src_components_ui_installprompt",
+      "src_components_ui_installprompt_installprompt",
+      "src_components_ui_installprompt_promptstate",
+      "src_components_ui_installprompt_safewritestorage",
+      "src_components_ui_liveclock",
+      "src_components_ui_liveclock_liveclock",
       "src_features_budget_budgetengine",
       "src_features_budget_budgetengine_budgetconfig",
       "src_features_budget_budgetengine_budgetstats",
@@ -57,6 +63,10 @@
       "src_features_budget_budgetengine_dailybudgetstat",
       "src_features_budget_budgetengine_transaction",
       "src_features_budget_budgetengine_transactiontype",
+      "src_hooks_usecurrentdate",
+      "src_hooks_usecurrentdate_usecurrentdate",
+      "src_hooks_usemonthrollover",
+      "src_hooks_usemonthrollover_usemonthrollover",
       "src_lib_supabase",
       "src_lib_supabase_supabase",
       "src_lib_supabasesync",
@@ -98,9 +108,10 @@
       "src_store_useauthstore_useauthstore",
       "src_store_usestore",
       "src_store_usestore_appstate",
+      "src_store_usestore_calculatepersonbalance",
       "src_store_usestore_defaultconfig",
       "src_store_usestore_generateid",
-      "src_store_usestore_getmonthdates",
+      "src_store_usestore_getbudgetdatesfordate",
       "src_store_usestore_person",
       "src_store_usestore_start_monthstart_end_monthend",
       "src_store_usestore_usestore",
@@ -112,6 +123,9 @@
       "src_utils_categoryhelpers_income_sources",
       "src_utils_cn",
       "src_utils_cn_cn",
+      "src_utils_dateutils",
+      "src_utils_dateutils_gettodaydatestring",
+      "src_utils_dateutils_parselocaldate",
       "tests_budget_budgetengine_test",
       "tests_budget_comprehensiveengine_test",
       "tests_integration_store_test",
@@ -1903,6 +1917,17 @@
       "agents_plugins_frontend_mobile_development_skills_tailwind_design_system_skill_when_to_use_this_skill"
     ],
     "82": [
+      "public_manifest",
+      "public_manifest_background_color",
+      "public_manifest_description",
+      "public_manifest_display",
+      "public_manifest_icons",
+      "public_manifest_name",
+      "public_manifest_short_name",
+      "public_manifest_start_url",
+      "public_manifest_theme_color"
+    ],
+    "83": [
       "agents_plugins_frontend_mobile_development_skills_react_state_management_references_details",
       "agents_plugins_frontend_mobile_development_skills_react_state_management_references_details_pattern_1_redux_toolkit_with_typescript",
       "agents_plugins_frontend_mobile_development_skills_react_state_management_references_details_pattern_2_zustand_with_slices_scalable",
@@ -1912,7 +1937,7 @@
       "agents_plugins_frontend_mobile_development_skills_react_state_management_references_details_patterns",
       "agents_plugins_frontend_mobile_development_skills_react_state_management_references_details_react_state_management_detailed_patterns_and_worked_examples"
     ],
-    "83": [
+    "84": [
       "agents_plugins_frontend_mobile_development_skills_tailwind_design_system_references_details",
       "agents_plugins_frontend_mobile_development_skills_tailwind_design_system_references_details_pattern_1_cva_class_variance_authority_components",
       "agents_plugins_frontend_mobile_development_skills_tailwind_design_system_references_details_pattern_2_compound_components_react_19",
@@ -1922,7 +1947,7 @@
       "agents_plugins_frontend_mobile_development_skills_tailwind_design_system_references_details_tailwind_design_system_detailed_patterns_and_worked_examples",
       "agents_plugins_frontend_mobile_development_skills_tailwind_design_system_references_details_utility_functions"
     ],
-    "84": [
+    "85": [
       "agents_plugins_ui_design_skills_mobile_android_design_references_details",
       "agents_plugins_ui_design_skills_mobile_android_design_references_details_1_material_design_3_principles",
       "agents_plugins_ui_design_skills_mobile_android_design_references_details_2_jetpack_compose_layout_system",
@@ -1932,7 +1957,7 @@
       "agents_plugins_ui_design_skills_mobile_android_design_references_details_core_concepts",
       "agents_plugins_ui_design_skills_mobile_android_design_references_details_mobile_android_design_detailed_sections"
     ],
-    "85": [
+    "86": [
       "agents_plugins_ui_design_skills_react_native_design_references_details",
       "agents_plugins_ui_design_skills_react_native_design_references_details_1_stylesheet_and_styling",
       "agents_plugins_ui_design_skills_react_native_design_references_details_2_flexbox_layout",
@@ -1942,7 +1967,7 @@
       "agents_plugins_ui_design_skills_react_native_design_references_details_core_concepts",
       "agents_plugins_ui_design_skills_react_native_design_references_details_react_native_design_detailed_sections"
     ],
-    "86": [
+    "87": [
       "agents_plugins_code_documentation_agents_docs_architect",
       "agents_plugins_code_documentation_agents_docs_architect_best_practices",
       "agents_plugins_code_documentation_agents_docs_architect_core_competencies",
@@ -1951,7 +1976,7 @@
       "agents_plugins_code_documentation_agents_docs_architect_output_characteristics",
       "agents_plugins_code_documentation_agents_docs_architect_output_format"
     ],
-    "87": [
+    "88": [
       "agents_plugins_tdd_workflows_commands_tdd_green",
       "agents_plugins_tdd_workflows_commands_tdd_green_critical_behavioral_rules",
       "agents_plugins_tdd_workflows_commands_tdd_green_implementation_process",
@@ -1960,7 +1985,7 @@
       "agents_plugins_tdd_workflows_commands_tdd_green_recovery_process",
       "agents_plugins_tdd_workflows_commands_tdd_green_tdd_green_phase"
     ],
-    "88": [
+    "89": [
       "agents_plugins_tdd_workflows_commands_tdd_refactor",
       "agents_plugins_tdd_workflows_commands_tdd_refactor_core_process",
       "agents_plugins_tdd_workflows_commands_tdd_refactor_example_extract_method_pattern",
@@ -1969,7 +1994,7 @@
       "agents_plugins_tdd_workflows_commands_tdd_refactor_safety_checklist",
       "agents_plugins_tdd_workflows_commands_tdd_refactor_usage"
     ],
-    "89": [
+    "90": [
       "agents_plugins_ui_design_skills_accessibility_compliance_skill",
       "agents_plugins_ui_design_skills_accessibility_compliance_skill_accessibility_compliance",
       "agents_plugins_ui_design_skills_accessibility_compliance_skill_best_practices",
@@ -1978,7 +2003,7 @@
       "agents_plugins_ui_design_skills_accessibility_compliance_skill_testing_tools",
       "agents_plugins_ui_design_skills_accessibility_compliance_skill_when_to_use_this_skill"
     ],
-    "90": [
+    "91": [
       "agents_plugins_ui_design_skills_design_system_patterns_references_details",
       "agents_plugins_ui_design_skills_design_system_patterns_references_details_design_system_patterns_detailed_patterns_and_worked_examples",
       "agents_plugins_ui_design_skills_design_system_patterns_references_details_key_patterns",
@@ -1987,7 +2012,7 @@
       "agents_plugins_ui_design_skills_design_system_patterns_references_details_pattern_3_variant_system_with_cva",
       "agents_plugins_ui_design_skills_design_system_patterns_references_details_pattern_4_style_dictionary_configuration"
     ],
-    "91": [
+    "92": [
       "agents_plugins_ui_design_skills_mobile_android_design_skill",
       "agents_plugins_ui_design_skills_mobile_android_design_skill_android_mobile_design",
       "agents_plugins_ui_design_skills_mobile_android_design_skill_best_practices",
@@ -1996,7 +2021,7 @@
       "agents_plugins_ui_design_skills_mobile_android_design_skill_quick_start_component",
       "agents_plugins_ui_design_skills_mobile_android_design_skill_when_to_use_this_skill"
     ],
-    "92": [
+    "93": [
       "agents_plugins_ui_design_skills_react_native_design_skill",
       "agents_plugins_ui_design_skills_react_native_design_skill_best_practices",
       "agents_plugins_ui_design_skills_react_native_design_skill_common_issues",
@@ -2005,7 +2030,7 @@
       "agents_plugins_ui_design_skills_react_native_design_skill_react_native_design",
       "agents_plugins_ui_design_skills_react_native_design_skill_when_to_use_this_skill"
     ],
-    "93": [
+    "94": [
       "package",
       "package_engines",
       "package_engines_node",
@@ -2014,7 +2039,7 @@
       "package_type",
       "package_version"
     ],
-    "94": [
+    "95": [
       "agents_plugins_javascript_typescript_skills_nodejs_backend_patterns_skill",
       "agents_plugins_javascript_typescript_skills_nodejs_backend_patterns_skill_best_practices",
       "agents_plugins_javascript_typescript_skills_nodejs_backend_patterns_skill_detailed_patterns_and_worked_examples",
@@ -2022,7 +2047,7 @@
       "agents_plugins_javascript_typescript_skills_nodejs_backend_patterns_skill_testing_patterns",
       "agents_plugins_javascript_typescript_skills_nodejs_backend_patterns_skill_when_to_use_this_skill"
     ],
-    "95": [
+    "96": [
       "agents_plugins_tdd_workflows_commands_tdd_red",
       "agents_plugins_tdd_workflows_commands_tdd_red_critical_behavioral_rules",
       "agents_plugins_tdd_workflows_commands_tdd_red_edge_case_categories",
@@ -2030,7 +2055,7 @@
       "agents_plugins_tdd_workflows_commands_tdd_red_test_generation_process",
       "agents_plugins_tdd_workflows_commands_tdd_red_validation"
     ],
-    "96": [
+    "97": [
       "agents_plugins_ui_design_skills_responsive_design_skill",
       "agents_plugins_ui_design_skills_responsive_design_skill_best_practices",
       "agents_plugins_ui_design_skills_responsive_design_skill_common_issues",
@@ -2038,86 +2063,86 @@
       "agents_plugins_ui_design_skills_responsive_design_skill_responsive_design",
       "agents_plugins_ui_design_skills_responsive_design_skill_when_to_use_this_skill"
     ],
-    "97": [
+    "98": [
       "package_scripts",
       "package_scripts_build",
       "package_scripts_dev",
       "package_scripts_lint",
       "package_scripts_preview"
     ],
-    "98": [
+    "99": [
       "src_app_errorboundary",
       "src_app_errorboundary_componentdidcatch",
       "src_app_errorboundary_constructor",
       "src_app_errorboundary_getderivedstatefromerror",
       "src_app_errorboundary_render"
     ],
-    "99": [
+    "100": [
       "agents_plugins_javascript_typescript_agents_javascript_pro",
       "agents_plugins_javascript_typescript_agents_javascript_pro_approach",
       "agents_plugins_javascript_typescript_agents_javascript_pro_focus_areas",
       "agents_plugins_javascript_typescript_agents_javascript_pro_output"
     ],
-    "100": [
+    "101": [
       "agents_plugins_javascript_typescript_agents_typescript_pro",
       "agents_plugins_javascript_typescript_agents_typescript_pro_approach",
       "agents_plugins_javascript_typescript_agents_typescript_pro_focus_areas",
       "agents_plugins_javascript_typescript_agents_typescript_pro_output"
     ],
-    "101": [
+    "102": [
       "scratch_check_schema",
       "scratch_check_schema_check",
       "scratch_check_schema_supabase"
     ],
-    "102": [
+    "103": [
       "tsconfig",
       "tsconfig_files",
       "tsconfig_references"
     ],
-    "103": [
+    "104": [
       "agents_rules_graphify",
       "agents_rules_graphify_graphify"
     ],
-    "104": [
+    "105": [
       "agents_workflows_graphify",
       "agents_workflows_graphify_workflow_graphify"
     ],
-    "105": [
+    "106": [
       "github_copilot_instructions",
       "github_copilot_instructions_graphify"
     ],
-    "106": [
+    "107": [
       "package_dependencies_react",
       "react"
     ],
-    "107": [
+    "108": [
       "package_devdependencies_tailwindcss_vite",
       "tailwindcss_vite"
     ],
-    "108": [
+    "109": [
       "package_devdependencies_types_react_dom",
       "types_react_dom"
     ],
-    "109": [
+    "110": [
       "supabase_functions_delete_user_index",
       "supabase_functions_delete_user_index_corsheaders"
     ],
-    "110": [
+    "111": [
       "vercel",
       "vercel_rewrites"
     ],
-    "111": [
+    "112": [
       "agents_plugins_unit_testing_agents_debugger"
     ],
-    "112": [
+    "113": [
       "opencode_commands_graphify"
     ],
-    "113": [
+    "114": [
       "vite_config"
     ]
   },
   "cohesion": {
-    "0": 0.06346300533943555,
+    "0": 0.057291666666666664,
     "1": 0.047619047619047616,
     "2": 0.05,
     "3": 0.05263157894736842,
@@ -2199,11 +2224,11 @@
     "79": 0.2,
     "80": 0.2,
     "81": 0.2222222222222222,
-    "82": 0.25,
+    "82": 0.2222222222222222,
     "83": 0.25,
     "84": 0.25,
     "85": 0.25,
-    "86": 0.2857142857142857,
+    "86": 0.25,
     "87": 0.2857142857142857,
     "88": 0.2857142857142857,
     "89": 0.2857142857142857,
@@ -2211,16 +2236,16 @@
     "91": 0.2857142857142857,
     "92": 0.2857142857142857,
     "93": 0.2857142857142857,
-    "94": 0.3333333333333333,
+    "94": 0.2857142857142857,
     "95": 0.3333333333333333,
     "96": 0.3333333333333333,
-    "97": 0.4,
+    "97": 0.3333333333333333,
     "98": 0.4,
-    "99": 0.5,
+    "99": 0.4,
     "100": 0.5,
-    "101": 0.6666666666666666,
+    "101": 0.5,
     "102": 0.6666666666666666,
-    "103": 1.0,
+    "103": 0.6666666666666666,
     "104": 1.0,
     "105": 1.0,
     "106": 1.0,
@@ -2230,7 +2255,8 @@
     "110": 1.0,
     "111": 1.0,
     "112": 1.0,
-    "113": 1.0
+    "113": 1.0,
+    "114": 1.0
   },
   "gods": [
     {
@@ -2241,7 +2267,7 @@
     {
       "id": "src_store_usestore_usestore",
       "label": "useStore",
-      "degree": 38
+      "degree": 41
     },
     {
       "id": "agents_plugins_tdd_workflows_commands_tdd_cycle_tdd_cycle_orchestrator",
@@ -2261,7 +2287,7 @@
     {
       "id": "src_components_ui_button_button",
       "label": "Button",
-      "degree": 16
+      "degree": 17
     },
     {
       "id": "agents_plugins_database_design_agents_database_architect_capabilities",
@@ -2286,6 +2312,17 @@
   ],
   "surprises": [
     {
+      "source": "SettleModalProps",
+      "target": "Person",
+      "source_files": [
+        "src/components/modals/SettleModal.tsx",
+        "src/store/useStore.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `SettleModalProps` unexpectedly reaches hub `Person`"
+    },
+    {
       "source": "Badge()",
       "target": "cn()",
       "source_files": [
@@ -2295,6 +2332,17 @@
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "peripheral node `Badge()` unexpectedly reaches hub `cn()`"
+    },
+    {
+      "source": "EditTransactionModalProps",
+      "target": "Transaction",
+      "source_files": [
+        "src/components/modals/EditTransactionModal.tsx",
+        "src/features/budget/budgetEngine.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `EditTransactionModalProps` unexpectedly reaches hub `Transaction`"
     },
     {
       "source": "PersonTransactionModalProps",
@@ -2308,33 +2356,11 @@
       "why": "peripheral node `PersonTransactionModalProps` unexpectedly reaches hub `Person`"
     },
     {
-      "source": "SettleModalProps",
-      "target": "Person",
+      "source": "AddPersonModal()",
+      "target": "useStore",
       "source_files": [
-        "src/components/modals/SettleModal.tsx",
+        "src/components/modals/AddPersonModal.tsx",
         "src/store/useStore.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "peripheral node `SettleModalProps` unexpectedly reaches hub `Person`"
-    },
-    {
-      "source": "AppContent()",
-      "target": "useSupabaseSync()",
-      "source_files": [
-        "src/App.tsx",
-        "src/lib/supabaseSync.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "cross-file semantic connection"
-    },
-    {
-      "source": "AppContent()",
-      "target": "useAuthStore",
-      "source_files": [
-        "src/App.tsx",
-        "src/store/useAuthStore.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",

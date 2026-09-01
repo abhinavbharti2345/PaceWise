@@ -1,16 +1,16 @@
-# Graph Report - PaceWise  (2026-08-31)
+# Graph Report - PaceWise  (2026-09-01)
 
 ## Corpus Check
-- 159 files · ~133,400 words
+- 164 files · ~134,867 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1902 nodes · 2103 edges · 115 communities (101 shown, 11 thin omitted)
+- 1913 nodes · 2153 edges · 115 communities (101 shown, 11 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `562d3fad`
+- Built from commit: `e21c303a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -97,6 +97,7 @@
 - Patterns
 - Component Patterns Reference
 - Tailwind Design System (v4)
+- manifest.json
 - Patterns
 - Patterns
 - Core Concepts
@@ -126,11 +127,10 @@
 - @types/react-dom
 - index.ts
 - vercel.json
-- manifest.json
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 42 edges
-2. `useStore` - 38 edges
+2. `useStore` - 41 edges
 3. `TDD Cycle Orchestrator` - 19 edges
 4. `useAuthStore` - 18 edges
 5. `compilerOptions` - 18 edges
@@ -149,8 +149,8 @@
   src/components/modals/SettleModal.tsx → src/store/useStore.ts
 - `Badge()` --calls--> `cn()`  [EXTRACTED]
   src/components/ui/Badge.tsx → src/utils/cn.ts
-- `AppContent()` --calls--> `useSupabaseSync()`  [EXTRACTED]
-  src/App.tsx → src/lib/supabaseSync.ts
+- `AppContent()` --calls--> `useMonthRollover()`  [EXTRACTED]
+  src/App.tsx → src/hooks/useMonthRollover.ts
 
 ## Import Cycles
 - None detected.
@@ -159,7 +159,7 @@
 
 ### Community 0 - "cn"
 Cohesion: 0.06
-Nodes (78): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+70 more)
+Nodes (85): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+77 more)
 
 ### Community 1 - "WCAG 2.2 Guidelines Reference"
 Cohesion: 0.05
@@ -485,85 +485,85 @@ Nodes (9): Component Patterns Reference, Compound Components Deep Dive, Controll
 Cohesion: 0.22
 Nodes (8): 1. Design Token Hierarchy, 2. Component Architecture, Core Concepts, Detailed patterns and worked examples, Key v4 Changes, Quick Start, Tailwind Design System (v4), When to Use This Skill
 
-### Community 82 - "Patterns"
-Cohesion: 0.25
-Nodes (7): Pattern 1: Redux Toolkit with TypeScript, Pattern 2: Zustand with Slices (Scalable), Pattern 3: Jotai for Atomic State, Pattern 4: React Query for Server State, Pattern 5: Combining Client + Server State, Patterns, react-state-management — detailed patterns and worked examples
-
-### Community 83 - "Patterns"
-Cohesion: 0.25
-Nodes (7): Pattern 1: CVA (Class Variance Authority) Components, Pattern 2: Compound Components (React 19), Pattern 3: Form Components, Pattern 4: Responsive Grid System, Patterns, tailwind-design-system — detailed patterns and worked examples, Utility Functions
-
-### Community 84 - "Core Concepts"
-Cohesion: 0.25
-Nodes (7): 1. Material Design 3 Principles, 2. Jetpack Compose Layout System, 3. Navigation Patterns, 4. Material 3 Theming, 5. Component Examples, Core Concepts, mobile-android-design — detailed sections
-
-### Community 85 - "Core Concepts"
-Cohesion: 0.25
-Nodes (7): 1. StyleSheet and Styling, 2. Flexbox Layout, 3. React Navigation Setup, 4. Reanimated 3 Basics, 5. Platform-Specific Styling, Core Concepts, react-native-design — detailed sections
-
-### Community 86 - "docs-architect.md"
-Cohesion: 0.29
-Nodes (6): Best Practices, Core Competencies, Documentation Process, Key Sections to Include, Output Characteristics, Output Format
-
-### Community 87 - "TDD Green Phase"
-Cohesion: 0.29
-Nodes (6): CRITICAL BEHAVIORAL RULES, Implementation Process, Integration Points, Post-Implementation Checks, Recovery Process, TDD Green Phase
-
-### Community 88 - "tdd-refactor.md"
-Cohesion: 0.29
-Nodes (6): Core Process, Example: Extract Method Pattern, Output Requirements, Recovery Protocol, Safety Checklist, Usage
-
-### Community 89 - "Accessibility Compliance"
-Cohesion: 0.29
-Nodes (6): Accessibility Compliance, Best Practices, Common Issues, Detailed patterns and worked examples, Testing Tools, When to Use This Skill
-
-### Community 90 - "Key Patterns"
-Cohesion: 0.29
-Nodes (6): design-system-patterns — detailed patterns and worked examples, Key Patterns, Pattern 1: Token Hierarchy, Pattern 2: Theme Switching with React, Pattern 3: Variant System with CVA, Pattern 4: Style Dictionary Configuration
-
-### Community 91 - "Android Mobile Design"
-Cohesion: 0.29
-Nodes (6): Android Mobile Design, Best Practices, Common Issues, Detailed section: Core Concepts, Quick Start Component, When to Use This Skill
-
-### Community 92 - "React Native Design"
-Cohesion: 0.29
-Nodes (6): Best Practices, Common Issues, Detailed section: Core Concepts, Quick Start Component, React Native Design, When to Use This Skill
-
-### Community 93 - "package.json"
-Cohesion: 0.29
-Nodes (6): engines, node, name, private, type, version
-
-### Community 94 - "Node.js Backend Patterns"
-Cohesion: 0.33
-Nodes (5): Best Practices, Detailed patterns and worked examples, Node.js Backend Patterns, Testing Patterns, When to Use This Skill
-
-### Community 95 - "TDD Red Phase"
-Cohesion: 0.33
-Nodes (5): CRITICAL BEHAVIORAL RULES, Edge Case Categories, TDD Red Phase, Test Generation Process, Validation
-
-### Community 96 - "Responsive Design"
-Cohesion: 0.33
-Nodes (5): Best Practices, Common Issues, Detailed patterns and worked examples, Responsive Design, When to Use This Skill
-
-### Community 97 - "scripts"
-Cohesion: 0.40
-Nodes (5): scripts, build, dev, lint, preview
-
-### Community 99 - "javascript-pro.md"
-Cohesion: 0.50
-Nodes (3): Approach, Focus Areas, Output
-
-### Community 100 - "typescript-pro.md"
-Cohesion: 0.50
-Nodes (3): Approach, Focus Areas, Output
-
-### Community 114 - "manifest.json"
+### Community 82 - "manifest.json"
 Cohesion: 0.22
 Nodes (8): background_color, description, display, icons, name, short_name, start_url, theme_color
 
+### Community 83 - "Patterns"
+Cohesion: 0.25
+Nodes (7): Pattern 1: Redux Toolkit with TypeScript, Pattern 2: Zustand with Slices (Scalable), Pattern 3: Jotai for Atomic State, Pattern 4: React Query for Server State, Pattern 5: Combining Client + Server State, Patterns, react-state-management — detailed patterns and worked examples
+
+### Community 84 - "Patterns"
+Cohesion: 0.25
+Nodes (7): Pattern 1: CVA (Class Variance Authority) Components, Pattern 2: Compound Components (React 19), Pattern 3: Form Components, Pattern 4: Responsive Grid System, Patterns, tailwind-design-system — detailed patterns and worked examples, Utility Functions
+
+### Community 85 - "Core Concepts"
+Cohesion: 0.25
+Nodes (7): 1. Material Design 3 Principles, 2. Jetpack Compose Layout System, 3. Navigation Patterns, 4. Material 3 Theming, 5. Component Examples, Core Concepts, mobile-android-design — detailed sections
+
+### Community 86 - "Core Concepts"
+Cohesion: 0.25
+Nodes (7): 1. StyleSheet and Styling, 2. Flexbox Layout, 3. React Navigation Setup, 4. Reanimated 3 Basics, 5. Platform-Specific Styling, Core Concepts, react-native-design — detailed sections
+
+### Community 87 - "docs-architect.md"
+Cohesion: 0.29
+Nodes (6): Best Practices, Core Competencies, Documentation Process, Key Sections to Include, Output Characteristics, Output Format
+
+### Community 88 - "TDD Green Phase"
+Cohesion: 0.29
+Nodes (6): CRITICAL BEHAVIORAL RULES, Implementation Process, Integration Points, Post-Implementation Checks, Recovery Process, TDD Green Phase
+
+### Community 89 - "tdd-refactor.md"
+Cohesion: 0.29
+Nodes (6): Core Process, Example: Extract Method Pattern, Output Requirements, Recovery Protocol, Safety Checklist, Usage
+
+### Community 90 - "Accessibility Compliance"
+Cohesion: 0.29
+Nodes (6): Accessibility Compliance, Best Practices, Common Issues, Detailed patterns and worked examples, Testing Tools, When to Use This Skill
+
+### Community 91 - "Key Patterns"
+Cohesion: 0.29
+Nodes (6): design-system-patterns — detailed patterns and worked examples, Key Patterns, Pattern 1: Token Hierarchy, Pattern 2: Theme Switching with React, Pattern 3: Variant System with CVA, Pattern 4: Style Dictionary Configuration
+
+### Community 92 - "Android Mobile Design"
+Cohesion: 0.29
+Nodes (6): Android Mobile Design, Best Practices, Common Issues, Detailed section: Core Concepts, Quick Start Component, When to Use This Skill
+
+### Community 93 - "React Native Design"
+Cohesion: 0.29
+Nodes (6): Best Practices, Common Issues, Detailed section: Core Concepts, Quick Start Component, React Native Design, When to Use This Skill
+
+### Community 94 - "package.json"
+Cohesion: 0.29
+Nodes (6): engines, node, name, private, type, version
+
+### Community 95 - "Node.js Backend Patterns"
+Cohesion: 0.33
+Nodes (5): Best Practices, Detailed patterns and worked examples, Node.js Backend Patterns, Testing Patterns, When to Use This Skill
+
+### Community 96 - "TDD Red Phase"
+Cohesion: 0.33
+Nodes (5): CRITICAL BEHAVIORAL RULES, Edge Case Categories, TDD Red Phase, Test Generation Process, Validation
+
+### Community 97 - "Responsive Design"
+Cohesion: 0.33
+Nodes (5): Best Practices, Common Issues, Detailed patterns and worked examples, Responsive Design, When to Use This Skill
+
+### Community 98 - "scripts"
+Cohesion: 0.40
+Nodes (5): scripts, build, dev, lint, preview
+
+### Community 100 - "javascript-pro.md"
+Cohesion: 0.50
+Nodes (3): Approach, Focus Areas, Output
+
+### Community 101 - "typescript-pro.md"
+Cohesion: 0.50
+Nodes (3): Approach, Focus Areas, Output
+
 ## Knowledge Gaps
 - **1306 isolated node(s):** `name`, `private`, `version`, `node`, `type` (+1301 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1397 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1396 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
@@ -572,7 +572,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `name`, `private`, `version` to the rest of the system?**
   _1306 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `cn` be split into smaller, more focused modules?**
-  _Cohesion score 0.06081754735792622 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05688729874776386 - nodes in this community are weakly interconnected._
 - **Should `WCAG 2.2 Guidelines Reference` be split into smaller, more focused modules?**
   _Cohesion score 0.047619047619047616 - nodes in this community are weakly interconnected._
 - **Should `TDD Cycle Orchestrator` be split into smaller, more focused modules?**

@@ -4,6 +4,71 @@
   "graph": {},
   "nodes": [
     {
+      "id": "src_app_errorboundaryprops",
+      "label": "ErrorBoundaryProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "errorboundaryprops",
+      "source_file": "src/App.tsx",
+      "source_location": "L20"
+    },
+    {
+      "id": "src_app_errorboundarystate",
+      "label": "ErrorBoundaryState",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "errorboundarystate",
+      "source_file": "src/App.tsx",
+      "source_location": "L24"
+    },
+    {
+      "id": "src_components_modals_addbillmodal_addbillmodalprops",
+      "label": "AddBillModalProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addbillmodalprops",
+      "source_file": "src/components/modals/AddBillModal.tsx",
+      "source_location": "L11"
+    },
+    {
+      "id": "src_components_modals_addexpensemodal_addexpensemodalprops",
+      "label": "AddExpenseModalProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addexpensemodalprops",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L11"
+    },
+    {
+      "id": "src_components_modals_addmoneymodal_addmoneymodalprops",
+      "label": "AddMoneyModalProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addmoneymodalprops",
+      "source_file": "src/components/modals/AddMoneyModal.tsx",
+      "source_location": "L11"
+    },
+    {
       "id": "src_components_modals_addpersonmodal_addpersonmodalprops",
       "label": "AddPersonModalProps",
       "_callable": true,
@@ -28,6 +93,32 @@
       "norm_label": "confirmmodalprops",
       "source_file": "src/components/modals/ConfirmModal.tsx",
       "source_location": "L6"
+    },
+    {
+      "id": "src_components_modals_edittransactionmodal_edittransactionmodalprops",
+      "label": "EditTransactionModalProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "edittransactionmodalprops",
+      "source_file": "src/components/modals/EditTransactionModal.tsx",
+      "source_location": "L10"
+    },
+    {
+      "id": "src_components_modals_persontransactionmodal_persontransactionmodalprops",
+      "label": "PersonTransactionModalProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "persontransactionmodalprops",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
+      "source_location": "L11"
     },
     {
       "id": "src_components_modals_settlemodal_settlemodalprops",
@@ -108,6 +199,84 @@
       "source_location": "L4"
     },
     {
+      "id": "src_components_ui_installprompt_promptstate",
+      "label": "PromptState",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "promptstate",
+      "source_file": "src/components/ui/InstallPrompt.tsx",
+      "source_location": "L8"
+    },
+    {
+      "id": "src_features_budget_budgetengine_budgetconfig",
+      "label": "BudgetConfig",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "budgetconfig",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "src_features_budget_budgetengine_budgetstats",
+      "label": "BudgetStats",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "budgetstats",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "src_features_budget_budgetengine_dailybudgetstat",
+      "label": "DailyBudgetStat",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "dailybudgetstat",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "src_features_budget_budgetengine_transaction",
+      "label": "Transaction",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "transaction",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "src_features_budget_budgetengine_transactiontype",
+      "label": "TransactionType",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "transactiontype",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L3"
+    },
+    {
       "id": "src_pages_transactions_filtertype",
       "label": "FilterType",
       "_callable": true,
@@ -147,6 +316,32 @@
       "source_location": "L6"
     },
     {
+      "id": "src_store_usestore_appstate",
+      "label": "AppState",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "appstate",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "src_store_usestore_person",
+      "label": "Person",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "person",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L7"
+    },
+    {
       "id": "src_utils_categoryhelpers_categorymeta",
       "label": "CategoryMeta",
       "_callable": true,
@@ -160,196 +355,89 @@
       "source_location": "L3"
     },
     {
-      "id": "src_app_errorboundaryprops",
-      "label": "ErrorBoundaryProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "errorboundaryprops",
-      "source_file": "src/App.tsx",
-      "source_location": "L20"
-    },
-    {
-      "id": "src_app_errorboundarystate",
-      "label": "ErrorBoundaryState",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "errorboundarystate",
-      "source_file": "src/App.tsx",
-      "source_location": "L24"
-    },
-    {
-      "id": "src_components_modals_addbillmodal_addbillmodalprops",
-      "label": "AddBillModalProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "addbillmodalprops",
-      "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L11"
-    },
-    {
-      "id": "src_components_modals_addexpensemodal_addexpensemodalprops",
-      "label": "AddExpenseModalProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "addexpensemodalprops",
-      "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L11"
-    },
-    {
-      "id": "src_components_modals_addmoneymodal_addmoneymodalprops",
-      "label": "AddMoneyModalProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "addmoneymodalprops",
-      "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L11"
-    },
-    {
-      "id": "src_components_modals_edittransactionmodal_edittransactionmodalprops",
-      "label": "EditTransactionModalProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "edittransactionmodalprops",
-      "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L10"
-    },
-    {
-      "id": "src_components_modals_persontransactionmodal_persontransactionmodalprops",
-      "label": "PersonTransactionModalProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "persontransactionmodalprops",
-      "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L11"
-    },
-    {
-      "id": "src_components_ui_installprompt_promptstate",
-      "label": "PromptState",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "promptstate",
-      "source_file": "src/components/ui/InstallPrompt.tsx",
-      "source_location": "L8"
-    },
-    {
-      "id": "src_features_budget_budgetengine_budgetconfig",
-      "label": "BudgetConfig",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "budgetconfig",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L21"
-    },
-    {
-      "id": "src_features_budget_budgetengine_budgetstats",
-      "label": "BudgetStats",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "budgetstats",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L40"
-    },
-    {
-      "id": "src_features_budget_budgetengine_dailybudgetstat",
-      "label": "DailyBudgetStat",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "dailybudgetstat",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L29"
-    },
-    {
-      "id": "src_features_budget_budgetengine_transaction",
-      "label": "Transaction",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "transaction",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L5"
-    },
-    {
-      "id": "src_features_budget_budgetengine_transactiontype",
-      "label": "TransactionType",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "transactiontype",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L3"
-    },
-    {
-      "id": "src_store_usestore_appstate",
-      "label": "AppState",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "appstate",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L14"
-    },
-    {
-      "id": "src_store_usestore_person",
-      "label": "Person",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "person",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L7"
-    },
-    {
       "id": "src_app_errorboundary",
       "label": "ErrorBoundary",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 99,
+      "community_name": "ErrorBoundary",
       "file_type": "code",
       "norm_label": "errorboundary",
       "source_file": "src/App.tsx",
       "source_location": "L29"
+    },
+    {
+      "id": "src_app_app",
+      "label": "App()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "app()",
+      "source_file": "src/App.tsx",
+      "source_location": "L145"
+    },
+    {
+      "id": "src_app_appcontent",
+      "label": "AppContent()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "appcontent()",
+      "source_file": "src/App.tsx",
+      "source_location": "L72"
+    },
+    {
+      "id": "src_components_layout_applayout_applayout",
+      "label": "AppLayout()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "applayout()",
+      "source_file": "src/components/layout/AppLayout.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "src_components_modals_addbillmodal_addbillmodal",
+      "label": "AddBillModal()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addbillmodal()",
+      "source_file": "src/components/modals/AddBillModal.tsx",
+      "source_location": "L16"
+    },
+    {
+      "id": "src_components_modals_addexpensemodal_addexpensemodal",
+      "label": "AddExpenseModal()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addexpensemodal()",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L16"
+    },
+    {
+      "id": "src_components_modals_addmoneymodal_addmoneymodal",
+      "label": "AddMoneyModal()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addmoneymodal()",
+      "source_file": "src/components/modals/AddMoneyModal.tsx",
+      "source_location": "L16"
     },
     {
       "id": "src_components_modals_addpersonmodal_addpersonmodal",
@@ -374,6 +462,30 @@
       "norm_label": "confirmmodal()",
       "source_file": "src/components/modals/ConfirmModal.tsx",
       "source_location": "L21"
+    },
+    {
+      "id": "src_components_modals_edittransactionmodal_edittransactionmodal",
+      "label": "EditTransactionModal()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "edittransactionmodal()",
+      "source_file": "src/components/modals/EditTransactionModal.tsx",
+      "source_location": "L16"
+    },
+    {
+      "id": "src_components_modals_persontransactionmodal_persontransactionmodal",
+      "label": "PersonTransactionModal()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "persontransactionmodal()",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
+      "source_location": "L18"
     },
     {
       "id": "src_components_modals_settlemodal_settlemodal",
@@ -446,6 +558,78 @@
       "norm_label": "iconbadge()",
       "source_file": "src/components/ui/IconBadge.tsx",
       "source_location": "L12"
+    },
+    {
+      "id": "src_components_ui_installprompt_installprompt",
+      "label": "InstallPrompt()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "installprompt()",
+      "source_file": "src/components/ui/InstallPrompt.tsx",
+      "source_location": "L21"
+    },
+    {
+      "id": "src_components_ui_installprompt_safewritestorage",
+      "label": "safeWriteStorage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "safewritestorage()",
+      "source_file": "src/components/ui/InstallPrompt.tsx",
+      "source_location": "L13"
+    },
+    {
+      "id": "src_components_ui_liveclock_liveclock",
+      "label": "LiveClock()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "liveclock()",
+      "source_file": "src/components/ui/LiveClock.tsx",
+      "source_location": "L4"
+    },
+    {
+      "id": "src_features_budget_budgetengine_calculatebudget",
+      "label": "calculateBudget()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "calculatebudget()",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L59"
+    },
+    {
+      "id": "src_hooks_usecurrentdate_usecurrentdate",
+      "label": "useCurrentDate()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "usecurrentdate()",
+      "source_file": "src/hooks/useCurrentDate.ts",
+      "source_location": "L3"
+    },
+    {
+      "id": "src_hooks_usemonthrollover_usemonthrollover",
+      "label": "useMonthRollover()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "usemonthrollover()",
+      "source_file": "src/hooks/useMonthRollover.ts",
+      "source_location": "L5"
     },
     {
       "id": "src_lib_supabasesync_addpersontosupabase",
@@ -568,6 +752,54 @@
       "source_location": "L9"
     },
     {
+      "id": "src_pages_dashboard_dashboard",
+      "label": "Dashboard()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "dashboard()",
+      "source_file": "src/pages/Dashboard.tsx",
+      "source_location": "L27"
+    },
+    {
+      "id": "src_pages_insights_formatcurrency",
+      "label": "formatCurrency()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "formatcurrency()",
+      "source_file": "src/pages/Insights.tsx",
+      "source_location": "L41"
+    },
+    {
+      "id": "src_pages_insights_getcategoryicon",
+      "label": "getCategoryIcon()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "getcategoryicon()",
+      "source_file": "src/pages/Insights.tsx",
+      "source_location": "L29"
+    },
+    {
+      "id": "src_pages_insights_insights",
+      "label": "Insights()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "insights()",
+      "source_file": "src/pages/Insights.tsx",
+      "source_location": "L229"
+    },
+    {
       "id": "src_pages_people_people",
       "label": "People()",
       "_callable": true,
@@ -604,6 +836,18 @@
       "source_location": "L13"
     },
     {
+      "id": "src_pages_settings_settings",
+      "label": "Settings()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "settings()",
+      "source_file": "src/pages/Settings.tsx",
+      "source_location": "L19"
+    },
+    {
       "id": "src_pages_transactions_transactions",
       "label": "Transactions()",
       "_callable": true,
@@ -626,6 +870,42 @@
       "norm_label": "fetchandsetprofile()",
       "source_file": "src/store/useAuthStore.ts",
       "source_location": "L31"
+    },
+    {
+      "id": "src_store_usestore_calculatepersonbalance",
+      "label": "calculatePersonBalance()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "calculatepersonbalance()",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "src_store_usestore_generateid",
+      "label": "generateId()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "generateid()",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L71"
+    },
+    {
+      "id": "src_store_usestore_getbudgetdatesfordate",
+      "label": "getBudgetDatesForDate()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "getbudgetdatesfordate()",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L56"
     },
     {
       "id": "src_utils_categoryhelpers_getcategorymeta",
@@ -652,253 +932,12 @@
       "source_location": "L4"
     },
     {
-      "id": "src_app_app",
-      "label": "App()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "app()",
-      "source_file": "src/App.tsx",
-      "source_location": "L145"
-    },
-    {
-      "id": "src_app_appcontent",
-      "label": "AppContent()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "appcontent()",
-      "source_file": "src/App.tsx",
-      "source_location": "L72"
-    },
-    {
-      "id": "src_components_layout_applayout_applayout",
-      "label": "AppLayout()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "applayout()",
-      "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L17"
-    },
-    {
-      "id": "src_components_modals_addbillmodal_addbillmodal",
-      "label": "AddBillModal()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "addbillmodal()",
-      "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L16"
-    },
-    {
-      "id": "src_components_modals_addexpensemodal_addexpensemodal",
-      "label": "AddExpenseModal()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "addexpensemodal()",
-      "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L16"
-    },
-    {
-      "id": "src_components_modals_addmoneymodal_addmoneymodal",
-      "label": "AddMoneyModal()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "addmoneymodal()",
-      "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L16"
-    },
-    {
-      "id": "src_components_modals_edittransactionmodal_edittransactionmodal",
-      "label": "EditTransactionModal()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "edittransactionmodal()",
-      "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L16"
-    },
-    {
-      "id": "src_components_modals_persontransactionmodal_persontransactionmodal",
-      "label": "PersonTransactionModal()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "persontransactionmodal()",
-      "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L18"
-    },
-    {
-      "id": "src_components_ui_installprompt_installprompt",
-      "label": "InstallPrompt()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "installprompt()",
-      "source_file": "src/components/ui/InstallPrompt.tsx",
-      "source_location": "L21"
-    },
-    {
-      "id": "src_components_ui_installprompt_safewritestorage",
-      "label": "safeWriteStorage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "safewritestorage()",
-      "source_file": "src/components/ui/InstallPrompt.tsx",
-      "source_location": "L13"
-    },
-    {
-      "id": "src_components_ui_liveclock_liveclock",
-      "label": "LiveClock()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "liveclock()",
-      "source_file": "src/components/ui/LiveClock.tsx",
-      "source_location": "L4"
-    },
-    {
-      "id": "src_features_budget_budgetengine_calculatebudget",
-      "label": "calculateBudget()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "calculatebudget()",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L59"
-    },
-    {
-      "id": "src_hooks_usecurrentdate_usecurrentdate",
-      "label": "useCurrentDate()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "usecurrentdate()",
-      "source_file": "src/hooks/useCurrentDate.ts",
-      "source_location": "L3"
-    },
-    {
-      "id": "src_hooks_usemonthrollover_usemonthrollover",
-      "label": "useMonthRollover()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "usemonthrollover()",
-      "source_file": "src/hooks/useMonthRollover.ts",
-      "source_location": "L5"
-    },
-    {
-      "id": "src_pages_dashboard_dashboard",
-      "label": "Dashboard()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "dashboard()",
-      "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L27"
-    },
-    {
-      "id": "src_pages_insights_formatcurrency",
-      "label": "formatCurrency()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "formatcurrency()",
-      "source_file": "src/pages/Insights.tsx",
-      "source_location": "L41"
-    },
-    {
-      "id": "src_pages_insights_getcategoryicon",
-      "label": "getCategoryIcon()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "getcategoryicon()",
-      "source_file": "src/pages/Insights.tsx",
-      "source_location": "L29"
-    },
-    {
-      "id": "src_pages_insights_insights",
-      "label": "Insights()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "insights()",
-      "source_file": "src/pages/Insights.tsx",
-      "source_location": "L237"
-    },
-    {
-      "id": "src_pages_settings_settings",
-      "label": "Settings()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "settings()",
-      "source_file": "src/pages/Settings.tsx",
-      "source_location": "L19"
-    },
-    {
-      "id": "src_store_usestore_calculatepersonbalance",
-      "label": "calculatePersonBalance()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "calculatepersonbalance()",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L62"
-    },
-    {
-      "id": "src_store_usestore_generateid",
-      "label": "generateId()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "generateid()",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L71"
-    },
-    {
-      "id": "src_store_usestore_getbudgetdatesfordate",
-      "label": "getBudgetDatesForDate()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "getbudgetdatesfordate()",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L56"
-    },
-    {
       "id": "src_utils_dateutils_gettodaydatestring",
       "label": "getTodayDateString()",
       "_callable": true,
       "_origin": "ast",
       "community": 0,
+      "community_name": "cn",
       "file_type": "code",
       "norm_label": "gettodaydatestring()",
       "source_file": "src/utils/dateUtils.ts",
@@ -910,6 +949,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 0,
+      "community_name": "cn",
       "file_type": "code",
       "norm_label": "parselocaldate()",
       "source_file": "src/utils/dateUtils.ts",
@@ -933,6 +973,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 99,
+      "community_name": "ErrorBoundary",
       "file_type": "code",
       "norm_label": ".componentdidcatch()",
       "source_file": "src/App.tsx",
@@ -944,6 +985,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 99,
+      "community_name": "ErrorBoundary",
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "src/App.tsx",
@@ -955,6 +997,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 99,
+      "community_name": "ErrorBoundary",
       "file_type": "code",
       "norm_label": ".getderivedstatefromerror()",
       "source_file": "src/App.tsx",
@@ -966,10 +1009,77 @@
       "_callable": true,
       "_origin": "ast",
       "community": 99,
+      "community_name": "ErrorBoundary",
       "file_type": "code",
       "norm_label": ".render()",
       "source_file": "src/App.tsx",
       "source_location": "L43"
+    },
+    {
+      "id": "src_app",
+      "label": "App.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "app.tsx",
+      "source_file": "src/App.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_layout_applayout",
+      "label": "AppLayout.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "applayout.tsx",
+      "source_file": "src/components/layout/AppLayout.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_layout_applayout_navitems",
+      "label": "navItems",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "navitems",
+      "source_file": "src/components/layout/AppLayout.tsx",
+      "source_location": "L9"
+    },
+    {
+      "id": "src_components_modals_addbillmodal",
+      "label": "AddBillModal.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addbillmodal.tsx",
+      "source_file": "src/components/modals/AddBillModal.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_modals_addexpensemodal",
+      "label": "AddExpenseModal.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addexpensemodal.tsx",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_modals_addmoneymodal",
+      "label": "AddMoneyModal.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addmoneymodal.tsx",
+      "source_file": "src/components/modals/AddMoneyModal.tsx",
+      "source_location": "L1"
     },
     {
       "id": "src_components_modals_addpersonmodal",
@@ -991,6 +1101,28 @@
       "file_type": "code",
       "norm_label": "confirmmodal.tsx",
       "source_file": "src/components/modals/ConfirmModal.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_modals_edittransactionmodal",
+      "label": "EditTransactionModal.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "edittransactionmodal.tsx",
+      "source_file": "src/components/modals/EditTransactionModal.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_modals_persontransactionmodal",
+      "label": "PersonTransactionModal.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "persontransactionmodal.tsx",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
       "source_location": "L1"
     },
     {
@@ -1082,6 +1214,61 @@
       "source_location": "L9"
     },
     {
+      "id": "src_components_ui_installprompt",
+      "label": "InstallPrompt.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "installprompt.tsx",
+      "source_file": "src/components/ui/InstallPrompt.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_ui_liveclock",
+      "label": "LiveClock.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "liveclock.tsx",
+      "source_file": "src/components/ui/LiveClock.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_features_budget_budgetengine",
+      "label": "budgetEngine.ts",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "budgetengine.ts",
+      "source_file": "src/features/budget/budgetEngine.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_hooks_usecurrentdate",
+      "label": "useCurrentDate.ts",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "usecurrentdate.ts",
+      "source_file": "src/hooks/useCurrentDate.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_hooks_usemonthrollover",
+      "label": "useMonthRollover.ts",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "usemonthrollover.ts",
+      "source_file": "src/hooks/useMonthRollover.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "src_lib_supabase",
       "label": "supabase.ts",
       "_origin": "ast",
@@ -1137,6 +1324,39 @@
       "source_location": "L1"
     },
     {
+      "id": "src_pages_dashboard",
+      "label": "Dashboard.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "dashboard.tsx",
+      "source_file": "src/pages/Dashboard.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_pages_insights",
+      "label": "Insights.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "insights.tsx",
+      "source_file": "src/pages/Insights.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_pages_insights_burndownchart",
+      "label": "BurnDownChart",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "burndownchart",
+      "source_file": "src/pages/Insights.tsx",
+      "source_location": "L44"
+    },
+    {
       "id": "src_pages_people",
       "label": "People.tsx",
       "_origin": "ast",
@@ -1167,6 +1387,17 @@
       "file_type": "code",
       "norm_label": "profile.tsx",
       "source_file": "src/pages/Profile.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_pages_settings",
+      "label": "Settings.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "settings.tsx",
+      "source_file": "src/pages/Settings.tsx",
       "source_location": "L1"
     },
     {
@@ -1201,6 +1432,50 @@
       "norm_label": "useauthstore",
       "source_file": "src/store/useAuthStore.ts",
       "source_location": "L65"
+    },
+    {
+      "id": "src_store_usestore",
+      "label": "useStore.ts",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "usestore.ts",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_store_usestore_defaultconfig",
+      "label": "defaultConfig",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "defaultconfig",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "src_store_usestore_start_monthstart_end_monthend",
+      "label": "{ start: monthStart, end: monthEnd }",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "{ start: monthstart, end: monthend }",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L68"
+    },
+    {
+      "id": "src_store_usestore_usestore",
+      "label": "useStore",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "usestore",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L91"
     },
     {
       "id": "src_utils_categoryhelpers",
@@ -1258,231 +1533,11 @@
       "source_location": "L1"
     },
     {
-      "id": "src_lib_supabasesync_rationale_332",
-      "label": "NOTE: If you add new user-owned tables, add them to the `tables` array below.",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "cn",
-      "file_type": "rationale",
-      "norm_label": "note: if you add new user-owned tables, add them to the `tables` array below.",
-      "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L332"
-    },
-    {
-      "id": "src_app",
-      "label": "App.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "app.tsx",
-      "source_file": "src/App.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_layout_applayout",
-      "label": "AppLayout.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "applayout.tsx",
-      "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_layout_applayout_navitems",
-      "label": "navItems",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "navitems",
-      "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L9"
-    },
-    {
-      "id": "src_components_modals_addbillmodal",
-      "label": "AddBillModal.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "addbillmodal.tsx",
-      "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_modals_addexpensemodal",
-      "label": "AddExpenseModal.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "addexpensemodal.tsx",
-      "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_modals_addmoneymodal",
-      "label": "AddMoneyModal.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "addmoneymodal.tsx",
-      "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_modals_edittransactionmodal",
-      "label": "EditTransactionModal.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "edittransactionmodal.tsx",
-      "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_modals_persontransactionmodal",
-      "label": "PersonTransactionModal.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "persontransactionmodal.tsx",
-      "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_ui_installprompt",
-      "label": "InstallPrompt.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "installprompt.tsx",
-      "source_file": "src/components/ui/InstallPrompt.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_components_ui_liveclock",
-      "label": "LiveClock.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "liveclock.tsx",
-      "source_file": "src/components/ui/LiveClock.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_features_budget_budgetengine",
-      "label": "budgetEngine.ts",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "budgetengine.ts",
-      "source_file": "src/features/budget/budgetEngine.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_hooks_usecurrentdate",
-      "label": "useCurrentDate.ts",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "usecurrentdate.ts",
-      "source_file": "src/hooks/useCurrentDate.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_hooks_usemonthrollover",
-      "label": "useMonthRollover.ts",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "usemonthrollover.ts",
-      "source_file": "src/hooks/useMonthRollover.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_pages_dashboard",
-      "label": "Dashboard.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "dashboard.tsx",
-      "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_pages_insights",
-      "label": "Insights.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "insights.tsx",
-      "source_file": "src/pages/Insights.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_pages_insights_burndownchart",
-      "label": "BurnDownChart",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "burndownchart",
-      "source_file": "src/pages/Insights.tsx",
-      "source_location": "L44"
-    },
-    {
-      "id": "src_pages_settings",
-      "label": "Settings.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "settings.tsx",
-      "source_file": "src/pages/Settings.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_store_usestore",
-      "label": "useStore.ts",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "usestore.ts",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_store_usestore_defaultconfig",
-      "label": "defaultConfig",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "defaultconfig",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L83"
-    },
-    {
-      "id": "src_store_usestore_start_monthstart_end_monthend",
-      "label": "{ start: monthStart, end: monthEnd }",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "{ start: monthstart, end: monthend }",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L68"
-    },
-    {
-      "id": "src_store_usestore_usestore",
-      "label": "useStore",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "usestore",
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L91"
-    },
-    {
       "id": "src_utils_dateutils",
       "label": "dateUtils.ts",
       "_origin": "ast",
       "community": 0,
+      "community_name": "cn",
       "file_type": "code",
       "norm_label": "dateutils.ts",
       "source_file": "src/utils/dateUtils.ts",
@@ -1493,6 +1548,7 @@
       "label": "budgetEngine.test.ts",
       "_origin": "ast",
       "community": 0,
+      "community_name": "cn",
       "file_type": "code",
       "norm_label": "budgetengine.test.ts",
       "source_file": "tests/budget/budgetEngine.test.ts",
@@ -1503,9 +1559,21 @@
       "label": "comprehensiveEngine.test.ts",
       "_origin": "ast",
       "community": 0,
+      "community_name": "cn",
       "file_type": "code",
       "norm_label": "comprehensiveengine.test.ts",
       "source_file": "tests/budget/comprehensiveEngine.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_insights_insightsperiodscope_test",
+      "label": "insightsPeriodScope.test.ts",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "insightsperiodscope.test.ts",
+      "source_file": "tests/insights/insightsPeriodScope.test.ts",
       "source_location": "L1"
     },
     {
@@ -1513,6 +1581,7 @@
       "label": "store.test.ts",
       "_origin": "ast",
       "community": 0,
+      "community_name": "cn",
       "file_type": "code",
       "norm_label": "store.test.ts",
       "source_file": "tests/integration/store.test.ts",
@@ -1523,10 +1592,22 @@
       "label": "localStorageMock",
       "_origin": "ast",
       "community": 0,
+      "community_name": "cn",
       "file_type": "code",
       "norm_label": "localstoragemock",
       "source_file": "tests/integration/store.test.ts",
       "source_location": "L39"
+    },
+    {
+      "id": "src_lib_supabasesync_rationale_332",
+      "label": "NOTE: If you add new user-owned tables, add them to the `tables` array below.",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "rationale",
+      "norm_label": "note: if you add new user-owned tables, add them to the `tables` array below.",
+      "source_file": "src/lib/supabaseSync.ts",
+      "source_location": "L332"
     },
     {
       "id": "agents_plugins_ui_design_skills_accessibility_compliance_references_wcag_guidelines",
@@ -4159,6 +4240,18 @@
       "source_location": "L694"
     },
     {
+      "id": "agents_plugins_code_documentation_commands_code_explain_bad_732",
+      "label": "Bad",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "code-explain.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "bad",
+      "source_file": ".agents/plugins/code-documentation/commands/code-explain.md",
+      "source_location": "L732"
+    },
+    {
       "id": "agents_plugins_code_documentation_commands_code_explain_code_explanation_and_analysis",
       "label": "Code Explanation and Analysis",
       "_origin": "ast",
@@ -4205,6 +4298,18 @@
       "norm_label": "good",
       "source_file": ".agents/plugins/code-documentation/commands/code-explain.md",
       "source_location": "L700"
+    },
+    {
+      "id": "agents_plugins_code_documentation_commands_code_explain_good_738",
+      "label": "Good",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "code-explain.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "good",
+      "source_file": ".agents/plugins/code-documentation/commands/code-explain.md",
+      "source_location": "L738"
     },
     {
       "id": "agents_plugins_code_documentation_commands_code_explain_instructions",
@@ -21124,6 +21229,7 @@
       "label": "manifest.json",
       "_origin": "ast",
       "community": 82,
+      "community_name": "manifest.json",
       "file_type": "code",
       "norm_label": "manifest.json",
       "source_file": "public/manifest.json",
@@ -21134,6 +21240,7 @@
       "label": "background_color",
       "_origin": "ast",
       "community": 82,
+      "community_name": "manifest.json",
       "file_type": "code",
       "norm_label": "background_color",
       "source_file": "public/manifest.json",
@@ -21144,6 +21251,7 @@
       "label": "description",
       "_origin": "ast",
       "community": 82,
+      "community_name": "manifest.json",
       "file_type": "code",
       "norm_label": "description",
       "source_file": "public/manifest.json",
@@ -21154,6 +21262,7 @@
       "label": "display",
       "_origin": "ast",
       "community": 82,
+      "community_name": "manifest.json",
       "file_type": "code",
       "norm_label": "display",
       "source_file": "public/manifest.json",
@@ -21164,6 +21273,7 @@
       "label": "icons",
       "_origin": "ast",
       "community": 82,
+      "community_name": "manifest.json",
       "file_type": "code",
       "norm_label": "icons",
       "source_file": "public/manifest.json",
@@ -21174,6 +21284,7 @@
       "label": "name",
       "_origin": "ast",
       "community": 82,
+      "community_name": "manifest.json",
       "file_type": "code",
       "norm_label": "name",
       "source_file": "public/manifest.json",
@@ -21184,6 +21295,7 @@
       "label": "short_name",
       "_origin": "ast",
       "community": 82,
+      "community_name": "manifest.json",
       "file_type": "code",
       "norm_label": "short_name",
       "source_file": "public/manifest.json",
@@ -21194,6 +21306,7 @@
       "label": "start_url",
       "_origin": "ast",
       "community": 82,
+      "community_name": "manifest.json",
       "file_type": "code",
       "norm_label": "start_url",
       "source_file": "public/manifest.json",
@@ -21204,6 +21317,7 @@
       "label": "theme_color",
       "_origin": "ast",
       "community": 82,
+      "community_name": "manifest.json",
       "file_type": "code",
       "norm_label": "theme_color",
       "source_file": "public/manifest.json",
@@ -23497,7 +23611,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L172",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -23509,7 +23623,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L185",
+      "source_location": "L177",
       "weight": 1.0
     },
     {
@@ -23521,7 +23635,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L238",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
@@ -23533,7 +23647,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L239",
+      "source_location": "L231",
       "weight": 1.0
     },
     {
@@ -23545,7 +23659,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L240",
+      "source_location": "L243",
       "weight": 1.0
     },
     {
@@ -23557,7 +23671,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L251",
+      "source_location": "L306",
       "weight": 1.0
     },
     {
@@ -23569,7 +23683,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L313",
+      "source_location": "L396",
       "weight": 1.0
     },
     {
@@ -23581,7 +23695,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L426",
+      "source_location": "L513",
       "weight": 1.0
     },
     {
@@ -26129,6 +26243,42 @@
       "weight": 1.0
     },
     {
+      "source": "tests_insights_insightsperiodscope_test",
+      "target": "src_features_budget_budgetengine_budgetconfig",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/insights/insightsPeriodScope.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_insights_insightsperiodscope_test",
+      "target": "src_features_budget_budgetengine_calculatebudget",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/insights/insightsPeriodScope.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_insights_insightsperiodscope_test",
+      "target": "src_features_budget_budgetengine_transaction",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/insights/insightsPeriodScope.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
       "source": "tests_integration_store_test",
       "target": "src_store_usestore_usestore",
       "relation": "imports",
@@ -27779,6 +27929,18 @@
       "weight": 1.0
     },
     {
+      "source": "tests_insights_insightsperiodscope_test",
+      "target": "src_features_budget_budgetengine",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/insights/insightsPeriodScope.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
       "source": "tests_integration_store_test",
       "target": "src_store_usestore",
       "relation": "imports_from",
@@ -28339,12 +28501,34 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": ".agents/plugins/code-documentation/commands/code-explain.md",
-      "source_location": "L732",
+      "source_location": "L694",
       "weight": 1.0
     },
     {
       "source": "agents_plugins_code_documentation_commands_code_explain",
       "target": "agents_plugins_code_documentation_commands_code_explain_good",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/plugins/code-documentation/commands/code-explain.md",
+      "source_location": "L700",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_plugins_code_documentation_commands_code_explain",
+      "target": "agents_plugins_code_documentation_commands_code_explain_bad_732",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/plugins/code-documentation/commands/code-explain.md",
+      "source_location": "L732",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_plugins_code_documentation_commands_code_explain",
+      "target": "agents_plugins_code_documentation_commands_code_explain_good_738",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28387,7 +28571,7 @@
       "weight": 1.0
     },
     {
-      "source": "agents_plugins_code_documentation_commands_code_explain_good",
+      "source": "agents_plugins_code_documentation_commands_code_explain_good_738",
       "target": "agents_plugins_code_documentation_commands_code_explain_8_learning_path_recommendations",
       "relation": "contains",
       "_origin": "ast",
@@ -28398,7 +28582,7 @@
       "weight": 1.0
     },
     {
-      "source": "agents_plugins_code_documentation_commands_code_explain_good",
+      "source": "agents_plugins_code_documentation_commands_code_explain_good_738",
       "target": "agents_plugins_code_documentation_commands_code_explain_output_format",
       "relation": "contains",
       "_origin": "ast",
@@ -46093,7 +46277,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L237",
+      "source_location": "L229",
       "weight": 1.0
     },
     {
@@ -46934,5 +47118,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "936dd257aabcc9faf7dc679cf4d33178b3a991ef"
+  "built_at_commit": "e21c303ade07fd82aa16a1d8b0a7580ec13cf675"
 }

@@ -156,10 +156,10 @@
     "semantic_hash": "adad88813c840af0d6a0e4393809d91d"
   },
   "src/pages/Insights.tsx": {
-    "mtime": 1788217907.321563,
-    "seen": 1788217925.9423661,
-    "ast_hash": "f4e8c3461de26157a3a617d1168d5ec3",
-    "semantic_hash": "f4e8c3461de26157a3a617d1168d5ec3"
+    "mtime": 1788271600.3727033,
+    "seen": 1788271615.8286912,
+    "ast_hash": "e9f8268260bc7389103b01d4b2b3d558",
+    "semantic_hash": ""
   },
   "src/pages/People.tsx": {
     "mtime": 1788195399.8831162,
@@ -1000,5 +1000,11 @@
     "seen": 1788217925.9428318,
     "ast_hash": "ac049ffbd7f8db00783a9185e9f9a00e",
     "semantic_hash": "ac049ffbd7f8db00783a9185e9f9a00e"
+  },
+  "tests/insights/insightsPeriodScope.test.ts": {
+    "mtime": 1788218604.052712,
+    "seen": 1788271136.2660322,
+    "ast_hash": "5faec68da7b083afae7d44866ef7e0f3",
+    "semantic_hash": ""
   }
 }

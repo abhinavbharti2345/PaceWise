@@ -65,8 +65,8 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
     if (stats.dailyStats.length === 0) return 'M 0 100';
     const points = stats.dailyStats.map((s: any) => [getX(s.dayIndex - 1), getY(s.cumulativeIdealSpent)]);
 
-    let path = `M ${points[0][0]} ${points[0][1]}`;
-    for (let i = 1; i < points.length; i++) {
+    let path = `M 0 100`;
+    for (let i = 0; i < points.length; i++) {
       path += ` L ${points[i][0]} ${points[i][1]}`;
     }
     return path;
@@ -77,11 +77,9 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
     if (pastStats.length === 0) return 'M 0 100';
     const points = pastStats.map((s: any) => [getX(s.dayIndex - 1), getY(s.cumulativeDiscretionarySpent)]);
 
-    if (points.length === 1) return `M ${points[0][0]} ${points[0][1]}`;
-
-    let path = `M ${points[0][0]} ${points[0][1]}`;
-    for (let i = 1; i < points.length; i++) {
-      path += ` L ${points[i][0]} ${points[i][1]}`; // Use straight lines for cumulative graphs to prevent bezier overshoot
+    let path = `M 0 100`;
+    for (let i = 0; i < points.length; i++) {
+      path += ` L ${points[i][0]} ${points[i][1]}`;
     }
     return path;
   }, [pastStats, getX, getY]);
@@ -253,16 +251,20 @@ export function Insights() {
       start = startOfDay(new Date(now.getFullYear(), now.getMonth(), diff));
       end = startOfDay(new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6));
 
-      const monthDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-      const proratedMoney = (config.totalMoney / monthDays) * 7;
+      const currentStats = calculateBudget(config, transactions, todayDateStr);
+      const totalMoneyLeft = currentStats.effectiveTotalBudget - currentStats.totalDiscretionarySpent;
+      const daysLeft = currentStats.daysRemaining;
+      const weeksLeft = daysLeft > 0 ? daysLeft / 7 : 0;
+      const weeklyIdeal = weeksLeft > 0 ? totalMoneyLeft / weeksLeft : 0;
 
       const syntheticConfig = {
         ...config,
-        totalMoney: proratedMoney,
+        totalMoney: weeklyIdeal,
         startDate: start.toISOString(),
         endDate: end.toISOString()
       };
-      const calculatedStats = calculateBudget(syntheticConfig, transactions, todayDateStr);
+      const weeklyTransactions = transactions.filter(t => t.type !== 'income' && t.type !== 'bill');
+      const calculatedStats = calculateBudget(syntheticConfig, weeklyTransactions, todayDateStr);
       return { stats: calculatedStats, activeDateRange: { start, end } };
     }
 
