@@ -13,7 +13,7 @@ describe('Insights Period Scoping & Isolation Tests', () => {
     { id: '1', type: 'expense', amount: 300, category: 'Food', date: '2026-09-05T12:00:00Z', reason: 'Lunch' },
     { id: '2', type: 'expense', amount: 200, category: 'Food', date: '2026-09-10T12:00:00Z', reason: 'Dinner' },
     { id: '3', type: 'expense', amount: 500, category: 'Transport', date: '2026-09-15T12:00:00Z', reason: 'Flight' },
-    
+
     // Past period expenses (Aug 2026) - SHOULD BE EXCLUDED from Sep analytics
     { id: '4', type: 'expense', amount: 2500, category: 'Shopping', date: '2026-08-15T12:00:00Z', reason: 'Old TV' },
 
@@ -24,7 +24,7 @@ describe('Insights Period Scoping & Isolation Tests', () => {
 
   it('1. Correctly calculates totalDiscretionarySpent only for active period', () => {
     const stats = calculateBudget(baseConfig, sampleTransactions, '2026-09-15T12:00:00Z');
-    
+
     // Discretionary spend in Sep = 300 + 200 + 500 = 1000. (Aug 2500 TV and Alex lending are excluded)
     expect(stats.totalDiscretionarySpent).toBe(1000);
   });
@@ -43,7 +43,7 @@ describe('Insights Period Scoping & Isolation Tests', () => {
     expect(periodExpenses.length).toBe(3);
 
     const stats = calculateBudget(baseConfig, sampleTransactions, '2026-09-15T12:00:00Z');
-    
+
     const categoryMap = periodExpenses.reduce((acc, t) => {
       const cat = t.category || 'Other';
       acc[cat] = (acc[cat] || 0) + t.amount;
@@ -73,7 +73,7 @@ describe('Insights Period Scoping & Isolation Tests', () => {
     });
 
     const splurges = [...periodExpenses].sort((a, b) => b.amount - a.amount).slice(0, 3);
-    
+
     expect(splurges.length).toBe(3);
     expect(splurges[0].amount).toBe(500); // Flight
     expect(splurges[1].amount).toBe(300); // Lunch
@@ -92,10 +92,10 @@ describe('Insights Period Scoping & Isolation Tests', () => {
     };
 
     const augStats = calculateBudget(augConfig, sampleTransactions, '2026-08-31T23:59:59.999Z');
-    
+
     // Spent 2500 on TV -> Money left = 2500
     expect(augStats.moneyLeft).toBe(2500);
-    
+
     // For historical completed period, projected rollover equals final moneyLeft
     const isHistorical = true;
     const projectedRollover = isHistorical ? augStats.moneyLeft : augStats.moneyLeft - 0;

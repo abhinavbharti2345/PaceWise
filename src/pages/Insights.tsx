@@ -5,15 +5,15 @@ import { useCurrentDate } from '../hooks/useCurrentDate';
 import { format, startOfDay } from 'date-fns';
 import { cn } from '../utils/cn';
 import { Card, CardTitle } from '../components/ui/Card';
-import { 
-  ShieldCheck, 
-  TrendingDown, 
-  Star, 
-  Wallet, 
-  PieChart, 
-  ShoppingBag, 
-  ArrowRightLeft, 
-  Users, 
+import {
+  ShieldCheck,
+  TrendingDown,
+  Star,
+  Wallet,
+  PieChart,
+  ShoppingBag,
+  ArrowRightLeft,
+  Users,
   CalendarDays,
   Ticket,
   Smartphone,
@@ -49,22 +49,22 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
     if (stats.totalDays <= 1) return 50;
     return (index / (stats.totalDays - 1)) * 100;
   }, [stats.totalDays]);
-  
+
   const getY = React.useCallback((spent: number) => {
     if (stats.effectiveTotalBudget <= 0) return 100;
     const pct = (spent / stats.effectiveTotalBudget) * 100;
     return 100 - Math.max(0, Math.min(100, pct));
   }, [stats.effectiveTotalBudget]);
 
-  const pastStats = React.useMemo(() => 
+  const pastStats = React.useMemo(() =>
     stats.dailyStats.filter((s: any) => !s.isFuture || s.dayIndex === stats.daysPassed + 1),
-  [stats.dailyStats, stats.daysPassed]);
+    [stats.dailyStats, stats.daysPassed]);
 
   // Ideal cumulative spend line
   const idealPathD = React.useMemo(() => {
     if (stats.dailyStats.length === 0) return 'M 0 100';
     const points = stats.dailyStats.map((s: any) => [getX(s.dayIndex - 1), getY(s.cumulativeIdealSpent)]);
-    
+
     let path = `M ${points[0][0]} ${points[0][1]}`;
     for (let i = 1; i < points.length; i++) {
       path += ` L ${points[i][0]} ${points[i][1]}`;
@@ -76,7 +76,7 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
   const actualPathD = React.useMemo(() => {
     if (pastStats.length === 0) return 'M 0 100';
     const points = pastStats.map((s: any) => [getX(s.dayIndex - 1), getY(s.cumulativeDiscretionarySpent)]);
-    
+
     if (points.length === 1) return `M ${points[0][0]} ${points[0][1]}`;
 
     let path = `M ${points[0][0]} ${points[0][1]}`;
@@ -109,12 +109,12 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
       <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6 min-w-0">
         <CardTitle className="text-xs sm:text-base truncate">Spend vs Ideal Path</CardTitle>
       </div>
-      <div 
+      <div
         className="flex-grow relative min-h-[200px] rounded-b-lg border-b border-[var(--color-primary)]/30 bg-gradient-to-b from-[var(--color-primary)]/10 dark:from-[var(--color-primary)]/20 to-transparent flex items-end group/chart cursor-crosshair touch-pan-y"
         onPointerMove={handleMouseMove}
         onPointerLeave={handleMouseLeave}
       >
-        
+
         <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
           <defs>
             <linearGradient id="grad" x1="0" x2="0" y1="0" y2="1">
@@ -122,34 +122,34 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
               <stop offset="100%" stopColor="transparent"></stop>
             </linearGradient>
           </defs>
-          
+
           {/* Ideal Line (Mathematically accurate to baseDailyBudget) */}
-          <path 
-            d={idealPathD} 
-            fill="none" 
-            stroke="var(--color-gray-light)" 
-            strokeWidth="1" 
-            vectorEffect="non-scaling-stroke" 
-            strokeDasharray="4 4" 
-            opacity="0.8" 
+          <path
+            d={idealPathD}
+            fill="none"
+            stroke="var(--color-gray-light)"
+            strokeWidth="1"
+            vectorEffect="non-scaling-stroke"
+            strokeDasharray="4 4"
+            opacity="0.8"
           />
 
           {/* Actual Path Fill */}
           <path d={fillPathD} fill="url(#grad)" className="opacity-40" />
-          
+
           {/* Actual Path Stroke */}
           <path d={actualPathD} fill="none" stroke="var(--color-primary)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
         </svg>
-        
+
         {/* Today Indicator (only shown if not hovering) */}
         {hoverIndex === null && pastStats.length > 0 && (
-          <div 
+          <div
             className="absolute top-0 bottom-0 border-l border-dashed border-[var(--color-gray-light)] transition-opacity duration-200 pointer-events-none"
             style={{ left: `${getX(stats.daysPassed)}%` }}
           >
             <div className="absolute -top-6 -translate-x-1/2 bg-[var(--color-surface)] border border-[var(--color-gray-light)] px-2 py-1 rounded text-[11px] font-medium text-[var(--color-dark)] shadow-sm z-10 whitespace-nowrap">Today</div>
-            <div 
-              className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)] z-10" 
+            <div
+              className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)] z-10"
               style={{ top: `${getY(pastStats[pastStats.length - 1]?.cumulativeDiscretionarySpent || 0)}%`, transform: 'translateY(-50%)' }}
             ></div>
           </div>
@@ -157,12 +157,12 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
 
         {/* Interactive Tooltip */}
         {hoverIndex !== null && stats.dailyStats[hoverIndex] && (
-          <div 
+          <div
             className="absolute top-0 bottom-0 border-l border-solid border-[var(--color-gray-dark)] z-20 pointer-events-none transition-all duration-150 ease-out"
             style={{ left: `${getX(hoverIndex)}%` }}
           >
             {/* Tooltip Card */}
-            <div 
+            <div
               className={cn(
                 "absolute top-4 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl shadow-xl p-2.5 sm:p-3 min-w-[150px] sm:min-w-[170px] whitespace-nowrap z-30 pointer-events-none",
                 getX(hoverIndex) > 70 ? "right-2" : getX(hoverIndex) < 30 ? "left-2" : "-translate-x-1/2"
@@ -172,20 +172,20 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
                 <span>Day {stats.dailyStats[hoverIndex].dayIndex}</span>
                 <span className="text-[var(--color-gray-dark)] font-medium">{format(new Date(stats.dailyStats[hoverIndex].date), 'MMM dd')}</span>
               </div>
-              
+
               <div className="flex flex-col gap-1.5 text-[12px]">
                 <div className="flex justify-between gap-4">
                   <span className="text-[var(--color-gray-dark)]">Ideal spent</span>
                   <span className="font-medium text-[var(--color-dark)]">{formatCurrency(stats.dailyStats[hoverIndex].cumulativeIdealSpent)}</span>
                 </div>
-                
+
                 <div className="flex justify-between gap-4">
                   <span className="text-[var(--color-gray-dark)]">Spent till day</span>
                   <span className="font-semibold text-[var(--color-primary)]">
                     {stats.dailyStats[hoverIndex].isFuture ? '-' : formatCurrency(stats.dailyStats[hoverIndex].cumulativeDiscretionarySpent)}
                   </span>
                 </div>
-                
+
                 <div className="flex justify-between gap-4">
                   <span className="text-[var(--color-gray-dark)]">Spent today</span>
                   <span className="font-medium text-[var(--color-dark)]">
@@ -209,11 +209,11 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
                 })()}
               </div>
             </div>
-            
+
             {/* Point dot on line */}
             {!stats.dailyStats[hoverIndex].isFuture && (
-              <div 
-                className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-surface)] border-2 border-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] pointer-events-none transition-all duration-150 ease-out z-10" 
+              <div
+                className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-surface)] border-2 border-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] pointer-events-none transition-all duration-150 ease-out z-10"
                 style={{ top: `${getY(stats.dailyStats[hoverIndex].cumulativeDiscretionarySpent)}%`, transform: 'translateY(-50%)' }}
               ></div>
             )}
@@ -231,7 +231,7 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
 export function Insights() {
   const { config, transactions, people } = useStore();
   const todayDateStr = useCurrentDate();
-  
+
   // 'week' = This Week, 'current' = This Month, 'last1' = Last Month, 'last2' = 2 Months Ago
   const [timeFilter, setTimeFilter] = React.useState<string>('current');
 
@@ -245,39 +245,39 @@ export function Insights() {
       const calculatedStats = calculateBudget(config, transactions, todayDateStr);
       return { stats: calculatedStats, activeDateRange: { start, end } };
     }
-    
+
     if (timeFilter === 'week') {
       const now = startOfDay(new Date(todayDateStr));
       const day = now.getDay();
       const diff = now.getDate() - day + (day === 0 ? -6 : 1);
       start = startOfDay(new Date(now.getFullYear(), now.getMonth(), diff));
       end = startOfDay(new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6));
-      
+
       const monthDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
       const proratedMoney = (config.totalMoney / monthDays) * 7;
-      
-      const syntheticConfig = { 
-        ...config, 
-        totalMoney: proratedMoney, 
-        startDate: start.toISOString(), 
-        endDate: end.toISOString() 
+
+      const syntheticConfig = {
+        ...config,
+        totalMoney: proratedMoney,
+        startDate: start.toISOString(),
+        endDate: end.toISOString()
       };
       const calculatedStats = calculateBudget(syntheticConfig, transactions, todayDateStr);
       return { stats: calculatedStats, activeDateRange: { start, end } };
     }
-    
+
     // Calculate boundaries for past months
     const offset = timeFilter === 'last1' ? 1 : 2;
     const now = new Date(todayDateStr);
     const targetDate = new Date(now.getFullYear(), now.getMonth() - offset, 1);
-    
+
     start = startOfDay(new Date(targetDate.getFullYear(), targetDate.getMonth(), 1));
     end = startOfDay(new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0));
-    
-    const syntheticConfig = { 
-      ...config, 
-      startDate: start.toISOString(), 
-      endDate: end.toISOString() 
+
+    const syntheticConfig = {
+      ...config,
+      startDate: start.toISOString(),
+      endDate: end.toISOString()
     };
     const calculatedStats = calculateBudget(syntheticConfig, transactions, end.toISOString());
     return { stats: calculatedStats, activeDateRange: { start, end } };
@@ -291,7 +291,7 @@ export function Insights() {
       return tDate.getTime() >= activeDateRange.start.getTime() && tDate.getTime() <= activeDateRange.end.getTime();
     });
   }, [transactions, activeDateRange]);
-  
+
   // 1. Pacing Narrative Logic
   const avgDailyDiscretionary = Math.round(stats.totalDiscretionarySpent / Math.max(1, stats.daysPassed));
   let heroTitle = "Pacing Health";
@@ -331,8 +331,8 @@ export function Insights() {
       .map(([category, amount]) => ({
         category,
         amount,
-        percentage: stats.totalDiscretionarySpent > 0 
-          ? Math.round((amount / stats.totalDiscretionarySpent) * 100) 
+        percentage: stats.totalDiscretionarySpent > 0
+          ? Math.round((amount / stats.totalDiscretionarySpent) * 100)
           : 0,
       }))
       .sort((a, b) => b.amount - a.amount);
@@ -370,7 +370,7 @@ export function Insights() {
           <p className="text-[var(--color-gray-dark)] text-sm mt-0.5">Deep dive into your financial pacing and habits.</p>
         </div>
         <div className="relative shrink-0">
-          <select 
+          <select
             value={timeFilter}
             onChange={(e) => setTimeFilter(e.target.value)}
             className="appearance-none bg-[var(--color-surface)] border border-[var(--color-gray-light)] text-[var(--color-dark)] rounded-xl text-sm font-bold pl-4 pr-10 py-2 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] cursor-pointer shadow-sm w-full sm:w-auto"
@@ -383,7 +383,7 @@ export function Insights() {
           <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--color-gray-dark)] pointer-events-none" />
         </div>
       </header>
-      
+
       {/* Top Row: Pacing Health & Daily Spend Engine Side-by-Side */}
       <div className="grid grid-cols-2 gap-3 sm:gap-6">
         {/* Pacing Health Hero */}
@@ -420,8 +420,8 @@ export function Insights() {
             <span className="text-[10px] sm:text-sm text-[var(--color-gray-dark)] shrink-0">/ {formatCurrency(stats.baseDailyBudget)}</span>
           </div>
           <div className="mt-2 sm:mt-4 w-full h-1.5 bg-[var(--color-surface-light)] rounded-full overflow-hidden">
-            <div 
-              className={cn("h-full", avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[var(--color-success)]" : "bg-[var(--color-primary)]")} 
+            <div
+              className={cn("h-full", avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[var(--color-success)]" : "bg-[var(--color-primary)]")}
               style={{ width: `${Math.min(100, stats.baseDailyBudget > 0 ? (avgDailyDiscretionary / stats.baseDailyBudget) * 100 : 0)}%` }}
             ></div>
           </div>
@@ -443,7 +443,7 @@ export function Insights() {
           <div className="text-xl sm:text-[32px] font-bold text-[var(--color-primary)] leading-tight tracking-tight truncate">{stats.zeroSpendDays} Days</div>
           <p className="text-[10px] sm:text-[11px] font-medium text-[var(--color-gray-dark)] mt-2 sm:mt-4 truncate">Current Cycle</p>
         </Card>
-        
+
         {/* Projected Rollover */}
         <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-3.5 sm:p-6 min-w-0">
           <div className="flex justify-between items-start mb-2 sm:mb-4">
@@ -480,7 +480,7 @@ export function Insights() {
                 { bg: 'bg-[var(--color-gray-dark)]', text: 'text-[var(--color-gray-dark)]' },
               ];
               const c = colors[idx % colors.length];
-              
+
               return (
                 <div key={item.category}>
                   <div className="flex justify-between text-[11px] font-medium mb-1">
@@ -497,7 +497,7 @@ export function Insights() {
             )}
           </div>
         </Card>
-        
+
         {/* Largest Splurges */}
         <Card className="flex flex-col border border-[var(--color-gray-light)] p-5 sm:p-6">
           <CardTitle className="mb-6 flex items-center gap-2">
@@ -524,7 +524,7 @@ export function Insights() {
             )}
           </div>
         </Card>
-        
+
         {/* IOUs & Hidden Liquidity */}
         <Card className="flex flex-col border border-[var(--color-gray-light)] p-5 sm:p-6">
           <CardTitle className="mb-6 flex items-center gap-2">
@@ -543,7 +543,7 @@ export function Insights() {
               </div>
               <Users size={30} className="text-[var(--color-success)] opacity-50" />
             </div>
-            
+
             {/* Fixed Bills Paid */}
             <div
               className="flex items-center justify-between p-4 rounded-xl relative overflow-hidden"
