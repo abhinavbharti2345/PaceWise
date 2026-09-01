@@ -3,6 +3,7 @@ import { X, Check, AlertCircle } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { DatePicker } from '../ui/DatePicker';
 import { INCOME_SOURCES } from '../../utils/categoryHelpers';
 import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
@@ -173,17 +174,11 @@ export function AddMoneyModal({ isOpen, onClose }: AddMoneyModalProps) {
           </div>
 
           {/* Date */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-1">
-              Date Received
-            </label>
-            <input 
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs font-semibold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
-            />
-          </div>
+          <DatePicker 
+            label="Date Received"
+            value={date}
+            onChange={(newDate) => setDate(newDate)}
+          />
 
           {/* Optional Note */}
           <div>

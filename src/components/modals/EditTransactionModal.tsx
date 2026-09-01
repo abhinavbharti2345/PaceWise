@@ -3,6 +3,7 @@ import { X, Check, AlertCircle, Edit3 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { DatePicker } from '../ui/DatePicker';
 import type { Transaction } from '../../features/budget/budgetEngine';
 import { EXPENSE_CATEGORIES } from '../../utils/categoryHelpers';
 import { parseLocalDate } from '../../utils/dateUtils';
@@ -155,11 +156,10 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
             </div>
 
             <div>
-              <Input 
+              <DatePicker 
                 label="Date *" 
-                type="date"
                 value={date}
-                onChange={(e) => setDate(e.target.value)}
+                onChange={(newDate) => setDate(newDate)}
               />
             </div>
           </div>

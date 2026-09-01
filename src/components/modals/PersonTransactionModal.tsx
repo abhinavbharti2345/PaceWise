@@ -4,6 +4,7 @@ import { useStore } from '../../store/useStore';
 import type { Person } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { DatePicker } from '../ui/DatePicker';
 import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
 import { cn } from '../../utils/cn';
 import { useEffect } from 'react';
@@ -186,17 +187,11 @@ export function PersonTransactionModal({
           </div>
 
           {/* Date */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-1">
-              Date
-            </label>
-            <input 
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs font-semibold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
-            />
-          </div>
+          <DatePicker 
+            label="Date"
+            value={date}
+            onChange={(newDate) => setDate(newDate)}
+          />
 
           {/* Note */}
           <div>

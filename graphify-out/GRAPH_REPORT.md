@@ -1,16 +1,16 @@
 # Graph Report - PaceWise  (2026-09-01)
 
 ## Corpus Check
-- 164 files · ~134,879 words
+- 165 files · ~135,767 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1913 nodes · 2153 edges · 115 communities (101 shown, 11 thin omitted)
+- 1916 nodes · 2170 edges · 115 communities (101 shown, 11 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e21c303a`
+- Built from commit: `5cfb826e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -129,7 +129,7 @@
 - vercel.json
 
 ## God Nodes (most connected - your core abstractions)
-1. `cn()` - 42 edges
+1. `cn()` - 44 edges
 2. `useStore` - 41 edges
 3. `TDD Cycle Orchestrator` - 19 edges
 4. `useAuthStore` - 18 edges
@@ -159,7 +159,7 @@
 
 ### Community 0 - "cn"
 Cohesion: 0.06
-Nodes (85): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+77 more)
+Nodes (87): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+79 more)
 
 ### Community 1 - "WCAG 2.2 Guidelines Reference"
 Cohesion: 0.05
@@ -562,17 +562,17 @@ Cohesion: 0.50
 Nodes (3): Approach, Focus Areas, Output
 
 ## Knowledge Gaps
-- **1306 isolated node(s):** `name`, `private`, `version`, `node`, `type` (+1301 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1396 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **1307 isolated node(s):** `name`, `private`, `version`, `node`, `type` (+1302 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1397 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _1306 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _1307 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `cn` be split into smaller, more focused modules?**
-  _Cohesion score 0.05688729874776386 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05627705627705628 - nodes in this community are weakly interconnected._
 - **Should `WCAG 2.2 Guidelines Reference` be split into smaller, more focused modules?**
   _Cohesion score 0.047619047619047616 - nodes in this community are weakly interconnected._
 - **Should `TDD Cycle Orchestrator` be split into smaller, more focused modules?**

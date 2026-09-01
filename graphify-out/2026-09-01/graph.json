@@ -40,7 +40,7 @@
       "file_type": "code",
       "norm_label": "addbillmodalprops",
       "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L11"
+      "source_location": "L12"
     },
     {
       "id": "src_components_modals_addexpensemodal_addexpensemodalprops",
@@ -53,7 +53,7 @@
       "file_type": "code",
       "norm_label": "addexpensemodalprops",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L11"
+      "source_location": "L12"
     },
     {
       "id": "src_components_modals_addmoneymodal_addmoneymodalprops",
@@ -66,7 +66,7 @@
       "file_type": "code",
       "norm_label": "addmoneymodalprops",
       "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L11"
+      "source_location": "L12"
     },
     {
       "id": "src_components_modals_addpersonmodal_addpersonmodalprops",
@@ -105,7 +105,7 @@
       "file_type": "code",
       "norm_label": "edittransactionmodalprops",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L10"
+      "source_location": "L11"
     },
     {
       "id": "src_components_modals_persontransactionmodal_persontransactionmodalprops",
@@ -118,7 +118,7 @@
       "file_type": "code",
       "norm_label": "persontransactionmodalprops",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L11"
+      "source_location": "L12"
     },
     {
       "id": "src_components_modals_settlemodal_settlemodalprops",
@@ -173,6 +173,19 @@
       "source_location": "L4"
     },
     {
+      "id": "src_components_ui_datepicker_datepickerprops",
+      "label": "DatePickerProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "datepickerprops",
+      "source_file": "src/components/ui/DatePicker.tsx",
+      "source_location": "L6"
+    },
+    {
       "id": "src_components_ui_iconbadge_iconbadgeprops",
       "label": "IconBadgeProps",
       "_callable": true,
@@ -196,7 +209,7 @@
       "file_type": "code",
       "norm_label": "inputprops",
       "source_file": "src/components/ui/Input.tsx",
-      "source_location": "L4"
+      "source_location": "L5"
     },
     {
       "id": "src_components_ui_installprompt_promptstate",
@@ -413,7 +426,7 @@
       "file_type": "code",
       "norm_label": "addbillmodal()",
       "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L16"
+      "source_location": "L17"
     },
     {
       "id": "src_components_modals_addexpensemodal_addexpensemodal",
@@ -425,7 +438,7 @@
       "file_type": "code",
       "norm_label": "addexpensemodal()",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L16"
+      "source_location": "L17"
     },
     {
       "id": "src_components_modals_addmoneymodal_addmoneymodal",
@@ -437,7 +450,7 @@
       "file_type": "code",
       "norm_label": "addmoneymodal()",
       "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L16"
+      "source_location": "L17"
     },
     {
       "id": "src_components_modals_addpersonmodal_addpersonmodal",
@@ -473,7 +486,7 @@
       "file_type": "code",
       "norm_label": "edittransactionmodal()",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L16"
+      "source_location": "L17"
     },
     {
       "id": "src_components_modals_persontransactionmodal_persontransactionmodal",
@@ -485,7 +498,7 @@
       "file_type": "code",
       "norm_label": "persontransactionmodal()",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L18"
+      "source_location": "L19"
     },
     {
       "id": "src_components_modals_settlemodal_settlemodal",
@@ -546,6 +559,18 @@
       "norm_label": "cardtitle()",
       "source_file": "src/components/ui/Card.tsx",
       "source_location": "L30"
+    },
+    {
+      "id": "src_components_ui_datepicker_datepicker",
+      "label": "DatePicker()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "datepicker()",
+      "source_file": "src/components/ui/DatePicker.tsx",
+      "source_location": "L14"
     },
     {
       "id": "src_components_ui_iconbadge_iconbadge",
@@ -1181,6 +1206,17 @@
       "source_location": "L1"
     },
     {
+      "id": "src_components_ui_datepicker",
+      "label": "DatePicker.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "datepicker.tsx",
+      "source_file": "src/components/ui/DatePicker.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_components_ui_iconbadge",
       "label": "IconBadge.tsx",
       "_origin": "ast",
@@ -1211,7 +1247,7 @@
       "file_type": "code",
       "norm_label": "input",
       "source_file": "src/components/ui/Input.tsx",
-      "source_location": "L9"
+      "source_location": "L10"
     },
     {
       "id": "src_components_ui_installprompt",
@@ -23119,7 +23155,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L145",
+      "source_location": "L146",
       "weight": 1.0
     },
     {
@@ -23131,7 +23167,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -23143,7 +23179,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -23155,103 +23191,103 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L53",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_addexpensemodal_addexpensemodal",
-      "target": "src_utils_cn_cn",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L154",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_addexpensemodal_addexpensemodal",
-      "target": "src_store_usestore_usestore",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L17",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_addexpensemodal_addexpensemodal",
-      "target": "src_utils_dateutils_gettodaydatestring",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L23",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_addexpensemodal_addexpensemodal",
-      "target": "src_utils_dateutils_parselocaldate",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L57",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_addmoneymodal_addmoneymodal",
-      "target": "src_utils_cn_cn",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L139",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_addmoneymodal_addmoneymodal",
-      "target": "src_store_usestore_usestore",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L17",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_addmoneymodal_addmoneymodal",
-      "target": "src_utils_dateutils_gettodaydatestring",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L23",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_addmoneymodal_addmoneymodal",
-      "target": "src_utils_dateutils_parselocaldate",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/modals/AddMoneyModal.tsx",
       "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addexpensemodal_addexpensemodal",
+      "target": "src_utils_cn_cn",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addexpensemodal_addexpensemodal",
+      "target": "src_store_usestore_usestore",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addexpensemodal_addexpensemodal",
+      "target": "src_utils_dateutils_gettodaydatestring",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addexpensemodal_addexpensemodal",
+      "target": "src_utils_dateutils_parselocaldate",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addmoneymodal_addmoneymodal",
+      "target": "src_utils_cn_cn",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/AddMoneyModal.tsx",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addmoneymodal_addmoneymodal",
+      "target": "src_store_usestore_usestore",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/AddMoneyModal.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addmoneymodal_addmoneymodal",
+      "target": "src_utils_dateutils_gettodaydatestring",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/AddMoneyModal.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addmoneymodal_addmoneymodal",
+      "target": "src_utils_dateutils_parselocaldate",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/AddMoneyModal.tsx",
+      "source_location": "L55",
       "weight": 1.0
     },
     {
@@ -23299,7 +23335,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -23311,7 +23347,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L57",
+      "source_location": "L58",
       "weight": 1.0
     },
     {
@@ -23323,7 +23359,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L113",
+      "source_location": "L114",
       "weight": 1.0
     },
     {
@@ -23335,7 +23371,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -23347,7 +23383,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L29",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -23359,7 +23395,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L60",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -23447,6 +23483,18 @@
       "weight": 1.0
     },
     {
+      "source": "src_components_ui_datepicker_datepicker",
+      "target": "src_utils_cn_cn",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/ui/DatePicker.tsx",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
       "source": "src_components_ui_iconbadge_iconbadge",
       "target": "src_utils_cn_cn",
       "relation": "calls",
@@ -23467,7 +23515,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/ui/Input.tsx",
-      "source_location": "L19",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -23671,7 +23719,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L305",
+      "source_location": "L306",
       "weight": 1.0
     },
     {
@@ -23683,7 +23731,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L395",
+      "source_location": "L396",
       "weight": 1.0
     },
     {
@@ -23695,7 +23743,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Insights.tsx",
-      "source_location": "L512",
+      "source_location": "L513",
       "weight": 1.0
     },
     {
@@ -23935,7 +23983,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -23947,7 +23995,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -24552,7 +24600,7 @@
     },
     {
       "source": "src_components_modals_addbillmodal",
-      "target": "src_utils_categoryhelpers_bill_categories",
+      "target": "src_components_ui_datepicker_datepicker",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -24564,7 +24612,7 @@
     },
     {
       "source": "src_components_modals_addbillmodal",
-      "target": "src_utils_dateutils_gettodaydatestring",
+      "target": "src_utils_categoryhelpers_bill_categories",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -24572,6 +24620,18 @@
       "context": "import",
       "source_file": "src/components/modals/AddBillModal.tsx",
       "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addbillmodal",
+      "target": "src_utils_dateutils_gettodaydatestring",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddBillModal.tsx",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -24583,7 +24643,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -24595,7 +24655,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -24644,6 +24704,18 @@
       "context": "import",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
       "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addexpensemodal",
+      "target": "src_components_ui_datepicker_datepicker",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L7",
       "weight": 1.0
     },
     {
@@ -24655,7 +24727,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -24667,7 +24739,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -24679,7 +24751,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -24716,6 +24788,18 @@
       "context": "import",
       "source_file": "src/components/modals/AddMoneyModal.tsx",
       "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addmoneymodal",
+      "target": "src_components_ui_datepicker_datepicker",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddMoneyModal.tsx",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -24727,7 +24811,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L6",
+      "source_location": "L7",
       "weight": 1.0
     },
     {
@@ -24739,7 +24823,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -24751,7 +24835,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -24763,7 +24847,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -24872,6 +24956,18 @@
       "context": "import",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
       "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_edittransactionmodal",
+      "target": "src_components_ui_datepicker_datepicker",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/EditTransactionModal.tsx",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -24883,7 +24979,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L6",
+      "source_location": "L7",
       "weight": 1.0
     },
     {
@@ -24895,7 +24991,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -24907,7 +25003,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -24960,7 +25056,7 @@
     },
     {
       "source": "src_components_modals_persontransactionmodal",
-      "target": "src_utils_dateutils_gettodaydatestring",
+      "target": "src_components_ui_datepicker_datepicker",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -24968,6 +25064,18 @@
       "context": "import",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
       "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_persontransactionmodal",
+      "target": "src_utils_dateutils_gettodaydatestring",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -24979,7 +25087,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -24991,7 +25099,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -25079,6 +25187,18 @@
       "weight": 1.0
     },
     {
+      "source": "src_components_ui_datepicker",
+      "target": "src_utils_cn_cn",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/ui/DatePicker.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
       "source": "src_components_ui_iconbadge",
       "target": "src_utils_cn_cn",
       "relation": "imports",
@@ -25100,6 +25220,18 @@
       "context": "import",
       "source_file": "src/components/ui/Input.tsx",
       "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_ui_input",
+      "target": "src_components_ui_datepicker_datepicker",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/ui/Input.tsx",
+      "source_location": "L3",
       "weight": 1.0
     },
     {
@@ -26568,7 +26700,7 @@
     },
     {
       "source": "src_components_modals_addbillmodal",
-      "target": "src_utils_categoryhelpers",
+      "target": "src_components_ui_datepicker",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -26580,7 +26712,7 @@
     },
     {
       "source": "src_components_modals_addbillmodal",
-      "target": "src_utils_dateutils",
+      "target": "src_utils_categoryhelpers",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -26592,7 +26724,7 @@
     },
     {
       "source": "src_components_modals_addbillmodal",
-      "target": "src_utils_cn",
+      "target": "src_utils_dateutils",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -26600,6 +26732,18 @@
       "context": "import",
       "source_file": "src/components/modals/AddBillModal.tsx",
       "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addbillmodal",
+      "target": "src_utils_cn",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddBillModal.tsx",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -26652,7 +26796,7 @@
     },
     {
       "source": "src_components_modals_addexpensemodal",
-      "target": "src_utils_categoryhelpers",
+      "target": "src_components_ui_datepicker",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -26664,7 +26808,7 @@
     },
     {
       "source": "src_components_modals_addexpensemodal",
-      "target": "src_utils_dateutils",
+      "target": "src_utils_categoryhelpers",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -26672,6 +26816,18 @@
       "context": "import",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
       "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addexpensemodal",
+      "target": "src_utils_dateutils",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -26712,7 +26868,7 @@
     },
     {
       "source": "src_components_modals_addmoneymodal",
-      "target": "src_utils_categoryhelpers",
+      "target": "src_components_ui_datepicker",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -26724,7 +26880,7 @@
     },
     {
       "source": "src_components_modals_addmoneymodal",
-      "target": "src_utils_dateutils",
+      "target": "src_utils_categoryhelpers",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -26736,7 +26892,7 @@
     },
     {
       "source": "src_components_modals_addmoneymodal",
-      "target": "src_utils_cn",
+      "target": "src_utils_dateutils",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -26744,6 +26900,18 @@
       "context": "import",
       "source_file": "src/components/modals/AddMoneyModal.tsx",
       "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addmoneymodal",
+      "target": "src_utils_cn",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddMoneyModal.tsx",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -26852,6 +27020,18 @@
       "context": "import",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
       "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_edittransactionmodal",
+      "target": "src_components_ui_datepicker",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/EditTransactionModal.tsx",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -26863,7 +27043,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L6",
+      "source_location": "L7",
       "type_only": true,
       "weight": 1.0
     },
@@ -26876,7 +27056,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -26888,7 +27068,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -26930,7 +27110,7 @@
     },
     {
       "source": "src_components_modals_persontransactionmodal",
-      "target": "src_utils_dateutils",
+      "target": "src_components_ui_datepicker",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -26942,7 +27122,7 @@
     },
     {
       "source": "src_components_modals_persontransactionmodal",
-      "target": "src_utils_cn",
+      "target": "src_utils_dateutils",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -26950,6 +27130,18 @@
       "context": "import",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
       "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_persontransactionmodal",
+      "target": "src_utils_cn",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -27026,6 +27218,18 @@
       "weight": 1.0
     },
     {
+      "source": "src_components_ui_datepicker",
+      "target": "src_utils_cn",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/ui/DatePicker.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
       "source": "src_components_ui_iconbadge",
       "target": "src_utils_cn",
       "relation": "imports_from",
@@ -27047,6 +27251,18 @@
       "context": "import",
       "source_file": "src/components/ui/Input.tsx",
       "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_ui_input",
+      "target": "src_components_ui_datepicker",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/ui/Input.tsx",
+      "source_location": "L3",
       "weight": 1.0
     },
     {
@@ -45705,7 +45921,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -45716,7 +45932,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/AddBillModal.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -45727,7 +45943,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -45738,7 +45954,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -45749,7 +45965,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -45760,7 +45976,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/AddMoneyModal.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -45815,7 +46031,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0
     },
     {
@@ -45826,7 +46042,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -45837,7 +46053,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -45848,7 +46064,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -45962,6 +46178,28 @@
       "weight": 1.0
     },
     {
+      "source": "src_components_ui_datepicker",
+      "target": "src_components_ui_datepicker_datepicker",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ui/DatePicker.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_ui_datepicker",
+      "target": "src_components_ui_datepicker_datepickerprops",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ui/DatePicker.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
       "source": "src_components_ui_iconbadge",
       "target": "src_components_ui_iconbadge_iconbadge",
       "relation": "contains",
@@ -45985,24 +46223,24 @@
     },
     {
       "source": "src_components_ui_input",
-      "target": "src_components_ui_input_inputprops",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/ui/Input.tsx",
-      "source_location": "L4",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_ui_input",
       "target": "src_components_ui_input_input",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/ui/Input.tsx",
-      "source_location": "L9",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_ui_input",
+      "target": "src_components_ui_input_inputprops",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/ui/Input.tsx",
+      "source_location": "L5",
       "weight": 1.0
     },
     {
@@ -47118,5 +47356,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e21c303ade07fd82aa16a1d8b0a7580ec13cf675"
+  "built_at_commit": "5cfb826e632d8d1dcf3c116ce6b25ce61d875a9e"
 }
