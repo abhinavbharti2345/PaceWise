@@ -130,30 +130,29 @@ export function calculateBudget(
     }
   }
 
+  const totalNetPersonCashFlow = netPersonCashFlowUpToYesterday + netPersonCashFlowToday;
+
   // 1. Effective Total Budget
-  // We ONLY include config money, income, and bills. Person transactions are immediate cash adjustments.
-  const effectiveTotalBudget = config.totalMoney + totalAddedMoney - totalBills;
+  // Person transactions adjust the effective budget pool for the period, smoothing daily allowance.
+  const effectiveTotalBudget = config.totalMoney + totalAddedMoney - totalBills + totalNetPersonCashFlow;
 
   // 2. Base Daily Budget
   const baseDailyBudget = totalDays > 0 ? effectiveTotalBudget / totalDays : 0;
 
   // 3. Carry Forward
   const totalAllowanceUpToYesterday = baseDailyBudget * daysPassed;
-  // Apply past net person cash flow to the carry forward (so borrowed money gives extra allowance, lent money reduces it).
-  const carryForward = totalAllowanceUpToYesterday - normalExpensesUpToYesterday + netPersonCashFlowUpToYesterday;
+  const carryForward = totalAllowanceUpToYesterday - normalExpensesUpToYesterday;
 
   // 4. Today's Available
-  // Apply today's net person cash flow to today's available budget.
-  const todaysAvailable = baseDailyBudget + carryForward + netPersonCashFlowToday;
+  const todaysAvailable = baseDailyBudget + carryForward;
 
   // 5. Money Left (Actual Cash)
-  const moneyLeft = effectiveTotalBudget - normalExpensesUpToYesterday - spentToday + netPersonCashFlowUpToYesterday + netPersonCashFlowToday;
+  const moneyLeft = effectiveTotalBudget - normalExpensesUpToYesterday - spentToday;
 
   const isOverspent = spentToday > todaysAvailable;
 
   // 6. Progress Percentage
   // Using effectiveTotalBudget (the planned budget pool) to calculate progress.
-  // Note: Since moneyLeft now includes netPersonCashFlow, this percentage can correctly exceed 100% or drop sharply based on borrowing/lending.
   let progressPercentage = 0;
   if (effectiveTotalBudget > 0) {
     progressPercentage = Math.round((moneyLeft / effectiveTotalBudget) * 100);
@@ -172,23 +171,20 @@ export function calculateBudget(
 
   const dailyStats: DailyBudgetStat[] = [];
   let cumulativeDiscretionarySpent = 0;
-  let cumulativeNetPersonCashFlow = 0;
 
   for (let i = 0; i < totalDays; i++) {
     const d = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
     const dateKey = d.getTime().toString();
     const daySpent = discretionarySpendByDate[dateKey] || 0;
-    const dayPersonFlow = netPersonCashFlowByDate[dateKey] || 0;
     
     const isFuture = d.getTime() > today.getTime();
     
     if (!isFuture) {
       cumulativeDiscretionarySpent += daySpent;
-      cumulativeNetPersonCashFlow += dayPersonFlow;
     }
     
     const idealRemaining = effectiveTotalBudget - (baseDailyBudget * (i + 1));
-    const actualRemaining = isFuture ? 0 : effectiveTotalBudget - cumulativeDiscretionarySpent + cumulativeNetPersonCashFlow;
+    const actualRemaining = isFuture ? 0 : effectiveTotalBudget - cumulativeDiscretionarySpent;
 
     dailyStats.push({
       dayIndex: i + 1,

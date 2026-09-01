@@ -41,7 +41,7 @@ describe('Comprehensive Budget & Debt Calculations', () => {
     const day1Stats = calculateBudget(config, [t1], '2026-08-01');
     expect(day1Stats.spentToday).toBe(0); // MUST be 0! Not a discretionary expense
     expect(day1Stats.moneyLeft).toBe(4500); // 5000 - 500
-    expect(day1Stats.todaysAvailable).toBeCloseTo(166.66 - 500, 1); // Reduced immediately
+    expect(day1Stats.todaysAvailable).toBe(150); // Base daily = 4500 / 30 = 150
 
     // Day 2: friend repaid ₹300.
     // The settlement transaction directly affects the budget without needing a manual Income transaction.

@@ -98,31 +98,28 @@ describe('budgetEngine', () => {
       endDate: '2026-08-30'
     };
 
-    it('Scenario 1: Lend ₹50 today - reduces moneyLeft and todaysAvailable immediately, NOT spentToday', () => {
+    it('Scenario 1: Lend ₹50 today - adjusts effectiveTotalBudget and daily pace, NOT spentToday', () => {
       const t1: Transaction = { id: 't1', type: 'person', direction: 'gave', amount: 50, date: '2026-08-01', personId: 'p1' };
       const stats = calculateBudget(config, [t1], '2026-08-01');
 
-      // Base daily = 5000 / 30 = 166.66...
-      expect(stats.effectiveTotalBudget).toBe(5000);
+      // Effective total = 5000 - 50 = 4950. Base daily = 4950 / 30 = 165
+      expect(stats.effectiveTotalBudget).toBe(4950);
       expect(stats.moneyLeft).toBe(4950);
-      
-      // Todays available should be approx 116.66 (166.66 - 50)
-      expect(stats.todaysAvailable).toBeCloseTo(166.66 - 50, 1);
+      expect(stats.todaysAvailable).toBe(165);
       
       // Spent today (discretionary) MUST remain 0!
       expect(stats.spentToday).toBe(0);
       expect(stats.totalDiscretionarySpent).toBe(0);
     });
 
-    it('Scenario 2: Borrow ₹50 today - increases moneyLeft and todaysAvailable immediately, NOT spentToday', () => {
+    it('Scenario 2: Borrow ₹50 today - increases effectiveTotalBudget and daily pace, NOT spentToday', () => {
       const t1: Transaction = { id: 't1', type: 'person', direction: 'took', amount: 50, date: '2026-08-01', personId: 'p1' };
       const stats = calculateBudget(config, [t1], '2026-08-01');
 
-      expect(stats.effectiveTotalBudget).toBe(5000); // Does NOT increase effectiveTotalBudget (no spreading)
+      // Effective total = 5000 + 50 = 5050. Base daily = 5050 / 30 = 168.33
+      expect(stats.effectiveTotalBudget).toBe(5050);
       expect(stats.moneyLeft).toBe(5050);
-      
-      // Todays available should be approx 216.66 (166.66 + 50)
-      expect(stats.todaysAvailable).toBeCloseTo(166.66 + 50, 1);
+      expect(stats.todaysAvailable).toBeCloseTo(168.33, 1);
       
       expect(stats.spentToday).toBe(0);
     });
@@ -138,7 +135,6 @@ describe('budgetEngine', () => {
       
       // Day 2 (Days passed = 1, so 2 days of allowance)
       // Base daily = 166.66... -> total allowance = 333.33...
-      // Net person cash flow = 0
       expect(stats.todaysAvailable).toBeCloseTo(333.33, 1);
       
       expect(stats.spentToday).toBe(0);
@@ -164,14 +160,13 @@ describe('budgetEngine', () => {
 
       // Only the August transaction (t2) is processed.
       // Received settlement = Cash Inflow = +500
-      expect(stats.effectiveTotalBudget).toBe(5000);
+      expect(stats.effectiveTotalBudget).toBe(5500);
       expect(stats.moneyLeft).toBe(5500);
       
-      // Base daily = 166.66...
-      // Allowance up to yesterday (daysPassed 4) = 666.66...
-      // Carry forward = 666.66...
-      // Todays Available = 166.66... + 666.66... + 500 = 1333.33...
-      expect(stats.todaysAvailable).toBeCloseTo(1333.33, 1);
+      // Base daily = 5500 / 30 = 183.33...
+      // Allowance up to yesterday (daysPassed 4) = 733.33...
+      // Todays Available = 183.33... + 733.33... = 916.66...
+      expect(stats.todaysAvailable).toBeCloseTo(916.66, 1);
     });
   });
 });

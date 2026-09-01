@@ -138,10 +138,10 @@
     "semantic_hash": "b2c2db109868be8375edfd5627332ade"
   },
   "src/features/budget/budgetEngine.ts": {
-    "mtime": 1788216223.126464,
-    "seen": 1788217925.942081,
-    "ast_hash": "9e8a7d669bbf5a28818dea0f4aeb870f",
-    "semantic_hash": "9e8a7d669bbf5a28818dea0f4aeb870f"
+    "mtime": 1788271853.7206767,
+    "seen": 1788271901.94107,
+    "ast_hash": "708498f7155c7bd50cc2c45ffb59232b",
+    "semantic_hash": ""
   },
   "src/main.tsx": {
     "mtime": 1788129530.0720267,
@@ -192,10 +192,10 @@
     "semantic_hash": "0a3d688a6c4a897d87fc887b5e421c60"
   },
   "tests/budget/budgetEngine.test.ts": {
-    "mtime": 1788216281.4596157,
-    "seen": 1788217925.9429755,
-    "ast_hash": "821d3f996e21f4ace6006151cfe6c18f",
-    "semantic_hash": "821d3f996e21f4ace6006151cfe6c18f"
+    "mtime": 1788271862.2121887,
+    "seen": 1788271901.9410903,
+    "ast_hash": "009cf08d0bd746c4b41bb372f40a54f7",
+    "semantic_hash": ""
   },
   "tsconfig.app.json": {
     "mtime": 1788129530.07806,
@@ -852,10 +852,10 @@
     "semantic_hash": "28aa8e5d9c583a5a3df9d9ffec21a600"
   },
   "tests/budget/comprehensiveEngine.test.ts": {
-    "mtime": 1788216308.4814603,
-    "seen": 1788217925.9429762,
-    "ast_hash": "e8bed0ea697c10fbcdd7223458a429d7",
-    "semantic_hash": "e8bed0ea697c10fbcdd7223458a429d7"
+    "mtime": 1788271885.9885004,
+    "seen": 1788271901.941091,
+    "ast_hash": "9c355456d67eb4f500dd368983a7f1b3",
+    "semantic_hash": ""
   },
   "src/lib/supabase.ts": {
     "mtime": 1788133423.410076,
