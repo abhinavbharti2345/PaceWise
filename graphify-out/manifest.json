@@ -150,10 +150,10 @@
     "semantic_hash": "fa535ad310524494d8f0e4b12962c74e"
   },
   "src/pages/Dashboard.tsx": {
-    "mtime": 1788201710.9193833,
-    "seen": 1788217925.9423656,
-    "ast_hash": "adad88813c840af0d6a0e4393809d91d",
-    "semantic_hash": "adad88813c840af0d6a0e4393809d91d"
+    "mtime": 1788277319.878174,
+    "seen": 1788277342.3073785,
+    "ast_hash": "703e35bc942bd5885d60466a3c98ff12",
+    "semantic_hash": ""
   },
   "src/pages/Insights.tsx": {
     "mtime": 1788271600.3727033,

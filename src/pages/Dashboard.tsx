@@ -90,7 +90,7 @@ export function Dashboard() {
           <div className="my-3 sm:my-4">
             <h2 className="text-3xl sm:text-4xl xl:text-5xl font-black tracking-tight leading-none truncate">{formatCurrency(stats.moneyLeft)}</h2>
             <p className="text-red-200 text-xs sm:text-sm mt-1 sm:mt-1.5 font-medium opacity-90 truncate">
-              of {formatCurrency(config.totalMoney)} starting allowance
+              of {formatCurrency(stats.effectiveTotalBudget)} total budget
             </p>
           </div>
           <div>
