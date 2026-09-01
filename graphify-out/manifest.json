@@ -168,10 +168,10 @@
     "semantic_hash": "bedfd1e26759027bf0a84e7713619dc4"
   },
   "src/pages/Settings.tsx": {
-    "mtime": 1788202449.6884482,
-    "seen": 1788217925.9425642,
-    "ast_hash": "3700c371a33a5a9852393664cd2c1370",
-    "semantic_hash": "3700c371a33a5a9852393664cd2c1370"
+    "mtime": 1788272717.8007016,
+    "seen": 1788272742.6631763,
+    "ast_hash": "60566f5cc9f3e2e72210b243dbd0ac75",
+    "semantic_hash": ""
   },
   "src/pages/Transactions.tsx": {
     "mtime": 1788194667.0948842,

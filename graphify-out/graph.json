@@ -870,7 +870,7 @@
       "file_type": "code",
       "norm_label": "settings()",
       "source_file": "src/pages/Settings.tsx",
-      "source_location": "L19"
+      "source_location": "L21"
     },
     {
       "id": "src_pages_transactions_transactions",
@@ -23863,7 +23863,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Settings.tsx",
-      "source_location": "L129",
+      "source_location": "L152",
       "weight": 1.0
     },
     {
@@ -23875,7 +23875,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Settings.tsx",
-      "source_location": "L20",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -23887,7 +23887,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Settings.tsx",
-      "source_location": "L21",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -25999,7 +25999,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/Settings.tsx",
-      "source_location": "L17",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -27876,7 +27876,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/Settings.tsx",
-      "source_location": "L17",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -46592,7 +46592,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/Settings.tsx",
-      "source_location": "L19",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -47356,5 +47356,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "5cfb826e632d8d1dcf3c116ce6b25ce61d875a9e"
+  "built_at_commit": "5ffbc5ea381453493f0e2efbe8a56e60a8ed9756"
 }

@@ -12,7 +12,9 @@ import {
   Globe,
   Sparkles,
   LogOut,
-  Mail
+  Mail,
+  User,
+  ChevronRight
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 
@@ -46,6 +48,27 @@ export function Settings() {
           <p className="text-[var(--color-gray-dark)] text-sm">Manage account, currency, and appearance settings.</p>
         </div>
       </header>
+
+      {/* User Profile Card */}
+      <Card 
+        onClick={() => navigate('/profile')}
+        className="border border-[var(--color-gray-light)] hover:border-[var(--color-primary)]/40 transition-all cursor-pointer group p-4 sm:p-5 flex items-center justify-between shadow-sm"
+      >
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div className="w-10 h-10 rounded-2xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] flex items-center justify-center font-bold shrink-0 group-hover:scale-105 transition-transform">
+            <User size={20} />
+          </div>
+          <div className="min-w-0">
+            <h3 className="text-sm font-bold text-[var(--color-dark)] group-hover:text-[var(--color-primary)] transition-colors truncate">
+              User Profile
+            </h3>
+            <p className="text-xs text-[var(--color-gray-dark)] truncate">
+              View and update your profile details, display name, and avatar.
+            </p>
+          </div>
+        </div>
+        <ChevronRight size={18} className="text-[var(--color-gray-dark)] group-hover:text-[var(--color-primary)] group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+      </Card>
 
       {/* Account Card */}
       <Card className="border border-[var(--color-gray-light)]">
