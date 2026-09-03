@@ -43,6 +43,19 @@
       "source_location": "L12"
     },
     {
+      "id": "src_components_modals_addcategorymodal_addcategorymodalprops",
+      "label": "AddCategoryModalProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addcategorymodalprops",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L9"
+    },
+    {
       "id": "src_components_modals_addexpensemodal_addexpensemodalprops",
       "label": "AddExpenseModalProps",
       "_callable": true,
@@ -53,7 +66,7 @@
       "file_type": "code",
       "norm_label": "addexpensemodalprops",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L12"
+      "source_location": "L13"
     },
     {
       "id": "src_components_modals_addmoneymodal_addmoneymodalprops",
@@ -118,7 +131,7 @@
       "file_type": "code",
       "norm_label": "persontransactionmodalprops",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L13"
+      "source_location": "L14"
     },
     {
       "id": "src_components_modals_settlemodal_settlemodalprops",
@@ -131,7 +144,7 @@
       "file_type": "code",
       "norm_label": "settlemodalprops",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L11"
+      "source_location": "L12"
     },
     {
       "id": "src_components_ui_badge_badgeprops",
@@ -339,7 +352,7 @@
       "file_type": "code",
       "norm_label": "appstate",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L14"
+      "source_location": "L15"
     },
     {
       "id": "src_store_usestore_person",
@@ -352,7 +365,7 @@
       "file_type": "code",
       "norm_label": "person",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L7"
+      "source_location": "L8"
     },
     {
       "id": "src_utils_categoryhelpers_categorymeta",
@@ -429,6 +442,18 @@
       "source_location": "L17"
     },
     {
+      "id": "src_components_modals_addcategorymodal_addcategorymodal",
+      "label": "AddCategoryModal()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addcategorymodal()",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L32"
+    },
+    {
       "id": "src_components_modals_addexpensemodal_addexpensemodal",
       "label": "AddExpenseModal()",
       "_callable": true,
@@ -438,7 +463,7 @@
       "file_type": "code",
       "norm_label": "addexpensemodal()",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L17"
+      "source_location": "L18"
     },
     {
       "id": "src_components_modals_addmoneymodal_addmoneymodal",
@@ -498,7 +523,7 @@
       "file_type": "code",
       "norm_label": "persontransactionmodal()",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L20"
+      "source_location": "L21"
     },
     {
       "id": "src_components_modals_settlemodal_settlemodal",
@@ -510,7 +535,7 @@
       "file_type": "code",
       "norm_label": "settlemodal()",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L18"
+      "source_location": "L19"
     },
     {
       "id": "src_components_ui_badge_badge",
@@ -846,7 +871,7 @@
       "file_type": "code",
       "norm_label": "persondetails()",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L23"
+      "source_location": "L24"
     },
     {
       "id": "src_pages_profile_profile",
@@ -906,7 +931,7 @@
       "file_type": "code",
       "norm_label": "calculatepersonbalance()",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L66"
+      "source_location": "L72"
     },
     {
       "id": "src_store_usestore_generateid",
@@ -918,7 +943,7 @@
       "file_type": "code",
       "norm_label": "generateid()",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L75"
+      "source_location": "L81"
     },
     {
       "id": "src_store_usestore_getbudgetdatesfordate",
@@ -930,7 +955,19 @@
       "file_type": "code",
       "norm_label": "getbudgetdatesfordate()",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L60"
+      "source_location": "L66"
+    },
+    {
+      "id": "src_utils_categoryhelpers_getallexpensecategories",
+      "label": "getAllExpenseCategories()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "getallexpensecategories()",
+      "source_file": "src/utils/categoryHelpers.ts",
+      "source_location": "L41"
     },
     {
       "id": "src_utils_categoryhelpers_getcategorymeta",
@@ -942,7 +979,7 @@
       "file_type": "code",
       "norm_label": "getcategorymeta()",
       "source_file": "src/utils/categoryHelpers.ts",
-      "source_location": "L41"
+      "source_location": "L49"
     },
     {
       "id": "src_utils_cn_cn",
@@ -1083,6 +1120,39 @@
       "norm_label": "addbillmodal.tsx",
       "source_file": "src/components/modals/AddBillModal.tsx",
       "source_location": "L1"
+    },
+    {
+      "id": "src_components_modals_addcategorymodal",
+      "label": "AddCategoryModal.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "addcategorymodal.tsx",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_modals_addcategorymodal_available_colors",
+      "label": "AVAILABLE_COLORS",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "available_colors",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L30"
+    },
+    {
+      "id": "src_components_modals_addcategorymodal_available_icons",
+      "label": "AVAILABLE_ICONS",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "available_icons",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L15"
     },
     {
       "id": "src_components_modals_addexpensemodal",
@@ -1489,7 +1559,7 @@
       "file_type": "code",
       "norm_label": "defaultconfig",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L87"
+      "source_location": "L93"
     },
     {
       "id": "src_store_usestore_start_monthstart_end_monthend",
@@ -1500,7 +1570,7 @@
       "file_type": "code",
       "norm_label": "{ start: monthstart, end: monthend }",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L72"
+      "source_location": "L78"
     },
     {
       "id": "src_store_usestore_usestore",
@@ -1511,7 +1581,7 @@
       "file_type": "code",
       "norm_label": "usestore",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L95"
+      "source_location": "L101"
     },
     {
       "id": "src_utils_categoryhelpers",
@@ -26667,6 +26737,30 @@
       "weight": 1.0
     },
     {
+      "source": "src_components_modals_addcategorymodal_addcategorymodal",
+      "target": "src_utils_cn_cn",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal_addcategorymodal",
+      "target": "src_store_usestore_usestore",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
       "source": "src_components_modals_addexpensemodal_addexpensemodal",
       "target": "src_utils_cn_cn",
       "relation": "calls",
@@ -26675,7 +26769,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L155",
+      "source_location": "L158",
       "weight": 1.0
     },
     {
@@ -26687,7 +26781,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addexpensemodal_addexpensemodal",
+      "target": "src_utils_categoryhelpers_getallexpensecategories",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -26699,7 +26805,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L24",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -26711,7 +26817,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L58",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -26812,6 +26918,18 @@
     },
     {
       "source": "src_components_modals_edittransactionmodal_edittransactionmodal",
+      "target": "src_utils_categoryhelpers_getallexpensecategories",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/EditTransactionModal.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_edittransactionmodal_edittransactionmodal",
       "target": "src_utils_dateutils_parselocaldate",
       "relation": "calls",
       "_origin": "ast",
@@ -26819,7 +26937,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L58",
+      "source_location": "L59",
       "weight": 1.0
     },
     {
@@ -26831,7 +26949,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L117",
+      "source_location": "L120",
       "weight": 1.0
     },
     {
@@ -26843,7 +26961,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L26",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_persontransactionmodal_persontransactionmodal",
+      "target": "src_utils_categoryhelpers_getallexpensecategories",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -26855,7 +26985,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L32",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -26867,7 +26997,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L64",
+      "source_location": "L67",
       "weight": 1.0
     },
     {
@@ -26879,7 +27009,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L158",
+      "source_location": "L161",
       "weight": 1.0
     },
     {
@@ -26891,7 +27021,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L19",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_settlemodal_settlemodal",
+      "target": "src_utils_categoryhelpers_getallexpensecategories",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/SettleModal.tsx",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -27251,7 +27393,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L109",
+      "source_location": "L110",
       "weight": 1.0
     },
     {
@@ -27263,7 +27405,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L26",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -27419,7 +27561,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L118",
+      "source_location": "L135",
       "weight": 1.0
     },
     {
@@ -27431,7 +27573,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L198",
+      "source_location": "L215",
       "weight": 1.0
     },
     {
@@ -27443,7 +27585,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L262",
+      "source_location": "L279",
       "weight": 1.0
     },
     {
@@ -27467,7 +27609,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -27479,7 +27621,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -27491,7 +27633,19 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "src_store_usestore_appstate",
+      "target": "src_utils_categoryhelpers_categorymeta",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "field",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -27503,7 +27657,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L22",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -27515,7 +27669,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L23",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -28143,6 +28297,90 @@
       "weight": 1.0
     },
     {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_store_usestore_usestore",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_components_ui_button_button",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_components_ui_input_input",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_utils_cn_cn",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_utils_categoryhelpers_categorymeta",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addexpensemodal",
+      "target": "src_utils_dateutils_gettodaydatestring",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addexpensemodal",
+      "target": "src_utils_dateutils_parselocaldate",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
       "source": "src_components_modals_addexpensemodal",
       "target": "src_utils_cn_cn",
       "relation": "imports",
@@ -28216,19 +28454,19 @@
     },
     {
       "source": "src_components_modals_addexpensemodal",
-      "target": "src_utils_dateutils_gettodaydatestring",
+      "target": "src_utils_categoryhelpers_getallexpensecategories",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L9",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
       "source": "src_components_modals_addexpensemodal",
-      "target": "src_utils_dateutils_parselocaldate",
+      "target": "src_components_modals_addcategorymodal_addcategorymodal",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28480,6 +28718,18 @@
     },
     {
       "source": "src_components_modals_edittransactionmodal",
+      "target": "src_utils_categoryhelpers_getallexpensecategories",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/EditTransactionModal.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_edittransactionmodal",
       "target": "src_utils_dateutils_parselocaldate",
       "relation": "imports",
       "_origin": "ast",
@@ -28492,7 +28742,7 @@
     },
     {
       "source": "src_components_modals_persontransactionmodal",
-      "target": "src_utils_cn_cn",
+      "target": "src_components_modals_addcategorymodal_addcategorymodal",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28500,6 +28750,18 @@
       "context": "import",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
       "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_persontransactionmodal",
+      "target": "src_utils_cn_cn",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
+      "source_location": "L11",
       "weight": 1.0
     },
     {
@@ -28599,6 +28861,30 @@
       "weight": 1.0
     },
     {
+      "source": "src_components_modals_persontransactionmodal",
+      "target": "src_utils_categoryhelpers_getallexpensecategories",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_settlemodal",
+      "target": "src_features_budget_budgetengine_transaction",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/SettleModal.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
       "source": "src_components_modals_settlemodal",
       "target": "src_store_usestore_usestore",
       "relation": "imports",
@@ -28660,14 +28946,26 @@
     },
     {
       "source": "src_components_modals_settlemodal",
-      "target": "src_features_budget_budgetengine_transaction",
+      "target": "src_utils_categoryhelpers_getallexpensecategories",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L9",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_settlemodal",
+      "target": "src_components_modals_addcategorymodal_addcategorymodal",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/SettleModal.tsx",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -29255,7 +29553,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -29267,7 +29565,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -29279,7 +29577,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -29291,7 +29589,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -29303,7 +29601,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -29812,7 +30110,7 @@
     },
     {
       "source": "src_store_usestore",
-      "target": "src_lib_supabase_supabase",
+      "target": "src_utils_categoryhelpers_categorymeta",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -29824,7 +30122,7 @@
     },
     {
       "source": "src_store_usestore",
-      "target": "src_store_useauthstore_useauthstore",
+      "target": "src_lib_supabase_supabase",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -29832,6 +30130,18 @@
       "context": "import",
       "source_file": "src/store/useStore.ts",
       "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_store_usestore",
+      "target": "src_store_useauthstore_useauthstore",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -30279,6 +30589,79 @@
       "weight": 1.0
     },
     {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_store_usestore",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_components_ui_button",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_components_ui_input",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_utils_cn",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_utils_categoryhelpers",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L7",
+      "type_only": true,
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addexpensemodal",
+      "target": "src_utils_dateutils",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/AddExpenseModal.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
       "source": "src_components_modals_addexpensemodal",
       "target": "src_utils_cn",
       "relation": "imports_from",
@@ -30352,7 +30735,7 @@
     },
     {
       "source": "src_components_modals_addexpensemodal",
-      "target": "src_utils_dateutils",
+      "target": "src_components_modals_addcategorymodal",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -30605,7 +30988,7 @@
     },
     {
       "source": "src_components_modals_persontransactionmodal",
-      "target": "src_utils_cn",
+      "target": "src_components_modals_addcategorymodal",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -30617,6 +31000,18 @@
     },
     {
       "source": "src_components_modals_persontransactionmodal",
+      "target": "src_utils_cn",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/PersonTransactionModal.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_persontransactionmodal",
       "target": "src_store_usestore",
       "relation": "imports_from",
       "_origin": "ast",
@@ -30690,6 +31085,19 @@
     },
     {
       "source": "src_components_modals_settlemodal",
+      "target": "src_features_budget_budgetengine",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/components/modals/SettleModal.tsx",
+      "source_location": "L10",
+      "type_only": true,
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_settlemodal",
       "target": "src_store_usestore",
       "relation": "imports_from",
       "_origin": "ast",
@@ -30739,15 +31147,14 @@
     },
     {
       "source": "src_components_modals_settlemodal",
-      "target": "src_features_budget_budgetengine",
+      "target": "src_components_modals_addcategorymodal",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L9",
-      "type_only": true,
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -31253,7 +31660,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -31265,7 +31672,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -31277,7 +31684,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -31289,7 +31696,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -31301,7 +31708,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L21",
+      "source_location": "L22",
       "type_only": true,
       "weight": 1.0
     },
@@ -31692,7 +32099,7 @@
     },
     {
       "source": "src_store_usestore",
-      "target": "src_lib_supabase",
+      "target": "src_utils_categoryhelpers",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -31700,6 +32107,19 @@
       "context": "import",
       "source_file": "src/store/useStore.ts",
       "source_location": "L4",
+      "type_only": true,
+      "weight": 1.0
+    },
+    {
+      "source": "src_store_usestore",
+      "target": "src_lib_supabase",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L5",
       "weight": 1.0
     },
     {
@@ -32336,6 +32756,50 @@
       "weight": 1.0
     },
     {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_components_modals_addcategorymodal_available_icons",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_components_modals_addcategorymodal_available_colors",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_components_modals_addcategorymodal_addcategorymodal",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_addcategorymodal",
+      "target": "src_components_modals_addcategorymodal_addcategorymodalprops",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/modals/AddCategoryModal.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
       "source": "src_components_modals_addexpensemodal",
       "target": "src_components_modals_addexpensemodal_addexpensemodalprops",
       "relation": "contains",
@@ -32343,7 +32807,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0
     },
     {
@@ -32354,7 +32818,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/AddExpenseModal.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -32453,7 +32917,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -32464,7 +32928,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -32475,7 +32939,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -32486,7 +32950,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -32970,7 +33434,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -33063,13 +33527,24 @@
     },
     {
       "source": "src_store_usestore",
+      "target": "src_store_usestore_usestore",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "src_store_usestore",
       "target": "src_store_usestore_appstate",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -33080,7 +33555,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L60",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -33091,18 +33566,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L66",
-      "weight": 1.0
-    },
-    {
-      "source": "src_store_usestore",
-      "target": "src_store_usestore_person",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L7",
+      "source_location": "L72",
       "weight": 1.0
     },
     {
@@ -33113,7 +33577,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L72",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "src_store_usestore",
+      "target": "src_store_usestore_person",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/store/useStore.ts",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -33124,7 +33599,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L75",
+      "source_location": "L81",
       "weight": 1.0
     },
     {
@@ -33135,18 +33610,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L87",
-      "weight": 1.0
-    },
-    {
-      "source": "src_store_usestore",
-      "target": "src_store_usestore_usestore",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/store/useStore.ts",
-      "source_location": "L95",
+      "source_location": "L93",
       "weight": 1.0
     },
     {
@@ -33184,13 +33648,24 @@
     },
     {
       "source": "src_utils_categoryhelpers",
-      "target": "src_utils_categoryhelpers_getcategorymeta",
+      "target": "src_utils_categoryhelpers_getallexpensecategories",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/utils/categoryHelpers.ts",
       "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_categoryhelpers",
+      "target": "src_utils_categoryhelpers_getcategorymeta",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils/categoryHelpers.ts",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -49937,5 +50412,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "a07bdaa0110e134c70e376962115d808d541a189"
+  "built_at_commit": "e551cd1c2cec68255be1b2a206fd546b67abe1ea"
 }

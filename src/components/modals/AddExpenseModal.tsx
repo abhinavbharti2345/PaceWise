@@ -5,7 +5,8 @@ import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
-import { EXPENSE_CATEGORIES } from '../../utils/categoryHelpers';
+import { EXPENSE_CATEGORIES, getAllExpenseCategories } from '../../utils/categoryHelpers';
+import { AddCategoryModal } from './AddCategoryModal';
 import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
 import { useEffect } from 'react';
 
@@ -15,7 +16,9 @@ interface AddExpenseModalProps {
 }
 
 export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
-  const addTransaction = useStore((state) => state.addTransaction);
+  const { addTransaction, customCategories } = useStore();
+  const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+  const allCategories = getAllExpenseCategories(customCategories);
   
   const [amount, setAmount] = useState('');
   const [reason, setReason] = useState('');
@@ -145,7 +148,7 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
               Category
             </label>
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-              {EXPENSE_CATEGORIES.map((cat) => {
+              {allCategories.map((cat) => {
                 const isSelected = selectedCategory === cat.name;
                 return (
                   <button
@@ -164,6 +167,13 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
                   </button>
                 );
               })}
+              <button
+                type="button"
+                onClick={() => setIsAddCategoryOpen(true)}
+                className="flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-xs font-bold border border-dashed border-purple-400 text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-950/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all"
+              >
+                <span>+ Custom</span>
+              </button>
             </div>
 
             {selectedCategory === 'Other' && (
@@ -223,6 +233,12 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
           </div>
         </form>
       </div>
+
+      <AddCategoryModal 
+        isOpen={isAddCategoryOpen}
+        onClose={() => setIsAddCategoryOpen(false)}
+        onCategoryAdded={(newCat) => setSelectedCategory(newCat)}
+      />
     </div>
   );
 }

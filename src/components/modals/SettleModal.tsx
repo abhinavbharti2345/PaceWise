@@ -4,7 +4,8 @@ import { useStore } from '../../store/useStore';
 import type { Person } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { cn } from '../../utils/cn';
-import { EXPENSE_CATEGORIES } from '../../utils/categoryHelpers';
+import { EXPENSE_CATEGORIES, getAllExpenseCategories } from '../../utils/categoryHelpers';
+import { AddCategoryModal } from './AddCategoryModal';
 
 import type { Transaction } from '../../features/budget/budgetEngine';
 
@@ -16,7 +17,9 @@ interface SettleModalProps {
 }
 
 export function SettleModal({ isOpen, onClose, person, transactionToSettle }: SettleModalProps) {
-  const { settleDebt, transactions } = useStore();
+  const { settleDebt, transactions, customCategories } = useStore();
+  const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+  const allCategories = getAllExpenseCategories(customCategories);
   
   const absBalance = Math.abs(person.balance);
   const isPersonOwing = person.balance > 0; // Person owes user -> User will receive money
@@ -232,7 +235,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                   Expense Category (Deducted from budget)
                 </label>
                 <div className="grid grid-cols-3 gap-2">
-                  {EXPENSE_CATEGORIES.map((cat) => {
+                  {allCategories.map((cat) => {
                     const isSelected = selectedCategory === cat.name;
                     return (
                       <button
@@ -251,6 +254,13 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                       </button>
                     );
                   })}
+                  <button
+                    type="button"
+                    onClick={() => setIsAddCategoryOpen(true)}
+                    className="flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-[10px] sm:text-xs font-bold border border-dashed border-purple-400 text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-950/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all"
+                  >
+                    <span>+ Custom</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -344,6 +354,12 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
             </Button>
           </div>
         </form>
+
+        <AddCategoryModal 
+          isOpen={isAddCategoryOpen}
+          onClose={() => setIsAddCategoryOpen(false)}
+          onCategoryAdded={(newCat) => setSelectedCategory(newCat)}
+        />
       </div>
     </div>
   );

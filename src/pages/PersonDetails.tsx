@@ -12,7 +12,8 @@ import {
   CheckCircle, 
   Trash2, 
   Clock, 
-  Receipt 
+  Receipt,
+  ShoppingCart
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { PersonTransactionModal } from '../components/modals/PersonTransactionModal';
@@ -142,14 +143,12 @@ export function PersonDetails() {
         </div>
 
         {/* Primary Action Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 pt-6 border-t border-[var(--color-gray-light)]">
+        <div className="mt-6 pt-6 border-t border-[var(--color-gray-light)] space-y-3">
           {!isSettled && (
             <Button 
               variant="primary" 
               onClick={handleSettleAll}
-              className={cn(
-                "w-full font-bold flex items-center justify-center gap-2",
-              )}
+              className="w-full font-bold flex items-center justify-center gap-2 py-3 shadow-sm text-base"
               style={isOwedToUser ? {background: 'var(--positive-accent)'} : undefined}
             >
               <CheckCircle size={18} />
@@ -157,44 +156,46 @@ export function PersonDetails() {
             </Button>
           )}
 
-          <Button 
-            variant="outline" 
-            onClick={() => handleOpenTransaction('gave')}
-            className="w-full font-semibold flex items-center justify-center gap-2"
-            style={{
-              color: 'var(--positive-text)',
-              borderColor: 'var(--positive-border)',
-            }}
-          >
-            <ArrowUpRight size={18} />
-            <span>Lent Money (+₹)</span>
-          </Button>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
+            <Button 
+              variant="outline" 
+              onClick={() => handleOpenTransaction('gave')}
+              className="w-full font-bold flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs"
+              style={{
+                color: 'var(--positive-text)',
+                borderColor: 'var(--positive-border)',
+              }}
+            >
+              <ArrowUpRight size={16} className="shrink-0" />
+              <span>Lent (+₹)</span>
+            </Button>
 
-          <Button 
-            variant="outline" 
-            onClick={() => handleOpenTransaction('took')}
-            className="w-full font-semibold flex items-center justify-center gap-2"
-            style={{
-              color: 'var(--negative-text)',
-              borderColor: 'var(--negative-border)',
-            }}
-          >
-            <ArrowDownRight size={18} />
-            <span>Borrowed (-₹)</span>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            onClick={() => handleOpenTransaction('bought_for_me')}
-            className="w-full font-semibold flex items-center justify-center gap-2"
-            style={{
-              color: 'var(--negative-text)',
-              borderColor: 'var(--negative-border)',
-            }}
-          >
-            <span className="text-lg">🛒</span>
-            <span>Bought for Me (-₹)</span>
-          </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => handleOpenTransaction('took')}
+              className="w-full font-bold flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs"
+              style={{
+                color: 'var(--negative-text)',
+                borderColor: 'var(--negative-border)',
+              }}
+            >
+              <ArrowDownRight size={16} className="shrink-0" />
+              <span>Borrowed (-₹)</span>
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              onClick={() => handleOpenTransaction('bought_for_me')}
+              className="col-span-2 sm:col-span-1 w-full font-bold flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs"
+              style={{
+                color: 'var(--negative-text)',
+                borderColor: 'var(--negative-border)',
+              }}
+            >
+              <ShoppingCart size={16} className="shrink-0" />
+              <span>Bought for Me (-₹)</span>
+            </Button>
+          </div>
         </div>
       </div>
 

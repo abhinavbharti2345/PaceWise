@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { calculateBudget, type Transaction, type BudgetConfig } from '../features/budget/budgetEngine';
+import type { CategoryMeta } from '../utils/categoryHelpers';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from './useAuthStore';
 
@@ -15,7 +16,12 @@ interface AppState {
   config: BudgetConfig;
   transactions: Transaction[];
   people: Person[];
+  customCategories: CategoryMeta[];
   isHydrated: boolean; // true once Supabase data has been loaded for the current user
+  
+  // Custom Categories actions
+  addCustomCategory: (cat: CategoryMeta) => void;
+  deleteCustomCategory: (name: string) => void;
   
   // Actions
   setConfig: (config: BudgetConfig) => void;
@@ -98,7 +104,18 @@ export const useStore = create<AppState>()(
       config: defaultConfig,
       transactions: [],
       people: [],
+      customCategories: [],
       isHydrated: false,
+
+      addCustomCategory: (cat) => set((state) => {
+        const exists = state.customCategories.some(c => c.name.toLowerCase() === cat.name.toLowerCase());
+        if (exists) return state;
+        return { customCategories: [...state.customCategories, cat] };
+      }),
+
+      deleteCustomCategory: (name) => set((state) => ({
+        customCategories: state.customCategories.filter(c => c.name.toLowerCase() !== name.toLowerCase())
+      })),
 
       setConfig: (config) => set({ config }),
       

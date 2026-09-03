@@ -38,7 +38,15 @@ export const INCOME_SOURCES: CategoryMeta[] = [
   { name: 'Gift / Other', icon: 'Gift', color: 'green' },
 ];
 
-export function getCategoryMeta(type: string, category?: string): CategoryMeta {
+export function getAllExpenseCategories(customCategories: CategoryMeta[] = []): CategoryMeta[] {
+  // Put standard categories (except 'Other') first, then custom categories, then 'Other'
+  const standardWithoutOther = EXPENSE_CATEGORIES.filter(c => c.name !== 'Other');
+  const otherCat = EXPENSE_CATEGORIES.find(c => c.name === 'Other') || { name: 'Other', icon: 'MoreHorizontal', color: 'gray' };
+  
+  return [...standardWithoutOther, ...customCategories, otherCat];
+}
+
+export function getCategoryMeta(type: string, category?: string, customCategories: CategoryMeta[] = []): CategoryMeta {
   if (type === 'income') {
     const match = INCOME_SOURCES.find(s => s.name.toLowerCase() === category?.toLowerCase());
     return match || { name: category || 'Income', icon: 'ArrowDownRight', color: 'green' };
@@ -53,7 +61,10 @@ export function getCategoryMeta(type: string, category?: string): CategoryMeta {
     return { name: category || 'People', icon: 'UserCheck', color: 'blue' };
   }
 
-  // Expense fallback
+  // Expense fallback (check custom categories first, then standard)
+  const customMatch = customCategories.find(c => c.name.toLowerCase() === category?.toLowerCase());
+  if (customMatch) return customMatch;
+
   const match = EXPENSE_CATEGORIES.find(c => c.name.toLowerCase() === category?.toLowerCase());
   return match || { name: category || 'Expense', icon: 'Receipt', color: 'orange' };
 }
