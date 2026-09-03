@@ -515,7 +515,7 @@ export function Insights() {
                   <div className="min-w-0">
                     <div className="text-[11px] font-medium text-[var(--color-dark)] truncate">{t.reason || t.category || 'Purchase'}</div>
                     <div className="text-[10px] font-medium text-[var(--color-gray-dark)]">
-                      {format(new Date(t.date), 'MMM dd')} • {t.category || t.type}
+                      {format(new Date(t.date), 'MMM dd')} • {t.personName ? t.personName : (t.category || t.type)}
                     </div>
                   </div>
                 </div>

@@ -186,11 +186,12 @@ export function Transactions() {
                             {t.reason || t.category || t.type}
                           </p>
                           <p className="text-[10px] sm:text-xs text-[var(--color-gray-dark)] flex items-center gap-1 sm:gap-2 mt-0.5 truncate">
-                            <span className="font-semibold text-[var(--color-dark)] capitalize shrink-0">{t.category || t.type}</span>
+                            <span className="font-semibold text-[var(--color-dark)] capitalize shrink-0">
+                              {t.personName ? t.personName : (t.category || t.type)}
+                            </span>
                             <span>•</span>
                             <span className="shrink-0">{format(new Date(t.date), 'h:mm a')}</span>
                             {t.paymentMethod && <span className="truncate hidden sm:inline">• {t.paymentMethod}</span>}
-                            {t.personName && <span className="truncate hidden sm:inline">• Friend: {t.personName}</span>}
                           </p>
                         </div>
                       </div>

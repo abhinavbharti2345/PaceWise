@@ -150,16 +150,16 @@
     "semantic_hash": "fa535ad310524494d8f0e4b12962c74e"
   },
   "src/pages/Dashboard.tsx": {
-    "mtime": 1788277319.878174,
-    "seen": 1788460524.0291684,
-    "ast_hash": "703e35bc942bd5885d60466a3c98ff12",
-    "semantic_hash": "703e35bc942bd5885d60466a3c98ff12"
+    "mtime": 1788461632.6053667,
+    "seen": 1788461650.2932382,
+    "ast_hash": "f182cd043bf36f79e3322587e6e53dba",
+    "semantic_hash": ""
   },
   "src/pages/Insights.tsx": {
-    "mtime": 1788271600.3727033,
-    "seen": 1788460524.0291703,
-    "ast_hash": "e9f8268260bc7389103b01d4b2b3d558",
-    "semantic_hash": "e9f8268260bc7389103b01d4b2b3d558"
+    "mtime": 1788461638.4818497,
+    "seen": 1788461650.2932405,
+    "ast_hash": "ef0fbf07ded812d44a4b94b4ba467e9f",
+    "semantic_hash": ""
   },
   "src/pages/People.tsx": {
     "mtime": 1788195399.8831162,
@@ -174,10 +174,10 @@
     "semantic_hash": "60566f5cc9f3e2e72210b243dbd0ac75"
   },
   "src/pages/Transactions.tsx": {
-    "mtime": 1788194667.0948842,
-    "seen": 1788195462.2107863,
-    "ast_hash": "f290a0150d705f1046201e09fa105b3c",
-    "semantic_hash": "f290a0150d705f1046201e09fa105b3c"
+    "mtime": 1788461625.8818562,
+    "seen": 1788461650.2932487,
+    "ast_hash": "2f35d58901edf307db4808f2a8903c42",
+    "semantic_hash": ""
   },
   "src/store/useStore.ts": {
     "mtime": 1788461311.44233,
@@ -840,9 +840,9 @@
     "semantic_hash": ""
   },
   "src/pages/PersonDetails.tsx": {
-    "mtime": 1788461541.0461972,
-    "seen": 1788461552.5110967,
-    "ast_hash": "4dfe56750ee50eaeb74269c3beed7bf0",
+    "mtime": 1788461572.2944677,
+    "seen": 1788461586.9762602,
+    "ast_hash": "1304c4a70325f847e1c6cd0617088616",
     "semantic_hash": ""
   },
   "src/utils/categoryHelpers.ts": {
