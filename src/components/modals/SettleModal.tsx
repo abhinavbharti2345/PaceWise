@@ -212,9 +212,13 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
             <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-[var(--color-gray-light)] text-center text-[10px]">
               <button
                 type="button"
+                disabled={totalLent <= 0}
                 onClick={handleQuickLentClick}
-                className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] hover:border-emerald-400 hover:shadow-sm active:scale-95 transition-all text-center"
-                title="Quick fill lent amount"
+                className={cn(
+                  "p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] transition-all text-center",
+                  totalLent > 0 ? "hover:border-emerald-400 hover:shadow-sm active:scale-95 cursor-pointer" : "opacity-50 cursor-not-allowed"
+                )}
+                title={totalLent > 0 ? "Quick fill lent amount" : "No lent amount to settle"}
               >
                 <span className="text-[var(--color-gray-dark)] block font-semibold truncate">↗ Lent</span>
                 <span className="font-extrabold text-[var(--color-success)]">
@@ -223,9 +227,13 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
               </button>
               <button
                 type="button"
+                disabled={totalBorrowed <= 0}
                 onClick={handleQuickBorrowedClick}
-                className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] hover:border-rose-400 hover:shadow-sm active:scale-95 transition-all text-center"
-                title="Quick fill borrowed amount"
+                className={cn(
+                  "p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] transition-all text-center",
+                  totalBorrowed > 0 ? "hover:border-rose-400 hover:shadow-sm active:scale-95 cursor-pointer" : "opacity-50 cursor-not-allowed"
+                )}
+                title={totalBorrowed > 0 ? "Quick fill borrowed amount" : "No borrowed amount to settle"}
               >
                 <span className="text-[var(--color-gray-dark)] block font-semibold truncate">↘ Borrowed</span>
                 <span className="font-extrabold text-[var(--color-primary)]">
@@ -234,9 +242,13 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
               </button>
               <button
                 type="button"
+                disabled={totalBoughtForMe <= 0}
                 onClick={handleQuickBoughtForMeClick}
-                className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] hover:border-purple-400 hover:shadow-sm active:scale-95 transition-all text-center"
-                title="Quick fill Bought for Me amount"
+                className={cn(
+                  "p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] transition-all text-center",
+                  totalBoughtForMe > 0 ? "hover:border-purple-400 hover:shadow-sm active:scale-95 cursor-pointer" : "opacity-50 cursor-not-allowed"
+                )}
+                title={totalBoughtForMe > 0 ? "Quick fill Bought for Me amount" : "No purchases to settle"}
               >
                 <span className="text-[var(--color-gray-dark)] block font-semibold truncate">🛒 Bought for Me</span>
                 <span className="font-extrabold text-purple-600 dark:text-purple-400">
