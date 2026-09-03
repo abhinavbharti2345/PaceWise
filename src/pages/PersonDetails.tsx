@@ -53,6 +53,18 @@ export function PersonDetails() {
     .filter((t) => t.personId === person.id)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+  const totalLent = personTransactions
+    .filter(t => t.direction === 'gave' && !t.isBoughtForMeSettlement)
+    .reduce((sum, t) => sum + (t.isSettlement ? -t.amount : t.amount), 0);
+
+  const totalBorrowed = personTransactions
+    .filter(t => t.direction === 'took' && !t.isBoughtForMeSettlement)
+    .reduce((sum, t) => sum + (t.isSettlement ? -t.amount : t.amount), 0);
+
+  const totalBoughtForMe = personTransactions
+    .filter(t => t.direction === 'bought_for_me' && t.status !== 'settled')
+    .reduce((sum, t) => sum + t.amount, 0);
+
   const isOwedToUser = person.balance > 0;
   const isUserOwing = person.balance < 0;
   const isSettled = person.balance === 0;
@@ -139,6 +151,28 @@ export function PersonDetails() {
             )}>
               {formatCurrency(person.balance)}
             </h2>
+          </div>
+        </div>
+
+        {/* 3-Way Financial Breakdown */}
+        <div className="grid grid-cols-3 gap-2 mt-6 pt-4 border-t border-[var(--color-gray-light)] text-center">
+          <div className="p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)]">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">↗ Lent</span>
+            <span className="text-base sm:text-lg font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5 block">
+              ₹{Math.max(0, totalLent).toLocaleString('en-IN')}
+            </span>
+          </div>
+          <div className="p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)]">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">↘ Borrowed</span>
+            <span className="text-base sm:text-lg font-extrabold text-rose-600 dark:text-rose-400 mt-0.5 block">
+              ₹{Math.max(0, totalBorrowed).toLocaleString('en-IN')}
+            </span>
+          </div>
+          <div className="p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)]">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">🛒 Purchases</span>
+            <span className="text-base sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-0.5 block">
+              ₹{totalBoughtForMe.toLocaleString('en-IN')}
+            </span>
           </div>
         </div>
 

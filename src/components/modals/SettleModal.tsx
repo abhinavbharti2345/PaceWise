@@ -26,6 +26,20 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
   const boughtForMeItems = transactions.filter(
     t => t.personId === person.id && t.direction === 'bought_for_me' && t.status !== 'settled'
   );
+
+  const personTxs = transactions.filter(t => t.personId === person.id);
+
+  const totalLent = personTxs
+    .filter(t => t.direction === 'gave' && !t.isBoughtForMeSettlement)
+    .reduce((sum, t) => sum + (t.isSettlement ? -t.amount : t.amount), 0);
+
+  const totalBorrowed = personTxs
+    .filter(t => t.direction === 'took' && !t.isBoughtForMeSettlement)
+    .reduce((sum, t) => sum + (t.isSettlement ? -t.amount : t.amount), 0);
+
+  const totalBoughtForMe = personTxs
+    .filter(t => t.direction === 'bought_for_me' && t.status !== 'settled')
+    .reduce((sum, t) => sum + t.amount, 0);
   
   const [settlementMode, setSettlementMode] = useState<'general' | 'bought_for_me'>('general');
   const [selectedItemId, setSelectedItemId] = useState<string>('');
@@ -152,19 +166,43 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
             </div>
           )}
 
-          {/* Current Status info */}
-          <div className="p-4 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)]">
-            <p className="text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)]">Current Balance</p>
-            <div className="flex items-baseline justify-between mt-1">
-              <span className={cn(
-                "text-2xl font-extrabold",
-                person.balance > 0 ? "text-[var(--color-success)]" : person.balance < 0 ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
-              )}>
-                ₹{absBalance.toLocaleString('en-IN')}
-              </span>
-              <span className="text-xs font-semibold text-[var(--color-gray-dark)]">
+          {/* Current Status info with 3-Way Breakdown */}
+          <div className="p-4 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] space-y-3">
+            <div className="flex items-baseline justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)]">Current Net Balance</p>
+                <span className={cn(
+                  "text-2xl font-extrabold",
+                  person.balance > 0 ? "text-[var(--color-success)]" : person.balance < 0 ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
+                )}>
+                  ₹{absBalance.toLocaleString('en-IN')}
+                </span>
+              </div>
+              <span className="text-xs font-semibold text-[var(--color-gray-dark)] px-2.5 py-1 rounded-full bg-[var(--color-surface)] border border-[var(--color-gray-light)]">
                 {person.balance > 0 ? "They owe you" : person.balance < 0 ? "You owe them" : "All settled"}
               </span>
+            </div>
+
+            {/* 3-Column Breakdown */}
+            <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-[var(--color-gray-light)] text-center text-[10px]">
+              <div className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)]">
+                <span className="text-[var(--color-gray-dark)] block font-semibold">↗ Lent</span>
+                <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
+                  ₹{Math.max(0, totalLent).toLocaleString('en-IN')}
+                </span>
+              </div>
+              <div className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)]">
+                <span className="text-[var(--color-gray-dark)] block font-semibold">↘ Borrowed</span>
+                <span className="font-extrabold text-rose-600 dark:text-rose-400">
+                  ₹{Math.max(0, totalBorrowed).toLocaleString('en-IN')}
+                </span>
+              </div>
+              <div className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)]">
+                <span className="text-[var(--color-gray-dark)] block font-semibold">🛒 Purchases</span>
+                <span className="font-extrabold text-purple-600 dark:text-purple-400">
+                  ₹{totalBoughtForMe.toLocaleString('en-IN')}
+                </span>
+              </div>
             </div>
           </div>
 
