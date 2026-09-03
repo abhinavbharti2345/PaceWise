@@ -525,7 +525,10 @@ export const useStore = create<AppState>()(
               status: newTx.status,
               note,
             }).then(({ error }) => {
-              if (error) console.error('[PaceWise] Failed to insert person transaction:', error);
+              if (error) {
+                console.error('[PaceWise] Failed to insert person transaction:', error);
+                alert(`Supabase Insert Failed: ${error.message}\nHint: ${error.hint || 'No hint'}\nDetails: ${error.details || 'No details'}`);
+              }
             })
           ];
 
