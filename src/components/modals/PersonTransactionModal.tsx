@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ArrowUpRight, ArrowDownRight, AlertCircle, ShoppingCart, Check } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import type { Person } from '../../store/useStore';
@@ -6,10 +6,9 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
 import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
-import { EXPENSE_CATEGORIES, getAllExpenseCategories } from '../../utils/categoryHelpers';
+import { getAllExpenseCategories } from '../../utils/categoryHelpers';
 import { AddCategoryModal } from './AddCategoryModal';
 import { cn } from '../../utils/cn';
-import { useEffect } from 'react';
 
 interface PersonTransactionModalProps {
   isOpen: boolean;
@@ -24,9 +23,13 @@ export function PersonTransactionModal({
   person,
   defaultDirection = 'gave'
 }: PersonTransactionModalProps) {
-  const { recordPersonTransaction, customCategories } = useStore();
+  const { recordPersonTransaction, transactions, customCategories } = useStore();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const allCategories = getAllExpenseCategories(customCategories);
+
+  const boughtForMeItems = transactions.filter(
+    t => t.personId === person.id && t.direction === 'bought_for_me' && t.status !== 'settled'
+  );
   
   const [amount, setAmount] = useState('');
   const [direction, setDirection] = useState<'gave' | 'took' | 'bought_for_me'>(defaultDirection);
@@ -157,6 +160,20 @@ export function PersonTransactionModal({
             </div>
           </div>
 
+          {/* Guidance Banner when lending cash to someone with unsettled purchases */}
+          {direction === 'gave' && boughtForMeItems.length > 0 && (
+            <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5 animate-in slide-in-from-top-2 fade-in duration-200">
+              <AlertCircle size={16} className="shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+              <div>
+                <p className="font-bold">Paying back a purchase?</p>
+                <p className="text-[11px] text-amber-700 dark:text-amber-400 mt-0.5 leading-normal">
+                  You have {boughtForMeItems.length} unsettled "Bought for Me" purchase(s) with {person.name}. To pay off a purchase and log it as a budget expense, use <strong>Settle Item</strong> on their page instead.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Category Picker when Bought for Me is selected */}
           {direction === 'bought_for_me' && (
             <div className="animate-in slide-in-from-top-2 fade-in duration-200">
               <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">
@@ -240,6 +257,7 @@ export function PersonTransactionModal({
               }}
             />
           </div>
+
           {/* Date */}
           <DatePicker 
             label="Date"
