@@ -517,11 +517,12 @@ export const useStore = create<AppState>()(
               type: 'person',
               amount,
               date: txDate,
-              category: 'People',
+              category: newTx.category || 'People',
               reason: newTx.reason,
               person_id: personId,
               person_name: personName,
               direction,
+              status: newTx.status,
               note,
             }).then(({ error }) => {
               if (error) console.error('[PaceWise] Failed to insert person transaction:', error);

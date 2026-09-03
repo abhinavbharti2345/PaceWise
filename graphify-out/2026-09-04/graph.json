@@ -871,7 +871,7 @@
       "file_type": "code",
       "norm_label": "persondetails()",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L23"
+      "source_location": "L24"
     },
     {
       "id": "src_pages_profile_profile",
@@ -27393,7 +27393,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L109",
+      "source_location": "L110",
       "weight": 1.0
     },
     {
@@ -27405,7 +27405,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L26",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -29553,7 +29553,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -29565,7 +29565,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -29577,7 +29577,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -29589,7 +29589,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -29601,7 +29601,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -31660,7 +31660,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -31672,7 +31672,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -31684,7 +31684,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -31696,7 +31696,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -31708,7 +31708,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L21",
+      "source_location": "L22",
       "type_only": true,
       "weight": 1.0
     },
@@ -33434,7 +33434,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0
     },
     {

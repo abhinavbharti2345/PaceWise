@@ -14,7 +14,7 @@
       "file_type": "code",
       "norm_label": "errorboundaryprops",
       "source_file": "src/App.tsx",
-      "source_location": "L20"
+      "source_location": "L21"
     },
     {
       "id": "src_app_errorboundarystate",
@@ -27,7 +27,7 @@
       "file_type": "code",
       "norm_label": "errorboundarystate",
       "source_file": "src/App.tsx",
-      "source_location": "L24"
+      "source_location": "L25"
     },
     {
       "id": "src_components_modals_addbillmodal_addbillmodalprops",
@@ -391,7 +391,7 @@
       "file_type": "code",
       "norm_label": "errorboundary",
       "source_file": "src/App.tsx",
-      "source_location": "L29"
+      "source_location": "L30"
     },
     {
       "id": "src_app_app",
@@ -403,7 +403,7 @@
       "file_type": "code",
       "norm_label": "app()",
       "source_file": "src/App.tsx",
-      "source_location": "L145"
+      "source_location": "L153"
     },
     {
       "id": "src_app_appcontent",
@@ -415,7 +415,7 @@
       "file_type": "code",
       "norm_label": "appcontent()",
       "source_file": "src/App.tsx",
-      "source_location": "L72"
+      "source_location": "L73"
     },
     {
       "id": "src_components_layout_applayout_applayout",
@@ -814,6 +814,18 @@
       "source_location": "L27"
     },
     {
+      "id": "src_pages_emailverificationpending_emailverificationpending",
+      "label": "EmailVerificationPending()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "emailverificationpending()",
+      "source_file": "src/pages/EmailVerificationPending.tsx",
+      "source_location": "L6"
+    },
+    {
       "id": "src_pages_insights_formatcurrency",
       "label": "formatCurrency()",
       "_callable": true,
@@ -919,7 +931,7 @@
       "file_type": "code",
       "norm_label": "fetchandsetprofile()",
       "source_file": "src/store/useAuthStore.ts",
-      "source_location": "L31"
+      "source_location": "L32"
     },
     {
       "id": "src_store_usestore_calculatepersonbalance",
@@ -1027,7 +1039,7 @@
       "file_type": "code",
       "norm_label": ".componentdidcatch()",
       "source_file": "src/App.tsx",
-      "source_location": "L39"
+      "source_location": "L40"
     },
     {
       "id": "src_app_errorboundary_constructor",
@@ -1039,7 +1051,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "src/App.tsx",
-      "source_location": "L30"
+      "source_location": "L31"
     },
     {
       "id": "src_app_errorboundary_getderivedstatefromerror",
@@ -1051,7 +1063,7 @@
       "file_type": "code",
       "norm_label": ".getderivedstatefromerror()",
       "source_file": "src/App.tsx",
-      "source_location": "L35"
+      "source_location": "L36"
     },
     {
       "id": "src_app_errorboundary_render",
@@ -1063,7 +1075,7 @@
       "file_type": "code",
       "norm_label": ".render()",
       "source_file": "src/App.tsx",
-      "source_location": "L43"
+      "source_location": "L44"
     },
     {
       "id": "scratch_check_schema_check",
@@ -1441,6 +1453,17 @@
       "source_location": "L1"
     },
     {
+      "id": "src_pages_emailverificationpending",
+      "label": "EmailVerificationPending.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "emailverificationpending.tsx",
+      "source_file": "src/pages/EmailVerificationPending.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "src_pages_insights",
       "label": "Insights.tsx",
       "_origin": "ast",
@@ -1537,7 +1560,7 @@
       "file_type": "code",
       "norm_label": "useauthstore",
       "source_file": "src/store/useAuthStore.ts",
-      "source_location": "L65"
+      "source_location": "L66"
     },
     {
       "id": "src_store_usestore",
@@ -26601,7 +26624,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/App.tsx",
-      "source_location": "L73",
+      "source_location": "L74",
       "weight": 1.0
     },
     {
@@ -26613,7 +26636,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/App.tsx",
-      "source_location": "L74",
+      "source_location": "L75",
       "weight": 1.0
     },
     {
@@ -26625,7 +26648,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/App.tsx",
-      "source_location": "L77",
+      "source_location": "L78",
       "weight": 1.0
     },
     {
@@ -26637,7 +26660,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/App.tsx",
-      "source_location": "L80",
+      "source_location": "L81",
       "weight": 1.0
     },
     {
@@ -27265,6 +27288,18 @@
       "weight": 1.0
     },
     {
+      "source": "src_pages_emailverificationpending_emailverificationpending",
+      "target": "src_store_useauthstore_useauthstore",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/pages/EmailVerificationPending.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
       "source": "src_pages_insights_burndownchart",
       "target": "src_utils_cn_cn",
       "relation": "calls",
@@ -27549,7 +27584,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/store/useAuthStore.ts",
-      "source_location": "L191",
+      "source_location": "L209",
       "weight": 1.0
     },
     {
@@ -28010,7 +28045,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_profile_profile",
+      "target": "src_pages_emailverificationpending_emailverificationpending",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28022,7 +28057,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_store_usestore_usestore",
+      "target": "src_pages_profile_profile",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28034,7 +28069,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_store_useauthstore_useauthstore",
+      "target": "src_store_usestore_usestore",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28046,7 +28081,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_lib_supabasesync_usesupabasesync",
+      "target": "src_store_useauthstore_useauthstore",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28058,7 +28093,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_hooks_usemonthrollover_usemonthrollover",
+      "target": "src_lib_supabasesync_usesupabasesync",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28066,6 +28101,18 @@
       "context": "import",
       "source_file": "src/App.tsx",
       "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app",
+      "target": "src_hooks_usemonthrollover_usemonthrollover",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/App.tsx",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -29413,6 +29460,30 @@
       "weight": 1.0
     },
     {
+      "source": "src_pages_emailverificationpending",
+      "target": "src_store_useauthstore_useauthstore",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/pages/EmailVerificationPending.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_pages_emailverificationpending",
+      "target": "src_components_ui_button_button",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/pages/EmailVerificationPending.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
       "source": "src_pages_insights",
       "target": "src_store_usestore_usestore",
       "relation": "imports",
@@ -30314,7 +30385,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_pages_profile",
+      "target": "src_pages_emailverificationpending",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -30326,7 +30397,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_store_usestore",
+      "target": "src_pages_profile",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -30338,7 +30409,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_store_useauthstore",
+      "target": "src_store_usestore",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -30350,7 +30421,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_lib_supabasesync",
+      "target": "src_store_useauthstore",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -30362,7 +30433,7 @@
     },
     {
       "source": "src_app",
-      "target": "src_hooks_usemonthrollover",
+      "target": "src_lib_supabasesync",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -30370,6 +30441,18 @@
       "context": "import",
       "source_file": "src/App.tsx",
       "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app",
+      "target": "src_hooks_usemonthrollover",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/App.tsx",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -31532,6 +31615,30 @@
       "weight": 1.0
     },
     {
+      "source": "src_pages_emailverificationpending",
+      "target": "src_store_useauthstore",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/pages/EmailVerificationPending.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_pages_emailverificationpending",
+      "target": "src_components_ui_button",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/pages/EmailVerificationPending.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
       "source": "src_pages_insights",
       "target": "src_store_usestore",
       "relation": "imports_from",
@@ -32664,7 +32771,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L145",
+      "source_location": "L153",
       "weight": 1.0
     },
     {
@@ -32675,7 +32782,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -32686,7 +32793,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -32697,7 +32804,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L29",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -32708,7 +32815,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L72",
+      "source_location": "L73",
       "weight": 1.0
     },
     {
@@ -33372,6 +33479,17 @@
       "weight": 1.0
     },
     {
+      "source": "src_pages_emailverificationpending",
+      "target": "src_pages_emailverificationpending_emailverificationpending",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/pages/EmailVerificationPending.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
       "source": "src_pages_insights",
       "target": "src_pages_insights_insights",
       "relation": "contains",
@@ -33500,7 +33618,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useAuthStore.ts",
-      "source_location": "L31",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -33522,7 +33640,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useAuthStore.ts",
-      "source_location": "L65",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -34160,7 +34278,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -34171,7 +34289,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L35",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -34182,7 +34300,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L39",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -34193,7 +34311,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L43",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
@@ -50412,5 +50530,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e551cd1c2cec68255be1b2a206fd546b67abe1ea"
+  "built_at_commit": "e8cf2b750f5e89be6804622b5976043a9fc2fadd"
 }

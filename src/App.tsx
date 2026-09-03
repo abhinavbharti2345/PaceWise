@@ -9,6 +9,7 @@ import { PersonDetails } from './pages/PersonDetails';
 import { Insights } from './pages/Insights';
 import { Settings } from './pages/Settings';
 import { AuthPage } from './pages/Auth';
+import { EmailVerificationPending } from './pages/EmailVerificationPending';
 import { Profile } from './pages/Profile';
 import { useStore } from './store/useStore';
 import { useAuthStore } from './store/useAuthStore';
@@ -111,6 +112,13 @@ function AppContent() {
   // Not authenticated → show auth page
   if (!user) {
     return <AuthPage />;
+  }
+
+  // Check email confirmation (skip for OAuth providers like Google)
+  const isEmailConfirmed = !!user.email_confirmed_at || user.app_metadata?.provider !== 'email';
+
+  if (!isEmailConfirmed) {
+    return <EmailVerificationPending />;
   }
 
   // Authenticated but Supabase data hasn't loaded yet → show loading
