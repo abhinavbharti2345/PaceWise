@@ -114,7 +114,10 @@ export function People() {
               </div>
               <p className="text-2xl sm:text-3xl font-extrabold text-[var(--color-success)] truncate">{formatCurrency(toReceive)}</p>
               <p className="text-[10px] sm:text-xs mt-1 font-medium truncate" style={{color: 'var(--positive-text)'}}>
-                {people.filter(p => (p.balance || 0) > 0).length} people owe you
+                {(() => {
+                  const count = people.filter(p => (p.balance || 0) > 0).length;
+                  return count === 1 ? '1 person owes you' : `${count} people owe you`;
+                })()}
               </p>
             </div>
           </Card>
@@ -130,7 +133,10 @@ export function People() {
               </div>
               <p className="text-2xl sm:text-3xl font-extrabold text-[var(--color-primary)] truncate">{formatCurrency(toGive)}</p>
               <p className="text-[10px] sm:text-xs mt-1 font-medium truncate" style={{color: 'var(--negative-text)'}}>
-                You owe {people.filter(p => (p.balance || 0) < 0).length} people
+                {(() => {
+                  const count = people.filter(p => (p.balance || 0) < 0).length;
+                  return count === 1 ? 'You owe 1 person' : `You owe ${count} people`;
+                })()}
               </p>
             </div>
           </Card>
