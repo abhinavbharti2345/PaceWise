@@ -1,7 +1,7 @@
 # Graph Report - PaceWise  (2026-09-04)
 
 ## Corpus Check
-- 167 files · ~138,866 words
+- 167 files · ~138,932 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e2f5bdc6`
+- Built from commit: `eb8761f7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

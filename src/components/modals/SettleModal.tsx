@@ -187,13 +187,13 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
             <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-[var(--color-gray-light)] text-center text-[10px]">
               <div className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)]">
                 <span className="text-[var(--color-gray-dark)] block font-semibold">↗ Lent</span>
-                <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
+                <span className="font-extrabold text-[var(--color-success)]">
                   ₹{Math.max(0, totalLent).toLocaleString('en-IN')}
                 </span>
               </div>
               <div className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)]">
                 <span className="text-[var(--color-gray-dark)] block font-semibold">↘ Borrowed</span>
-                <span className="font-extrabold text-rose-600 dark:text-rose-400">
+                <span className="font-extrabold text-[var(--color-primary)]">
                   ₹{Math.max(0, totalBorrowed).toLocaleString('en-IN')}
                 </span>
               </div>

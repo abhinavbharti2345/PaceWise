@@ -834,15 +834,15 @@
     "semantic_hash": ""
   },
   "src/components/modals/SettleModal.tsx": {
-    "mtime": 1788462697.5965245,
-    "seen": 1788462710.5808208,
-    "ast_hash": "1574f7c5a436017e7c1ce295d722be47",
+    "mtime": 1788462969.5531805,
+    "seen": 1788462993.8282537,
+    "ast_hash": "59116867b6d241a8e60fdb3e01da584d",
     "semantic_hash": ""
   },
   "src/pages/PersonDetails.tsx": {
-    "mtime": 1788461572.2944677,
-    "seen": 1788461586.9762602,
-    "ast_hash": "1304c4a70325f847e1c6cd0617088616",
+    "mtime": 1788462979.711941,
+    "seen": 1788462993.8282926,
+    "ast_hash": "ca098a0e1449563dc7c9d4c76ff9fa48",
     "semantic_hash": ""
   },
   "src/utils/categoryHelpers.ts": {

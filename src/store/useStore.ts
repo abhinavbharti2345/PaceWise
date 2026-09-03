@@ -581,11 +581,16 @@ export const useStore = create<AppState>()(
           newTransactions = [expenseTx, ...newTransactions];
         }
 
-        // Mark the specific transaction as settled
+        // Mark the specific transaction as settled if full amount is covered
+        let isFullyCovered = true;
         if (settleTransactionId) {
-          newTransactions = newTransactions.map(tx => 
-            tx.id === settleTransactionId ? { ...tx, status: 'settled' } : tx
-          );
+          const targetTx = state.transactions.find(tx => tx.id === settleTransactionId);
+          isFullyCovered = !targetTx || amount >= targetTx.amount;
+          if (isFullyCovered) {
+            newTransactions = newTransactions.map(tx => 
+              tx.id === settleTransactionId ? { ...tx, status: 'settled' } : tx
+            );
+          }
         }
 
         const newBalance = calculatePersonBalance(personId, newTransactions);
@@ -624,6 +629,7 @@ export const useStore = create<AppState>()(
             person_name: personName,
             direction: txDirection,
             is_settlement: true,
+            is_bought_for_me_settlement: !!expenseCategory,
             note,
           }).then(({ error }) => {
             if (error) {
@@ -633,6 +639,16 @@ export const useStore = create<AppState>()(
             }
           })
         ];
+
+        if (settleTransactionId && isFullyCovered) {
+          promises.push(
+            supabase.from('transactions').update({ status: 'settled' })
+              .eq('id', settleTransactionId).eq('user_id', user.id)
+              .then(({ error }) => {
+                if (error) console.error('[PaceWise DB] Failed to update target transaction status in Supabase:', error);
+              })
+          );
+        }
 
         if (expenseTx) {
           promises.push(

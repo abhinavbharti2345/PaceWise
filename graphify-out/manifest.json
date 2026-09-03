@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "src/store/useStore.ts": {
-    "mtime": 1788461911.2056975,
-    "seen": 1788461926.92883,
-    "ast_hash": "a6a88065dcc1d69dfa867533d35d5aa9",
+    "mtime": 1788463059.2741728,
+    "seen": 1788463078.3992069,
+    "ast_hash": "d0cea9654ebb0ee9c161cf0d1fc5bd9d",
     "semantic_hash": ""
   },
   "src/utils/cn.ts": {
@@ -834,15 +834,15 @@
     "semantic_hash": ""
   },
   "src/components/modals/SettleModal.tsx": {
-    "mtime": 1788462969.5531805,
-    "seen": 1788462993.8282537,
-    "ast_hash": "59116867b6d241a8e60fdb3e01da584d",
+    "mtime": 1788463111.2955682,
+    "seen": 1788463122.6259694,
+    "ast_hash": "507c6a00fa4e4f8d78922d14ec453c0e",
     "semantic_hash": ""
   },
   "src/pages/PersonDetails.tsx": {
-    "mtime": 1788462979.711941,
-    "seen": 1788462993.8282926,
-    "ast_hash": "ca098a0e1449563dc7c9d4c76ff9fa48",
+    "mtime": 1788463104.5304012,
+    "seen": 1788463122.6259992,
+    "ast_hash": "f5fa6f9f8071762f58121d71ca787193",
     "semantic_hash": ""
   },
   "src/utils/categoryHelpers.ts": {
@@ -864,9 +864,9 @@
     "semantic_hash": "808d3e82e8e32442631c529913ae3728"
   },
   "src/lib/supabaseSync.ts": {
-    "mtime": 1788460727.1515834,
-    "seen": 1788461020.726979,
-    "ast_hash": "1cec5e38e483d17247130bf194b9acbc",
+    "mtime": 1788463064.9219391,
+    "seen": 1788463078.3991952,
+    "ast_hash": "b7d5dec1517e7caaf0199bd9465c5992",
     "semantic_hash": ""
   },
   "src/pages/Auth.tsx": {

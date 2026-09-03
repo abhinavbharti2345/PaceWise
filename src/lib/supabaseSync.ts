@@ -202,6 +202,7 @@ export function useSupabaseSync() {
             personName: tx.person_name,
             direction: tx.direction,
             isSettlement: tx.is_settlement,
+            isBoughtForMeSettlement: tx.is_bought_for_me_settlement,
             paymentMethod: tx.payment_method,
             note: tx.note,
             status: tx.status,
