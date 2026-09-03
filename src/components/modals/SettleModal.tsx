@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { X, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, CheckCircle, AlertCircle, ShoppingCart, DollarSign, Check } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import type { Person } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { cn } from '../../utils/cn';
+import { EXPENSE_CATEGORIES } from '../../utils/categoryHelpers';
 
 import type { Transaction } from '../../features/budget/budgetEngine';
 
@@ -15,11 +16,19 @@ interface SettleModalProps {
 }
 
 export function SettleModal({ isOpen, onClose, person, transactionToSettle }: SettleModalProps) {
-  const { settleDebt } = useStore();
+  const { settleDebt, transactions } = useStore();
   
   const absBalance = Math.abs(person.balance);
   const isPersonOwing = person.balance > 0; // Person owes user -> User will receive money
+
+  const boughtForMeItems = transactions.filter(
+    t => t.personId === person.id && t.direction === 'bought_for_me' && t.status !== 'settled'
+  );
   
+  const [settlementMode, setSettlementMode] = useState<'general' | 'bought_for_me'>('general');
+  const [selectedItemId, setSelectedItemId] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('Groceries');
+
   const [amount, setAmount] = useState(absBalance.toString());
   const [isFullSettlement, setIsFullSettlement] = useState(true);
   const [note, setNote] = useState('');
@@ -29,16 +38,29 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
   useEffect(() => {
     if (isOpen) {
       if (transactionToSettle) {
+        setSettlementMode('bought_for_me');
+        setSelectedItemId(transactionToSettle.id);
+        setSelectedCategory(transactionToSettle.category || 'Groceries');
         setAmount(transactionToSettle.amount.toString());
         setIsFullSettlement(false);
+      } else if (boughtForMeItems.length > 0 && !isPersonOwing) {
+        setSettlementMode('bought_for_me');
+        const first = boughtForMeItems[0];
+        setSelectedItemId(first.id);
+        setSelectedCategory(first.category || 'Groceries');
+        setAmount(first.amount.toString());
+        setIsFullSettlement(false);
       } else {
+        setSettlementMode('general');
+        setSelectedItemId('');
+        setSelectedCategory('Groceries');
         setAmount(absBalance.toString());
         setIsFullSettlement(true);
       }
       setNote('');
       setError('');
     }
-  }, [isOpen, transactionToSettle, absBalance]);
+  }, [isOpen, transactionToSettle, absBalance, isPersonOwing]);
 
   if (!isOpen) return null;
 
@@ -48,6 +70,17 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
       setAmount(absBalance.toString());
     } else {
       setAmount('');
+    }
+  };
+
+  const handleSelectItem = (itemId: string) => {
+    setSelectedItemId(itemId);
+    if (itemId === 'custom') return;
+    
+    const item = boughtForMeItems.find(t => t.id === itemId);
+    if (item) {
+      setAmount(item.amount.toString());
+      setSelectedCategory(item.category || 'Groceries');
     }
   };
 
@@ -64,15 +97,20 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
       return;
     }
 
+    const isBoughtForMeMode = !isPersonOwing && settlementMode === 'bought_for_me';
+    const selectedItem = boughtForMeItems.find(t => t.id === selectedItemId);
+
     settleDebt({
       personId: person.id,
       personName: person.name,
       amount: numAmount,
       direction: isPersonOwing ? 'received' : 'paid',
       note: note.trim() || undefined,
-      expenseCategory: transactionToSettle?.direction === 'bought_for_me' ? (transactionToSettle.category || 'Other') : undefined,
-      expenseReason: transactionToSettle?.direction === 'bought_for_me' ? `Settled purchase: ${transactionToSettle.reason}` : undefined,
-      settleTransactionId: transactionToSettle?.id,
+      expenseCategory: isBoughtForMeMode ? selectedCategory : undefined,
+      expenseReason: isBoughtForMeMode 
+        ? (selectedItem ? `Settled purchase: ${selectedItem.reason}` : `Settled purchase for ${person.name}`)
+        : undefined,
+      settleTransactionId: isBoughtForMeMode && selectedItem ? selectedItem.id : (transactionToSettle?.id),
     });
 
     setError('');
@@ -129,11 +167,102 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
             </div>
           </div>
 
+          {/* Settlement Mode Selection (When User owes money) */}
+          {!isPersonOwing && (
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">
+                Settlement Type
+              </label>
+              <div className="grid grid-cols-2 gap-2 bg-[var(--color-surface-light)] p-1 rounded-xl">
+                <button 
+                  type="button"
+                  className={cn(
+                    "py-2 px-3 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5",
+                    settlementMode === 'general' 
+                      ? "bg-[var(--color-surface)] text-[var(--color-dark)] shadow-sm" 
+                      : "text-[var(--color-gray-dark)] hover:text-[var(--color-dark)]"
+                  )}
+                  onClick={() => setSettlementMode('general')}
+                >
+                  <DollarSign size={14} />
+                  <span>Cash Repayment</span>
+                </button>
+                <button 
+                  type="button"
+                  className={cn(
+                    "py-2 px-3 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5",
+                    settlementMode === 'bought_for_me' 
+                      ? "bg-[var(--color-surface)] text-[var(--color-primary)] shadow-sm border border-[var(--color-primary)]/20" 
+                      : "text-[var(--color-gray-dark)] hover:text-[var(--color-dark)]"
+                  )}
+                  onClick={() => setSettlementMode('bought_for_me')}
+                >
+                  <ShoppingCart size={14} />
+                  <span>Bought for Me</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Item Selector & Category Picker when in Bought for Me Mode */}
+          {!isPersonOwing && settlementMode === 'bought_for_me' && (
+            <div className="space-y-4 animate-in slide-in-from-top-2 fade-in duration-200 bg-[var(--color-surface-light)]/50 p-3.5 rounded-2xl border border-[var(--color-gray-light)]">
+              {boughtForMeItems.length > 0 && (
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-1.5">
+                    Select Purchased Item to Settle
+                  </label>
+                  <select
+                    value={selectedItemId}
+                    onChange={(e) => handleSelectItem(e.target.value)}
+                    className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                  >
+                    {boughtForMeItems.map(item => (
+                      <option key={item.id} value={item.id}>
+                        {item.reason} — ₹{item.amount.toLocaleString('en-IN')} ({item.category || 'General'})
+                      </option>
+                    ))}
+                    <option value="custom">Custom Purchase / Settle by Category</option>
+                  </select>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">
+                  Expense Category (Deducted from budget)
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {EXPENSE_CATEGORIES.map((cat) => {
+                    const isSelected = selectedCategory === cat.name;
+                    return (
+                      <button
+                        key={cat.name}
+                        type="button"
+                        onClick={() => setSelectedCategory(cat.name)}
+                        className={cn(
+                          "flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-[10px] sm:text-xs font-semibold border transition-all text-left truncate",
+                          isSelected 
+                            ? "bg-[var(--color-dark)] text-[var(--color-surface)] border-[var(--color-dark)] shadow-sm"
+                            : "bg-[var(--color-surface)] text-[var(--color-gray-dark)] border-[var(--color-gray-light)] hover:border-gray-400"
+                        )}
+                      >
+                        <span className="truncate">{cat.name}</span>
+                        {isSelected && <Check size={12} className="ml-auto shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Full vs Partial Toggle */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">
-              Settlement Type
-            </label>
+            <div className="flex justify-between items-center mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)]">
+                Amount Option
+              </label>
+            </div>
             <div className="grid grid-cols-2 gap-2 bg-[var(--color-surface-light)] p-1 rounded-xl">
               <button 
                 type="button"
@@ -145,7 +274,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                 )}
                 onClick={() => handleSettleType(true)}
               >
-                Full Settlement (₹{absBalance})
+                Full Balance (₹{absBalance})
               </button>
               <button 
                 type="button"
@@ -157,7 +286,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                 )}
                 onClick={() => handleSettleType(false)}
               >
-                Partial Repayment
+                Custom Amount
               </button>
             </div>
           </div>
