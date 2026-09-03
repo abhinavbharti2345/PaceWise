@@ -27416,7 +27416,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/People.tsx",
-      "source_location": "L63",
+      "source_location": "L75",
       "weight": 1.0
     },
     {
@@ -50506,5 +50506,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "7855ba0a026c4c874518a510247eb5a5ef878b89"
+  "built_at_commit": "4e21e58852df8aac82fedc6be436281ed0d78f63"
 }

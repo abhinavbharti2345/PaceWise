@@ -9,7 +9,7 @@ import { AddPersonModal } from '../components/modals/AddPersonModal';
 
 export function People() {
   const navigate = useNavigate();
-  const { people } = useStore();
+  const { people, transactions } = useStore();
   const [search, setSearch] = useState('');
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
 
@@ -24,6 +24,17 @@ export function People() {
   const filteredPeople = people
     .filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) => Math.abs(b.balance || 0) - Math.abs(a.balance || 0));
+
+  const personTxs = transactions.filter(t => t.type === 'person');
+  const globalTotalLent = personTxs
+    .filter(t => t.direction === 'gave' && !t.isBoughtForMeSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const globalTotalBorrowed = personTxs
+    .filter(t => t.direction === 'took' && !t.isBoughtForMeSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const globalTotalBoughtForMe = personTxs
+    .filter(t => t.direction === 'bought_for_me' && t.status !== 'settled')
+    .reduce((sum, t) => sum + t.amount, 0);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -48,27 +59,51 @@ export function People() {
       {/* Summary Cards */}
       <div className="space-y-3 sm:space-y-4">
         {/* Net Position Card (Top) */}
-        <Card className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border border-[var(--color-gray-light)]">
-          <div className="flex items-center justify-between sm:justify-start gap-2">
-            <div className="flex items-center gap-2">
-              <Scale className="text-[var(--color-primary)]" size={18} />
-              <p className="text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider">Net Position</p>
+        <Card className="p-4 sm:p-5 flex flex-col border border-[var(--color-gray-light)]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center justify-between sm:justify-start gap-2">
+              <div className="flex items-center gap-2">
+                <Scale className="text-[var(--color-primary)]" size={18} />
+                <p className="text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider">Net Position</p>
+              </div>
+              <span className="sm:hidden text-xs font-semibold text-[var(--color-gray-dark)]">
+                {netBalance > 0 ? "Overall net positive" : netBalance < 0 ? "Overall net payable" : "Completely settled"}
+              </span>
             </div>
-            <span className="sm:hidden text-xs font-semibold text-[var(--color-gray-dark)]">
-              {netBalance > 0 ? "Overall net positive" : netBalance < 0 ? "Overall net payable" : "Completely settled"}
-            </span>
+
+            <div className="flex items-baseline justify-between sm:justify-end gap-3 mt-1 sm:mt-0">
+              <h3 className={cn(
+                "text-2xl sm:text-3xl font-black leading-none",
+                netBalance > 0 ? "text-[var(--color-success)]" : netBalance < 0 ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
+              )}>
+                {netBalance > 0 ? `+${formatCurrency(netBalance)}` : netBalance < 0 ? `-${formatCurrency(netBalance)}` : '₹0'}
+              </h3>
+              <p className="hidden sm:block text-xs text-[var(--color-gray-dark)] font-medium">
+                {netBalance > 0 ? "Overall net positive" : netBalance < 0 ? "Overall net payable" : "Completely settled"}
+              </p>
+            </div>
           </div>
 
-          <div className="flex items-baseline justify-between sm:justify-end gap-3 mt-1 sm:mt-0">
-            <h3 className={cn(
-              "text-2xl sm:text-3xl font-black leading-none",
-              netBalance > 0 ? "text-[var(--color-success)]" : netBalance < 0 ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
-            )}>
-              {netBalance > 0 ? `+${formatCurrency(netBalance)}` : netBalance < 0 ? `-${formatCurrency(netBalance)}` : '₹0'}
-            </h3>
-            <p className="hidden sm:block text-xs text-[var(--color-gray-dark)] font-medium">
-              {netBalance > 0 ? "Overall net positive" : netBalance < 0 ? "Overall net payable" : "Completely settled"}
-            </p>
+          {/* Global 3-Way Breakdown */}
+          <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-[var(--color-gray-light)] text-center w-full">
+            <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block truncate">↗ Lent</span>
+              <span className="text-sm sm:text-lg font-extrabold text-[var(--color-success)] mt-0.5 block">
+                ₹{Math.max(0, globalTotalLent).toLocaleString('en-IN')}
+              </span>
+            </div>
+            <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block truncate">↘ Borrowed</span>
+              <span className="text-sm sm:text-lg font-extrabold text-[var(--color-primary)] mt-0.5 block">
+                ₹{Math.max(0, globalTotalBorrowed).toLocaleString('en-IN')}
+              </span>
+            </div>
+            <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block truncate">🛒 Bought for Me</span>
+              <span className="text-sm sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-0.5 block">
+                ₹{globalTotalBoughtForMe.toLocaleString('en-IN')}
+              </span>
+            </div>
           </div>
         </Card>
 
