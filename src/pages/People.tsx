@@ -85,22 +85,22 @@ export function People() {
           </div>
 
           {/* Global 3-Way Breakdown */}
-          <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-[var(--color-gray-light)] text-center w-full">
-            <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm">
-              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block truncate">↗ Lent</span>
-              <span className="text-sm sm:text-lg font-extrabold text-[var(--color-success)] mt-0.5 block">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mt-4 pt-4 border-t border-[var(--color-gray-light)] text-center w-full">
+            <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">
+              <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↗ Lent</span>
+              <span className="text-sm sm:text-lg font-extrabold text-[var(--color-success)] mt-0.5">
                 ₹{Math.max(0, globalTotalLent).toLocaleString('en-IN')}
               </span>
             </div>
-            <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm">
-              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block truncate">↘ Borrowed</span>
-              <span className="text-sm sm:text-lg font-extrabold text-[var(--color-primary)] mt-0.5 block">
+            <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">
+              <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↘ Borrowed</span>
+              <span className="text-sm sm:text-lg font-extrabold text-[var(--color-primary)] mt-0.5">
                 ₹{Math.max(0, globalTotalBorrowed).toLocaleString('en-IN')}
               </span>
             </div>
-            <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm">
-              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block truncate">🛒 Bought for Me</span>
-              <span className="text-sm sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-0.5 block">
+            <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">
+              <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">🛒 Bought for Me</span>
+              <span className="text-sm sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-0.5">
                 ₹{globalTotalBoughtForMe.toLocaleString('en-IN')}
               </span>
             </div>

@@ -155,22 +155,22 @@ export function PersonDetails() {
         </div>
 
         {/* 3-Way Financial Breakdown */}
-        <div className="grid grid-cols-3 gap-2 mt-6 pt-4 border-t border-[var(--color-gray-light)] text-center">
-          <div className="p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)]">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">↗ Lent</span>
-            <span className="text-base sm:text-lg font-extrabold text-[var(--color-success)] mt-0.5 block">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mt-6 pt-4 border-t border-[var(--color-gray-light)] text-center">
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex flex-col justify-center">
+            <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↗ Lent</span>
+            <span className="text-sm sm:text-lg font-extrabold text-[var(--color-success)] mt-0.5">
               ₹{Math.max(0, totalLent).toLocaleString('en-IN')}
             </span>
           </div>
-          <div className="p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)]">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">↘ Borrowed</span>
-            <span className="text-base sm:text-lg font-extrabold text-[var(--color-primary)] mt-0.5 block">
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex flex-col justify-center">
+            <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↘ Borrowed</span>
+            <span className="text-sm sm:text-lg font-extrabold text-[var(--color-primary)] mt-0.5">
               ₹{Math.max(0, totalBorrowed).toLocaleString('en-IN')}
             </span>
           </div>
-          <div className="p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)]">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">🛒 Bought for Me</span>
-            <span className="text-base sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-0.5 block">
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex flex-col justify-center">
+            <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">🛒 Bought for Me</span>
+            <span className="text-sm sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-0.5">
               ₹{totalBoughtForMe.toLocaleString('en-IN')}
             </span>
           </div>
