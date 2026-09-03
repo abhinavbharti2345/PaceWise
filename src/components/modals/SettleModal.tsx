@@ -1,17 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, CheckCircle, AlertCircle } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import type { Person } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { cn } from '../../utils/cn';
 
+import type { Transaction } from '../../features/budget/budgetEngine';
+
 interface SettleModalProps {
   isOpen: boolean;
   onClose: () => void;
   person: Person;
+  transactionToSettle?: Transaction;
 }
 
-export function SettleModal({ isOpen, onClose, person }: SettleModalProps) {
+export function SettleModal({ isOpen, onClose, person, transactionToSettle }: SettleModalProps) {
   const { settleDebt } = useStore();
   
   const absBalance = Math.abs(person.balance);
@@ -21,6 +24,21 @@ export function SettleModal({ isOpen, onClose, person }: SettleModalProps) {
   const [isFullSettlement, setIsFullSettlement] = useState(true);
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
+
+  // Update amount when modal opens or transactionToSettle changes
+  useEffect(() => {
+    if (isOpen) {
+      if (transactionToSettle) {
+        setAmount(transactionToSettle.amount.toString());
+        setIsFullSettlement(false);
+      } else {
+        setAmount(absBalance.toString());
+        setIsFullSettlement(true);
+      }
+      setNote('');
+      setError('');
+    }
+  }, [isOpen, transactionToSettle, absBalance]);
 
   if (!isOpen) return null;
 
@@ -52,6 +70,9 @@ export function SettleModal({ isOpen, onClose, person }: SettleModalProps) {
       amount: numAmount,
       direction: isPersonOwing ? 'received' : 'paid',
       note: note.trim() || undefined,
+      expenseCategory: transactionToSettle?.direction === 'bought_for_me' ? (transactionToSettle.category || 'Other') : undefined,
+      expenseReason: transactionToSettle?.direction === 'bought_for_me' ? `Settled purchase: ${transactionToSettle.reason}` : undefined,
+      settleTransactionId: transactionToSettle?.id,
     });
 
     setError('');

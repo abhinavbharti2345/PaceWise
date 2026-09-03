@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { X, ArrowUpRight, ArrowDownRight, AlertCircle } from 'lucide-react';
+import { X, ArrowUpRight, ArrowDownRight, AlertCircle, ShoppingCart, Check } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import type { Person } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
 import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
+import { EXPENSE_CATEGORIES } from '../../utils/categoryHelpers';
 import { cn } from '../../utils/cn';
 import { useEffect } from 'react';
 
@@ -13,7 +14,7 @@ interface PersonTransactionModalProps {
   isOpen: boolean;
   onClose: () => void;
   person: Person;
-  defaultDirection?: 'gave' | 'took';
+  defaultDirection?: 'gave' | 'took' | 'bought_for_me';
 }
 
 export function PersonTransactionModal({
@@ -25,7 +26,8 @@ export function PersonTransactionModal({
   const { recordPersonTransaction } = useStore();
   
   const [amount, setAmount] = useState('');
-  const [direction, setDirection] = useState<'gave' | 'took'>(defaultDirection);
+  const [direction, setDirection] = useState<'gave' | 'took' | 'bought_for_me'>(defaultDirection);
+  const [category, setCategory] = useState('Groceries');
   const [reason, setReason] = useState('');
   const [date, setDate] = useState(getTodayDateString());
   const [note, setNote] = useState('');
@@ -57,6 +59,7 @@ export function PersonTransactionModal({
       personName: person.name,
       amount: numAmount,
       direction,
+      category: direction === 'bought_for_me' ? category : undefined,
       reason: reason.trim(),
       date: parseLocalDate(date).toISOString(),
       note: note.trim() || undefined,
@@ -108,35 +111,77 @@ export function PersonTransactionModal({
             <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">
               What happened? *
             </label>
-            <div className="grid grid-cols-2 gap-2 bg-[var(--color-surface-light)] p-1 rounded-xl">
+            <div className="grid grid-cols-3 gap-2 bg-[var(--color-surface-light)] p-1 rounded-xl">
               <button 
                 type="button"
                 className={cn(
-                  "py-2.5 px-3 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5",
+                  "py-2.5 px-3 text-[10px] sm:text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5",
                   direction === 'gave' 
                     ? "bg-[var(--color-surface)] text-[var(--color-success)] shadow-sm" 
                     : "text-[var(--color-gray-dark)] hover:text-[var(--color-dark)]"
                 )}
                 onClick={() => setDirection('gave')}
               >
-                <ArrowUpRight size={16} />
-                I Gave Money (Lent)
+                <ArrowUpRight size={14} />
+                <span className="truncate">I Gave</span>
               </button>
               <button 
                 type="button"
                 className={cn(
-                  "py-2.5 px-3 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5",
+                  "py-2.5 px-3 text-[10px] sm:text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5",
                   direction === 'took' 
                     ? "bg-[var(--color-surface)] text-[var(--color-primary)] shadow-sm" 
                     : "text-[var(--color-gray-dark)] hover:text-[var(--color-dark)]"
                 )}
                 onClick={() => setDirection('took')}
               >
-                <ArrowDownRight size={16} />
-                I Took Money (Borrowed)
+                <ArrowDownRight size={14} />
+                <span className="truncate">I Took</span>
+              </button>
+              <button 
+                type="button"
+                className={cn(
+                  "py-2.5 px-3 text-[10px] sm:text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5",
+                  direction === 'bought_for_me' 
+                    ? "bg-[var(--color-surface)] text-[var(--color-primary)] shadow-sm border border-[var(--color-primary)]/20" 
+                    : "text-[var(--color-gray-dark)] hover:text-[var(--color-dark)]"
+                )}
+                onClick={() => setDirection('bought_for_me')}
+              >
+                <ShoppingCart size={14} />
+                <span className="truncate">Bought for Me</span>
               </button>
             </div>
           </div>
+
+          {direction === 'bought_for_me' && (
+            <div className="animate-in slide-in-from-top-2 fade-in duration-200">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">
+                Category
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {EXPENSE_CATEGORIES.map((cat) => {
+                  const isSelected = category === cat.name;
+                  return (
+                    <button
+                      key={cat.name}
+                      type="button"
+                      onClick={() => setCategory(cat.name)}
+                      className={cn(
+                        "flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-[10px] sm:text-xs font-semibold border transition-all text-left truncate",
+                        isSelected 
+                          ? "bg-[var(--color-dark)] text-[var(--color-surface)] border-[var(--color-dark)] shadow-sm"
+                          : "bg-[var(--color-surface)] text-[var(--color-gray-dark)] border-[var(--color-gray-light)] hover:border-gray-400"
+                      )}
+                    >
+                      <span className="truncate">{cat.name}</span>
+                      {isSelected && <Check size={12} className="ml-auto shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Amount Input */}
           <div className="bg-[var(--color-surface-light)] p-4 rounded-2xl">
@@ -176,8 +221,8 @@ export function PersonTransactionModal({
           {/* Reason */}
           <div>
             <Input 
-              label="Reason / Purpose *" 
-              placeholder="e.g. Lunch split, Movie ticket, Uber ride" 
+              label={direction === 'bought_for_me' ? "What was it? *" : "Reason / Purpose *"}
+              placeholder={direction === 'bought_for_me' ? "e.g. Amul Butter & Bread" : "e.g. Lunch split, Movie ticket, Uber ride"}
               value={reason}
               onChange={(e) => {
                 setReason(e.target.value);

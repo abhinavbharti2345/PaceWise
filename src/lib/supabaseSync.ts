@@ -204,6 +204,7 @@ export function useSupabaseSync() {
             isSettlement: tx.is_settlement,
             paymentMethod: tx.payment_method,
             note: tx.note,
+            status: tx.status,
           })),
         });
 
@@ -245,6 +246,7 @@ export async function addTransactionToSupabase(
       is_settlement: transaction.isSettlement,
       payment_method: transaction.paymentMethod,
       note: transaction.note,
+      status: transaction.status,
     })
     .select();
 

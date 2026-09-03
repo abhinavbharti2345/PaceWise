@@ -34,7 +34,8 @@ interface AppState {
     personId: string;
     personName: string;
     amount: number;
-    direction: 'gave' | 'took';
+    direction: 'gave' | 'took' | 'bought_for_me';
+    category?: string;
     reason: string;
     date?: string;
     note?: string;
@@ -46,6 +47,9 @@ interface AppState {
     amount: number;
     direction: 'received' | 'paid';
     note?: string;
+    expenseCategory?: string;
+    expenseReason?: string;
+    settleTransactionId?: string;
   }) => void;
   
   clearAllData: () => void;
@@ -62,7 +66,7 @@ export const getBudgetDatesForDate = (date: Date) => {
 export function calculatePersonBalance(personId: string, transactions: Transaction[]): number {
   return transactions
     .filter(t => t.personId === personId)
-    .reduce((sum, t) => sum + (t.direction === 'gave' ? t.amount : -t.amount), 0);
+    .reduce((sum, t) => sum + (t.direction === 'gave' ? t.amount : (t.direction === 'took' || t.direction === 'bought_for_me' ? -t.amount : 0)), 0);
 }
 
 const { start: monthStart, end: monthEnd } = getBudgetDatesForDate(new Date());
@@ -445,20 +449,30 @@ export const useStore = create<AppState>()(
         }
       },
 
-      recordPersonTransaction: ({ personId, personName, amount, direction, reason, date, note }) => {
-        const txDate = date || new Date().toISOString();
+      recordPersonTransaction: ({ personId, personName, amount, direction, category, reason, date, note }: { 
+        personId: string, 
+        personName: string, 
+        amount: number, 
+        direction: 'gave' | 'took' | 'bought_for_me', 
+        category?: string, 
+        reason: string, 
+        date?: string, 
+        note?: string 
+      }) => {
         const txId = generateId();
+        const txDate = date || new Date().toISOString();
 
         const newTx: Transaction = {
           id: txId,
           type: 'person',
           amount,
-          category: 'People',
-          reason: reason || (direction === 'gave' ? `Lent money to ${personName}` : `Borrowed from ${personName}`),
+          date: txDate,
+          category: category || 'People',
+          reason,
           personId,
           personName,
           direction,
-          date: txDate,
+          status: direction === 'bought_for_me' ? 'unsettled' : undefined,
           note
         };
 
@@ -503,9 +517,10 @@ export const useStore = create<AppState>()(
         }
       },
 
-      settleDebt: ({ personId, personName, amount, direction, note }) => {
-        const txId = generateId();
+      settleDebt: ({ personId, personName, amount, direction, note, expenseCategory, expenseReason, settleTransactionId }) => {
         const txDate = new Date().toISOString();
+        const txId = generateId();
+
         const txDirection = direction === 'received' ? 'took' : 'gave';
         
         const txReason = direction === 'received' 
@@ -522,12 +537,39 @@ export const useStore = create<AppState>()(
           personName,
           direction: txDirection,
           isSettlement: true,
+          isBoughtForMeSettlement: !!expenseCategory,
           date: txDate,
           note
         };
 
+        let expenseTx: Transaction | null = null;
+        if (expenseCategory) {
+          expenseTx = {
+            id: generateId(),
+            type: 'expense',
+            amount,
+            date: txDate,
+            category: expenseCategory,
+            reason: expenseReason || `Settled expense for ${personName}`,
+            personId,
+            personName
+          };
+        }
+
         const state = useStore.getState();
-        const newTransactions = [newTx, ...state.transactions];
+        let newTransactions = [newTx, ...state.transactions];
+        
+        if (expenseTx) {
+          newTransactions = [expenseTx, ...newTransactions];
+        }
+
+        // Mark the specific transaction as settled
+        if (settleTransactionId) {
+          newTransactions = newTransactions.map(tx => 
+            tx.id === settleTransactionId ? { ...tx, status: 'settled' } : tx
+          );
+        }
+
         const newBalance = calculatePersonBalance(personId, newTransactions);
 
         set({
@@ -573,6 +615,33 @@ export const useStore = create<AppState>()(
             }
           })
         ];
+
+        if (expenseTx) {
+          promises.push(
+            supabase.from('transactions').insert({
+              id: expenseTx.id,
+              user_id: user.id,
+              type: 'expense',
+              amount: expenseTx.amount,
+              date: expenseTx.date,
+              category: expenseTx.category,
+              reason: expenseTx.reason,
+              person_id: expenseTx.personId,
+              person_name: expenseTx.personName,
+            }).then(({ error }) => {
+              if (error) console.error('[PaceWise DB] Failed to insert expense transaction', { error });
+            })
+          );
+        }
+
+        if (settleTransactionId) {
+          promises.push(
+            supabase.from('transactions').update({ status: 'settled' })
+              .eq('id', settleTransactionId).eq('user_id', user.id).then(({ error }) => {
+                if (error) console.error('[PaceWise DB] Failed to update settled transaction status', { error });
+              })
+          );
+        }
         
         Promise.all(promises).catch((error: any) => {
           console.error('[PaceWise DB] Failed to sync settleDebt', {

@@ -18,6 +18,7 @@ import { cn } from '../utils/cn';
 import { PersonTransactionModal } from '../components/modals/PersonTransactionModal';
 import { SettleModal } from '../components/modals/SettleModal';
 import { ConfirmModal } from '../components/modals/ConfirmModal';
+import type { Transaction } from '../features/budget/budgetEngine';
 
 export function PersonDetails() {
   const { id } = useParams<{ id: string }>();
@@ -27,8 +28,9 @@ export function PersonDetails() {
   const person = people.find((p) => p.id === id);
 
   const [isTxModalOpen, setIsTxModalOpen] = useState(false);
-  const [txDirection, setTxDirection] = useState<'gave' | 'took'>('gave');
+  const [txDirection, setTxDirection] = useState<'gave' | 'took' | 'bought_for_me'>('gave');
   const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
+  const [settleTransaction, setSettleTransaction] = useState<Transaction | null>(null);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   if (!person) {
@@ -58,9 +60,19 @@ export function PersonDetails() {
     setIsDeleteConfirmOpen(true);
   };
 
-  const handleOpenTransaction = (direction: 'gave' | 'took') => {
+  const handleOpenTransaction = (direction: 'gave' | 'took' | 'bought_for_me') => {
     setTxDirection(direction);
     setIsTxModalOpen(true);
+  };
+
+  const handleSettleIndividual = (t: Transaction) => {
+    setSettleTransaction(t);
+    setIsSettleModalOpen(true);
+  };
+
+  const handleSettleAll = () => {
+    setSettleTransaction(null);
+    setIsSettleModalOpen(true);
   };
 
   return (
@@ -134,7 +146,7 @@ export function PersonDetails() {
           {!isSettled && (
             <Button 
               variant="primary" 
-              onClick={() => setIsSettleModalOpen(true)}
+              onClick={handleSettleAll}
               className={cn(
                 "w-full font-bold flex items-center justify-center gap-2",
               )}
@@ -170,6 +182,19 @@ export function PersonDetails() {
             <ArrowDownRight size={18} />
             <span>Borrowed (-₹)</span>
           </Button>
+          
+          <Button 
+            variant="outline" 
+            onClick={() => handleOpenTransaction('bought_for_me')}
+            className="w-full font-semibold flex items-center justify-center gap-2"
+            style={{
+              color: 'var(--negative-text)',
+              borderColor: 'var(--negative-border)',
+            }}
+          >
+            <span className="text-lg">🛒</span>
+            <span>Bought for Me (-₹)</span>
+          </Button>
         </div>
       </div>
 
@@ -189,41 +214,66 @@ export function PersonDetails() {
           {personTransactions.map((t) => {
             const isLent = t.direction === 'gave' && !t.isSettlement;
             const isBorrowed = t.direction === 'took' && !t.isSettlement;
+            const isBoughtForMe = t.direction === 'bought_for_me' && !t.isSettlement;
             const isSettlement = t.isSettlement;
+            const isSettled = t.status === 'settled';
 
             return (
-              <div key={t.id} className="py-4 flex items-center justify-between hover:bg-[var(--color-surface-light)] px-3 -mx-3 rounded-xl transition-colors">
-                <div className="flex items-center gap-3">
-                  <IconBadge 
-                    iconName={isSettlement ? 'CheckCircle' : isLent ? 'ArrowUpRight' : 'ArrowDownRight'}
-                    color={isSettlement ? 'blue' : isLent ? 'green' : 'red'}
-                  />
-                  <div>
-                    <p className="text-sm font-bold text-[var(--color-dark)]">
-                      {t.reason || (isSettlement ? 'Settlement Payment' : isLent ? 'Lent Money' : 'Borrowed Money')}
-                    </p>
-                    <p className="text-xs text-[var(--color-gray-dark)] flex items-center gap-1.5 mt-0.5">
-                      <span>{format(new Date(t.date), 'dd MMM yyyy, h:mm a')}</span>
-                      {t.note && <span>• {t.note}</span>}
+              <div key={t.id} className="py-4 flex flex-col hover:bg-[var(--color-surface-light)] px-3 -mx-3 rounded-xl transition-colors">
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-3">
+                    <IconBadge 
+                      iconName={isSettlement ? 'CheckCircle' : isLent ? 'ArrowUpRight' : (isBoughtForMe ? 'ShoppingCart' : 'ArrowDownRight')}
+                      color={isSettlement ? 'blue' : isLent ? 'green' : 'red'}
+                    />
+                    <div>
+                      <p className="text-sm font-bold text-[var(--color-dark)] flex items-center gap-2">
+                        {t.reason || (isSettlement ? 'Settlement Payment' : isLent ? 'Lent Money' : (isBoughtForMe ? 'Bought for Me' : 'Borrowed Money'))}
+                        {isBoughtForMe && (
+                          <span className={cn(
+                            "px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase",
+                            isSettled ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                          )}>
+                            {isSettled ? '✓ Settled' : 'Unsettled'}
+                          </span>
+                        )}
+                      </p>
+                      <p className="text-xs text-[var(--color-gray-dark)] flex items-center gap-1.5 mt-0.5">
+                        <span>{format(new Date(t.date), 'dd MMM yyyy, h:mm a')}</span>
+                        {t.note && <span>• {t.note}</span>}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <span className={cn(
+                      "text-base font-extrabold",
+                      isSettlement ? "text-blue-600 dark:text-blue-400" :
+                      isLent ? "text-[var(--color-success)]" :
+                      "text-[var(--color-primary)]"
+                    )}>
+                      {isLent ? `+₹${t.amount.toLocaleString('en-IN')}` :
+                       isBorrowed || isBoughtForMe ? `-₹${t.amount.toLocaleString('en-IN')}` :
+                       `₹${t.amount.toLocaleString('en-IN')}`}
+                    </span>
+                    <p className="text-[10px] uppercase font-bold text-[var(--color-gray-dark)]">
+                      {isSettlement ? 'Settlement' : isLent ? 'Lent' : (isBoughtForMe ? (t.category || 'Item') : 'Borrowed')}
                     </p>
                   </div>
                 </div>
-
-                <div className="text-right">
-                  <span className={cn(
-                    "text-base font-extrabold",
-                    isSettlement ? "text-blue-600 dark:text-blue-400" :
-                    isLent ? "text-[var(--color-success)]" :
-                    "text-[var(--color-primary)]"
-                  )}>
-                    {isLent ? `+₹${t.amount.toLocaleString('en-IN')}` :
-                     isBorrowed ? `-₹${t.amount.toLocaleString('en-IN')}` :
-                     `₹${t.amount.toLocaleString('en-IN')}`}
-                  </span>
-                  <p className="text-[10px] uppercase font-bold text-[var(--color-gray-dark)]">
-                    {isSettlement ? 'Settlement' : isLent ? 'Lent' : 'Borrowed'}
-                  </p>
-                </div>
+                {isBoughtForMe && !isSettled && (
+                  <div className="mt-3 flex justify-end w-full">
+                    <Button 
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleSettleIndividual(t)}
+                      className="text-xs h-7 py-0 px-3 flex items-center gap-1 border-[var(--color-success)] text-[var(--color-success)] hover:bg-[var(--color-success)] hover:text-white"
+                    >
+                      <CheckCircle size={14} />
+                      Settle Item
+                    </Button>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -248,8 +298,12 @@ export function PersonDetails() {
 
       <SettleModal
         isOpen={isSettleModalOpen}
-        onClose={() => setIsSettleModalOpen(false)}
+        onClose={() => {
+          setIsSettleModalOpen(false);
+          setSettleTransaction(null);
+        }}
         person={person}
+        transactionToSettle={settleTransaction || undefined}
       />
 
       <ConfirmModal

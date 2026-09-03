@@ -12,10 +12,12 @@ export interface Transaction {
   source?: string; // For income: 'parents' | 'salary' | 'scholarship' | 'other'
   personId?: string;
   personName?: string;
-  direction?: 'gave' | 'took'; // 'gave' = lent money (they owe), 'took' = borrowed money (I owe)
+  direction?: 'gave' | 'took' | 'bought_for_me'; // 'gave' = lent money (they owe), 'took' = borrowed money (I owe), 'bought_for_me' = they bought for me (I owe)
   isSettlement?: boolean;
+  isBoughtForMeSettlement?: boolean;
   paymentMethod?: string;
   note?: string;
+  status?: 'settled' | 'unsettled';
 }
 
 export interface BudgetConfig {
@@ -113,9 +115,15 @@ export function calculateBudget(
         spentToday += t.amount;
       }
     } else if (t.type === 'person') {
-      // All person transactions are treated strictly as cash flow, not discretionary expenses.
-      // direction === 'gave': User lent money or paid a settlement (Cash OUT).
-      // direction === 'took': User borrowed money or received a settlement (Cash IN).
+      // 'bought_for_me' transactions do not represent direct wallet cash flow when created (friend paid).
+      // Settlements for 'bought_for_me' items log an 'expense' transaction which already deducts from budget/money.
+      if (t.direction === 'bought_for_me' || t.isBoughtForMeSettlement) {
+        continue;
+      }
+
+      // All other person transactions are treated strictly as cash flow, not discretionary expenses.
+      // direction === 'gave': User lent money or paid a loan settlement (Cash OUT).
+      // direction === 'took': User borrowed money or received a loan settlement (Cash IN).
       const flow = t.direction === 'took' ? t.amount : -t.amount;
       
       if (isBeforeToday || isToday) {
