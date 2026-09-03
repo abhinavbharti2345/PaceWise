@@ -131,7 +131,7 @@
       "file_type": "code",
       "norm_label": "persontransactionmodalprops",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L14"
+      "source_location": "L13"
     },
     {
       "id": "src_components_modals_settlemodal_settlemodalprops",
@@ -523,7 +523,7 @@
       "file_type": "code",
       "norm_label": "persontransactionmodal()",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L21"
+      "source_location": "L20"
     },
     {
       "id": "src_components_modals_settlemodal_settlemodal",
@@ -26972,7 +26972,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L120",
+      "source_location": "L123",
       "weight": 1.0
     },
     {
@@ -26984,7 +26984,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L27",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -26996,7 +26996,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L29",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -27008,7 +27008,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L35",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -27020,7 +27020,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L67",
+      "source_location": "L70",
       "weight": 1.0
     },
     {
@@ -27644,7 +27644,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L17",
+      "source_location": "L16",
       "weight": 1.0
     },
     {
@@ -28893,18 +28893,6 @@
       "context": "import",
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
       "source_location": "L8",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_persontransactionmodal",
-      "target": "src_utils_categoryhelpers_expense_categories",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -33024,7 +33012,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L14",
+      "source_location": "L13",
       "weight": 1.0
     },
     {
@@ -33035,7 +33023,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/PersonTransactionModal.tsx",
-      "source_location": "L21",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -50530,5 +50518,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e8cf2b750f5e89be6804622b5976043a9fc2fadd"
+  "built_at_commit": "4ecb3bb756270b100af9bb54f3a767c42293d892"
 }

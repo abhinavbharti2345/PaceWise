@@ -1,16 +1,16 @@
 # Graph Report - PaceWise  (2026-09-04)
 
 ## Corpus Check
-- 167 files · ~138,447 words
+- 167 files · ~138,566 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1836 nodes · 2130 edges · 119 communities (101 shown, 14 thin omitted)
+- 1836 nodes · 2129 edges · 119 communities (101 shown, 14 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e8cf2b75`
+- Built from commit: `4ecb3bb7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -575,7 +575,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `name`, `private`, `version` to the rest of the system?**
   _1577 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `cn` be split into smaller, more focused modules?**
-  _Cohesion score 0.05521783181357649 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.055116514690982776 - nodes in this community are weakly interconnected._
 - **Should `Code Explanation and Analysis` be split into smaller, more focused modules?**
   _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._
 - **Should `TDD Cycle Orchestrator` be split into smaller, more focused modules?**

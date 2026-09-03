@@ -828,9 +828,9 @@
     "semantic_hash": "7163a613f70dada6f936ce32dc45a8e3"
   },
   "src/components/modals/PersonTransactionModal.tsx": {
-    "mtime": 1788461451.8539405,
-    "seen": 1788461462.2004526,
-    "ast_hash": "d0427cf2ad7ec38e6442d9d111808035",
+    "mtime": 1788462300.560906,
+    "seen": 1788462315.1161573,
+    "ast_hash": "13de9d161b91eab3032d498af9da8b6d",
     "semantic_hash": ""
   },
   "src/components/modals/SettleModal.tsx": {
