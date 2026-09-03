@@ -53,13 +53,8 @@ export function PersonDetails() {
     .filter((t) => t.personId === person.id)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  const totalLent = personTransactions
-    .filter(t => t.direction === 'gave' && !t.isBoughtForMeSettlement)
-    .reduce((sum, t) => sum + (t.isSettlement ? -t.amount : t.amount), 0);
-
-  const totalBorrowed = personTransactions
-    .filter(t => t.direction === 'took' && !t.isBoughtForMeSettlement)
-    .reduce((sum, t) => sum + (t.isSettlement ? -t.amount : t.amount), 0);
+  const totalLent = person.balance > 0 ? person.balance : 0;
+  const totalBorrowed = person.balance < 0 ? Math.abs(person.balance) : 0;
 
   const totalBoughtForMe = personTransactions
     .filter(t => t.direction === 'bought_for_me' && t.status !== 'settled')

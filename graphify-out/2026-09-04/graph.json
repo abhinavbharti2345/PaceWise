@@ -28753,18 +28753,6 @@
     },
     {
       "source": "src_components_modals_edittransactionmodal",
-      "target": "src_utils_categoryhelpers_expense_categories",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/components/modals/EditTransactionModal.tsx",
-      "source_location": "L8",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_edittransactionmodal",
       "target": "src_utils_categoryhelpers_getallexpensecategories",
       "relation": "imports",
       "_origin": "ast",
@@ -50506,5 +50494,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4e21e58852df8aac82fedc6be436281ed0d78f63"
+  "built_at_commit": "d0427c4e9c919f50a652737736f83a5b1dae2df2"
 }

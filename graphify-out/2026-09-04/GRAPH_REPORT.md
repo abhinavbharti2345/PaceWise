@@ -1,16 +1,16 @@
 # Graph Report - PaceWise  (2026-09-04)
 
 ## Corpus Check
-- 169 files · ~139,390 words
+- 169 files · ~139,413 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1836 nodes · 2128 edges · 119 communities (101 shown, 14 thin omitted)
+- 1836 nodes · 2127 edges · 119 communities (101 shown, 14 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4e21e588`
+- Built from commit: `d0427c4e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -161,7 +161,7 @@
 ## Communities (119 total, 14 thin omitted)
 
 ### Community 0 - "cn"
-Cohesion: 0.06
+Cohesion: 0.05
 Nodes (93): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+85 more)
 
 ### Community 1 - "Code Explanation and Analysis"
@@ -575,7 +575,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `name`, `private`, `version` to the rest of the system?**
   _1577 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `cn` be split into smaller, more focused modules?**
-  _Cohesion score 0.05501519756838906 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.054913880445795336 - nodes in this community are weakly interconnected._
 - **Should `Code Explanation and Analysis` be split into smaller, more focused modules?**
   _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._
 - **Should `TDD Cycle Orchestrator` be split into smaller, more focused modules?**

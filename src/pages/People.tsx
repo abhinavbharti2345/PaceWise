@@ -26,12 +26,6 @@ export function People() {
     .sort((a, b) => Math.abs(b.balance || 0) - Math.abs(a.balance || 0));
 
   const personTxs = transactions.filter(t => t.type === 'person');
-  const globalTotalLent = personTxs
-    .filter(t => t.direction === 'gave' && !t.isBoughtForMeSettlement)
-    .reduce((sum, t) => sum + t.amount, 0);
-  const globalTotalBorrowed = personTxs
-    .filter(t => t.direction === 'took' && !t.isBoughtForMeSettlement)
-    .reduce((sum, t) => sum + t.amount, 0);
   const globalTotalBoughtForMe = personTxs
     .filter(t => t.direction === 'bought_for_me' && t.status !== 'settled')
     .reduce((sum, t) => sum + t.amount, 0);
@@ -89,13 +83,13 @@ export function People() {
             <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">
               <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↗ Lent</span>
               <span className="text-sm sm:text-lg font-extrabold text-[var(--color-success)] mt-0.5">
-                ₹{Math.max(0, globalTotalLent).toLocaleString('en-IN')}
+                ₹{toReceive.toLocaleString('en-IN')}
               </span>
             </div>
             <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">
               <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↘ Borrowed</span>
               <span className="text-sm sm:text-lg font-extrabold text-[var(--color-primary)] mt-0.5">
-                ₹{Math.max(0, globalTotalBorrowed).toLocaleString('en-IN')}
+                ₹{toGive.toLocaleString('en-IN')}
               </span>
             </div>
             <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">

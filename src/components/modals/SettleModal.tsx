@@ -29,13 +29,8 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
 
   const personTxs = transactions.filter(t => t.personId === person.id);
 
-  const totalLent = personTxs
-    .filter(t => t.direction === 'gave' && !t.isBoughtForMeSettlement)
-    .reduce((sum, t) => sum + (t.isSettlement ? -t.amount : t.amount), 0);
-
-  const totalBorrowed = personTxs
-    .filter(t => t.direction === 'took' && !t.isBoughtForMeSettlement)
-    .reduce((sum, t) => sum + (t.isSettlement ? -t.amount : t.amount), 0);
+  const totalLent = person.balance > 0 ? person.balance : 0;
+  const totalBorrowed = person.balance < 0 ? Math.abs(person.balance) : 0;
 
   const totalBoughtForMe = personTxs
     .filter(t => t.direction === 'bought_for_me' && t.status !== 'settled')
