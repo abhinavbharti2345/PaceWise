@@ -691,7 +691,7 @@
       "file_type": "code",
       "norm_label": "addpersontosupabase()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L279"
+      "source_location": "L280"
     },
     {
       "id": "src_lib_supabasesync_addtransactiontosupabase",
@@ -703,7 +703,7 @@
       "file_type": "code",
       "norm_label": "addtransactiontosupabase()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L229"
+      "source_location": "L230"
     },
     {
       "id": "src_lib_supabasesync_deletealluserdata",
@@ -715,7 +715,7 @@
       "file_type": "code",
       "norm_label": "deletealluserdata()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L336"
+      "source_location": "L337"
     },
     {
       "id": "src_lib_supabasesync_deletepersonfromsupabase",
@@ -727,7 +727,7 @@
       "file_type": "code",
       "norm_label": "deletepersonfromsupabase()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L302"
+      "source_location": "L303"
     },
     {
       "id": "src_lib_supabasesync_deletetransactionfromsupabase",
@@ -739,7 +739,7 @@
       "file_type": "code",
       "norm_label": "deletetransactionfromsupabase()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L262"
+      "source_location": "L263"
     },
     {
       "id": "src_lib_supabasesync_deleteuseraccount",
@@ -751,7 +751,7 @@
       "file_type": "code",
       "norm_label": "deleteuseraccount()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L367"
+      "source_location": "L368"
     },
     {
       "id": "src_lib_supabasesync_resetsyncflag",
@@ -775,7 +775,7 @@
       "file_type": "code",
       "norm_label": "updatepersonbalanceinsupabase()",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L319"
+      "source_location": "L320"
     },
     {
       "id": "src_lib_supabasesync_usesupabasesync",
@@ -1728,7 +1728,7 @@
       "source_location": "L39"
     },
     {
-      "id": "src_lib_supabasesync_rationale_334",
+      "id": "src_lib_supabasesync_rationale_335",
       "label": "NOTE: If you add new user-owned tables, add them to the `tables` array below.",
       "_origin": "ast",
       "community": 0,
@@ -1736,7 +1736,7 @@
       "file_type": "rationale",
       "norm_label": "note: if you add new user-owned tables, add them to the `tables` array below.",
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L334"
+      "source_location": "L335"
     },
     {
       "id": "scratch_check_schema",
@@ -33352,7 +33352,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L229",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
@@ -33363,7 +33363,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L262",
+      "source_location": "L263",
       "weight": 1.0
     },
     {
@@ -33374,7 +33374,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L279",
+      "source_location": "L280",
       "weight": 1.0
     },
     {
@@ -33385,7 +33385,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L302",
+      "source_location": "L303",
       "weight": 1.0
     },
     {
@@ -33396,7 +33396,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L319",
+      "source_location": "L320",
       "weight": 1.0
     },
     {
@@ -33418,7 +33418,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L336",
+      "source_location": "L337",
       "weight": 1.0
     },
     {
@@ -33429,7 +33429,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L367",
+      "source_location": "L368",
       "weight": 1.0
     },
     {
@@ -34291,14 +34291,14 @@
       "weight": 1.0
     },
     {
-      "source": "src_lib_supabasesync_rationale_334",
+      "source": "src_lib_supabasesync_rationale_335",
       "target": "src_lib_supabasesync",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib/supabaseSync.ts",
-      "source_location": "L334",
+      "source_location": "L335",
       "weight": 1.0
     },
     {
@@ -50506,5 +50506,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e2f5bdc6ca907b5fd519ad644873504455f51eaf"
+  "built_at_commit": "eb8761f78e0c8aa4748d0c4975b0377eb27b4971"
 }

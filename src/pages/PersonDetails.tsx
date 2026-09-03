@@ -169,7 +169,7 @@ export function PersonDetails() {
             </span>
           </div>
           <div className="p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)]">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">🛒 Purchases</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">🛒 Bought for Me</span>
             <span className="text-base sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-0.5 block">
               ₹{totalBoughtForMe.toLocaleString('en-IN')}
             </span>

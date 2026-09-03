@@ -102,6 +102,31 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
     }
   };
 
+  const handleQuickLentClick = () => {
+    setSettlementMode('general');
+    const val = Math.max(0, totalLent);
+    setAmount(val.toString());
+    setIsFullSettlement(val === absBalance);
+  };
+
+  const handleQuickBorrowedClick = () => {
+    setSettlementMode('general');
+    const val = Math.max(0, totalBorrowed);
+    setAmount(val.toString());
+    setIsFullSettlement(val === absBalance);
+  };
+
+  const handleQuickBoughtForMeClick = () => {
+    setSettlementMode('bought_for_me');
+    setAmount(totalBoughtForMe.toString());
+    setIsFullSettlement(false);
+    if (boughtForMeItems.length > 0) {
+      const first = boughtForMeItems[0];
+      setSelectedItemId(first.id);
+      setSelectedCategory(first.category || 'Groceries');
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const numAmount = Number(amount);
@@ -183,26 +208,41 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
               </span>
             </div>
 
-            {/* 3-Column Breakdown */}
+            {/* 3-Column Interactive Breakdown Shortcuts */}
             <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-[var(--color-gray-light)] text-center text-[10px]">
-              <div className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)]">
-                <span className="text-[var(--color-gray-dark)] block font-semibold">↗ Lent</span>
+              <button
+                type="button"
+                onClick={handleQuickLentClick}
+                className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] hover:border-emerald-400 hover:shadow-sm active:scale-95 transition-all text-center"
+                title="Quick fill lent amount"
+              >
+                <span className="text-[var(--color-gray-dark)] block font-semibold truncate">↗ Lent</span>
                 <span className="font-extrabold text-[var(--color-success)]">
                   ₹{Math.max(0, totalLent).toLocaleString('en-IN')}
                 </span>
-              </div>
-              <div className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)]">
-                <span className="text-[var(--color-gray-dark)] block font-semibold">↘ Borrowed</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleQuickBorrowedClick}
+                className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] hover:border-rose-400 hover:shadow-sm active:scale-95 transition-all text-center"
+                title="Quick fill borrowed amount"
+              >
+                <span className="text-[var(--color-gray-dark)] block font-semibold truncate">↘ Borrowed</span>
                 <span className="font-extrabold text-[var(--color-primary)]">
                   ₹{Math.max(0, totalBorrowed).toLocaleString('en-IN')}
                 </span>
-              </div>
-              <div className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)]">
-                <span className="text-[var(--color-gray-dark)] block font-semibold">🛒 Purchases</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleQuickBoughtForMeClick}
+                className="p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] hover:border-purple-400 hover:shadow-sm active:scale-95 transition-all text-center"
+                title="Quick fill Bought for Me amount"
+              >
+                <span className="text-[var(--color-gray-dark)] block font-semibold truncate">🛒 Bought for Me</span>
                 <span className="font-extrabold text-purple-600 dark:text-purple-400">
                   ₹{totalBoughtForMe.toLocaleString('en-IN')}
                 </span>
-              </div>
+              </button>
             </div>
           </div>
 
