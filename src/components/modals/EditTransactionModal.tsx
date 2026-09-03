@@ -5,7 +5,7 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
 import type { Transaction } from '../../features/budget/budgetEngine';
-import { EXPENSE_CATEGORIES, getAllExpenseCategories } from '../../utils/categoryHelpers';
+import { getAllExpenseCategories } from '../../utils/categoryHelpers';
 import { parseLocalDate } from '../../utils/dateUtils';
 
 interface EditTransactionModalProps {

@@ -162,10 +162,10 @@
     "semantic_hash": ""
   },
   "src/pages/People.tsx": {
-    "mtime": 1788195399.8831162,
-    "seen": 1788195462.2106507,
-    "ast_hash": "bedfd1e26759027bf0a84e7713619dc4",
-    "semantic_hash": "bedfd1e26759027bf0a84e7713619dc4"
+    "mtime": 1788464348.3924794,
+    "seen": 1788464377.0508468,
+    "ast_hash": "c8a1fff627aa93722d9b5833cc666ec3",
+    "semantic_hash": ""
   },
   "src/pages/Settings.tsx": {
     "mtime": 1788272717.8007016,
@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "src/store/useStore.ts": {
-    "mtime": 1788463059.2741728,
-    "seen": 1788463078.3992069,
-    "ast_hash": "d0cea9654ebb0ee9c161cf0d1fc5bd9d",
+    "mtime": 1788463891.8075094,
+    "seen": 1788464262.3809178,
+    "ast_hash": "d5d988aa9aa9de1ab77fde4bc5bfde73",
     "semantic_hash": ""
   },
   "src/utils/cn.ts": {
@@ -834,15 +834,15 @@
     "semantic_hash": ""
   },
   "src/components/modals/SettleModal.tsx": {
-    "mtime": 1788463323.2291,
-    "seen": 1788463337.374283,
-    "ast_hash": "b57d93339cfa916383a31af8c992535b",
+    "mtime": 1788464363.9636836,
+    "seen": 1788464377.0495632,
+    "ast_hash": "b3a0fb6a5f00c4d5528b2f140dffeb89",
     "semantic_hash": ""
   },
   "src/pages/PersonDetails.tsx": {
-    "mtime": 1788463315.4446368,
-    "seen": 1788463337.3743231,
-    "ast_hash": "d147a527f97b5da2fa7868e5028385a1",
+    "mtime": 1788464355.233777,
+    "seen": 1788464377.0508478,
+    "ast_hash": "918b4c4b8e3814b7b09db0741e9fcc78",
     "semantic_hash": ""
   },
   "src/utils/categoryHelpers.ts": {
