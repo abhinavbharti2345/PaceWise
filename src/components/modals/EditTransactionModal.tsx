@@ -56,7 +56,7 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
       amount: numAmount,
       reason: reason.trim(),
       category: category.trim() || 'Other',
-      date: parseLocalDate(date).toISOString(),
+      date: parseLocalDate(date, transaction.date).toISOString(),
       paymentMethod: paymentMethod || undefined,
       note: note.trim() || undefined,
     });
