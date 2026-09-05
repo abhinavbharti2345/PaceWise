@@ -6,6 +6,8 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { calculateBudget } from '../../features/budget/budgetEngine';
 import { InstallPrompt } from '../ui/InstallPrompt';
 
+import { useCurrentDate } from '../../hooks/useCurrentDate';
+
 const navItems = [
   { name: 'Dashboard', path: '/', icon: LayoutDashboard },
   { name: 'Transactions', path: '/transactions', icon: ArrowRightLeft },
@@ -17,7 +19,7 @@ const navItems = [
 export function AppLayout() {
   const { config, transactions } = useStore();
   const { profile, user } = useAuthStore();
-  const todayDateStr = new Date().toISOString();
+  const todayDateStr = useCurrentDate();
   const stats = calculateBudget(config, transactions, todayDateStr);
 
   const formatCurrency = (val: number) => `${config.currency || '₹'}${Math.round(val).toLocaleString('en-IN')}`;
