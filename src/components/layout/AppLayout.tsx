@@ -7,6 +7,7 @@ import { calculateBudget } from '../../features/budget/budgetEngine';
 import { InstallPrompt } from '../ui/InstallPrompt';
 
 import { useCurrentDate } from '../../hooks/useCurrentDate';
+import { formatCurrency as formatCurrencyUtil } from '../../utils/currencyUtils';
 
 const navItems = [
   { name: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -22,7 +23,7 @@ export function AppLayout() {
   const todayDateStr = useCurrentDate();
   const stats = calculateBudget(config, transactions, todayDateStr);
 
-  const formatCurrency = (val: number) => `${config.currency || '₹'}${Math.round(val).toLocaleString('en-IN')}`;
+  const formatCurrency = (val: number) => formatCurrencyUtil(val, config.currency || '₹');
 
   return (
     <div className="flex h-screen bg-[var(--color-bg-light)] text-[var(--color-dark)] overflow-hidden">

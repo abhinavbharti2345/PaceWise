@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { getCategoryMeta } from '../utils/categoryHelpers';
+import { formatCurrency as formatCurrencyUtil } from '../utils/currencyUtils';
 
 export function Dashboard() {
   const { config, transactions, people } = useStore();
@@ -37,7 +38,7 @@ export function Dashboard() {
   const stats = useMemo(() => calculateBudget(config, transactions, todayDateStr), [config, transactions, todayDateStr]);
 
   const currencySymbol = config.currency || '₹';
-  const formatCurrency = (amount: number) => `${currencySymbol}${Math.round(amount).toLocaleString('en-IN')}`;
+  const formatCurrency = (amount: number) => formatCurrencyUtil(amount, currencySymbol);
 
   // People calculations
   const toReceive = people.filter(p => (p.balance || 0) > 0).reduce((sum, p) => sum + p.balance, 0);

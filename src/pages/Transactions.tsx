@@ -12,6 +12,7 @@ import { AddMoneyModal } from '../components/modals/AddMoneyModal';
 import { AddBillModal } from '../components/modals/AddBillModal';
 import { EditTransactionModal } from '../components/modals/EditTransactionModal';
 import { ConfirmModal } from '../components/modals/ConfirmModal';
+import { formatCurrency } from '../utils/currencyUtils';
 import type { Transaction } from '../features/budget/budgetEngine';
 
 type FilterType = 'all' | 'expense' | 'income' | 'bill' | 'person';
@@ -28,8 +29,6 @@ export function Transactions() {
   const [isBillModalOpen, setIsBillModalOpen] = useState(false);
   const [deletingTransaction, setDeletingTransaction] = useState<Transaction | null>(null);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
-
-  const formatCurrency = (amount: number) => `₹${Math.round(amount).toLocaleString('en-IN')}`;
 
   const filteredTransactions = useMemo(() => {
     return transactions

@@ -19,6 +19,7 @@ import { cn } from '../utils/cn';
 import { PersonTransactionModal } from '../components/modals/PersonTransactionModal';
 import { SettleModal } from '../components/modals/SettleModal';
 import { ConfirmModal } from '../components/modals/ConfirmModal';
+import { formatCurrency } from '../utils/currencyUtils';
 import type { Transaction } from '../features/budget/budgetEngine';
 
 export function PersonDetails() {
@@ -45,8 +46,6 @@ export function PersonDetails() {
       </div>
     );
   }
-
-  const formatCurrency = (amount: number) => `₹${Math.abs(amount).toLocaleString('en-IN')}`;
 
   // Filter all transactions for this person
   const personTransactions = transactions
@@ -154,19 +153,19 @@ export function PersonDetails() {
           <div className="p-2.5 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex flex-col justify-center">
             <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↗ Lent</span>
             <span className="text-sm sm:text-lg font-extrabold text-[var(--color-success)] mt-0.5">
-              ₹{Math.max(0, totalLent).toLocaleString('en-IN')}
+              {formatCurrency(Math.max(0, totalLent))}
             </span>
           </div>
           <div className="p-2.5 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex flex-col justify-center">
             <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↘ Borrowed</span>
             <span className="text-sm sm:text-lg font-extrabold text-[var(--color-primary)] mt-0.5">
-              ₹{Math.max(0, totalBorrowed).toLocaleString('en-IN')}
+              {formatCurrency(Math.max(0, totalBorrowed))}
             </span>
           </div>
           <div className="p-2.5 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex flex-col justify-center">
             <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">🛒 Bought for Me</span>
             <span className="text-sm sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-0.5">
-              ₹{totalBoughtForMe.toLocaleString('en-IN')}
+              {formatCurrency(totalBoughtForMe)}
             </span>
           </div>
         </div>
@@ -282,9 +281,9 @@ export function PersonDetails() {
                       isLent ? "text-[var(--color-success)]" :
                       "text-[var(--color-primary)]"
                     )}>
-                      {isLent ? `+₹${t.amount.toLocaleString('en-IN')}` :
-                       isBorrowed || isBoughtForMe ? `-₹${t.amount.toLocaleString('en-IN')}` :
-                       `₹${t.amount.toLocaleString('en-IN')}`}
+                      {isLent ? `+${formatCurrency(t.amount)}` :
+                       isBorrowed || isBoughtForMe ? `-${formatCurrency(t.amount)}` :
+                       formatCurrency(t.amount)}
                     </span>
                     <p className="text-[10px] uppercase font-bold text-[var(--color-gray-dark)]">
                       {isSettlement ? 'Settlement' : isLent ? 'Lent' : (isBoughtForMe ? (t.category || 'Item') : 'Borrowed')}

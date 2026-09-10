@@ -144,7 +144,7 @@
       "file_type": "code",
       "norm_label": "settlemodalprops",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L12"
+      "source_location": "L11"
     },
     {
       "id": "src_components_ui_badge_badgeprops",
@@ -313,7 +313,7 @@
       "file_type": "code",
       "norm_label": "filtertype",
       "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L18"
+      "source_location": "L17"
     },
     {
       "id": "src_pages_transactions_timefilter",
@@ -326,7 +326,7 @@
       "file_type": "code",
       "norm_label": "timefilter",
       "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L19"
+      "source_location": "L18"
     },
     {
       "id": "src_store_useauthstore_authstate",
@@ -427,7 +427,7 @@
       "file_type": "code",
       "norm_label": "applayout()",
       "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L20"
+      "source_location": "L17"
     },
     {
       "id": "src_components_modals_addbillmodal_addbillmodal",
@@ -535,7 +535,7 @@
       "file_type": "code",
       "norm_label": "settlemodal()",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L19"
+      "source_location": "L18"
     },
     {
       "id": "src_components_ui_badge_badge",
@@ -811,7 +811,7 @@
       "file_type": "code",
       "norm_label": "dashboard()",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L28"
+      "source_location": "L27"
     },
     {
       "id": "src_pages_emailverificationpending_emailverificationpending",
@@ -824,6 +824,18 @@
       "norm_label": "emailverificationpending()",
       "source_file": "src/pages/EmailVerificationPending.tsx",
       "source_location": "L6"
+    },
+    {
+      "id": "src_pages_insights_formatcurrency",
+      "label": "formatCurrency()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "cn",
+      "file_type": "code",
+      "norm_label": "formatcurrency()",
+      "source_file": "src/pages/Insights.tsx",
+      "source_location": "L41"
     },
     {
       "id": "src_pages_insights_getcategoryicon",
@@ -859,7 +871,7 @@
       "file_type": "code",
       "norm_label": "people()",
       "source_file": "src/pages/People.tsx",
-      "source_location": "L11"
+      "source_location": "L10"
     },
     {
       "id": "src_pages_persondetails_persondetails",
@@ -871,7 +883,7 @@
       "file_type": "code",
       "norm_label": "persondetails()",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L25"
+      "source_location": "L24"
     },
     {
       "id": "src_pages_profile_profile",
@@ -907,7 +919,7 @@
       "file_type": "code",
       "norm_label": "transactions()",
       "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L21"
+      "source_location": "L20"
     },
     {
       "id": "src_store_useauthstore_fetchandsetprofile",
@@ -994,30 +1006,6 @@
       "source_location": "L4"
     },
     {
-      "id": "src_utils_currencyutils_formatcurrency",
-      "label": "formatCurrency()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "cn",
-      "file_type": "code",
-      "norm_label": "formatcurrency()",
-      "source_file": "src/utils/currencyUtils.ts",
-      "source_location": "L16"
-    },
-    {
-      "id": "src_utils_currencyutils_formatnumber",
-      "label": "formatNumber()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "cn",
-      "file_type": "code",
-      "norm_label": "formatnumber()",
-      "source_file": "src/utils/currencyUtils.ts",
-      "source_location": "L8"
-    },
-    {
       "id": "src_utils_dateutils_gettodaydatestring",
       "label": "getTodayDateString()",
       "_callable": true,
@@ -1027,7 +1015,7 @@
       "file_type": "code",
       "norm_label": "gettodaydatestring()",
       "source_file": "src/utils/dateUtils.ts",
-      "source_location": "L39"
+      "source_location": "L25"
     },
     {
       "id": "src_utils_dateutils_parselocaldate",
@@ -1132,7 +1120,7 @@
       "file_type": "code",
       "norm_label": "navitems",
       "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L12"
+      "source_location": "L9"
     },
     {
       "id": "src_components_modals_addbillmodal",
@@ -1671,17 +1659,6 @@
       "file_type": "code",
       "norm_label": "cn.ts",
       "source_file": "src/utils/cn.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_utils_currencyutils",
-      "label": "currencyUtils.ts",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "cn",
-      "file_type": "code",
-      "norm_label": "currencyutils.ts",
-      "source_file": "src/utils/currencyUtils.ts",
       "source_location": "L1"
     },
     {
@@ -26695,7 +26672,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L21",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -26707,19 +26684,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L22",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_layout_applayout_applayout",
-      "target": "src_hooks_usecurrentdate_usecurrentdate",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L23",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -26731,7 +26696,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L24",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -26743,19 +26708,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L48",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_layout_applayout_applayout",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L66",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -27072,30 +27025,6 @@
     },
     {
       "source": "src_components_modals_settlemodal_settlemodal",
-      "target": "src_utils_cn_cn",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L195",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_settlemodal_settlemodal",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L199",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_settlemodal_settlemodal",
       "target": "src_store_usestore_usestore",
       "relation": "calls",
       "_origin": "ast",
@@ -27103,7 +27032,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L20",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_settlemodal_settlemodal",
+      "target": "src_utils_cn_cn",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/SettleModal.tsx",
+      "source_location": "L194",
       "weight": 1.0
     },
     {
@@ -27115,7 +27056,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L22",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -27283,7 +27224,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L137",
+      "source_location": "L136",
       "weight": 1.0
     },
     {
@@ -27295,7 +27236,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L254",
+      "source_location": "L253",
       "weight": 1.0
     },
     {
@@ -27307,7 +27248,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L29",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -27319,7 +27260,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L30",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -27331,7 +27272,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L37",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -27343,19 +27284,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L38",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_dashboard_dashboard",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L92",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -27384,7 +27313,7 @@
     },
     {
       "source": "src_pages_insights_burndownchart",
-      "target": "src_utils_currencyutils_formatcurrency",
+      "target": "src_pages_insights_formatcurrency",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -27432,7 +27361,7 @@
     },
     {
       "source": "src_pages_insights_insights",
-      "target": "src_utils_currencyutils_formatcurrency",
+      "target": "src_pages_insights_formatcurrency",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -27475,7 +27404,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/People.tsx",
-      "source_location": "L13",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -27487,19 +27416,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/People.tsx",
-      "source_location": "L68",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_people_people",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/pages/People.tsx",
-      "source_location": "L72",
+      "source_location": "L69",
       "weight": 1.0
     },
     {
@@ -27511,19 +27428,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L116",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_persondetails_persondetails",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L146",
+      "source_location": "L117",
       "weight": 1.0
     },
     {
@@ -27535,7 +27440,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L28",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -27643,7 +27548,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L124",
+      "source_location": "L125",
       "weight": 1.0
     },
     {
@@ -27655,19 +27560,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L172",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_transactions_transactions",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L203",
+      "source_location": "L173",
       "weight": 1.0
     },
     {
@@ -27679,7 +27572,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L22",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -27763,7 +27656,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L15",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -27775,7 +27668,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L16",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -28296,18 +28189,6 @@
     },
     {
       "source": "src_components_layout_applayout",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L10",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_layout_applayout",
       "target": "src_utils_cn_cn",
       "relation": "imports",
       "_origin": "ast",
@@ -28364,18 +28245,6 @@
       "context": "import",
       "source_file": "src/components/layout/AppLayout.tsx",
       "source_location": "L7",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_layout_applayout",
-      "target": "src_hooks_usecurrentdate_usecurrentdate",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -29028,18 +28897,6 @@
     },
     {
       "source": "src_components_modals_settlemodal",
-      "target": "src_features_budget_budgetengine_transaction",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L10",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_settlemodal",
       "target": "src_store_usestore_usestore",
       "relation": "imports",
       "_origin": "ast",
@@ -29112,7 +28969,7 @@
     },
     {
       "source": "src_components_modals_settlemodal",
-      "target": "src_utils_currencyutils_formatcurrency",
+      "target": "src_features_budget_budgetengine_transaction",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -29460,18 +29317,6 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L26",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_dashboard",
       "target": "src_store_usestore_usestore",
       "relation": "imports",
       "_origin": "ast",
@@ -29640,18 +29485,6 @@
     },
     {
       "source": "src_pages_insights",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/Insights.tsx",
-      "source_location": "L41",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_insights",
       "target": "src_utils_cn_cn",
       "relation": "imports",
       "_origin": "ast",
@@ -29747,18 +29580,6 @@
       "weight": 1.0
     },
     {
-      "source": "src_pages_people",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/People.tsx",
-      "source_location": "L9",
-      "weight": 1.0
-    },
-    {
       "source": "src_pages_persondetails",
       "target": "src_utils_cn_cn",
       "relation": "imports",
@@ -29808,18 +29629,6 @@
     },
     {
       "source": "src_pages_persondetails",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L22",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_persondetails",
       "target": "src_features_budget_budgetengine_transaction",
       "relation": "imports",
       "_origin": "ast",
@@ -29827,7 +29636,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L23",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -30192,18 +30001,6 @@
     },
     {
       "source": "src_pages_transactions",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L15",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_transactions",
       "target": "src_features_budget_budgetengine_transaction",
       "relation": "imports",
       "_origin": "ast",
@@ -30211,7 +30008,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L16",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -30696,18 +30493,6 @@
     },
     {
       "source": "src_components_layout_applayout",
-      "target": "src_utils_currencyutils",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L10",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_layout_applayout",
       "target": "src_utils_cn",
       "relation": "imports_from",
       "_origin": "ast",
@@ -30764,18 +30549,6 @@
       "context": "import",
       "source_file": "src/components/layout/AppLayout.tsx",
       "source_location": "L7",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_layout_applayout",
-      "target": "src_hooks_usecurrentdate",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -31359,19 +31132,6 @@
     },
     {
       "source": "src_components_modals_settlemodal",
-      "target": "src_features_budget_budgetengine",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L10",
-      "type_only": true,
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_settlemodal",
       "target": "src_store_usestore",
       "relation": "imports_from",
       "_origin": "ast",
@@ -31433,7 +31193,7 @@
     },
     {
       "source": "src_components_modals_settlemodal",
-      "target": "src_utils_currencyutils",
+      "target": "src_features_budget_budgetengine",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -31441,6 +31201,7 @@
       "context": "import",
       "source_file": "src/components/modals/SettleModal.tsx",
       "source_location": "L9",
+      "type_only": true,
       "weight": 1.0
     },
     {
@@ -31735,18 +31496,6 @@
     },
     {
       "source": "src_pages_dashboard",
-      "target": "src_utils_currencyutils",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L26",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_dashboard",
       "target": "src_store_usestore",
       "relation": "imports_from",
       "_origin": "ast",
@@ -31891,18 +31640,6 @@
     },
     {
       "source": "src_pages_insights",
-      "target": "src_utils_currencyutils",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/Insights.tsx",
-      "source_location": "L41",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_insights",
       "target": "src_utils_cn",
       "relation": "imports_from",
       "_origin": "ast",
@@ -31986,18 +31723,6 @@
       "weight": 1.0
     },
     {
-      "source": "src_pages_people",
-      "target": "src_utils_currencyutils",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/People.tsx",
-      "source_location": "L9",
-      "weight": 1.0
-    },
-    {
       "source": "src_pages_persondetails",
       "target": "src_utils_cn",
       "relation": "imports_from",
@@ -32047,18 +31772,6 @@
     },
     {
       "source": "src_pages_persondetails",
-      "target": "src_utils_currencyutils",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L22",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_persondetails",
       "target": "src_features_budget_budgetengine",
       "relation": "imports_from",
       "_origin": "ast",
@@ -32066,7 +31779,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L23",
+      "source_location": "L22",
       "type_only": true,
       "weight": 1.0
     },
@@ -32336,18 +32049,6 @@
     },
     {
       "source": "src_pages_transactions",
-      "target": "src_utils_currencyutils",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L15",
-      "weight": 1.0
-    },
-    {
-      "source": "src_pages_transactions",
       "target": "src_features_budget_budgetengine",
       "relation": "imports_from",
       "_origin": "ast",
@@ -32355,7 +32056,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L16",
+      "source_location": "L15",
       "type_only": true,
       "weight": 1.0
     },
@@ -33083,24 +32784,24 @@
     },
     {
       "source": "src_components_layout_applayout",
-      "target": "src_components_layout_applayout_navitems",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L12",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_layout_applayout",
       "target": "src_components_layout_applayout_applayout",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/layout/AppLayout.tsx",
-      "source_location": "L20",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_layout_applayout",
+      "target": "src_components_layout_applayout_navitems",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/components/layout/AppLayout.tsx",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -33309,7 +33010,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L12",
+      "source_location": "L11",
       "weight": 1.0
     },
     {
@@ -33320,7 +33021,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L19",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -33738,7 +33439,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/Dashboard.tsx",
-      "source_location": "L28",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -33776,6 +33477,17 @@
     },
     {
       "source": "src_pages_insights",
+      "target": "src_pages_insights_formatcurrency",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/pages/Insights.tsx",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "src_pages_insights",
       "target": "src_pages_insights_burndownchart",
       "relation": "contains",
       "_origin": "ast",
@@ -33793,7 +33505,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/People.tsx",
-      "source_location": "L11",
+      "source_location": "L10",
       "weight": 1.0
     },
     {
@@ -33804,7 +33516,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/PersonDetails.tsx",
-      "source_location": "L25",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -33837,7 +33549,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L18",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -33848,7 +33560,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L19",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -33859,7 +33571,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/Transactions.tsx",
-      "source_location": "L21",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -34061,28 +33773,6 @@
       "weight": 1.0
     },
     {
-      "source": "src_utils_currencyutils",
-      "target": "src_utils_currencyutils_formatcurrency",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/utils/currencyUtils.ts",
-      "source_location": "L16",
-      "weight": 1.0
-    },
-    {
-      "source": "src_utils_currencyutils",
-      "target": "src_utils_currencyutils_formatnumber",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/utils/currencyUtils.ts",
-      "source_location": "L8",
-      "weight": 1.0
-    },
-    {
       "source": "src_utils_dateutils",
       "target": "src_utils_dateutils_gettodaydatestring",
       "relation": "contains",
@@ -34090,7 +33780,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/utils/dateUtils.ts",
-      "source_location": "L39",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -50804,5 +50494,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "badcb2e5002e59980504015035e5e2f179039b5b"
+  "built_at_commit": "423bb27aee526be02cddbf3a730b0d7e95fd558d"
 }

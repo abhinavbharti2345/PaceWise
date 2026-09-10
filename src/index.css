@@ -20,11 +20,25 @@
   --color-negative-bg: var(--negative-bg);
   --color-negative-border: var(--negative-border);
   --color-negative-text: var(--negative-text);
-  
-  --font-sans: 'Inter', sans-serif;
-  
+
+  --font-sans: 'RoundDot', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
   --radius-2xl: 1.25rem;
   --radius-3xl: 1.5rem;
+}
+
+/* Custom font override: Targets ONLY the decimal / period sign (U+002E) to make it smooth, round, and slightly larger without altering any other font glyphs */
+@font-face {
+  font-family: 'RoundDot';
+  src: local('Outfit'),
+    local('Segoe UI Semibold'),
+    local('Segoe UI'),
+    local('Roboto'),
+    url('https://fonts.gstatic.com/s/outfit/v11/QGYyz_MVcBeNP4NjuGObqx1XmO1I4TC0C4G-EiAou6Y.woff2') format('woff2');
+  font-weight: 100 900;
+  unicode-range: U+002E;
+  font-display: swap;
+  size-adjust: 104%;
 }
 
 :root {
@@ -93,8 +107,10 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* Remove Chrome, Safari, Edge, Opera number input spinners */

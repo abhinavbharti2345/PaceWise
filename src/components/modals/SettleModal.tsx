@@ -6,6 +6,7 @@ import { Button } from '../ui/Button';
 import { cn } from '../../utils/cn';
 import { getAllExpenseCategories } from '../../utils/categoryHelpers';
 import { AddCategoryModal } from './AddCategoryModal';
+import { formatCurrency } from '../../utils/currencyUtils';
 import type { Transaction } from '../../features/budget/budgetEngine';
 
 interface SettleModalProps {
@@ -195,7 +196,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                   "text-2xl font-extrabold",
                   person.balance > 0 ? "text-[var(--color-success)]" : person.balance < 0 ? "text-[var(--color-primary)]" : "text-[var(--color-dark)]"
                 )}>
-                  ₹{absBalance.toLocaleString('en-IN')}
+                  {formatCurrency(absBalance)}
                 </span>
               </div>
               <span className="text-xs font-semibold text-[var(--color-gray-dark)] px-2.5 py-1 rounded-full bg-[var(--color-surface)] border border-[var(--color-gray-light)]">
@@ -217,7 +218,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
               >
                 <span className="text-[var(--color-gray-dark)] font-semibold text-[10px] sm:text-xs leading-tight">↗ Lent</span>
                 <span className="font-extrabold text-[var(--color-success)] mt-0.5">
-                  ₹{Math.max(0, totalLent).toLocaleString('en-IN')}
+                  {formatCurrency(Math.max(0, totalLent))}
                 </span>
               </button>
               <button
@@ -232,7 +233,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
               >
                 <span className="text-[var(--color-gray-dark)] font-semibold text-[10px] sm:text-xs leading-tight">↘ Borrowed</span>
                 <span className="font-extrabold text-[var(--color-primary)] mt-0.5">
-                  ₹{Math.max(0, totalBorrowed).toLocaleString('en-IN')}
+                  {formatCurrency(Math.max(0, totalBorrowed))}
                 </span>
               </button>
               <button
@@ -247,7 +248,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
               >
                 <span className="text-[var(--color-gray-dark)] font-semibold text-[10px] sm:text-xs leading-tight">🛒 Bought for Me</span>
                 <span className="font-extrabold text-purple-600 dark:text-purple-400 mt-0.5">
-                  ₹{totalBoughtForMe.toLocaleString('en-IN')}
+                  {formatCurrency(totalBoughtForMe)}
                 </span>
               </button>
             </div>
@@ -305,7 +306,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                   >
                     {boughtForMeItems.map(item => (
                       <option key={item.id} value={item.id}>
-                        {item.reason} — ₹{item.amount.toLocaleString('en-IN')} ({item.category || 'General'})
+                        {item.reason} — {formatCurrency(item.amount)} ({item.category || 'General'})
                       </option>
                     ))}
                     <option value="custom">Custom Purchase / Settle by Category</option>

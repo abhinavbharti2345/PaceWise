@@ -38,7 +38,7 @@ const getCategoryIcon = (category: string) => {
   return <MoreHorizontal size={16} className="text-[var(--color-gray-dark)]" />;
 };
 
-const formatCurrency = (amount: number) => `₹${Math.round(amount).toLocaleString('en-IN')}`;
+import { formatCurrency } from '../utils/currencyUtils';
 
 // Extracted to prevent entire Insights page re-rendering on hover
 const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats: any; endLabel?: string }) => {

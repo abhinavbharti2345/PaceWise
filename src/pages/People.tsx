@@ -6,14 +6,13 @@ import { Button } from '../components/ui/Button';
 import { UserPlus, ChevronRight, Search, Users, ArrowUpRight, ArrowDownRight, Scale } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { AddPersonModal } from '../components/modals/AddPersonModal';
+import { formatCurrency } from '../utils/currencyUtils';
 
 export function People() {
   const navigate = useNavigate();
   const { people, transactions } = useStore();
   const [search, setSearch] = useState('');
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
-
-  const formatCurrency = (amount: number) => `₹${Math.abs(amount).toLocaleString('en-IN')}`;
 
   // Positive balance means they owe us (To Receive)
   // Negative balance means we owe them (To Give)
@@ -83,19 +82,19 @@ export function People() {
             <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">
               <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↗ Lent</span>
               <span className="text-sm sm:text-lg font-extrabold text-[var(--color-success)] mt-0.5">
-                ₹{toReceive.toLocaleString('en-IN')}
+                {formatCurrency(toReceive)}
               </span>
             </div>
             <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">
               <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↘ Borrowed</span>
               <span className="text-sm sm:text-lg font-extrabold text-[var(--color-primary)] mt-0.5">
-                ₹{toGive.toLocaleString('en-IN')}
+                {formatCurrency(toGive)}
               </span>
             </div>
             <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">
               <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">🛒 Bought for Me</span>
               <span className="text-sm sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-0.5">
-                ₹{globalTotalBoughtForMe.toLocaleString('en-IN')}
+                {formatCurrency(globalTotalBoughtForMe)}
               </span>
             </div>
           </div>
