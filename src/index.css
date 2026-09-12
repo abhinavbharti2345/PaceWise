@@ -21,6 +21,11 @@
   --color-negative-border: var(--negative-border);
   --color-negative-text: var(--negative-text);
 
+  --color-purple-bg: var(--purple-bg);
+  --color-purple-border: var(--purple-border);
+  --color-purple-text: var(--purple-text);
+  --color-purple-accent: var(--purple-accent);
+
   --font-sans: 'RoundDot', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   --radius-2xl: 1.25rem;
@@ -67,6 +72,12 @@
   --negative-bg: #FFF0EF;
   --negative-border: #FFD4D1;
   --negative-text: #D9362E;
+
+  /* Purple / Paid for me tokens */
+  --purple-bg: #F5F3FF;
+  --purple-border: #DDD6FE;
+  --purple-text: #7C3AED;
+  --purple-accent: #9333EA;
 }
 
 .dark {
@@ -89,6 +100,11 @@
   --negative-bg: rgba(255, 69, 58, 0.08);
   --negative-border: rgba(255, 69, 58, 0.18);
   --negative-text: #FF453A;
+
+  --purple-bg: rgba(168, 85, 247, 0.08);
+  --purple-border: rgba(168, 85, 247, 0.22);
+  --purple-text: #C084FC;
+  --purple-accent: #A855F7;
 }
 
 @layer base {

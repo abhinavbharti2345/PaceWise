@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle, AlertCircle, ShoppingCart, DollarSign, Check } from 'lucide-react';
+import { X, CheckCircle, AlertCircle, CreditCard, DollarSign, Check } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import type { Person } from '../../store/useStore';
 import { Button } from '../ui/Button';
@@ -244,9 +244,9 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                   "p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] transition-all text-center flex flex-col items-center justify-center",
                   totalBoughtForMe > 0 ? "hover:border-purple-400 hover:shadow-sm active:scale-95 cursor-pointer" : "opacity-50 cursor-not-allowed"
                 )}
-                title={totalBoughtForMe > 0 ? "Quick fill Bought for Me amount" : "No purchases to settle"}
+                title={totalBoughtForMe > 0 ? "Quick fill Paid for Me amount" : "No purchases to settle"}
               >
-                <span className="text-[var(--color-gray-dark)] font-semibold text-[10px] sm:text-xs leading-tight">🛒 Bought for Me</span>
+                <span className="text-[var(--color-gray-dark)] font-semibold text-[10px] sm:text-xs leading-tight">💳 Paid for Me</span>
                 <span className="font-extrabold text-purple-600 dark:text-purple-400 mt-0.5">
                   {formatCurrency(totalBoughtForMe)}
                 </span>
@@ -284,8 +284,8 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                   )}
                   onClick={() => setSettlementMode('bought_for_me')}
                 >
-                  <ShoppingCart size={14} />
-                  <span>Bought for Me</span>
+                  <CreditCard size={14} />
+                  <span>Paid for Me</span>
                 </button>
               </div>
             </div>

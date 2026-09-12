@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, ArrowUpRight, ArrowDownRight, AlertCircle, ShoppingCart, Check } from 'lucide-react';
+import { X, ArrowUpRight, ArrowDownRight, AlertCircle, CreditCard, Check } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import type { Person } from '../../store/useStore';
 import { Button } from '../ui/Button';
@@ -154,8 +154,8 @@ export function PersonTransactionModal({
                 )}
                 onClick={() => setDirection('bought_for_me')}
               >
-                <ShoppingCart size={14} />
-                <span className="truncate">Bought for Me</span>
+                <CreditCard size={14} />
+                <span className="truncate">Paid for Me</span>
               </button>
             </div>
           </div>
@@ -167,7 +167,7 @@ export function PersonTransactionModal({
               <div>
                 <p className="font-bold">Paying back a purchase?</p>
                 <p className="text-[11px] text-amber-700 dark:text-amber-400 mt-0.5 leading-normal">
-                  You have {boughtForMeItems.length} unsettled "Bought for Me" purchase(s) with {person.name}. To pay off a purchase and log it as a budget expense, use <strong>Settle Item</strong> on their page instead.
+                  You have {boughtForMeItems.length} unsettled "Paid for Me" purchase(s) with {person.name}. To pay off a purchase and log it as a budget expense, use <strong>Settle Item</strong> on their page instead.
                 </p>
               </div>
             </div>

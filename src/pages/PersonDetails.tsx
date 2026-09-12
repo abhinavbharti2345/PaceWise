@@ -13,7 +13,7 @@ import {
   Trash2, 
   Clock, 
   Receipt,
-  ShoppingCart
+  CreditCard
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { PersonTransactionModal } from '../components/modals/PersonTransactionModal';
@@ -163,7 +163,7 @@ export function PersonDetails() {
             </span>
           </div>
           <div className="p-2.5 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex flex-col justify-center">
-            <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">🛒 Bought for Me</span>
+            <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">💳 Paid for Me</span>
             <span className="text-sm sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-0.5">
               {formatCurrency(totalBoughtForMe)}
             </span>
@@ -216,12 +216,12 @@ export function PersonDetails() {
               onClick={() => handleOpenTransaction('bought_for_me')}
               className="col-span-2 sm:col-span-1 w-full font-bold flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs"
               style={{
-                color: 'var(--negative-text)',
-                borderColor: 'var(--negative-border)',
+                color: 'var(--purple-text)',
+                borderColor: 'var(--purple-border)',
               }}
             >
-              <ShoppingCart size={16} className="shrink-0" />
-              <span>Bought for Me (-₹)</span>
+              <CreditCard size={16} className="shrink-0" />
+              <span>Paid for Me (-₹)</span>
             </Button>
           </div>
         </div>
@@ -252,12 +252,12 @@ export function PersonDetails() {
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-3">
                     <IconBadge 
-                      iconName={isSettlement ? 'CheckCircle' : isLent ? 'ArrowUpRight' : (isBoughtForMe ? 'ShoppingCart' : 'ArrowDownRight')}
-                      color={isSettlement ? 'blue' : isLent ? 'green' : 'red'}
+                      iconName={isSettlement ? 'CheckCircle' : isLent ? 'ArrowUpRight' : (isBoughtForMe ? 'CreditCard' : 'ArrowDownRight')}
+                      color={isSettlement ? 'blue' : isLent ? 'green' : (isBoughtForMe ? 'purple' : 'red')}
                     />
                     <div>
                       <p className="text-sm font-bold text-[var(--color-dark)] flex items-center gap-2">
-                        {t.reason || (isSettlement ? 'Settlement Payment' : isLent ? 'Lent Money' : (isBoughtForMe ? 'Bought for Me' : 'Borrowed Money'))}
+                        {t.reason || (isSettlement ? 'Settlement Payment' : isLent ? 'Lent Money' : (isBoughtForMe ? 'Paid for Me' : 'Borrowed Money'))}
                         {isBoughtForMe && (
                           <span className={cn(
                             "px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase",
