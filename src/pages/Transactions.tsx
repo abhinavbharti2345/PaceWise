@@ -1,11 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { IconBadge } from '../components/ui/IconBadge';
-import { format, isToday, isThisWeek, isThisMonth } from 'date-fns';
+import { format, isToday, isThisWeek, subMonths } from 'date-fns';
 import { cn } from '../utils/cn';
-import { Search, Trash2, Edit3, Calendar, Receipt } from 'lucide-react';
+import { Search, Trash2, Edit3, Calendar, Receipt, ChevronDown, Check } from 'lucide-react';
 import { getCategoryMeta } from '../utils/categoryHelpers';
 import { AddExpenseModal } from '../components/modals/AddExpenseModal';
 import { AddMoneyModal } from '../components/modals/AddMoneyModal';
@@ -24,6 +24,61 @@ export function Transactions() {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
   const [search, setSearch] = useState('');
 
+  const currentMonthKey = format(new Date(), 'yyyy-MM');
+  const [selectedMonth, setSelectedMonth] = useState<string>(currentMonthKey);
+  const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
+  const monthPickerRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (monthPickerRef.current && !monthPickerRef.current.contains(event.target as Node)) {
+        setIsMonthPickerOpen(false);
+      }
+    }
+    if (isMonthPickerOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMonthPickerOpen]);
+
+  // Compute available months from transactions plus recent 6 months
+  const availableMonths = useMemo(() => {
+    const monthMap = new Map<string, number>();
+
+    transactions.forEach(t => {
+      try {
+        const mKey = format(new Date(t.date), 'yyyy-MM');
+        monthMap.set(mKey, (monthMap.get(mKey) || 0) + 1);
+      } catch {}
+    });
+
+    for (let i = 0; i < 6; i++) {
+      const d = subMonths(new Date(), i);
+      const mKey = format(d, 'yyyy-MM');
+      if (!monthMap.has(mKey)) {
+        monthMap.set(mKey, 0);
+      }
+    }
+
+    const sortedKeys = Array.from(monthMap.keys()).sort((a, b) => b.localeCompare(a));
+
+    return sortedKeys.map(key => {
+      const [year, month] = key.split('-').map(Number);
+      const dateObj = new Date(year, month - 1, 1);
+      const isCurrent = key === currentMonthKey;
+      return {
+        key,
+        label: format(dateObj, 'MMMM yyyy'),
+        shortLabel: format(dateObj, 'MMM yyyy'),
+        isCurrent,
+        count: monthMap.get(key) || 0
+      };
+    });
+  }, [transactions, currentMonthKey]);
+
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [isMoneyModalOpen, setIsMoneyModalOpen] = useState(false);
   const [isBillModalOpen, setIsBillModalOpen] = useState(false);
@@ -36,7 +91,9 @@ export function Transactions() {
       .filter(t => {
         if (timeFilter === 'today') return isToday(new Date(t.date));
         if (timeFilter === 'week') return isThisWeek(new Date(t.date));
-        if (timeFilter === 'month') return isThisMonth(new Date(t.date));
+        if (timeFilter === 'month') {
+          return format(new Date(t.date), 'yyyy-MM') === selectedMonth;
+        }
         return true;
       })
       .filter(t => {
@@ -116,21 +173,98 @@ export function Transactions() {
         </div>
 
         {/* Time period filter dropdown */}
-        <div className="flex items-center gap-1.5 bg-[var(--color-surface-light)] p-1 rounded-xl shrink-0">
-          {(['all', 'today', 'week', 'month'] as TimeFilter[]).map((period) => (
+        <div className="grid grid-cols-4 sm:flex items-center gap-1 bg-[var(--color-surface-light)] p-1 rounded-xl w-full sm:w-auto shrink-0">
+          {(['all', 'today', 'week'] as TimeFilter[]).map((period) => (
             <button
               key={period}
-              onClick={() => setTimeFilter(period)}
+              type="button"
+              onClick={() => {
+                setTimeFilter(period);
+                setIsMonthPickerOpen(false);
+              }}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-colors",
+                "w-full sm:w-auto px-1.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold capitalize transition-colors cursor-pointer text-center justify-center flex items-center truncate",
                 timeFilter === period 
                   ? "bg-[var(--color-surface)] text-[var(--color-dark)] shadow-sm" 
                   : "text-[var(--color-gray-dark)] hover:text-[var(--color-dark)]"
               )}
             >
-              {period === 'all' ? 'All Time' : period === 'week' ? 'This Week' : period === 'month' ? 'This Month' : 'Today'}
+              <span className="truncate">
+                {period === 'all' ? 'All Time' : period === 'week' ? 'This Week' : 'Today'}
+              </span>
             </button>
           ))}
+
+          {/* Month Picker Pill */}
+          <div className="relative w-full sm:w-auto" ref={monthPickerRef}>
+            <button
+              type="button"
+              onClick={() => {
+                setTimeFilter('month');
+                setIsMonthPickerOpen(prev => !prev);
+              }}
+              className={cn(
+                "w-full sm:w-auto px-1.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer text-center",
+                timeFilter === 'month'
+                  ? "bg-[var(--color-surface)] text-[var(--color-dark)] shadow-sm"
+                  : "text-[var(--color-gray-dark)] hover:text-[var(--color-dark)]"
+              )}
+            >
+              <Calendar size={12} className={cn("shrink-0", timeFilter === 'month' ? "text-[var(--color-primary)]" : "opacity-70")} />
+              <span className="truncate">
+                {selectedMonth === currentMonthKey 
+                  ? 'This Month' 
+                  : (availableMonths.find(m => m.key === selectedMonth)?.shortLabel || selectedMonth)}
+              </span>
+              <ChevronDown size={11} className={cn("shrink-0 transition-transform duration-200", isMonthPickerOpen && "rotate-180")} />
+            </button>
+
+            {/* Dropdown Menu */}
+            {isMonthPickerOpen && (
+              <div className="absolute right-0 top-full mt-2 w-56 sm:w-64 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-2xl shadow-xl z-50 p-1.5 max-h-72 overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
+                <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-gray-dark)] border-b border-[var(--color-gray-light)] mb-1">
+                  Select Month
+                </div>
+                {availableMonths.map((m) => {
+                  const isSelected = timeFilter === 'month' && selectedMonth === m.key;
+                  return (
+                    <button
+                      key={m.key}
+                      type="button"
+                      onClick={() => {
+                        setSelectedMonth(m.key);
+                        setTimeFilter('month');
+                        setIsMonthPickerOpen(false);
+                      }}
+                      className={cn(
+                        "w-full px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors text-left cursor-pointer",
+                        isSelected
+                          ? "bg-[var(--color-surface-light)] text-[var(--color-primary)] font-bold"
+                          : "text-[var(--color-dark)] hover:bg-[var(--color-surface-light)]"
+                      )}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="truncate">{m.label}</span>
+                        {m.isCurrent && (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-bold shrink-0">
+                            Current
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {m.count > 0 && (
+                          <span className="text-[10px] text-[var(--color-gray-dark)]">
+                            {m.count} txns
+                          </span>
+                        )}
+                        {isSelected && <Check size={14} className="text-[var(--color-primary)]" />}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

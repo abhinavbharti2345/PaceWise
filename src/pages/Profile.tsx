@@ -4,7 +4,8 @@ import { supabase } from '../lib/supabase';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { User, Mail, LogOut, Check, Pencil, Shield, AlertTriangle } from 'lucide-react';
+import { User, Mail, LogOut, Check, Pencil, Shield, AlertTriangle, BookOpen, ChevronRight, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 import { ConfirmModal } from '../components/modals/ConfirmModal';
 import { useStore } from '../store/useStore';
@@ -296,6 +297,41 @@ export function Profile() {
             </div>
           </div>
           
+        </div>
+      </Card>
+      
+      {/* Help & Knowledge Section */}
+      <Card className="border border-[var(--color-gray-light)] shadow-sm">
+        <CardHeader>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <BookOpen size={18} className="text-[var(--color-primary)]" />
+              <CardTitle className="text-base sm:text-lg">Help & Knowledge</CardTitle>
+            </div>
+            <span className="text-xs text-[var(--color-gray-dark)] font-medium">Guides & FAQs</span>
+          </div>
+        </CardHeader>
+        
+        <div className="p-4 sm:p-6 space-y-3">
+          <Link 
+            to="/guide"
+            className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] hover:bg-[var(--color-gray-light)]/50 border border-[var(--color-gray-light)] transition-all group cursor-pointer"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-amber-500 text-white flex items-center justify-center font-bold shadow-sm shrink-0">
+                <Sparkles size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-sm sm:text-base text-[var(--color-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                  How PaceWise Works
+                </p>
+                <p className="text-xs text-[var(--color-gray-dark)] mt-0.5">
+                  Learn about daily pacing, Lent vs Borrowed vs Paid for Me, and rollover rules.
+                </p>
+              </div>
+            </div>
+            <ChevronRight size={18} className="text-[var(--color-gray-dark)] group-hover:text-[var(--color-primary)] group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+          </Link>
         </div>
       </Card>
       

@@ -11,6 +11,7 @@ import { Settings } from './pages/Settings';
 import { AuthPage } from './pages/Auth';
 import { EmailVerificationPending } from './pages/EmailVerificationPending';
 import { Profile } from './pages/Profile';
+import { Guide } from './pages/Guide';
 import { useStore } from './store/useStore';
 import { useAuthStore } from './store/useAuthStore';
 import { useSupabaseSync } from './lib/supabaseSync';
@@ -144,6 +145,7 @@ function AppContent() {
         <Route path="insights" element={<Insights />} />
         <Route path="settings" element={<Settings />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="guide" element={<Guide />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
