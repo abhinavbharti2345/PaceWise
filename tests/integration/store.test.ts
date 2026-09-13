@@ -368,6 +368,86 @@ describe('Hardening & Cascade Deletion Logic', () => {
     expect(d.getMonth()).toBe(8); // September is month 8
     expect(d.getDate()).toBe(1);
   });
+
+  describe('Category Safeguards & Custom Management', () => {
+    it('18. Hiding and unhiding default categories preserves them and updates hidden state', () => {
+      const store = useStore.getState();
+      expect(store.hiddenCategories).toEqual([]);
+
+      store.hideCategory('Food');
+      expect(useStore.getState().hiddenCategories).toContain('Food');
+
+      // Duplicate hide should not duplicate entry
+      store.hideCategory('Food');
+      expect(useStore.getState().hiddenCategories.filter(h => h.toLowerCase() === 'food').length).toBe(1);
+
+      store.unhideCategory('Food');
+      expect(useStore.getState().hiddenCategories).not.toContain('Food');
+    });
+
+    it('19. Adding, deleting custom categories and custom bill categories', () => {
+      const store = useStore.getState();
+
+      store.addCustomCategory({ name: 'Gym Membership', icon: 'Dumbbell', color: 'green' });
+      expect(useStore.getState().customCategories.some(c => c.name === 'Gym Membership')).toBe(true);
+
+      store.deleteCustomCategory('Gym Membership');
+      expect(useStore.getState().customCategories.some(c => c.name === 'Gym Membership')).toBe(false);
+
+      store.addCustomBillCategory({ name: 'Hostel Mess Bill', icon: 'Receipt', color: 'orange' });
+      expect(useStore.getState().customBillCategories.some(c => c.name === 'Hostel Mess Bill')).toBe(true);
+
+      store.deleteCustomBillCategory('Hostel Mess Bill');
+      expect(useStore.getState().customBillCategories.some(c => c.name === 'Hostel Mess Bill')).toBe(false);
+    });
+
+    it('20. Past transactions retain their category name safely when category is hidden or deleted', () => {
+      const store = useStore.getState();
+      
+      // Add transaction under custom category
+      store.addCustomCategory({ name: 'Books', icon: 'BookOpen', color: 'blue' });
+      store.addTransaction({
+        type: 'expense',
+        amount: 450,
+        category: 'Books',
+        reason: 'Algorithms Textbook',
+        date: '2026-09-10T10:00:00Z',
+      });
+
+      // Add transaction under default category
+      store.addTransaction({
+        type: 'expense',
+        amount: 150,
+        category: 'Transport',
+        reason: 'Metro ticket',
+        date: '2026-09-11T10:00:00Z',
+      });
+
+      // Now delete the custom category and hide the default category
+      store.deleteCustomCategory('Books');
+      store.hideCategory('Transport');
+
+      // All past transactions must still exist and keep their exact category intact
+      const txs = useStore.getState().transactions;
+      expect(txs.length).toBe(2);
+      expect(txs.find(t => t.reason === 'Algorithms Textbook')?.category).toBe('Books');
+      expect(txs.find(t => t.reason === 'Metro ticket')?.category).toBe('Transport');
+    });
+
+    it('21. Adding, deleting and reordering custom income categories', () => {
+      const store = useStore.getState();
+
+      store.addCustomIncomeCategory({ name: 'Dividends', icon: 'TrendingUp', color: 'green' });
+      expect(useStore.getState().customIncomeCategories?.some(c => c.name === 'Dividends')).toBe(true);
+
+      store.reorderCategories(['Dividends', 'Salary / Job', 'Parents'], 'income');
+      expect(useStore.getState().incomeCategoryOrder).toEqual(['Dividends', 'Salary / Job', 'Parents']);
+
+      store.deleteCustomIncomeCategory('Dividends');
+      expect(useStore.getState().customIncomeCategories?.some(c => c.name === 'Dividends')).toBe(false);
+    });
+  });
 });
+
 
 

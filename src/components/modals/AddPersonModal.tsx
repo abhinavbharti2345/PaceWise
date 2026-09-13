@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, AlertCircle, Check } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { DatePicker } from '../ui/DatePicker';
 import { cn } from '../../utils/cn';
+import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
 
 interface AddPersonModalProps {
   isOpen: boolean;
@@ -18,7 +20,20 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
   const [amount, setAmount] = useState('');
   const [direction, setDirection] = useState<'gave' | 'took'>('gave');
   const [reason, setReason] = useState('');
+  const [date, setDate] = useState(getTodayDateString());
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setHasInitialBalance(false);
+      setName('');
+      setAmount('');
+      setReason('');
+      setDirection('gave');
+      setDate(getTodayDateString());
+      setError('');
+    }
+  }, [isOpen]);
 
   const trimmedName = name.trim();
   const existingPerson = trimmedName 
@@ -58,12 +73,14 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
 
     // If initial balance was provided, record the formal transaction so history is preserved
     if (hasInitialBalance && numAmount > 0) {
+      const txDate = date ? parseLocalDate(date).toISOString() : new Date().toISOString();
       recordPersonTransaction({
         personId,
         personName: trimmedName,
         amount: numAmount,
         direction,
         reason: reason.trim(),
+        date: txDate,
       });
     }
     
@@ -72,6 +89,7 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
     setHasInitialBalance(false);
     setDirection('gave');
     setReason('');
+    setDate(getTodayDateString());
     setError('');
     onClose();
   };
@@ -208,6 +226,14 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
                   placeholder="e.g. Shared Uber, Movie tickets" 
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <DatePicker 
+                  label="Date" 
+                  value={date}
+                  onChange={(newDate) => setDate(newDate)}
                 />
               </div>
             </div>

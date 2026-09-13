@@ -1,14 +1,13 @@
-import { useState } from 'react';
-import { X, Check, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, AlertCircle } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
+import { CategorySelector } from '../ui/CategorySelector';
 import { getAllBillCategories } from '../../utils/categoryHelpers';
 import { AddCategoryModal } from './AddCategoryModal';
 import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
-import { cn } from '../../utils/cn';
-import { useEffect } from 'react';
 
 interface AddBillModalProps {
   isOpen: boolean;
@@ -16,8 +15,14 @@ interface AddBillModalProps {
 }
 
 export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
-  const { addTransaction, customBillCategories = [] } = useStore();
-  const allBillCategories = getAllBillCategories(customBillCategories);
+  const { 
+    addTransaction, 
+    customBillCategories = [], 
+    hiddenCategories = [], 
+    billCategoryOrder = [] 
+  } = useStore();
+  
+  const allBillCategories = getAllBillCategories(customBillCategories, hiddenCategories, billCategoryOrder);
   
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [amount, setAmount] = useState('');
@@ -118,7 +123,7 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
                 </span>
               </div>
               <div className="flex items-center text-4xl sm:text-5xl font-extrabold text-[var(--color-primary)]">
-                <span className="mr-2 font-normal" style={{color: 'var(--negative-text)', opacity: 0.7}}>₹</span>
+                <span className="mr-2 font-normal shrink-0 whitespace-nowrap inline-flex items-center" style={{color: 'var(--negative-text)', opacity: 0.7}}>₹</span>
                 <input 
                   type="number" 
                   inputMode="decimal"
@@ -136,37 +141,16 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
             
             {/* Bill Category Selection */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">
-                Bill Type *
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                {allBillCategories.map((bill) => {
-                  const isSelected = selectedCategory === bill.name;
-                  return (
-                    <button
-                      key={bill.name}
-                      type="button"
-                      onClick={() => setSelectedCategory(bill.name)}
-                      className={cn(
-                        "flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all text-left truncate",
-                        isSelected 
-                          ? "bg-[var(--color-dark)] text-[var(--color-surface)] border-[var(--color-dark)] shadow-sm"
-                          : "bg-[var(--color-surface)] text-[var(--color-gray-dark)] border-[var(--color-gray-light)] hover:border-gray-400"
-                      )}
-                    >
-                      <span className="truncate">{bill.name}</span>
-                      {isSelected && <Check size={12} className="ml-auto shrink-0" />}
-                    </button>
-                  );
-                })}
-                <button
-                  type="button"
-                  onClick={() => setIsAddCategoryOpen(true)}
-                  className="flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl text-xs font-bold border border-dashed border-red-400 text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-950/20 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all"
-                >
-                  <span>+ Custom</span>
-                </button>
-              </div>
+              <CategorySelector
+                label="Bill Type *"
+                categories={allBillCategories}
+                selectedCategory={selectedCategory}
+                onSelectCategory={(catName) => setSelectedCategory(catName)}
+                type="bill"
+                onAddCustomClick={() => setIsAddCategoryOpen(true)}
+                customButtonText="Custom"
+                columnsClass="grid-cols-2"
+              />
 
               {selectedCategory === 'Other Bill' && (
                 <div className="mt-2">

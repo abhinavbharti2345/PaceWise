@@ -18,13 +18,23 @@ interface AppState {
   people: Person[];
   customCategories: CategoryMeta[];
   customBillCategories?: CategoryMeta[];
+  customIncomeCategories?: CategoryMeta[];
+  hiddenCategories?: string[];
+  categoryOrder?: string[];
+  billCategoryOrder?: string[];
+  incomeCategoryOrder?: string[];
   isHydrated: boolean; // true once Supabase data has been loaded for the current user
   
-  // Custom Categories actions
+  // Custom Categories & Preferences actions
   addCustomCategory: (cat: CategoryMeta) => void;
   deleteCustomCategory: (name: string) => void;
   addCustomBillCategory: (cat: CategoryMeta) => void;
   deleteCustomBillCategory: (name: string) => void;
+  addCustomIncomeCategory: (cat: CategoryMeta) => void;
+  deleteCustomIncomeCategory: (name: string) => void;
+  hideCategory: (name: string) => void;
+  unhideCategory: (name: string) => void;
+  reorderCategories: (newOrder: string[], type?: 'expense' | 'bill' | 'income') => void;
   
   // Actions
   setConfig: (config: BudgetConfig) => void;
@@ -109,6 +119,11 @@ export const useStore = create<AppState>()(
       people: [],
       customCategories: [],
       customBillCategories: [],
+      customIncomeCategories: [],
+      hiddenCategories: [],
+      categoryOrder: [],
+      billCategoryOrder: [],
+      incomeCategoryOrder: [],
       isHydrated: false,
 
       addCustomCategory: (cat) => set((state) => {
@@ -131,6 +146,39 @@ export const useStore = create<AppState>()(
       deleteCustomBillCategory: (name) => set((state) => ({
         customBillCategories: (state.customBillCategories || []).filter(c => c.name.toLowerCase() !== name.toLowerCase())
       })),
+
+      addCustomIncomeCategory: (cat) => set((state) => {
+        const currentList = state.customIncomeCategories || [];
+        const exists = currentList.some(c => c.name.toLowerCase() === cat.name.toLowerCase());
+        if (exists) return state;
+        return { customIncomeCategories: [...currentList, cat] };
+      }),
+
+      deleteCustomIncomeCategory: (name) => set((state) => ({
+        customIncomeCategories: (state.customIncomeCategories || []).filter(c => c.name.toLowerCase() !== name.toLowerCase())
+      })),
+
+      hideCategory: (name) => set((state) => {
+        const trimmed = name.trim();
+        const current = state.hiddenCategories || [];
+        if (current.some(h => h.toLowerCase() === trimmed.toLowerCase())) return state;
+        return { hiddenCategories: [...current, trimmed] };
+      }),
+
+      unhideCategory: (name) => set((state) => {
+        const trimmed = name.trim().toLowerCase();
+        return { hiddenCategories: (state.hiddenCategories || []).filter(h => h.toLowerCase() !== trimmed) };
+      }),
+
+      reorderCategories: (newOrder, type = 'expense') => set(() => {
+        if (type === 'bill') {
+          return { billCategoryOrder: newOrder };
+        }
+        if (type === 'income') {
+          return { incomeCategoryOrder: newOrder };
+        }
+        return { categoryOrder: newOrder };
+      }),
 
       setConfig: (config) => set({ config }),
       

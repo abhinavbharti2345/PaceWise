@@ -1,14 +1,13 @@
-import { useState } from 'react';
-import { X, Check, AlertCircle } from 'lucide-react';
-import { cn } from '../../utils/cn';
+import { useState, useEffect } from 'react';
+import { X, AlertCircle } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
-import { EXPENSE_CATEGORIES, getAllExpenseCategories } from '../../utils/categoryHelpers';
+import { CategorySelector } from '../ui/CategorySelector';
+import { getAllExpenseCategories } from '../../utils/categoryHelpers';
 import { AddCategoryModal } from './AddCategoryModal';
 import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
-import { useEffect } from 'react';
 
 interface AddExpenseModalProps {
   isOpen: boolean;
@@ -16,13 +15,13 @@ interface AddExpenseModalProps {
 }
 
 export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
-  const { addTransaction, customCategories } = useStore();
+  const { addTransaction, customCategories = [], hiddenCategories = [], categoryOrder = [] } = useStore();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
-  const allCategories = getAllExpenseCategories(customCategories);
+  const allCategories = getAllExpenseCategories(customCategories, hiddenCategories, categoryOrder);
   
   const [amount, setAmount] = useState('');
   const [reason, setReason] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(EXPENSE_CATEGORIES[0].name);
+  const [selectedCategory, setSelectedCategory] = useState(allCategories[0]?.name || 'Food');
   const [customCategory, setCustomCategory] = useState('');
   const [date, setDate] = useState(getTodayDateString());
   const [paymentMethod, setPaymentMethod] = useState('UPI / Card');
@@ -66,7 +65,7 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
     // Reset and close
     setAmount('');
     setReason('');
-    setSelectedCategory(EXPENSE_CATEGORIES[0].name);
+    setSelectedCategory(allCategories[0]?.name || 'Food');
     setCustomCategory('');
     setNote('');
     setError('');
@@ -113,7 +112,7 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
               Amount Spent
             </label>
             <div className="flex items-center text-4xl sm:text-5xl font-extrabold text-[var(--color-dark)]">
-              <span className="text-[var(--color-gray-dark)] mr-2 font-normal">₹</span>
+              <span className="text-[var(--color-gray-dark)] mr-2 font-normal shrink-0 whitespace-nowrap inline-flex items-center">₹</span>
               <input 
                 type="number" 
                 inputMode="decimal"
@@ -144,37 +143,16 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
 
           {/* Category Selection */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">
-              Category
-            </label>
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-              {allCategories.map((cat) => {
-                const isSelected = selectedCategory === cat.name;
-                return (
-                  <button
-                    key={cat.name}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat.name)}
-                    className={cn(
-                      "flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all text-left truncate",
-                      isSelected 
-                        ? "bg-[var(--color-dark)] text-[var(--color-surface)] border-[var(--color-dark)] shadow-sm"
-                        : "bg-[var(--color-surface)] text-[var(--color-gray-dark)] border-[var(--color-gray-light)] hover:border-gray-400"
-                    )}
-                  >
-                    <span className="truncate">{cat.name}</span>
-                    {isSelected && <Check size={12} className="ml-auto shrink-0" />}
-                  </button>
-                );
-              })}
-              <button
-                type="button"
-                onClick={() => setIsAddCategoryOpen(true)}
-                className="flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-xs font-bold border border-dashed border-purple-400 text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-950/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all"
-              >
-                <span>+ Custom</span>
-              </button>
-            </div>
+            <CategorySelector
+              label="Category"
+              categories={allCategories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={(catName) => setSelectedCategory(catName)}
+              type="expense"
+              onAddCustomClick={() => setIsAddCategoryOpen(true)}
+              customButtonText="Custom"
+              columnsClass="grid-cols-3"
+            />
 
             {selectedCategory === 'Other' && (
               <div className="mt-2">

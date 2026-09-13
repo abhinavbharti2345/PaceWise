@@ -102,9 +102,9 @@
     "semantic_hash": ""
   },
   "src/components/modals/AddExpenseModal.tsx": {
-    "mtime": 1788461340.4196825,
-    "seen": 1788461389.4988549,
-    "ast_hash": "20d5b753bb0d833a3f430e673e82e1ec",
+    "mtime": 1789341709.4292474,
+    "seen": 1789341749.1405714,
+    "ast_hash": "eda440076ed41c379a06b0b1a4a2c28e",
     "semantic_hash": ""
   },
   "src/components/ui/Badge.tsx": {
@@ -168,10 +168,10 @@
     "semantic_hash": ""
   },
   "src/pages/Settings.tsx": {
-    "mtime": 1788272717.8007016,
-    "seen": 1788460524.0291781,
-    "ast_hash": "60566f5cc9f3e2e72210b243dbd0ac75",
-    "semantic_hash": "60566f5cc9f3e2e72210b243dbd0ac75"
+    "mtime": 1789341922.9265437,
+    "seen": 1789341951.4041502,
+    "ast_hash": "f3be792db1d27cbc67198fb02d5ac4a4",
+    "semantic_hash": ""
   },
   "src/pages/Transactions.tsx": {
     "mtime": 1789339228.5706887,
@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "src/store/useStore.ts": {
-    "mtime": 1789339151.8445446,
-    "seen": 1789339257.514831,
-    "ast_hash": "4aa54cf691dbc95e5088aa1ef23d94b1",
+    "mtime": 1789341816.7586682,
+    "seen": 1789341951.4043663,
+    "ast_hash": "1963efd2ea0d9b40c6ae9a5fb14a6d13",
     "semantic_hash": ""
   },
   "src/utils/cn.ts": {
@@ -222,10 +222,10 @@
     "semantic_hash": "4284eb9bcd4f64042186f01c0c48387c"
   },
   "src/components/modals/AddMoneyModal.tsx": {
-    "mtime": 1788272238.4090037,
-    "seen": 1788460524.0291235,
-    "ast_hash": "62adb13f091c9f666cb819954b69e807",
-    "semantic_hash": "62adb13f091c9f666cb819954b69e807"
+    "mtime": 1789341890.1059954,
+    "seen": 1789341951.401125,
+    "ast_hash": "9f5f6e4f98de4178bc13518f62bd5b2b",
+    "semantic_hash": ""
   },
   "src/components/modals/AddPersonModal.tsx": {
     "mtime": 1788198608.1381538,
@@ -822,9 +822,9 @@
     "semantic_hash": ""
   },
   "src/components/modals/AddBillModal.tsx": {
-    "mtime": 1789339182.2897236,
-    "seen": 1789339257.5112133,
-    "ast_hash": "d8f42e704fe40968fa730465c2d93744",
+    "mtime": 1789341718.0880694,
+    "seen": 1789341749.1405025,
+    "ast_hash": "d234ce7e107acda9c9dcdccc6c3e0780",
     "semantic_hash": ""
   },
   "src/components/modals/PersonTransactionModal.tsx": {
@@ -846,9 +846,9 @@
     "semantic_hash": ""
   },
   "src/utils/categoryHelpers.ts": {
-    "mtime": 1789339138.3538547,
-    "seen": 1789339257.514832,
-    "ast_hash": "1175831a2de5035ddf80000e8fa87109",
+    "mtime": 1789341795.911651,
+    "seen": 1789341951.4043684,
+    "ast_hash": "f73f42dec7131967e4e14b08aae1e230",
     "semantic_hash": ""
   },
   "tests/budget/comprehensiveEngine.test.ts": {
@@ -894,10 +894,10 @@
     "semantic_hash": "3ce034f37a6661efc8073a99b87d2c87"
   },
   "tests/integration/store.test.ts": {
-    "mtime": 1788203048.8798,
-    "seen": 1788217925.9429774,
-    "ast_hash": "1ce5bd0548e9ae4c2a1d9de89cbb5ab4",
-    "semantic_hash": "1ce5bd0548e9ae4c2a1d9de89cbb5ab4"
+    "mtime": 1789341938.2784028,
+    "seen": 1789341951.4052649,
+    "ast_hash": "65cbdd9315e5692191d30eaff7614072",
+    "semantic_hash": ""
   },
   "src/components/modals/ConfirmModal.tsx": {
     "mtime": 1788198016.0500243,
@@ -1014,9 +1014,9 @@
     "semantic_hash": "5f4cf0558a3e1b648d10434550b52266"
   },
   "src/components/modals/AddCategoryModal.tsx": {
-    "mtime": 1789339166.8485835,
-    "seen": 1789339257.511216,
-    "ast_hash": "ac834c045f7dee30be5879a8050ea84a",
+    "mtime": 1789341866.4626684,
+    "seen": 1789341951.400967,
+    "ast_hash": "31cf422608a38c405066d42381099d9d",
     "semantic_hash": ""
   },
   "src/pages/EmailVerificationPending.tsx": {
@@ -1038,9 +1038,15 @@
     "semantic_hash": ""
   },
   "src/pages/Guide.tsx": {
-    "mtime": 1789191129.1018176,
-    "seen": 1789191185.6867387,
-    "ast_hash": "47f042333cc7b3475061f74f795b30d7",
+    "mtime": 1789341648.1810558,
+    "seen": 1789341666.022502,
+    "ast_hash": "e8626b0f92d33d9dd85b3f93dd6381fe",
+    "semantic_hash": ""
+  },
+  "src/components/ui/CategorySelector.tsx": {
+    "mtime": 1789341847.906663,
+    "seen": 1789341951.4019864,
+    "ast_hash": "dbd8e80408fc3a4af15910092b76253f",
     "semantic_hash": ""
   }
 }

@@ -38,29 +38,100 @@ export const INCOME_SOURCES: CategoryMeta[] = [
   { name: 'Gift / Other', icon: 'Gift', color: 'green' },
 ];
 
-export function getAllExpenseCategories(customCategories: CategoryMeta[] = []): CategoryMeta[] {
+export function getAllExpenseCategories(
+  customCategories: CategoryMeta[] = [],
+  hiddenCategories: string[] = [],
+  order: string[] = []
+): CategoryMeta[] {
   // Put standard categories (except 'Other') first, then custom categories, then 'Other'
   const standardWithoutOther = EXPENSE_CATEGORIES.filter(c => c.name !== 'Other');
   const otherCat = EXPENSE_CATEGORIES.find(c => c.name === 'Other') || { name: 'Other', icon: 'MoreHorizontal', color: 'gray' };
   
-  return [...standardWithoutOther, ...customCategories, otherCat];
+  let list = [...standardWithoutOther, ...customCategories, otherCat];
+
+  if (hiddenCategories && hiddenCategories.length > 0) {
+    const hiddenSet = new Set(hiddenCategories.map(h => h.toLowerCase()));
+    list = list.filter(c => !hiddenSet.has(c.name.toLowerCase()));
+  }
+
+  if (order && order.length > 0) {
+    const orderMap = new Map(order.map((name, idx) => [name.toLowerCase(), idx]));
+    list.sort((a, b) => {
+      const idxA = orderMap.has(a.name.toLowerCase()) ? orderMap.get(a.name.toLowerCase())! : 999;
+      const idxB = orderMap.has(b.name.toLowerCase()) ? orderMap.get(b.name.toLowerCase())! : 999;
+      return idxA - idxB;
+    });
+  }
+  
+  return list;
 }
 
-export function getAllBillCategories(customBillCategories: CategoryMeta[] = []): CategoryMeta[] {
+export function getAllBillCategories(
+  customBillCategories: CategoryMeta[] = [],
+  hiddenCategories: string[] = [],
+  order: string[] = []
+): CategoryMeta[] {
   // Put standard bill categories (except 'Other Bill') first, then custom bill categories, then 'Other Bill'
   const standardWithoutOther = BILL_CATEGORIES.filter(c => c.name !== 'Other Bill');
   const otherCat = BILL_CATEGORIES.find(c => c.name === 'Other Bill') || { name: 'Other Bill', icon: 'Receipt', color: 'gray' };
   
-  return [...standardWithoutOther, ...customBillCategories, otherCat];
+  let list = [...standardWithoutOther, ...customBillCategories, otherCat];
+
+  if (hiddenCategories && hiddenCategories.length > 0) {
+    const hiddenSet = new Set(hiddenCategories.map(h => h.toLowerCase()));
+    list = list.filter(c => !hiddenSet.has(c.name.toLowerCase()));
+  }
+
+  if (order && order.length > 0) {
+    const orderMap = new Map(order.map((name, idx) => [name.toLowerCase(), idx]));
+    list.sort((a, b) => {
+      const idxA = orderMap.has(a.name.toLowerCase()) ? orderMap.get(a.name.toLowerCase())! : 999;
+      const idxB = orderMap.has(b.name.toLowerCase()) ? orderMap.get(b.name.toLowerCase())! : 999;
+      return idxA - idxB;
+    });
+  }
+  
+  return list;
+}
+
+export function getAllIncomeCategories(
+  customIncomeCategories: CategoryMeta[] = [],
+  hiddenCategories: string[] = [],
+  order: string[] = []
+): CategoryMeta[] {
+  const standardWithoutOther = INCOME_SOURCES.filter(c => c.name !== 'Gift / Other');
+  const otherCat = INCOME_SOURCES.find(c => c.name === 'Gift / Other') || { name: 'Gift / Other', icon: 'Gift', color: 'green' };
+  
+  let list = [...standardWithoutOther, ...customIncomeCategories, otherCat];
+
+  if (hiddenCategories && hiddenCategories.length > 0) {
+    const hiddenSet = new Set(hiddenCategories.map(h => h.toLowerCase()));
+    list = list.filter(c => !hiddenSet.has(c.name.toLowerCase()));
+  }
+
+  if (order && order.length > 0) {
+    const orderMap = new Map(order.map((name, idx) => [name.toLowerCase(), idx]));
+    list.sort((a, b) => {
+      const idxA = orderMap.has(a.name.toLowerCase()) ? orderMap.get(a.name.toLowerCase())! : 999;
+      const idxB = orderMap.has(b.name.toLowerCase()) ? orderMap.get(b.name.toLowerCase())! : 999;
+      return idxA - idxB;
+    });
+  }
+  
+  return list;
 }
 
 export function getCategoryMeta(
   type: string, 
   category?: string, 
   customCategories: CategoryMeta[] = [],
-  customBillCategories: CategoryMeta[] = []
+  customBillCategories: CategoryMeta[] = [],
+  customIncomeCategories: CategoryMeta[] = []
 ): CategoryMeta {
   if (type === 'income') {
+    const customMatch = customIncomeCategories.find(s => s.name.toLowerCase() === category?.toLowerCase());
+    if (customMatch) return customMatch;
+
     const match = INCOME_SOURCES.find(s => s.name.toLowerCase() === category?.toLowerCase());
     return match || { name: category || 'Income', icon: 'ArrowDownRight', color: 'green' };
   }

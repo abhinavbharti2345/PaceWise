@@ -9,14 +9,14 @@ import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { cn } from '../../utils/cn';
-import { EXPENSE_CATEGORIES, BILL_CATEGORIES, type CategoryMeta } from '../../utils/categoryHelpers';
+import { EXPENSE_CATEGORIES, BILL_CATEGORIES, INCOME_SOURCES, type CategoryMeta } from '../../utils/categoryHelpers';
 
 interface AddCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCategoryAdded?: (categoryName: string) => void;
   title?: string;
-  categoryType?: 'expense' | 'bill';
+  categoryType?: 'expense' | 'bill' | 'income';
 }
 
 const AVAILABLE_ICONS: Array<{ name: CategoryMeta['icon']; label: string; IconComp: React.ElementType }> = [
@@ -56,17 +56,20 @@ export function AddCategoryModal({
 }: AddCategoryModalProps) {
   const { 
     addCustomCategory, 
-    customCategories,
+    customCategories = [],
     addCustomBillCategory,
-    customBillCategories = []
+    customBillCategories = [],
+    addCustomIncomeCategory,
+    customIncomeCategories = []
   } = useStore();
 
   const isBill = categoryType === 'bill';
-  const modalTitle = title || (isBill ? 'Add Custom Bill Type' : 'Add Custom Category');
+  const isIncome = categoryType === 'income';
+  const modalTitle = title || (isIncome ? 'Add Custom Income Source' : (isBill ? 'Add Custom Bill Type' : 'Add Custom Category'));
 
   const [name, setName] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState<CategoryMeta['icon']>(isBill ? 'Receipt' : 'Tag');
-  const [selectedColor, setSelectedColor] = useState<CategoryMeta['color']>(isBill ? 'red' : 'purple');
+  const [selectedIcon, setSelectedIcon] = useState<CategoryMeta['icon']>(isIncome ? 'Briefcase' : (isBill ? 'Receipt' : 'Tag'));
+  const [selectedColor, setSelectedColor] = useState<CategoryMeta['color']>(isIncome ? 'green' : (isBill ? 'red' : 'purple'));
   const [error, setError] = useState('');
 
   if (!isOpen) return null;
@@ -75,11 +78,24 @@ export function AddCategoryModal({
     e.preventDefault();
     const trimmed = name.trim();
     if (!trimmed) {
-      setError(isBill ? 'Please enter a bill type name' : 'Please enter a category name');
+      setError(isIncome ? 'Please enter an income source name' : (isBill ? 'Please enter a bill type name' : 'Please enter a category name'));
       return;
     }
 
-    if (isBill) {
+    if (isIncome) {
+      const existsInStandard = INCOME_SOURCES.some(c => c.name.toLowerCase() === trimmed.toLowerCase());
+      const existsInCustom = customIncomeCategories.some(c => c.name.toLowerCase() === trimmed.toLowerCase());
+      if (existsInStandard || existsInCustom) {
+        setError('An income source with this name already exists');
+        return;
+      }
+
+      addCustomIncomeCategory({
+        name: trimmed,
+        icon: selectedIcon,
+        color: selectedColor,
+      });
+    } else if (isBill) {
       const existsInStandard = BILL_CATEGORIES.some(c => c.name.toLowerCase() === trimmed.toLowerCase());
       const existsInCustom = customBillCategories.some(c => c.name.toLowerCase() === trimmed.toLowerCase());
       if (existsInStandard || existsInCustom) {
