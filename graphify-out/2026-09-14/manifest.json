@@ -138,9 +138,9 @@
     "semantic_hash": "797315758f076e9e4b05eebff39c8ab7"
   },
   "src/features/budget/budgetEngine.ts": {
-    "mtime": 1789340693.5560596,
-    "seen": 1789340731.8942952,
-    "ast_hash": "1029a6c6331773e939841fc01f378c74",
+    "mtime": 1789340415.4844203,
+    "seen": 1789340455.1421218,
+    "ast_hash": "72f1133e7822e6c0610b4607a381297f",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -150,9 +150,9 @@
     "semantic_hash": "fa535ad310524494d8f0e4b12962c74e"
   },
   "src/pages/Dashboard.tsx": {
-    "mtime": 1789340930.4935703,
-    "seen": 1789340951.7389028,
-    "ast_hash": "e5e3c926ad366f715118d5a61bef5894",
+    "mtime": 1789339212.81383,
+    "seen": 1789339257.5138805,
+    "ast_hash": "c1f6bc4a5d9a4803c6814afbc1dff932",
     "semantic_hash": ""
   },
   "src/pages/Insights.tsx": {

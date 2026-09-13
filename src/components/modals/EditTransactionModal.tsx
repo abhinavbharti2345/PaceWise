@@ -5,7 +5,7 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
 import type { Transaction } from '../../features/budget/budgetEngine';
-import { getAllExpenseCategories } from '../../utils/categoryHelpers';
+import { getAllExpenseCategories, getAllBillCategories } from '../../utils/categoryHelpers';
 import { parseLocalDate } from '../../utils/dateUtils';
 
 interface EditTransactionModalProps {
@@ -15,8 +15,11 @@ interface EditTransactionModalProps {
 }
 
 export function EditTransactionModal({ isOpen, onClose, transaction }: EditTransactionModalProps) {
-  const { updateTransaction, customCategories } = useStore();
-  const allCategories = getAllExpenseCategories(customCategories);
+  const { updateTransaction, customCategories, customBillCategories = [] } = useStore();
+  const allExpenseCategories = getAllExpenseCategories(customCategories);
+  const allBillCategories = getAllBillCategories(customBillCategories);
+  const isBill = transaction?.type === 'bill';
+  const categoryList = isBill ? allBillCategories : allExpenseCategories;
 
   const [amount, setAmount] = useState('');
   const [reason, setReason] = useState('');
@@ -145,11 +148,14 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs font-bold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
               >
-                {allCategories.map((cat) => (
+                {categoryList.map((cat) => (
                   <option key={cat.name} value={cat.name}>
                     {cat.name}
                   </option>
                 ))}
+                {category && !categoryList.some(c => c.name.toLowerCase() === category.toLowerCase()) && (
+                  <option value={category}>{category}</option>
+                )}
                 <option value="Income">Income</option>
                 <option value="Bills">Bills</option>
                 <option value="People">People</option>

@@ -24,14 +24,44 @@ describe('budgetEngine', () => {
     expect(day2Stats.todaysAvailable).toBe(300);
     expect(day2Stats.moneyLeft).toBe(5900);
 
-    // Day 4 (Day 3 a bill is paid, but we are evaluating on Day 4)
+    // Day 4 (Day 3 a bill is paid, forward-looking over remaining 28 days)
     const t2: Transaction = { id: '2', type: 'bill', amount: 1000, date: '2026-08-03' };
     const day4Stats = calculateBudget(config, [t1, t2], '2026-08-04');
     
-    expect(day4Stats.baseDailyBudget).toBeCloseTo(166.66, 1);
-    expect(day4Stats.carryForward).toBeCloseTo(400, 1);
-    expect(day4Stats.todaysAvailable).toBeCloseTo(566.66, 1);
+    // Day 3 bill of 1000 has 28 remaining days (Aug 3..30) -> -35.71/day
+    // Base daily from Aug 3 onward = 200 - 35.714 = 164.29
+    // Carry forward = Day 1 saved (100) + Day 2 saved (200) + Day 3 saved (164.29) = 464.29
+    expect(day4Stats.baseDailyBudget).toBeCloseTo(164.29, 1);
+    expect(day4Stats.carryForward).toBeCloseTo(464.29, 1);
+    expect(day4Stats.todaysAvailable).toBeCloseTo(628.57, 1);
     expect(day4Stats.moneyLeft).toBe(4900);
+  });
+
+  it('preserves past carry-forward when a bill is paid mid-month (no retroactive penalty)', () => {
+    const config: BudgetConfig = {
+      totalMoney: 3000,
+      startDate: '2026-08-01',
+      endDate: '2026-08-30'
+    };
+
+    // Day 1..10 no spending -> saved 10 days * 100 = 1000 carry forward into Day 11
+    const day11BeforeBill = calculateBudget(config, [], '2026-08-11');
+    expect(day11BeforeBill.carryForward).toBe(1000);
+    expect(day11BeforeBill.baseDailyBudget).toBe(100);
+    expect(day11BeforeBill.todaysAvailable).toBe(1100);
+
+    // Pay bill of 200 on Day 11 (20 days remaining: Day 11..30)
+    const billTx: Transaction = { id: 'b1', type: 'bill', amount: 200, date: '2026-08-11' };
+    const day11AfterBill = calculateBudget(config, [billTx], '2026-08-11');
+
+    // Past 10 days carry forward must remain exactly 1000!
+    expect(day11AfterBill.carryForward).toBe(1000);
+    // Base for remaining 20 days drops by 200 / 20 = 10 -> new base = 90
+    expect(day11AfterBill.baseDailyBudget).toBe(90);
+    // Today's available = 90 + 1000 = 1090 (drops by only 10, not penalized for past 10 days!)
+    expect(day11AfterBill.todaysAvailable).toBe(1090);
+    // Money left drops by the exact 200
+    expect(day11AfterBill.moneyLeft).toBe(2800);
   });
 
   describe('Progress Percentage Calculations (Bug Repro)', () => {

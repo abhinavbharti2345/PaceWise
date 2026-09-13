@@ -17,11 +17,14 @@ interface AppState {
   transactions: Transaction[];
   people: Person[];
   customCategories: CategoryMeta[];
+  customBillCategories?: CategoryMeta[];
   isHydrated: boolean; // true once Supabase data has been loaded for the current user
   
   // Custom Categories actions
   addCustomCategory: (cat: CategoryMeta) => void;
   deleteCustomCategory: (name: string) => void;
+  addCustomBillCategory: (cat: CategoryMeta) => void;
+  deleteCustomBillCategory: (name: string) => void;
   
   // Actions
   setConfig: (config: BudgetConfig) => void;
@@ -105,6 +108,7 @@ export const useStore = create<AppState>()(
       transactions: [],
       people: [],
       customCategories: [],
+      customBillCategories: [],
       isHydrated: false,
 
       addCustomCategory: (cat) => set((state) => {
@@ -115,6 +119,17 @@ export const useStore = create<AppState>()(
 
       deleteCustomCategory: (name) => set((state) => ({
         customCategories: state.customCategories.filter(c => c.name.toLowerCase() !== name.toLowerCase())
+      })),
+
+      addCustomBillCategory: (cat) => set((state) => {
+        const currentList = state.customBillCategories || [];
+        const exists = currentList.some(c => c.name.toLowerCase() === cat.name.toLowerCase());
+        if (exists) return state;
+        return { customBillCategories: [...currentList, cat] };
+      }),
+
+      deleteCustomBillCategory: (name) => set((state) => ({
+        customBillCategories: (state.customBillCategories || []).filter(c => c.name.toLowerCase() !== name.toLowerCase())
       })),
 
       setConfig: (config) => set({ config }),

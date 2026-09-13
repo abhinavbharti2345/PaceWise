@@ -19,7 +19,7 @@ type FilterType = 'all' | 'expense' | 'income' | 'bill' | 'person';
 type TimeFilter = 'all' | 'today' | 'week' | 'month';
 
 export function Transactions() {
-  const { transactions, deleteTransaction } = useStore();
+  const { transactions, deleteTransaction, customCategories, customBillCategories = [] } = useStore();
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
   const [search, setSearch] = useState('');
@@ -303,7 +303,7 @@ export function Transactions() {
             <Card className="p-0 overflow-hidden border border-[var(--color-gray-light)]">
               <div className="divide-y divide-[var(--color-gray-light)]">
                 {items.map(t => {
-                  const meta = getCategoryMeta(t.type, t.category);
+                  const meta = getCategoryMeta(t.type, t.category, customCategories, customBillCategories);
                   const isIncome = t.type === 'income' || (t.type === 'person' && t.direction === 'took' && t.isSettlement);
 
                   return (

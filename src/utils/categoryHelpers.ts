@@ -46,13 +46,29 @@ export function getAllExpenseCategories(customCategories: CategoryMeta[] = []): 
   return [...standardWithoutOther, ...customCategories, otherCat];
 }
 
-export function getCategoryMeta(type: string, category?: string, customCategories: CategoryMeta[] = []): CategoryMeta {
+export function getAllBillCategories(customBillCategories: CategoryMeta[] = []): CategoryMeta[] {
+  // Put standard bill categories (except 'Other Bill') first, then custom bill categories, then 'Other Bill'
+  const standardWithoutOther = BILL_CATEGORIES.filter(c => c.name !== 'Other Bill');
+  const otherCat = BILL_CATEGORIES.find(c => c.name === 'Other Bill') || { name: 'Other Bill', icon: 'Receipt', color: 'gray' };
+  
+  return [...standardWithoutOther, ...customBillCategories, otherCat];
+}
+
+export function getCategoryMeta(
+  type: string, 
+  category?: string, 
+  customCategories: CategoryMeta[] = [],
+  customBillCategories: CategoryMeta[] = []
+): CategoryMeta {
   if (type === 'income') {
     const match = INCOME_SOURCES.find(s => s.name.toLowerCase() === category?.toLowerCase());
     return match || { name: category || 'Income', icon: 'ArrowDownRight', color: 'green' };
   }
 
   if (type === 'bill') {
+    const customMatch = customBillCategories.find(b => b.name.toLowerCase() === category?.toLowerCase());
+    if (customMatch) return customMatch;
+
     const match = BILL_CATEGORIES.find(b => b.name.toLowerCase() === category?.toLowerCase());
     return match || { name: category || 'Bill', icon: 'CreditCard', color: 'red' };
   }
@@ -68,3 +84,4 @@ export function getCategoryMeta(type: string, category?: string, customCategorie
   const match = EXPENSE_CATEGORIES.find(c => c.name.toLowerCase() === category?.toLowerCase());
   return match || { name: category || 'Expense', icon: 'Receipt', color: 'orange' };
 }
+

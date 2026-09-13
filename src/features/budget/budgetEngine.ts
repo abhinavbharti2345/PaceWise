@@ -41,6 +41,7 @@ export interface DailyBudgetStat {
 
 export interface BudgetStats {
   baseDailyBudget: number;
+  remainingDailyPace: number;
   carryForward: number;
   todaysAvailable: number;
   spentToday: number;
@@ -141,14 +142,46 @@ export function calculateBudget(
   const totalNetPersonCashFlow = netPersonCashFlowUpToYesterday + netPersonCashFlowToday;
 
   // 1. Effective Total Budget
-  // Person transactions adjust the effective budget pool for the period, smoothing daily allowance.
   const effectiveTotalBudget = config.totalMoney + totalAddedMoney - totalBills + totalNetPersonCashFlow;
 
-  // 2. Base Daily Budget
-  const baseDailyBudget = totalDays > 0 ? effectiveTotalBudget / totalDays : 0;
+  // 2. Daily Base Distribution
+  // Starting base incorporates total initial money + total income + net person cash flow across the full month.
+  // Mid-month bills adjust only the remaining days from their occurrence date onward,
+  // preventing retroactive drops in past carry-forward savings.
+  const initialBase = totalDays > 0 ? (config.totalMoney + totalAddedMoney + totalNetPersonCashFlow) / totalDays : 0;
+  const dailyBase: number[] = new Array(totalDays).fill(initialBase);
+
+  for (const t of transactions) {
+    const tDate = startOfDay(new Date(t.date));
+    if (tDate.getTime() < start.getTime() || tDate.getTime() > end.getTime()) {
+      continue;
+    }
+
+    let dayIdx = differenceInDays(tDate, start);
+    if (dayIdx < 0) dayIdx = 0;
+    if (dayIdx >= totalDays) dayIdx = totalDays - 1;
+
+    const remainingDays = totalDays - dayIdx;
+    if (remainingDays <= 0) continue;
+
+    if (t.type === 'bill') {
+      const deltaPerDay = -t.amount / remainingDays;
+      for (let j = dayIdx; j < totalDays; j++) {
+        dailyBase[j] += deltaPerDay;
+      }
+    }
+  }
+
+  // Current day index
+  const todayDayIdx = Math.min(daysPassed, totalDays - 1);
+  const baseDailyBudget = totalDays > 0 ? (dailyBase[todayDayIdx] ?? 0) : 0;
 
   // 3. Carry Forward
-  const totalAllowanceUpToYesterday = baseDailyBudget * daysPassed;
+  // Sum daily allowances earned up to yesterday, then subtract discretionary expenses up to yesterday
+  let totalAllowanceUpToYesterday = 0;
+  for (let j = 0; j < daysPassed; j++) {
+    totalAllowanceUpToYesterday += dailyBase[j] ?? 0;
+  }
   const carryForward = totalAllowanceUpToYesterday - normalExpensesUpToYesterday;
 
   // 4. Today's Available
@@ -179,6 +212,7 @@ export function calculateBudget(
 
   const dailyStats: DailyBudgetStat[] = [];
   let cumulativeDiscretionarySpent = 0;
+  let cumulativeIdealSpent = 0;
 
   for (let i = 0; i < totalDays; i++) {
     const d = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
@@ -191,7 +225,8 @@ export function calculateBudget(
       cumulativeDiscretionarySpent += daySpent;
     }
     
-    const idealRemaining = effectiveTotalBudget - (baseDailyBudget * (i + 1));
+    cumulativeIdealSpent += dailyBase[i] ?? 0;
+    const idealRemaining = effectiveTotalBudget - cumulativeIdealSpent;
     const actualRemaining = isFuture ? 0 : effectiveTotalBudget - cumulativeDiscretionarySpent;
 
     dailyStats.push({
@@ -201,13 +236,17 @@ export function calculateBudget(
       idealRemaining,
       discretionarySpent: daySpent,
       cumulativeDiscretionarySpent,
-      cumulativeIdealSpent: baseDailyBudget * (i + 1),
+      cumulativeIdealSpent,
       isFuture
     });
   }
 
+  // 8. Remaining Daily Pace (Dynamic pace based on money left and remaining days)
+  const remainingDailyPace = daysRemaining > 0 ? Math.max(0, moneyLeft / daysRemaining) : 0;
+
   return {
     baseDailyBudget,
+    remainingDailyPace,
     carryForward,
     todaysAvailable,
     spentToday,

@@ -26,7 +26,7 @@ import { getCategoryMeta } from '../utils/categoryHelpers';
 import { formatCurrency as formatCurrencyUtil } from '../utils/currencyUtils';
 
 export function Dashboard() {
-  const { config, transactions, people } = useStore();
+  const { config, transactions, people, customCategories, customBillCategories = [] } = useStore();
   const { profile, user } = useAuthStore();
   
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
@@ -140,14 +140,17 @@ export function Dashboard() {
                 )}>
                   {formatCurrency(stats.spentToday)}
                 </p>
+                <p className="text-[9px] sm:text-[10px] text-[var(--color-gray-dark)] mt-0.5 truncate">
+                  {spentPercent}% used
+                </p>
               </div>
 
               <div className="text-right min-w-0 pl-1">
                 <p className="text-[9px] sm:text-xs font-bold text-[var(--color-dark)] truncate">
-                  Base: {formatCurrency(stats.baseDailyBudget)}
+                  Pace: {formatCurrency(stats.remainingDailyPace)}<span className="text-[9px] sm:text-[10px] font-normal text-[var(--color-gray-dark)]">/d</span>
                 </p>
-                <p className="text-[9px] sm:text-[11px] text-[var(--color-gray-dark)] mt-0.5 truncate">
-                  {spentPercent}% used
+                <p className="text-[9px] sm:text-[10px] text-[var(--color-gray-dark)] mt-0.5 truncate">
+                  Base: {formatCurrency(stats.baseDailyBudget)}
                 </p>
               </div>
             </div>
@@ -251,7 +254,7 @@ export function Dashboard() {
 
             <div className="mt-0 sm:mt-2 divide-y divide-[var(--color-gray-light)] flex-1 flex flex-col">
               {recentTransactions.map((t) => {
-                const meta = getCategoryMeta(t.type, t.category);
+                const meta = getCategoryMeta(t.type, t.category, customCategories, customBillCategories);
                 const isIncome = t.type === 'income' || (t.type === 'person' && t.direction === 'took' && t.isSettlement);
 
                 return (
