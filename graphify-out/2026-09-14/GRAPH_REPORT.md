@@ -1,21 +1,21 @@
 # Graph Report - PaceWise  (2026-09-14)
 
 ## Corpus Check
-- 173 files · ~145,809 words
+- 174 files · ~149,308 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1847 nodes · 2185 edges · 119 communities (101 shown, 14 thin omitted)
+- 1852 nodes · 2214 edges · 119 communities (101 shown, 14 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `50382668`
+- Built from commit: `c1c60c29`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- cn
+- useStore
 - Code Explanation and Analysis
 - TDD Cycle Orchestrator
 - Automated Documentation Generation
@@ -132,8 +132,8 @@
 - graphify
 
 ## God Nodes (most connected - your core abstractions)
-1. `cn()` - 46 edges
-2. `useStore` - 45 edges
+1. `useStore` - 47 edges
+2. `cn()` - 46 edges
 3. `Code Explanation and Analysis` - 45 edges
 4. `TDD Cycle Orchestrator` - 42 edges
 5. `Automated Documentation Generation` - 38 edges
@@ -160,9 +160,9 @@
 
 ## Communities (119 total, 14 thin omitted)
 
-### Community 0 - "cn"
+### Community 0 - "useStore"
 Cohesion: 0.05
-Nodes (99): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+91 more)
+Nodes (103): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+95 more)
 
 ### Community 1 - "Code Explanation and Analysis"
 Cohesion: 0.04
@@ -565,17 +565,17 @@ Cohesion: 0.50
 Nodes (4): Approach, Focus Areas, Output, typescript-pro
 
 ## Knowledge Gaps
-- **1579 isolated node(s):** `name`, `private`, `version`, `node`, `type` (+1574 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1598 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **1580 isolated node(s):** `name`, `private`, `version`, `node`, `type` (+1575 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1599 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _1579 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `cn` be split into smaller, more focused modules?**
-  _Cohesion score 0.05228302544440572 - nodes in this community are weakly interconnected._
+  _1580 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `useStore` be split into smaller, more focused modules?**
+  _Cohesion score 0.051363710599379386 - nodes in this community are weakly interconnected._
 - **Should `Code Explanation and Analysis` be split into smaller, more focused modules?**
   _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._
 - **Should `TDD Cycle Orchestrator` be split into smaller, more focused modules?**

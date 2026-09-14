@@ -119,7 +119,7 @@ export function Dashboard() {
         {/* Side-by-Side Container for Today's Budget & Carry Forward on Mobile / lg:contents on Desktop */}
         <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:contents">
           {/* Today's Budget Card */}
-          <div className="lg:col-span-4 rounded-3xl p-5 sm:p-6 flex flex-col justify-between min-w-0 text-white shadow-xl relative overflow-hidden bg-gradient-to-br from-[#121624] via-[#16233b] to-[#1d4ed8] min-h-[160px] sm:min-h-[220px]">
+          <div className="lg:col-span-4 rounded-3xl p-4 sm:p-6 flex flex-col justify-between min-w-0 text-white shadow-xl relative overflow-hidden bg-gradient-to-br from-[#121624] via-[#16233b] to-[#1d4ed8] min-h-[160px] sm:min-h-[220px]">
             <div>
               <div className="flex items-center justify-between">
                 <span className="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-blue-200 truncate">
@@ -169,7 +169,7 @@ export function Dashboard() {
           {/* Carry Forward Card */}
           <div
             className={cn(
-              "lg:col-span-4 rounded-3xl p-5 sm:p-6 flex flex-col justify-between min-w-0 text-white shadow-xl relative overflow-hidden min-h-[160px] sm:min-h-[220px]",
+              "lg:col-span-4 rounded-3xl p-4 sm:p-6 flex flex-col justify-between min-w-0 text-white shadow-xl relative overflow-hidden min-h-[160px] sm:min-h-[220px]",
               stats.carryForward >= 0
                 ? "bg-gradient-to-br from-[#151c17] via-[#143222] to-[#047857]"
                 : "bg-gradient-to-br from-[#1c1c1e] via-[#2d1515] to-[#7f1d1d]"
@@ -185,13 +185,6 @@ export function Dashboard() {
                     Carry Forward
                   </span>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    {stats.carryForward > 0 && Number(bufferDays) >= 1 && (
-                      <span 
-                        className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full whitespace-nowrap inline-flex items-center bg-black/40 text-emerald-200 border border-emerald-400/30 backdrop-blur-sm shadow-xs"
-                      >
-                        +{bufferDays}d buffer
-                      </span>
-                    )}
                     {stats.carryForward >= 0 ? (
                       <TrendingUp size={18} className="sm:w-5 sm:h-5 text-emerald-300 shrink-0" />
                     ) : (
@@ -242,7 +235,7 @@ export function Dashboard() {
                     "text-[9px] sm:text-xs font-bold truncate",
                     stats.carryForward >= 0 ? "text-emerald-200/90" : "text-red-200/90"
                   )}>
-                    Status: <span className="font-black text-white">{stats.remainingDailyPace >= stats.baseDailyBudget ? '🟢 Ahead' : '🔴 Behind'}</span>
+                    <span className="font-black text-white">{stats.remainingDailyPace >= stats.baseDailyBudget ? '🟢 Ahead' : '🔴 Behind'}</span>
                   </p>
                   <p className={cn(
                     "text-[9px] sm:text-[10px] mt-0.5 truncate font-medium",
