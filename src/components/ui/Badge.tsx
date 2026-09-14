@@ -8,10 +8,10 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 export function Badge({ className, children, variant = 'gray', ...props }: BadgeProps) {
   const variants = {
-    red: 'bg-red-100 text-red-600',
-    green: '',  // handled below via inline style
-    orange: 'bg-orange-100 text-orange-600',
-    gray: 'bg-gray-100 text-gray-600',
+    red: 'bg-[var(--color-negative-bg)] text-[var(--color-negative-text)] border border-[var(--color-negative-border)]',
+    green: 'bg-[var(--color-positive-bg)] text-[var(--color-positive-text)] border border-[var(--color-positive-border)]',
+    orange: 'bg-amber-100 dark:bg-amber-500/10 text-[var(--color-orange)] border border-amber-200 dark:border-amber-500/20',
+    gray: 'bg-[var(--color-surface-light)] text-[var(--color-gray-dark)] border border-[var(--color-gray-light)]',
   };
 
   return (
@@ -21,11 +21,6 @@ export function Badge({ className, children, variant = 'gray', ...props }: Badge
         variants[variant],
         className
       )}
-      style={variant === 'green' ? {
-        background: 'var(--positive-bg)',
-        color: 'var(--positive-text)',
-        border: '1px solid var(--positive-border)',
-      } : undefined}
       {...props}
     >
       {children}

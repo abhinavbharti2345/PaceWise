@@ -163,8 +163,8 @@ export function PersonDetails() {
             </span>
           </div>
           <div className="p-2.5 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] flex flex-col justify-center">
-            <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">💳 Paid for Me</span>
-            <span className="text-sm sm:text-lg font-extrabold text-purple-600 dark:text-purple-400 mt-0.5">
+            <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">⇄ Paid for Me</span>
+            <span className="text-sm sm:text-lg font-extrabold text-[var(--color-purple-text)] mt-0.5">
               {formatCurrency(totalBoughtForMe)}
             </span>
           </div>

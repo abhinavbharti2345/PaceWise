@@ -661,29 +661,23 @@ export function Insights() {
           </CardTitle>
           <div className="flex flex-col gap-4">
             {/* Friends Owe You */}
-            <div
-              className="flex items-center justify-between p-4 rounded-xl relative overflow-hidden"
-              style={{ background: 'var(--positive-bg)', border: '1px solid var(--positive-border)' }}
-            >
+            <div className="flex items-center justify-between p-4 rounded-xl relative overflow-hidden bg-[var(--color-surface-light)] border border-[var(--color-gray-light)]">
               <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--color-success)]" />
               <div>
-                <div className="text-[11px] font-medium" style={{ color: 'var(--positive-text)' }}>Friends owe you</div>
+                <div className="text-[11px] font-medium text-[var(--color-gray-dark)]">Friends owe you</div>
                 <div className="text-xl font-semibold text-[var(--color-success)] leading-7 mt-1">+{formatCurrency(friendsOweYou)}</div>
               </div>
-              <Users size={30} className="text-[var(--color-success)] opacity-50" />
+              <Users size={30} className="text-[var(--color-success)] opacity-40" />
             </div>
 
             {/* Fixed Bills Paid */}
-            <div
-              className="flex items-center justify-between p-4 rounded-xl relative overflow-hidden"
-              style={{ background: 'var(--negative-bg)', border: '1px solid var(--negative-border)' }}
-            >
+            <div className="flex items-center justify-between p-4 rounded-xl relative overflow-hidden bg-[var(--color-surface-light)] border border-[var(--color-gray-light)]">
               <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--color-primary)]" />
               <div>
-                <div className="text-[11px] font-medium" style={{ color: 'var(--negative-text)' }}>Fixed Bills Paid</div>
+                <div className="text-[11px] font-medium text-[var(--color-gray-dark)]">Fixed Bills Paid</div>
                 <div className="text-xl font-semibold text-[var(--color-dark)] leading-7 mt-1">{formatCurrency(stats.totalBills)}</div>
               </div>
-              <CalendarDays size={30} className="text-[var(--color-primary)] opacity-50" />
+              <CalendarDays size={30} className="text-[var(--color-primary)] opacity-40" />
             </div>
           </div>
         </Card>

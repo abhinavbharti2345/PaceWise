@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: var(--primary);
   --color-orange: var(--orange);
@@ -87,22 +89,22 @@
   --dark: #FAFAFA;
   --gray-dark: #A1A1AA;
   --gray-light: rgba(255, 255, 255, 0.08);
-  --surface: #18181B;
-  --surface-light: #27272A;
+  --surface: #111215;
+  --surface-light: #18191E;
   --bg-light: #09090B;
 
   /* Dark mode semantic card tokens */
-  --positive-bg: rgba(74, 222, 128, 0.08);
-  --positive-border: rgba(74, 222, 128, 0.18);
-  --positive-text: #4ADE80;
-  --positive-accent: #4ADE80;
+  --positive-bg: rgba(16, 185, 129, 0.12);
+  --positive-border: rgba(16, 185, 129, 0.25);
+  --positive-text: #34D399;
+  --positive-accent: #10B981;
 
-  --negative-bg: rgba(255, 69, 58, 0.08);
-  --negative-border: rgba(255, 69, 58, 0.18);
+  --negative-bg: rgba(255, 69, 58, 0.12);
+  --negative-border: rgba(255, 69, 58, 0.25);
   --negative-text: #FF453A;
 
-  --purple-bg: rgba(168, 85, 247, 0.08);
-  --purple-border: rgba(168, 85, 247, 0.22);
+  --purple-bg: rgba(168, 85, 247, 0.12);
+  --purple-border: rgba(168, 85, 247, 0.25);
   --purple-text: #C084FC;
   --purple-accent: #A855F7;
 }

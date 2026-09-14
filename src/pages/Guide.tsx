@@ -65,7 +65,7 @@ const FAQS: FaqItem[] = [
   {
     category: 'people',
     question: 'What is the difference between Borrowed and "Paid for Me"?',
-    answer: '• Borrowed (↘): A friend gave you cash or transferred money into your account. You owe them money, but no specific budget expense category is consumed.\n• Paid for Me (💳): A friend paid directly for your coffee, meal, or ride. It does not pull cash from your wallet immediately. When you pay them back and tap "Settle", you select a category (e.g., Food, Entertainment) so it accurately registers in your monthly spending analytics without double-counting.'
+    answer: '• Borrowed (↘): A friend gave you cash or transferred money into your account. You owe them money, but no specific budget expense category is consumed.\n• Paid for Me (⇄): A friend paid directly for your coffee, meal, or ride. It does not pull cash from your wallet immediately. When you pay them back and tap "Settle", you select a category (e.g., Food, Entertainment) so it accurately registers in your monthly spending analytics without double-counting.'
   },
   {
     category: 'people',
@@ -374,7 +374,7 @@ export function Guide() {
                         Expense
                       </span>
                     </div>
-                    <h3 className="text-base font-bold text-[var(--color-dark)]">💳 Paid for Me (-₹)</h3>
+                    <h3 className="text-base font-bold text-[var(--color-dark)]">⇄ Paid for Me (-₹)</h3>
                     <p className="text-xs text-[var(--color-gray-dark)] mt-2 leading-relaxed">
                       A friend paid directly for your coffee or ride. <strong className="text-[var(--color-dark)]">You owe them</strong>, and upon settling, it logs as an expense.
                     </p>

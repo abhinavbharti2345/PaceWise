@@ -246,8 +246,8 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                 )}
                 title={totalBoughtForMe > 0 ? "Quick fill Paid for Me amount" : "No purchases to settle"}
               >
-                <span className="text-[var(--color-gray-dark)] font-semibold text-[10px] sm:text-xs leading-tight">💳 Paid for Me</span>
-                <span className="font-extrabold text-purple-600 dark:text-purple-400 mt-0.5">
+                <span className="text-[var(--color-gray-dark)] font-semibold text-[10px] sm:text-xs leading-tight">⇄ Paid for Me</span>
+                <span className="font-extrabold text-[var(--color-purple-text)] mt-0.5">
                   {formatCurrency(totalBoughtForMe)}
                 </span>
               </button>

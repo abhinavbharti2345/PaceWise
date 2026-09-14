@@ -106,24 +106,18 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
               </div>
             )}
 
-            {/* Amount Card */}
-            <div 
-              className="p-4 rounded-2xl"
-              style={{background: 'var(--negative-bg)', border: '1px solid var(--negative-border)'}}
-            >
+            {/* Amount Input */}
+            <div className="p-4 rounded-2xl bg-[var(--color-negative-bg)] border border-[var(--color-negative-border)]">
               <div className="flex justify-between items-center mb-1">
-                <label className="block text-xs font-bold uppercase tracking-wider mb-1" style={{color: 'var(--negative-text)'}}>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1 text-[var(--color-negative-text)]">
                   Bill Amount
                 </label>
-                <span 
-                  className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                  style={{background: 'var(--negative-bg)', color: 'var(--negative-text)', border: '1px solid var(--negative-border)'}}
-                >
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--color-negative-bg)] text-[var(--color-negative-text)] border border-[var(--color-negative-border)]">
                   Reduces Monthly Pool
                 </span>
               </div>
               <div className="flex items-center text-4xl sm:text-5xl font-extrabold text-[var(--color-primary)]">
-                <span className="mr-2 font-normal shrink-0 whitespace-nowrap inline-flex items-center" style={{color: 'var(--negative-text)', opacity: 0.7}}>₹</span>
+                <span className="mr-2 font-normal shrink-0 whitespace-nowrap inline-flex items-center text-[var(--color-negative-text)] opacity-70">₹</span>
                 <input 
                   type="number" 
                   inputMode="decimal"
