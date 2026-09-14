@@ -62,6 +62,15 @@ export function Dashboard() {
     ? Math.min(100, Math.round((stats.spentToday / stats.todaysAvailable) * 100))
     : stats.spentToday > 0 ? 100 : 0;
 
+  const bufferDays = stats.baseDailyBudget > 0 
+    ? (Math.abs(stats.carryForward) / stats.baseDailyBudget).toFixed(1) 
+    : '0';
+
+  const paceDiff = stats.remainingDailyPace - stats.baseDailyBudget;
+  const paceBoostFormatted = paceDiff >= 0 
+    ? `+${formatCurrency(paceDiff)}/d` 
+    : `-${formatCurrency(Math.abs(paceDiff))}/d`;
+
   const displayName = profile?.displayName
     || user?.user_metadata?.full_name
     || user?.user_metadata?.name
@@ -157,47 +166,93 @@ export function Dashboard() {
           </Card>
 
           {/* Carry Forward Card */}
-          <Card
-            className="lg:col-span-4 flex flex-col justify-between p-3.5 sm:p-5 min-w-0"
-            style={{
-              background: stats.carryForward >= 0 ? 'var(--positive-bg)' : 'var(--negative-bg)',
-              border: `1px solid ${stats.carryForward >= 0 ? 'var(--positive-border)' : 'var(--negative-border)'}`,
-            }}
+          <div
+            className={cn(
+              "lg:col-span-4 rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between min-w-0 text-white shadow-xl relative overflow-hidden border",
+              stats.carryForward >= 0
+                ? "bg-gradient-to-br from-[#151c17] via-[#143222] to-[#047857] border-emerald-800/40"
+                : "bg-gradient-to-br from-[#1c1c1e] via-[#2d1515] to-[#7f1d1d] border-red-900/40"
+            )}
           >
             <div className="relative z-10 h-full flex flex-col justify-between min-w-0">
               <div className="min-w-0">
                 <div className="flex items-center justify-between min-w-0">
-                  <CardTitle className="text-xs sm:text-sm truncate" style={{color: stats.carryForward >= 0 ? 'var(--positive-text)' : 'var(--negative-text)'}}>
+                  <span className={cn(
+                    "text-xs sm:text-sm font-extrabold uppercase tracking-wide truncate",
+                    stats.carryForward >= 0 ? "text-emerald-200" : "text-red-200"
+                  )}>
                     Carry Forward
-                  </CardTitle>
-                  {stats.carryForward >= 0 ? (
-                    <TrendingUp size={16} className="sm:w-5 sm:h-5 shrink-0" style={{color: 'var(--positive-accent)'}} />
-                  ) : (
-                    <TrendingDown size={16} className="sm:w-5 sm:h-5 text-[var(--color-primary)] shrink-0" />
-                  )}
+                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {stats.carryForward > 0 && Number(bufferDays) >= 1 && (
+                      <span 
+                        className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full whitespace-nowrap inline-flex items-center bg-black/40 text-emerald-200 border border-emerald-400/30 backdrop-blur-sm shadow-xs"
+                      >
+                        +{bufferDays}d buffer
+                      </span>
+                    )}
+                    {stats.carryForward >= 0 ? (
+                      <TrendingUp size={18} className="sm:w-5 sm:h-5 text-emerald-300 shrink-0" />
+                    ) : (
+                      <TrendingDown size={18} className="sm:w-5 sm:h-5 text-red-300 shrink-0" />
+                    )}
+                  </div>
                 </div>
                 <div className="mt-2 sm:mt-3 min-w-0">
-                  <h3 className={cn(
-                    "text-xl sm:text-3xl font-extrabold leading-none truncate",
-                    stats.carryForward >= 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"
-                  )}>
+                  <h3 className="text-xl sm:text-3xl font-black text-white leading-none truncate">
                     {stats.carryForward >= 0 ? `+${formatCurrency(stats.carryForward)}` : `-${formatCurrency(Math.abs(stats.carryForward))}`}
                   </h3>
-                  <p className="text-[9px] sm:text-xs font-semibold mt-1 truncate" style={{color: stats.carryForward >= 0 ? 'var(--positive-text)' : 'var(--negative-text)'}}>
+                  <p className={cn(
+                    "text-[9px] sm:text-xs font-semibold mt-1 truncate",
+                    stats.carryForward >= 0 ? "text-emerald-200/90" : "text-red-200/90"
+                  )}>
                     {stats.carryForward >= 0 ? "Saved from previous days" : "Overspent from previous days"}
                   </p>
                 </div>
               </div>
 
-              <div className="hidden sm:block mt-4 pt-3 border-t border-black/5 dark:border-white/5">
-                <p className="text-[11px] text-[var(--color-gray-dark)] leading-tight">
-                  {stats.carryForward >= 0 
-                    ? "Your unspent daily limits are added to today's budget."
-                    : "Overspending previously reduces today's allowance."}
-                </p>
+              {/* Symmetrical 2-Column Footer */}
+              <div 
+                className={cn(
+                  "mt-3 sm:mt-6 pt-2.5 sm:pt-4 border-t flex items-end justify-between min-w-0",
+                  stats.carryForward >= 0 ? "border-emerald-700/40" : "border-red-800/40"
+                )}
+              >
+                <div className="min-w-0">
+                  <p className={cn(
+                    "text-[9px] sm:text-xs font-bold uppercase truncate",
+                    stats.carryForward >= 0 ? "text-emerald-200/80" : "text-red-200/80"
+                  )}>
+                    Runway Cushion
+                  </p>
+                  <p className="text-xs sm:text-lg font-black text-white mt-0.5 leading-none truncate">
+                    {stats.carryForward >= 0 ? `+${bufferDays} Days` : `-${bufferDays} Days`}
+                  </p>
+                  <p className={cn(
+                    "text-[9px] sm:text-[10px] mt-0.5 truncate font-medium",
+                    stats.carryForward >= 0 ? "text-emerald-200/80" : "text-red-200/80"
+                  )}>
+                    {paceDiff >= 0 ? `${paceBoostFormatted} boost` : `${paceBoostFormatted} drag`}
+                  </p>
+                </div>
+
+                <div className="text-right min-w-0 pl-1">
+                  <p className={cn(
+                    "text-[9px] sm:text-xs font-bold truncate",
+                    stats.carryForward >= 0 ? "text-emerald-200/90" : "text-red-200/90"
+                  )}>
+                    Status: <span className="font-black text-white">{stats.remainingDailyPace >= stats.baseDailyBudget ? '🟢 Ahead' : '🔴 Behind'}</span>
+                  </p>
+                  <p className={cn(
+                    "text-[9px] sm:text-[10px] mt-0.5 truncate font-medium",
+                    stats.carryForward >= 0 ? "text-emerald-200/80" : "text-red-200/80"
+                  )}>
+                    Base: {formatCurrency(stats.baseDailyBudget)}
+                  </p>
+                </div>
               </div>
             </div>
-          </Card>
+          </div>
         </div>
       </div>
 
@@ -319,13 +374,7 @@ export function Dashboard() {
             </CardHeader>
 
             {/* Prominent Net Position Banner */}
-            <div 
-              className="p-3 sm:p-3.5 rounded-2xl mb-3 flex items-center justify-between border transition-all"
-              style={{
-                background: netPosition > 0 ? 'var(--positive-bg)' : netPosition < 0 ? 'var(--negative-bg)' : 'var(--color-surface-light)',
-                borderColor: netPosition > 0 ? 'var(--positive-border)' : netPosition < 0 ? 'var(--negative-border)' : 'var(--color-gray-light)'
-              }}
-            >
+            <div className="p-3 sm:p-3.5 rounded-2xl mb-3 flex items-center justify-between border border-[var(--color-gray-light)] bg-[var(--color-surface-light)] transition-all">
               <div className="min-w-0 flex-1 pr-2">
                 <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] block">Net Position</span>
                 <p className="text-[10px] sm:text-[11px] font-semibold text-[var(--color-gray-dark)] mt-0.5 truncate">
@@ -342,12 +391,9 @@ export function Dashboard() {
 
             {/* Side-by-Side To Receive / To Give Cards */}
             <div className="grid grid-cols-2 gap-2 sm:gap-3">
-              <div
-                className="p-2.5 sm:p-3 rounded-2xl flex flex-col justify-between border"
-                style={{background: 'var(--positive-bg)', border: '1px solid var(--positive-border)'}}
-              >
+              <div className="p-2.5 sm:p-3 rounded-2xl flex flex-col justify-between border border-[var(--color-gray-light)] bg-[var(--color-surface-light)]">
                 <div className="min-w-0">
-                  <span className="text-[11px] sm:text-xs font-bold block truncate" style={{color: 'var(--positive-text)'}}>To Receive</span>
+                  <span className="text-[11px] sm:text-xs font-bold block truncate text-[var(--color-dark)]">To Receive</span>
                   <p className="text-[9px] sm:text-[11px] text-[var(--color-gray-dark)] font-medium truncate mt-0.5">{peopleOwingCount} owe you</p>
                 </div>
                 <span className="text-base sm:text-lg font-extrabold text-[var(--color-success)] leading-none mt-2 truncate">
@@ -355,12 +401,9 @@ export function Dashboard() {
                 </span>
               </div>
 
-              <div
-                className="p-2.5 sm:p-3 rounded-2xl flex flex-col justify-between border"
-                style={{background: 'var(--negative-bg)', border: '1px solid var(--negative-border)'}}
-              >
+              <div className="p-2.5 sm:p-3 rounded-2xl flex flex-col justify-between border border-[var(--color-gray-light)] bg-[var(--color-surface-light)]">
                 <div className="min-w-0">
-                  <span className="text-[11px] sm:text-xs font-bold block truncate" style={{color: 'var(--negative-text)'}}>To Give</span>
+                  <span className="text-[11px] sm:text-xs font-bold block truncate text-[var(--color-dark)]">To Give</span>
                   <p className="text-[9px] sm:text-[11px] text-[var(--color-gray-dark)] font-medium truncate mt-0.5">You owe {userOwingCount}</p>
                 </div>
                 <span className="text-base sm:text-lg font-extrabold text-[var(--color-primary)] leading-none mt-2 truncate">

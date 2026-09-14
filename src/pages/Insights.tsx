@@ -43,6 +43,8 @@ import { formatCurrency } from '../utils/currencyUtils';
 // Extracted to prevent entire Insights page re-rendering on hover
 const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats: any; endLabel?: string }) => {
   const [hoverIndex, setHoverIndex] = React.useState<number | null>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const touchDismissTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Y-axis: 100 is bottom (0 spent), 0 is top (max spent)
   const getX = React.useCallback((index: number) => {
@@ -91,26 +93,124 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
     return `${actualPathD} L ${lastX} 100 L 0 100 Z`;
   }, [actualPathD, pastStats, getX]);
 
-  const handleMouseMove = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (stats.totalDays <= 1) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const xPct = ((e.clientX - rect.left) / rect.width) * 100;
+  const calculateIndexFromClientX = React.useCallback((clientX: number) => {
+    if (!containerRef.current || stats.totalDays <= 1) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const xPct = ((clientX - rect.left) / rect.width) * 100;
     const estimatedIndex = Math.round((xPct / 100) * (stats.totalDays - 1));
     const clampedIndex = Math.max(0, Math.min(stats.totalDays - 1, estimatedIndex));
     setHoverIndex(clampedIndex);
   }, [stats.totalDays]);
 
+  const clearTouchTimer = React.useCallback(() => {
+    if (touchDismissTimer.current) {
+      clearTimeout(touchDismissTimer.current);
+      touchDismissTimer.current = null;
+    }
+  }, []);
+
+  const handleMouseMove = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    calculateIndexFromClientX(e.clientX);
+  }, [calculateIndexFromClientX]);
+
+  const handleTouchStart = React.useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    clearTouchTimer();
+    if (e.touches.length > 0) {
+      calculateIndexFromClientX(e.touches[0].clientX);
+    }
+  }, [calculateIndexFromClientX, clearTouchTimer]);
+
+  const handleTouchMove = React.useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    clearTouchTimer();
+    if (e.touches.length > 0) {
+      calculateIndexFromClientX(e.touches[0].clientX);
+    }
+  }, [calculateIndexFromClientX, clearTouchTimer]);
+
+  // Auto-dismiss HUD 3s after finger lifts — no extra Reset tap needed
+  const handleTouchEnd = React.useCallback(() => {
+    clearTouchTimer();
+    touchDismissTimer.current = setTimeout(() => {
+      setHoverIndex(null);
+      touchDismissTimer.current = null;
+    }, 3000);
+  }, [clearTouchTimer]);
+
+  // Clean up timer on unmount
+  React.useEffect(() => {
+    return () => { clearTouchTimer(); };
+  }, [clearTouchTimer]);
+
   const handleMouseLeave = React.useCallback(() => setHoverIndex(null), []);
 
+  const activeDayStat = hoverIndex !== null ? stats.dailyStats[hoverIndex] : null;
+  const activeDiff = activeDayStat && !activeDayStat.isFuture
+    ? activeDayStat.cumulativeIdealSpent - activeDayStat.cumulativeDiscretionarySpent
+    : null;
+
   return (
-    <Card className="lg:col-span-2 flex flex-col relative border border-[var(--color-gray-light)] p-5 sm:p-6">
-      <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6 min-w-0">
-        <CardTitle className="text-xs sm:text-base truncate">Spend vs Ideal Path</CardTitle>
+    <Card className="lg:col-span-2 flex flex-col relative border border-[var(--color-gray-light)] p-4 sm:p-6">
+      {/* Header & Mobile Top Inspection HUD */}
+      <div className="flex flex-col gap-2 mb-3 sm:mb-6 min-w-0">
+        <div className="flex items-center justify-between gap-2 min-w-0">
+          <CardTitle className="text-xs sm:text-base truncate">Spend vs Ideal Path</CardTitle>
+          {hoverIndex !== null && (
+            <button
+              type="button"
+              onClick={() => setHoverIndex(null)}
+              className="sm:hidden text-[10px] text-[var(--color-gray-dark)] hover:text-[var(--color-dark)] bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] px-2.5 py-0.5 rounded-full font-bold transition-colors cursor-pointer"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+
+        {/* Mobile Top HUD Banner (Visible when inspecting on small screens so finger never hides stats) */}
+        {activeDayStat && (
+          <div className="sm:hidden animate-in fade-in duration-150 p-2.5 rounded-xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm text-xs">
+            <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-[var(--color-gray-light)]">
+              <span className="font-bold text-[var(--color-dark)]">Day {activeDayStat.dayIndex} · {format(new Date(activeDayStat.date), 'MMM dd')}</span>
+              {activeDiff !== null ? (
+                <span className={cn("font-bold text-[11px]", activeDiff >= 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]")}>
+                  {activeDiff >= 0 ? `🟢 +${formatCurrency(activeDiff)} Ahead` : `🔴 -${formatCurrency(Math.abs(activeDiff))} Behind`}
+                </span>
+              ) : (
+                <span className="text-[10px] text-[var(--color-gray-dark)] font-medium">Future Date</span>
+              )}
+            </div>
+            <div className="grid grid-cols-3 gap-1 text-[11px]">
+              <div>
+                <span className="text-[var(--color-gray-dark)] block text-[9px] uppercase font-semibold">Spent</span>
+                <span className="font-bold text-[var(--color-primary)]">
+                  {activeDayStat.isFuture ? '-' : formatCurrency(activeDayStat.cumulativeDiscretionarySpent)}
+                </span>
+              </div>
+              <div>
+                <span className="text-[var(--color-gray-dark)] block text-[9px] uppercase font-semibold">Ideal</span>
+                <span className="font-medium text-[var(--color-dark)]">
+                  {formatCurrency(activeDayStat.cumulativeIdealSpent)}
+                </span>
+              </div>
+              <div>
+                <span className="text-[var(--color-gray-dark)] block text-[9px] uppercase font-semibold">Day Spend</span>
+                <span className="font-medium text-[var(--color-dark)]">
+                  {activeDayStat.isFuture ? '-' : formatCurrency(activeDayStat.discretionarySpent)}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
       <div
-        className="flex-grow relative min-h-[200px] rounded-b-lg border-b border-[var(--color-primary)]/30 bg-gradient-to-b from-[var(--color-primary)]/10 dark:from-[var(--color-primary)]/20 to-transparent flex items-end group/chart cursor-crosshair touch-pan-y"
-        onPointerMove={handleMouseMove}
-        onPointerLeave={handleMouseLeave}
+        ref={containerRef}
+        className="flex-grow relative min-h-[200px] rounded-b-lg border-b border-[var(--color-primary)]/30 bg-gradient-to-b from-[var(--color-primary)]/10 dark:from-[var(--color-primary)]/20 to-transparent flex items-end group/chart cursor-crosshair touch-none select-none"
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
 
         <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
@@ -139,7 +239,7 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
           <path d={actualPathD} fill="none" stroke="var(--color-primary)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
         </svg>
 
-        {/* Today Indicator (only shown if not hovering) */}
+        {/* Today Indicator (only shown if not inspecting) */}
         {hoverIndex === null && pastStats.length > 0 && (
           <div
             className="absolute top-0 bottom-0 border-l border-dashed border-[var(--color-gray-light)] transition-opacity duration-200 pointer-events-none"
@@ -153,16 +253,16 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
           </div>
         )}
 
-        {/* Interactive Tooltip */}
+        {/* Interactive Indicator Line & Desktop Tooltip */}
         {hoverIndex !== null && stats.dailyStats[hoverIndex] && (
           <div
-            className="absolute top-0 bottom-0 border-l border-solid border-[var(--color-gray-dark)] z-20 pointer-events-none transition-all duration-150 ease-out"
+            className="absolute top-0 bottom-0 border-l border-solid border-[var(--color-gray-dark)] z-20 pointer-events-none transition-all duration-75 ease-out"
             style={{ left: `${getX(hoverIndex)}%` }}
           >
-            {/* Tooltip Card */}
+            {/* Desktop Tooltip Card (Hidden on mobile where Top HUD is used instead) */}
             <div
               className={cn(
-                "absolute top-4 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl shadow-xl p-2.5 sm:p-3 min-w-[150px] sm:min-w-[170px] whitespace-nowrap z-30 pointer-events-none",
+                "hidden sm:block absolute top-4 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl shadow-xl p-3 min-w-[170px] whitespace-nowrap z-30 pointer-events-none animate-in fade-in duration-100",
                 getX(hoverIndex) > 70 ? "right-2" : getX(hoverIndex) < 30 ? "left-2" : "-translate-x-1/2"
               )}
             >
@@ -211,7 +311,7 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
             {/* Point dot on line */}
             {!stats.dailyStats[hoverIndex].isFuture && (
               <div
-                className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-surface)] border-2 border-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] pointer-events-none transition-all duration-150 ease-out z-10"
+                className="absolute -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-[var(--color-surface)] border-2 border-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] pointer-events-none transition-all duration-75 ease-out z-10"
                 style={{ top: `${getY(stats.dailyStats[hoverIndex].cumulativeDiscretionarySpent)}%`, transform: 'translateY(-50%)' }}
               ></div>
             )}
@@ -407,26 +507,53 @@ export function Insights() {
 
         {/* Daily Spend Engine */}
         <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-3.5 sm:p-6 min-w-0">
-          <div className="flex justify-between items-start mb-2 sm:mb-4">
-            <TrendingDown size={20} className="text-[var(--color-gray-dark)] shrink-0 sm:w-5 sm:h-5" />
-            <span className={cn(
-              "inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[9px] sm:text-[11px] font-medium shrink-0",
-              avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[var(--color-positive-bg)] text-[var(--color-success)]" : "bg-[var(--negative-bg)] text-[var(--color-primary)]"
-            )}>
-              {avgDailyDiscretionary <= stats.baseDailyBudget ? "Better" : "Worse"}
-            </span>
-          </div>
-          <CardTitle className="mb-1 text-xs sm:text-base truncate">Daily Spend Engine</CardTitle>
-          <div className="flex items-baseline gap-1 sm:gap-2 truncate">
-            <span className="text-lg sm:text-[32px] font-bold text-[var(--color-dark)] leading-tight tracking-tight truncate">{formatCurrency(avgDailyDiscretionary)}</span>
-            <span className="text-[10px] sm:text-sm text-[var(--color-gray-dark)] shrink-0">/ {formatCurrency(stats.baseDailyBudget)}</span>
-          </div>
-          <div className="mt-2 sm:mt-4 w-full h-1.5 bg-[var(--color-surface-light)] rounded-full overflow-hidden">
-            <div
-              className={cn("h-full", avgDailyDiscretionary <= stats.baseDailyBudget ? "bg-[var(--color-success)]" : "bg-[var(--color-primary)]")}
-              style={{ width: `${Math.min(100, stats.baseDailyBudget > 0 ? (avgDailyDiscretionary / stats.baseDailyBudget) * 100 : 0)}%` }}
-            ></div>
-          </div>
+          {(() => {
+            const targetPace = stats.remainingDailyPace > 0 ? stats.remainingDailyPace : stats.baseDailyBudget;
+            const paceDiff = targetPace - stats.baseDailyBudget;
+            // Only show strikethrough when pace meaningfully differs from base AND both values are non-zero
+            const isDifferent = Math.abs(paceDiff) >= 0.5 && stats.baseDailyBudget > 0 && targetPace > 0;
+
+            return (
+              <>
+                <div>
+                  <div className="flex justify-between items-start mb-2 sm:mb-4">
+                    <TrendingDown size={20} className="text-[var(--color-gray-dark)] shrink-0 sm:w-5 sm:h-5" />
+                    <span className={cn(
+                      "inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[9px] sm:text-[11px] font-medium shrink-0",
+                      avgDailyDiscretionary <= targetPace ? "bg-[var(--color-positive-bg)] text-[var(--color-success)]" : "bg-[var(--negative-bg)] text-[var(--color-primary)]"
+                    )}>
+                      {avgDailyDiscretionary <= targetPace ? "Better" : "Worse"}
+                    </span>
+                  </div>
+                  <CardTitle className="mb-1 text-xs sm:text-base truncate">Daily Spend Engine</CardTitle>
+                  <div className="flex items-baseline gap-1 sm:gap-2 truncate">
+                    <span className="text-lg sm:text-[32px] font-bold text-[var(--color-dark)] leading-tight tracking-tight truncate">{formatCurrency(avgDailyDiscretionary)}</span>
+                    <span className="text-[10px] sm:text-sm text-[var(--color-gray-dark)] shrink-0">/ {formatCurrency(targetPace)}</span>
+                  </div>
+                  {isDifferent ? (
+                    <div className="text-[9px] sm:text-xs font-medium text-[var(--color-gray-dark)] mt-0.5 sm:mt-1 truncate flex items-center gap-1">
+                      <span>Base <span className="line-through decoration-[var(--color-gray-dark)] opacity-70">{formatCurrency(stats.baseDailyBudget)}</span></span>
+                      <span>➔</span>
+                      <span className={cn("font-bold truncate", paceDiff > 0 ? "text-[var(--color-success)]" : "text-[var(--color-primary)]")}>
+                        Pace {formatCurrency(targetPace)}
+                        <span className="hidden sm:inline ml-1 font-semibold opacity-90">({paceDiff > 0 ? `+${formatCurrency(paceDiff)}/d` : `-${formatCurrency(Math.abs(paceDiff))}/d`})</span>
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="text-[9px] sm:text-xs font-medium text-[var(--color-gray-dark)] mt-0.5 sm:mt-1 truncate">
+                      Target: {formatCurrency(targetPace)}/d
+                    </div>
+                  )}
+                </div>
+                <div className="mt-2 sm:mt-4 w-full h-1.5 bg-[var(--color-surface-light)] rounded-full overflow-hidden">
+                  <div
+                    className={cn("h-full", avgDailyDiscretionary <= targetPace ? "bg-[var(--color-success)]" : "bg-[var(--color-primary)]")}
+                    style={{ width: `${Math.min(100, targetPace > 0 ? (avgDailyDiscretionary / targetPace) * 100 : 0)}%` }}
+                  ></div>
+                </div>
+              </>
+            );
+          })()}
         </Card>
       </div>
 
