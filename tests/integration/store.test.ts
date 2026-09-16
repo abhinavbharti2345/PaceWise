@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useStore } from '../../src/store/useStore';
 import { useAuthStore } from '../../src/store/useAuthStore';
-import { parseLocalDate } from '../../src/utils/dateUtils';
+import { parseLocalDate, getLocalDateString } from '../../src/utils/dateUtils';
 
 // Mock Supabase
 vi.mock('../../src/lib/supabase', () => {
@@ -374,6 +374,16 @@ describe('Hardening & Cascade Deletion Logic', () => {
     expect(dWithTime.getDate()).toBe(1);
     expect(dWithTime.getHours()).toBe(14);
     expect(dWithTime.getMinutes()).toBe(35);
+  });
+
+  it('17b. getLocalDateString preserves local calendar date for early morning transactions', () => {
+    // An early morning local date like 16-Sep 03:45 AM IST converts to UTC 15-Sep 22:15:00Z
+    // getLocalDateString should always return the local calendar date '2026-09-16'
+    const localDate = new Date(2026, 8, 16, 3, 45, 0); // 16-Sep-2026 03:45 AM local
+    const isoString = localDate.toISOString();
+    
+    expect(getLocalDateString(localDate)).toBe('2026-09-16');
+    expect(getLocalDateString(isoString)).toBe('2026-09-16');
   });
 
   describe('Category Safeguards & Custom Management', () => {

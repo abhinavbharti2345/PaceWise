@@ -7,7 +7,7 @@ import { DatePicker } from '../ui/DatePicker';
 import { TimePicker } from '../ui/TimePicker';
 import type { Transaction } from '../../features/budget/budgetEngine';
 import { getAllExpenseCategories, getAllBillCategories } from '../../utils/categoryHelpers';
-import { parseLocalDate, getTimeStringFromDate } from '../../utils/dateUtils';
+import { parseLocalDate, getTimeStringFromDate, getLocalDateString } from '../../utils/dateUtils';
 
 interface EditTransactionModalProps {
   isOpen: boolean;
@@ -36,7 +36,7 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
       setAmount(transaction.amount.toString());
       setReason(transaction.reason || '');
       setCategory(transaction.category || 'Other');
-      setDate(transaction.date ? new Date(transaction.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
+      setDate(getLocalDateString(transaction.date));
       setTime(getTimeStringFromDate(transaction.date));
       setPaymentMethod(transaction.paymentMethod || 'UPI / Card');
       setNote(transaction.note || '');

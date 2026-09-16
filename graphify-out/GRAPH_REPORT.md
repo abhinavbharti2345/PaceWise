@@ -1,16 +1,16 @@
 # Graph Report - PaceWise  (2026-09-17)
 
 ## Corpus Check
-- 175 files · ~150,978 words
+- 175 files · ~151,111 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1857 nodes · 2249 edges · 119 communities (101 shown, 14 thin omitted)
+- 1858 nodes · 2254 edges · 119 communities (101 shown, 14 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e3a75433`
+- Built from commit: `584a634c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -162,7 +162,7 @@
 
 ### Community 0 - "cn"
 Cohesion: 0.05
-Nodes (107): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+99 more)
+Nodes (108): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+100 more)
 
 ### Community 1 - "Code Explanation and Analysis"
 Cohesion: 0.04
@@ -575,7 +575,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `name`, `private`, `version` to the rest of the system?**
   _1581 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `cn` be split into smaller, more focused modules?**
-  _Cohesion score 0.050916340771413236 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05067030220404454 - nodes in this community are weakly interconnected._
 - **Should `Code Explanation and Analysis` be split into smaller, more focused modules?**
   _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._
 - **Should `TDD Cycle Orchestrator` be split into smaller, more focused modules?**
