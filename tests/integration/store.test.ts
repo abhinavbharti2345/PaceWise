@@ -463,6 +463,42 @@ describe('Hardening & Cascade Deletion Logic', () => {
       store.deleteCustomIncomeCategory('Dividends');
       expect(useStore.getState().customIncomeCategories?.some(c => c.name === 'Dividends')).toBe(false);
     });
+
+    it('22. Month rollover rolls over the full remaining moneyLeft to the new month', async () => {
+      useAuthStore.setState({ user: { id: 'user-a' } as any });
+      const store = useStore.getState();
+
+      // Configure August budget of 6000
+      store.setConfig({
+        totalMoney: 6000,
+        startDate: '2026-08-01T00:00:00.000Z',
+        endDate: '2026-08-31T23:59:59.999Z',
+        currency: '₹',
+        theme: 'system'
+      });
+
+      // User spends 2000 total in August -> 4000 left
+      store.addTransaction({
+        type: 'expense',
+        amount: 2000,
+        date: '2026-08-15T12:00:00.000Z',
+        category: 'Food',
+        reason: 'Monthly groceries'
+      });
+
+      // Rollover to September
+      await store.updateConfig({
+        totalMoney: 5000,
+        startDate: '2026-09-01T00:00:00.000Z',
+        endDate: '2026-09-30T23:59:59.999Z'
+      });
+
+      const updatedTxs = useStore.getState().transactions;
+      const rolloverTx = updatedTxs.find(t => t.category === 'Rollover');
+
+      expect(rolloverTx).toBeDefined();
+      expect(rolloverTx?.amount).toBe(4000); // Correctly rolled over remaining moneyLeft!
+    });
   });
 });
 

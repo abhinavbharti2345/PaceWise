@@ -1,4 +1,4 @@
-import { differenceInDays, startOfDay } from 'date-fns';
+import { differenceInDays, startOfDay, addDays } from 'date-fns';
 
 export type TransactionType = 'expense' | 'income' | 'bill' | 'person';
 
@@ -224,7 +224,7 @@ export function calculateBudget(
   let cumulativeIdealSpent = 0;
 
   for (let i = 0; i < totalDays; i++) {
-    const d = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
+    const d = addDays(start, i);
     const dateKey = d.getTime().toString();
     const daySpent = discretionarySpendByDate[dateKey] || 0;
     

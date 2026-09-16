@@ -196,7 +196,7 @@ export const useStore = create<AppState>()(
         
         if (isNewMonth) {
           const finalStats = calculateBudget(oldConfig, oldTransactions, oldConfig.endDate);
-          const unusedAmount = finalStats.todaysAvailable - finalStats.spentToday;
+          const unusedAmount = finalStats.moneyLeft;
           
           if (unusedAmount > 0) {
             rolloverTx = {
@@ -731,15 +731,6 @@ export const useStore = create<AppState>()(
             }).then(({ error }) => {
               if (error) console.error('[PaceWise DB] Failed to insert expense transaction', { error });
             })
-          );
-        }
-
-        if (settleTransactionId) {
-          promises.push(
-            supabase.from('transactions').update({ status: 'settled' })
-              .eq('id', settleTransactionId).eq('user_id', user.id).then(({ error }) => {
-                if (error) console.error('[PaceWise DB] Failed to update settled transaction status', { error });
-              })
           );
         }
         
