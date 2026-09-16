@@ -158,7 +158,7 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
             <button
               type="button"
               onClick={() => setHoverIndex(null)}
-              className="sm:hidden text-[10px] text-[var(--color-gray-dark)] hover:text-[var(--color-dark)] bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] px-2.5 py-0.5 rounded-full font-bold transition-colors cursor-pointer"
+              className="md:hidden text-[10px] text-[var(--color-gray-dark)] hover:text-[var(--color-dark)] bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] px-2.5 py-0.5 rounded-full font-bold transition-colors cursor-pointer"
             >
               Reset
             </button>
@@ -167,7 +167,7 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
 
         {/* Mobile Top HUD Banner (Visible when inspecting on small screens so finger never hides stats) */}
         {activeDayStat && (
-          <div className="sm:hidden animate-in fade-in duration-150 p-2.5 rounded-xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm text-xs">
+          <div className="md:hidden animate-in fade-in duration-150 p-2.5 rounded-xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm text-xs">
             <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-[var(--color-gray-light)]">
               <span className="font-bold text-[var(--color-dark)]">Day {activeDayStat.dayIndex} · {format(new Date(activeDayStat.date), 'MMM dd')}</span>
               {activeDiff !== null ? (
@@ -262,7 +262,7 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
             {/* Desktop Tooltip Card (Hidden on mobile where Top HUD is used instead) */}
             <div
               className={cn(
-                "hidden sm:block absolute top-4 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl shadow-xl p-3 min-w-[170px] whitespace-nowrap z-30 pointer-events-none animate-in fade-in duration-100",
+                "hidden md:block absolute top-4 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl shadow-xl p-3 min-w-[170px] whitespace-nowrap z-30 pointer-events-none animate-in fade-in duration-100",
                 getX(hoverIndex) > 70 ? "right-2" : getX(hoverIndex) < 30 ? "left-2" : "-translate-x-1/2"
               )}
             >

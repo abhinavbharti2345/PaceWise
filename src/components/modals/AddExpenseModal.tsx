@@ -4,10 +4,11 @@ import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
+import { TimePicker } from '../ui/TimePicker';
 import { CategorySelector } from '../ui/CategorySelector';
 import { getAllExpenseCategories } from '../../utils/categoryHelpers';
 import { AddCategoryModal } from './AddCategoryModal';
-import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
+import { parseLocalDate, getTodayDateString, getCurrentTimeString } from '../../utils/dateUtils';
 
 interface AddExpenseModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
   const [selectedCategory, setSelectedCategory] = useState(allCategories[0]?.name || 'Food');
   const [customCategory, setCustomCategory] = useState('');
   const [date, setDate] = useState(getTodayDateString());
+  const [time, setTime] = useState(getCurrentTimeString());
   const [paymentMethod, setPaymentMethod] = useState('UPI / Card');
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
@@ -31,6 +33,7 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
   useEffect(() => {
     if (isOpen) {
       setDate(getTodayDateString());
+      setTime(getCurrentTimeString());
     }
   }, [isOpen]);
 
@@ -57,7 +60,7 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
       amount: numAmount,
       category: finalCategory,
       reason: reason.trim(),
-      date: parseLocalDate(date).toISOString(),
+      date: parseLocalDate(date, time).toISOString(),
       paymentMethod,
       note: note.trim() || undefined,
     });
@@ -165,28 +168,34 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
             )}
           </div>
 
-          {/* Date & Payment Method */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* Date & Time */}
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
             <DatePicker 
               label="Date"
               value={date}
               onChange={(newDate) => setDate(newDate)}
             />
+            <TimePicker
+              label="Time"
+              value={time}
+              onChange={(newTime) => setTime(newTime)}
+            />
+          </div>
 
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-1">
-                Payment Method
-              </label>
-              <select
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs font-semibold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
-              >
-                <option value="UPI / Card">UPI / Online</option>
-                <option value="Cash">Cash</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-              </select>
-            </div>
+          {/* Payment Method */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-1">
+              Payment Method
+            </label>
+            <select
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs font-semibold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
+            >
+              <option value="UPI / Card">UPI / Online</option>
+              <option value="Cash">Cash</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+            </select>
           </div>
 
           {/* Optional Note */}

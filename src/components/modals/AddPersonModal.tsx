@@ -4,8 +4,9 @@ import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
+import { TimePicker } from '../ui/TimePicker';
 import { cn } from '../../utils/cn';
-import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
+import { parseLocalDate, getTodayDateString, getCurrentTimeString } from '../../utils/dateUtils';
 import { formatCurrency as formatCurrencyUtil } from '../../utils/currencyUtils';
 import { format } from 'date-fns';
 
@@ -20,6 +21,7 @@ interface InitialTransactionItem {
   amount: string;
   reason: string;
   date: string;
+  time: string;
 }
 
 const createEmptyTransactionItem = (): InitialTransactionItem => ({
@@ -28,6 +30,7 @@ const createEmptyTransactionItem = (): InitialTransactionItem => ({
   amount: '',
   reason: '',
   date: getTodayDateString(),
+  time: getCurrentTimeString(),
 });
 
 export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
@@ -153,7 +156,7 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
       });
 
       for (const item of validItems) {
-        const txDate = item.date ? parseLocalDate(item.date).toISOString() : new Date().toISOString();
+        const txDate = item.date ? parseLocalDate(item.date, item.time).toISOString() : new Date().toISOString();
         recordPersonTransaction({
           personId,
           personName: trimmedName,
@@ -418,11 +421,18 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
                               onChange={(e) => updateTransactionItem(item.id, 'reason', e.target.value)}
                             />
 
-                            <DatePicker 
-                              label="Date" 
-                              value={item.date}
-                              onChange={(newDate) => updateTransactionItem(item.id, 'date', newDate)}
-                            />
+                            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+                              <DatePicker 
+                                label="Date" 
+                                value={item.date}
+                                onChange={(newDate) => updateTransactionItem(item.id, 'date', newDate)}
+                              />
+                              <TimePicker 
+                                label="Time" 
+                                value={item.time}
+                                onChange={(newTime) => updateTransactionItem(item.id, 'time', newTime)}
+                              />
+                            </div>
                           </div>
                         </div>
                       )}

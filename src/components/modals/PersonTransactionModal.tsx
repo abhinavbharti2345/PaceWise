@@ -5,7 +5,8 @@ import type { Person } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
-import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
+import { TimePicker } from '../ui/TimePicker';
+import { parseLocalDate, getTodayDateString, getCurrentTimeString } from '../../utils/dateUtils';
 import { getAllExpenseCategories } from '../../utils/categoryHelpers';
 import { AddCategoryModal } from './AddCategoryModal';
 import { cn } from '../../utils/cn';
@@ -36,12 +37,14 @@ export function PersonTransactionModal({
   const [category, setCategory] = useState('Groceries');
   const [reason, setReason] = useState('');
   const [date, setDate] = useState(getTodayDateString());
+  const [time, setTime] = useState(getCurrentTimeString());
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
       setDate(getTodayDateString());
+      setTime(getCurrentTimeString());
       setDirection(defaultDirection);
     }
   }, [isOpen, defaultDirection]);
@@ -67,7 +70,7 @@ export function PersonTransactionModal({
       direction,
       category: direction === 'bought_for_me' ? category : undefined,
       reason: reason.trim(),
-      date: parseLocalDate(date).toISOString(),
+      date: parseLocalDate(date, time).toISOString(),
       note: note.trim() || undefined,
     });
 
@@ -258,12 +261,19 @@ export function PersonTransactionModal({
             />
           </div>
 
-          {/* Date */}
-          <DatePicker 
-            label="Date"
-            value={date}
-            onChange={(newDate) => setDate(newDate)}
-          />
+          {/* Date & Time */}
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+            <DatePicker 
+              label="Date"
+              value={date}
+              onChange={(newDate) => setDate(newDate)}
+            />
+            <TimePicker
+              label="Time"
+              value={time}
+              onChange={(newTime) => setTime(newTime)}
+            />
+          </div>
 
           {/* Note */}
           <div>

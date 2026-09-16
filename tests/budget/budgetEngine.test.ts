@@ -163,12 +163,34 @@ describe('budgetEngine', () => {
       expect(stats.effectiveTotalBudget).toBe(5000);
       expect(stats.moneyLeft).toBe(5000); // Perfectly restored
       
-      // Day 2 (Days passed = 1, so 2 days of allowance)
-      // Base daily = 166.66... -> total allowance = 333.33...
-      expect(stats.todaysAvailable).toBeCloseTo(333.33, 1);
+      // Day 1 base was 165 (5000/30 - 50/30).
+      // On Day 2, +50 repayment on Day 2 (29 days remaining) adds +50/29 = +1.72/day.
+      // Day 2 Base = 165 + 1.72 = 166.72.
+      // Todays Available = Day 1 saved (165) + Day 2 base (166.72) = 331.72.
+      expect(stats.todaysAvailable).toBeCloseTo(331.72, 1);
       
       expect(stats.spentToday).toBe(0);
       expect(stats.totalDiscretionarySpent).toBe(0);
+    });
+
+    it('Scenario 5: Mid-month lending preserves past carry-forward (no retroactive penalty)', () => {
+      // Day 1..15 no spending: 15 days * (5000 / 30) = 2500 carry forward into Day 16
+      const day16BeforeLoan = calculateBudget(config, [], '2026-08-16');
+      expect(day16BeforeLoan.carryForward).toBeCloseTo(2500, 1);
+
+      // User lends 994 to friends on Day 16 (15 days remaining: Day 16..30)
+      const loanTx: Transaction = { id: 'l1', type: 'person', direction: 'gave', amount: 994, date: '2026-08-16', personId: 'p1' };
+      const day16AfterLoan = calculateBudget(config, [loanTx], '2026-08-16');
+
+      // Past 15 days carry forward must remain 2500!
+      expect(day16AfterLoan.carryForward).toBeCloseTo(2500, 1);
+      // Effective total budget drops by 994
+      expect(day16AfterLoan.effectiveTotalBudget).toBe(4006);
+      expect(day16AfterLoan.moneyLeft).toBe(4006);
+      // Base for remaining 15 days drops by 994 / 15 = 66.27 -> 166.67 - 66.27 = 100.40
+      expect(day16AfterLoan.baseDailyBudget).toBeCloseTo(100.40, 1);
+      // Today's available is 2500 + 100.40 = 2600.40 (not 0!)
+      expect(day16AfterLoan.todaysAvailable).toBeCloseTo(2600.40, 1);
     });
 
     it('Scenario 9: Previous-month IOU transactions (ignored from current budget)', () => {
@@ -181,11 +203,11 @@ describe('budgetEngine', () => {
       expect(stats.todaysAvailable).toBeCloseTo(166.66, 1);
     });
 
-    it('Scenario 10: Current-day IOU settlement of previous month debt', () => {
+    it('Scenario 10: Current-day IOU settlement of previous month debt (forward-looking)', () => {
       const t1: Transaction = { id: 't1', type: 'person', direction: 'gave', amount: 500, date: '2026-07-15', personId: 'p1' }; // Previous month lend
       const t2: Transaction = { id: 't2', type: 'person', direction: 'took', amount: 500, date: '2026-08-05', personId: 'p1', isSettlement: true }; // Settle today
       
-      // We evaluate on August 5 (Day 5, daysPassed = 4)
+      // We evaluate on August 5 (Day 5, daysPassed = 4, 26 days remaining: Days 5 to 30)
       const stats = calculateBudget(config, [t1, t2], '2026-08-05');
 
       // Only the August transaction (t2) is processed.
@@ -193,10 +215,11 @@ describe('budgetEngine', () => {
       expect(stats.effectiveTotalBudget).toBe(5500);
       expect(stats.moneyLeft).toBe(5500);
       
-      // Base daily = 5500 / 30 = 183.33...
-      // Allowance up to yesterday (daysPassed 4) = 733.33...
-      // Todays Available = 183.33... + 733.33... = 916.66...
-      expect(stats.todaysAvailable).toBeCloseTo(916.66, 1);
+      // Base daily for days 1..4 = 5000 / 30 = 166.67.
+      // Allowance up to yesterday (daysPassed 4) = 4 * 166.67 = 666.67
+      // For Day 5..30, base is 166.67 + (500 / 26) = 185.90.
+      // Todays Available = 666.67 + 185.90 = 852.56
+      expect(stats.todaysAvailable).toBeCloseTo(852.56, 1);
     });
   });
 });

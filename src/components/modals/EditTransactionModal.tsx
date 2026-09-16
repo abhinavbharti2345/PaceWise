@@ -4,9 +4,10 @@ import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
+import { TimePicker } from '../ui/TimePicker';
 import type { Transaction } from '../../features/budget/budgetEngine';
 import { getAllExpenseCategories, getAllBillCategories } from '../../utils/categoryHelpers';
-import { parseLocalDate } from '../../utils/dateUtils';
+import { parseLocalDate, getTimeStringFromDate } from '../../utils/dateUtils';
 
 interface EditTransactionModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
   const [reason, setReason] = useState('');
   const [category, setCategory] = useState('');
   const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
@@ -35,6 +37,7 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
       setReason(transaction.reason || '');
       setCategory(transaction.category || 'Other');
       setDate(transaction.date ? new Date(transaction.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
+      setTime(getTimeStringFromDate(transaction.date));
       setPaymentMethod(transaction.paymentMethod || 'UPI / Card');
       setNote(transaction.note || '');
       setError('');
@@ -59,7 +62,7 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
       amount: numAmount,
       reason: reason.trim(),
       category: category.trim() || 'Other',
-      date: parseLocalDate(date, transaction.date).toISOString(),
+      date: parseLocalDate(date, time, transaction.date).toISOString(),
       paymentMethod: paymentMethod || undefined,
       note: note.trim() || undefined,
     });
@@ -137,38 +140,42 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
             />
           </div>
 
-          {/* Category & Date */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-1">
-                Category
-              </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs font-bold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
-              >
-                {categoryList.map((cat) => (
-                  <option key={cat.name} value={cat.name}>
-                    {cat.name}
-                  </option>
-                ))}
-                {category && !categoryList.some(c => c.name.toLowerCase() === category.toLowerCase()) && (
-                  <option value={category}>{category}</option>
-                )}
-                <option value="Income">Income</option>
-                <option value="Bills">Bills</option>
-                <option value="People">People</option>
-              </select>
-            </div>
+          {/* Category */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-1">
+              Category
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs font-bold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
+            >
+              {categoryList.map((cat) => (
+                <option key={cat.name} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
+              {category && !categoryList.some(c => c.name.toLowerCase() === category.toLowerCase()) && (
+                <option value={category}>{category}</option>
+              )}
+              <option value="Income">Income</option>
+              <option value="Bills">Bills</option>
+              <option value="People">People</option>
+            </select>
+          </div>
 
-            <div>
-              <DatePicker 
-                label="Date *" 
-                value={date}
-                onChange={(newDate) => setDate(newDate)}
-              />
-            </div>
+          {/* Date & Time */}
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+            <DatePicker 
+              label="Date *" 
+              value={date}
+              onChange={(newDate) => setDate(newDate)}
+            />
+            <TimePicker
+              label="Time"
+              value={time}
+              onChange={(newTime) => setTime(newTime)}
+            />
           </div>
 
           {/* Note */}

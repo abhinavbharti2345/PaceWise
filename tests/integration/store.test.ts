@@ -362,11 +362,18 @@ describe('Hardening & Cascade Deletion Logic', () => {
     expect(useStore.getState().people[0].balance).toBe(300);
   });
 
-  it('17. parseLocalDate preserves calendar day regardless of timezone', () => {
+  it('17. parseLocalDate preserves calendar day and sets custom time when provided', () => {
     const d = parseLocalDate('2026-09-01');
     expect(d.getFullYear()).toBe(2026);
     expect(d.getMonth()).toBe(8); // September is month 8
     expect(d.getDate()).toBe(1);
+
+    const dWithTime = parseLocalDate('2026-09-01', '14:35');
+    expect(dWithTime.getFullYear()).toBe(2026);
+    expect(dWithTime.getMonth()).toBe(8);
+    expect(dWithTime.getDate()).toBe(1);
+    expect(dWithTime.getHours()).toBe(14);
+    expect(dWithTime.getMinutes()).toBe(35);
   });
 
   describe('Category Safeguards & Custom Management', () => {

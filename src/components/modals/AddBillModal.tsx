@@ -4,10 +4,11 @@ import { useStore } from '../../store/useStore';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { DatePicker } from '../ui/DatePicker';
+import { TimePicker } from '../ui/TimePicker';
 import { CategorySelector } from '../ui/CategorySelector';
 import { getAllBillCategories } from '../../utils/categoryHelpers';
 import { AddCategoryModal } from './AddCategoryModal';
-import { parseLocalDate, getTodayDateString } from '../../utils/dateUtils';
+import { parseLocalDate, getTodayDateString, getCurrentTimeString } from '../../utils/dateUtils';
 
 interface AddBillModalProps {
   isOpen: boolean;
@@ -30,12 +31,14 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
   const [customCategory, setCustomCategory] = useState('');
   const [reason, setReason] = useState('');
   const [date, setDate] = useState(getTodayDateString());
+  const [time, setTime] = useState(getCurrentTimeString());
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
       setDate(getTodayDateString());
+      setTime(getCurrentTimeString());
     }
   }, [isOpen]);
   
@@ -59,7 +62,7 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
       amount: val,
       category: finalCategory,
       reason: reason.trim() || `${finalCategory} Bill Payment`,
-      date: parseLocalDate(date).toISOString(),
+      date: parseLocalDate(date, time).toISOString(),
       note: note.trim() || undefined,
     });
     
@@ -167,12 +170,19 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
               />
             </div>
 
-            {/* Date */}
-            <DatePicker 
-              label="Date Paid"
-              value={date}
-              onChange={(newDate) => setDate(newDate)}
-            />
+            {/* Date & Time */}
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+              <DatePicker 
+                label="Date Paid"
+                value={date}
+                onChange={(newDate) => setDate(newDate)}
+              />
+              <TimePicker
+                label="Time"
+                value={time}
+                onChange={(newTime) => setTime(newTime)}
+              />
+            </div>
 
             {/* Optional Note */}
             <div>

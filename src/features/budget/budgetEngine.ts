@@ -145,10 +145,10 @@ export function calculateBudget(
   const effectiveTotalBudget = config.totalMoney + totalAddedMoney - totalBills + totalNetPersonCashFlow;
 
   // 2. Daily Base Distribution
-  // Starting base incorporates total initial money + total income + net person cash flow across the full month.
-  // Mid-month bills adjust only the remaining days from their occurrence date onward,
+  // Starting base incorporates total initial money + total income across the full month.
+  // Mid-month bills and person cashflows (loans/borrowing) adjust only the remaining days from their occurrence date onward,
   // preventing retroactive drops in past carry-forward savings.
-  const initialBase = totalDays > 0 ? (config.totalMoney + totalAddedMoney + totalNetPersonCashFlow) / totalDays : 0;
+  const initialBase = totalDays > 0 ? (config.totalMoney + totalAddedMoney) / totalDays : 0;
   const dailyBase: number[] = new Array(totalDays).fill(initialBase);
 
   for (const t of transactions) {
@@ -166,6 +166,15 @@ export function calculateBudget(
 
     if (t.type === 'bill') {
       const deltaPerDay = -t.amount / remainingDays;
+      for (let j = dayIdx; j < totalDays; j++) {
+        dailyBase[j] += deltaPerDay;
+      }
+    } else if (t.type === 'person') {
+      if (t.direction === 'bought_for_me' || t.isBoughtForMeSettlement) {
+        continue;
+      }
+      const flow = t.direction === 'took' ? t.amount : -t.amount;
+      const deltaPerDay = flow / remainingDays;
       for (let j = dayIdx; j < totalDays; j++) {
         dailyBase[j] += deltaPerDay;
       }

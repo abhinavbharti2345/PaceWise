@@ -70,6 +70,12 @@ export function Dashboard() {
     ? `+${formatCurrency(paceDiff)}/d` 
     : `-${formatCurrency(Math.abs(paceDiff))}/d`;
 
+  const potentialRepaidPace = stats.daysRemaining > 0 && toReceive > 0 
+    ? Math.max(0, (stats.moneyLeft + toReceive) / stats.daysRemaining) 
+    : 0;
+
+  const potentialTotalMoneyLeft = stats.moneyLeft + toReceive;
+
   const displayName = profile?.displayName
     || user?.user_metadata?.full_name
     || user?.user_metadata?.name
@@ -101,6 +107,12 @@ export function Dashboard() {
             <p className="text-red-200 text-xs sm:text-sm mt-1 sm:mt-1.5 font-medium opacity-90 truncate">
               of {formatCurrency(stats.effectiveTotalBudget)} total budget
             </p>
+            {toReceive > 0 && (
+              <div className="mt-2 sm:mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/10 border border-white/15 text-red-100 text-[10px] sm:text-xs font-semibold backdrop-blur-md shadow-sm max-w-full truncate">
+                <span className="text-amber-300 shrink-0 text-xs">⚡</span>
+                <span className="truncate">Once settled: <strong className="text-white font-black">{formatCurrency(potentialTotalMoneyLeft)}</strong> <span className="opacity-75 text-[10px] hidden sm:inline">(+{formatCurrency(toReceive)})</span></span>
+              </div>
+            )}
           </div>
           <div>
             <div className="flex justify-between text-[10px] sm:text-[11px] text-red-200 font-semibold mb-1 sm:mb-1.5">
@@ -138,6 +150,12 @@ export function Dashboard() {
                 <p className="text-blue-200/90 text-[9px] sm:text-xs font-semibold mt-1 truncate">
                   left to spend (of {formatCurrency(stats.todaysAvailable)})
                 </p>
+                {toReceive > 0 && (
+                  <div className="mt-1.5 sm:mt-2.5 inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl bg-white/10 border border-white/15 text-blue-100 text-[8px] sm:text-[11px] font-semibold backdrop-blur-md max-w-full truncate shadow-sm">
+                    <span className="text-amber-300 shrink-0 text-[10px] sm:text-xs">⚡</span>
+                    <span className="truncate">Once settled: <strong className="text-white font-black">{formatCurrency(potentialRepaidPace)}/d</strong></span>
+                  </div>
+                )}
               </div>
             </div>
 
