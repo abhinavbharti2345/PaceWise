@@ -17,7 +17,7 @@ import { useStore } from './store/useStore';
 import { useAuthStore } from './store/useAuthStore';
 import { useSupabaseSync } from './lib/supabaseSync';
 import { useMonthRollover } from './hooks/useMonthRollover';
-import { Loader } from 'lucide-react';
+import { SplashScreen } from './components/ui/SplashScreen';
 
 // ── Error Boundary ───────────────────────────────────────────────────
 interface ErrorBoundaryProps {
@@ -101,14 +101,7 @@ function AppContent() {
 
   // Show loading while auth status is being determined
   if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-light)]">
-        <div className="flex flex-col items-center gap-4">
-          <Loader className="animate-spin" size={32} color="var(--color-primary)" />
-          <p className="text-[var(--color-gray-dark)] font-medium">Loading PaceWise...</p>
-        </div>
-      </div>
-    );
+    return <SplashScreen />;
   }
 
   // Not authenticated → show auth page
@@ -126,14 +119,7 @@ function AppContent() {
   // Authenticated but Supabase data hasn't loaded yet → show loading
   // This prevents stale localStorage data from flashing before cloud data arrives
   if (!isHydrated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-light)]">
-        <div className="flex flex-col items-center gap-4">
-          <Loader className="animate-spin" size={32} color="var(--color-primary)" />
-          <p className="text-[var(--color-gray-dark)] font-medium">Syncing your data...</p>
-        </div>
-      </div>
-    );
+    return <SplashScreen message="Syncing your budget..." />;
   }
 
   return (

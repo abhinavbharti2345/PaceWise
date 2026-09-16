@@ -14,8 +14,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <title>PaceWise</title>
   </head>
-  <body>
-    <div id="root"></div>
+  <body style="margin: 0; background-color: #09090b;">
+    <div id="root">
+      <div style="position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #09090b; color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Outfit', 'Inter', sans-serif; user-select: none;">
+        <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+          <div style="position: absolute; width: 100px; height: 100px; background-color: rgba(255, 69, 58, 0.3); border-radius: 28px; filter: blur(20px);"></div>
+          <div style="position: relative; width: 88px; height: 88px; background-color: #FF453A; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;">
+            <span style="color: #ffffff; font-size: 46px; font-weight: 900; line-height: 1; letter-spacing: -0.05em;">P</span>
+          </div>
+        </div>
+        <div style="margin-top: 24px; text-align: center;">
+          <div style="font-size: 32px; font-weight: 900; letter-spacing: -0.025em; line-height: 1; color: #ffffff;">
+            <span>Pace</span><span style="color: #FF453A;">Wise</span>
+          </div>
+          <div style="font-size: 11px; font-weight: 900; letter-spacing: 0.25em; color: #71717a; text-transform: uppercase; margin-top: 8px;">
+            PERSONAL BUDGET
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
