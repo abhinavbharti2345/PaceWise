@@ -39,7 +39,8 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
   
   const [settlementMode, setSettlementMode] = useState<'general' | 'bought_for_me'>('general');
   const [settlementMethod, setSettlementMethod] = useState<'cash' | 'offset_debt'>('cash');
-  const [selectedItemId, setSelectedItemId] = useState<string>('');
+  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+  const [isCustomCategoryMode, setIsCustomCategoryMode] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('Groceries');
 
   const [amount, setAmount] = useState(absBalance.toString());
@@ -52,22 +53,25 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
     if (isOpen) {
       if (transactionToSettle) {
         setSettlementMode('bought_for_me');
-        setSelectedItemId(transactionToSettle.id);
+        setSelectedItemIds([transactionToSettle.id]);
+        setIsCustomCategoryMode(false);
         setSelectedCategory(transactionToSettle.category || 'Groceries');
         setAmount(transactionToSettle.amount.toString());
         setIsFullSettlement(false);
         setSettlementMethod(person.balance > 0 ? 'offset_debt' : 'cash');
       } else if (boughtForMeItems.length > 0) {
         setSettlementMode('bought_for_me');
-        const first = boughtForMeItems[0];
-        setSelectedItemId(first.id);
-        setSelectedCategory(first.category || 'Groceries');
-        setAmount(first.amount.toString());
+        const allIds = boughtForMeItems.map(t => t.id);
+        setSelectedItemIds(allIds);
+        setIsCustomCategoryMode(false);
+        const sum = boughtForMeItems.reduce((acc, t) => acc + t.amount, 0);
+        setAmount(sum.toString());
         setIsFullSettlement(false);
         setSettlementMethod(person.balance > 0 ? 'offset_debt' : 'cash');
       } else {
         setSettlementMode('general');
-        setSelectedItemId('');
+        setSelectedItemIds([]);
+        setIsCustomCategoryMode(false);
         setSelectedCategory('Groceries');
         setAmount(absBalance.toString());
         setIsFullSettlement(true);
@@ -91,14 +95,31 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
     }
   };
 
-  const handleSelectItem = (itemId: string) => {
-    setSelectedItemId(itemId);
-    if (itemId === 'custom') return;
-    
-    const item = boughtForMeItems.find(t => t.id === itemId);
-    if (item) {
-      setAmount(item.amount.toString());
-      setSelectedCategory(item.category || 'Groceries');
+  const handleToggleItem = (itemId: string) => {
+    setIsCustomCategoryMode(false);
+    let newSelected: string[];
+    if (selectedItemIds.includes(itemId)) {
+      newSelected = selectedItemIds.filter(id => id !== itemId);
+    } else {
+      newSelected = [...selectedItemIds, itemId];
+    }
+    setSelectedItemIds(newSelected);
+    const sum = boughtForMeItems
+      .filter(t => newSelected.includes(t.id))
+      .reduce((acc, t) => acc + t.amount, 0);
+    setAmount(sum > 0 ? sum.toString() : '');
+  };
+
+  const handleToggleSelectAll = () => {
+    setIsCustomCategoryMode(false);
+    if (selectedItemIds.length === boughtForMeItems.length) {
+      setSelectedItemIds([]);
+      setAmount('');
+    } else {
+      const allIds = boughtForMeItems.map(t => t.id);
+      setSelectedItemIds(allIds);
+      const sum = boughtForMeItems.reduce((acc, t) => acc + t.amount, 0);
+      setAmount(sum.toString());
     }
   };
 
@@ -118,13 +139,12 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
 
   const handleQuickBoughtForMeClick = () => {
     setSettlementMode('bought_for_me');
+    setIsCustomCategoryMode(false);
+    const allIds = boughtForMeItems.map(t => t.id);
+    setSelectedItemIds(allIds);
     setAmount(totalBoughtForMe.toString());
     setIsFullSettlement(false);
-    if (boughtForMeItems.length > 0) {
-      const first = boughtForMeItems[0];
-      setSelectedItemId(first.id);
-      setSelectedCategory(first.category || 'Groceries');
-    }
+    setSettlementMethod(person.balance > 0 ? 'offset_debt' : 'cash');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -135,22 +155,44 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
       return;
     }
 
-    const selectedItem = transactionToSettle || boughtForMeItems.find(t => t.id === selectedItemId);
-
-    settleDebt({
-      personId: person.id,
-      personName: person.name,
-      amount: numAmount,
-      // If settling a purchase, direction is 'paid' for cash payback
-      direction: isBoughtForMeMode ? 'paid' : (isPersonOwing ? 'received' : 'paid'),
-      note: note.trim() || undefined,
-      expenseCategory: isBoughtForMeMode ? selectedCategory : undefined,
-      expenseReason: isBoughtForMeMode 
-        ? (selectedItem ? `Settled purchase: ${selectedItem.reason}` : `Settled purchase for ${person.name}`)
-        : undefined,
-      settleTransactionId: selectedItem?.id,
-      settlementMethod: isBoughtForMeMode ? settlementMethod : undefined,
-    });
+    if (isBoughtForMeMode) {
+      const itemsToSettle = boughtForMeItems.filter(t => selectedItemIds.includes(t.id));
+      if (itemsToSettle.length > 0 && !isCustomCategoryMode) {
+        settleDebt({
+          personId: person.id,
+          personName: person.name,
+          amount: itemsToSettle.reduce((sum, item) => sum + item.amount, 0),
+          direction: 'paid',
+          note: note.trim() || undefined,
+          settleItems: itemsToSettle.map(item => ({
+            id: item.id,
+            amount: item.amount,
+            category: item.category,
+            reason: item.reason
+          })),
+          settlementMethod,
+        });
+      } else {
+        settleDebt({
+          personId: person.id,
+          personName: person.name,
+          amount: numAmount,
+          direction: 'paid',
+          note: note.trim() || undefined,
+          expenseCategory: selectedCategory,
+          expenseReason: `Settled purchases for ${person.name}`,
+          settlementMethod,
+        });
+      }
+    } else {
+      settleDebt({
+        personId: person.id,
+        personName: person.name,
+        amount: numAmount,
+        direction: isPersonOwing ? 'received' : 'paid',
+        note: note.trim() || undefined,
+      });
+    }
 
     setError('');
     onClose();
@@ -296,26 +338,70 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
             </div>
           )}
 
-          {/* Item Selector & Category Picker when in Bought for Me Mode */}
+          {/* Item Selector & Category Picker when in Paid for Me Mode */}
           {isBoughtForMeMode && (
             <div className="space-y-4 animate-in slide-in-from-top-2 fade-in duration-200 bg-[var(--color-surface-light)]/50 p-3.5 rounded-2xl border border-[var(--color-gray-light)]">
-              {boughtForMeItems.length > 0 && !transactionToSettle && (
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-1.5">
-                    Select Purchased Item to Settle
-                  </label>
-                  <select
-                    value={selectedItemId}
-                    onChange={(e) => handleSelectItem(e.target.value)}
-                    className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-                  >
-                    {boughtForMeItems.map(item => (
-                      <option key={item.id} value={item.id}>
-                        {item.reason} — {formatCurrency(item.amount)} ({item.category || 'General'})
-                      </option>
-                    ))}
-                    <option value="custom">Custom Purchase / Settle by Category</option>
-                  </select>
+              {boughtForMeItems.length > 0 && !isCustomCategoryMode && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)]">
+                      Select Purchases to Settle
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleToggleSelectAll}
+                      className="text-xs font-bold text-[var(--color-primary)] hover:underline"
+                    >
+                      {selectedItemIds.length === boughtForMeItems.length ? 'Deselect All' : `Select All (${boughtForMeItems.length})`}
+                    </button>
+                  </div>
+
+                  <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
+                    {boughtForMeItems.map((item) => {
+                      const isSelected = selectedItemIds.includes(item.id);
+                      return (
+                        <div
+                          key={item.id}
+                          onClick={() => handleToggleItem(item.id)}
+                          className={cn(
+                            "p-3 rounded-xl border transition-all flex items-center justify-between cursor-pointer",
+                            isSelected
+                              ? "bg-[var(--color-surface)] border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20 shadow-sm"
+                              : "bg-[var(--color-surface)]/60 border-[var(--color-gray-light)] hover:border-gray-400 opacity-70"
+                          )}
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className={cn(
+                              "w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 transition-colors",
+                              isSelected ? "bg-[var(--color-primary)] border-[var(--color-primary)] text-white" : "border-gray-400 bg-[var(--color-surface)]"
+                            )}>
+                              {isSelected && <Check size={13} strokeWidth={3} />}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-xs font-bold text-[var(--color-dark)] truncate">{item.reason}</p>
+                              <div className="flex items-center gap-1.5 text-[10px] text-[var(--color-gray-dark)] mt-0.5">
+                                <span className="px-1.5 py-0.2 rounded bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-semibold truncate">
+                                  {item.category || 'General'}
+                                </span>
+                                <span>•</span>
+                                <span>{new Date(item.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <span className="text-xs font-extrabold text-[var(--color-purple-text)] shrink-0 ml-2">
+                            {formatCurrency(item.amount)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {selectedItemIds.length > 0 && (
+                    <p className="text-[11px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-200 dark:border-emerald-800 font-medium">
+                      ✓ Will log {selectedItemIds.length} separate expense(s) preserving each item's original category in your budget.
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -386,39 +472,42 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">
-                  Expense Category (Deducted from budget)
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {allCategories.map((cat) => {
-                    const isSelected = selectedCategory === cat.name;
-                    return (
-                      <button
-                        key={cat.name}
-                        type="button"
-                        onClick={() => setSelectedCategory(cat.name)}
-                        className={cn(
-                          "flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-[10px] sm:text-xs font-semibold border transition-all text-left truncate",
-                          isSelected 
-                            ? "bg-[var(--color-dark)] text-[var(--color-surface)] border-[var(--color-dark)] shadow-sm"
-                            : "bg-[var(--color-surface)] text-[var(--color-gray-dark)] border-[var(--color-gray-light)] hover:border-gray-400"
-                        )}
-                      >
-                        <span className="truncate">{cat.name}</span>
-                        {isSelected && <Check size={12} className="ml-auto shrink-0" />}
-                      </button>
-                    );
-                  })}
-                  <button
-                    type="button"
-                    onClick={() => setIsAddCategoryOpen(true)}
-                    className="flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-[10px] sm:text-xs font-bold border border-dashed border-purple-400 text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-950/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all"
-                  >
-                    <span>+ Custom</span>
-                  </button>
+              {/* Category picker when in custom mode or no specific item selected */}
+              {(isCustomCategoryMode || boughtForMeItems.length === 0) && (
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">
+                    Expense Category (Deducted from budget)
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {allCategories.map((cat) => {
+                      const isSelected = selectedCategory === cat.name;
+                      return (
+                        <button
+                          key={cat.name}
+                          type="button"
+                          onClick={() => setSelectedCategory(cat.name)}
+                          className={cn(
+                            "flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-[10px] sm:text-xs font-semibold border transition-all text-left truncate",
+                            isSelected 
+                              ? "bg-[var(--color-dark)] text-[var(--color-surface)] border-[var(--color-dark)] shadow-sm"
+                              : "bg-[var(--color-surface)] text-[var(--color-gray-dark)] border-[var(--color-gray-light)] hover:border-gray-400"
+                          )}
+                        >
+                          <span className="truncate">{cat.name}</span>
+                          {isSelected && <Check size={12} className="ml-auto shrink-0" />}
+                        </button>
+                      );
+                    })}
+                    <button
+                      type="button"
+                      onClick={() => setIsAddCategoryOpen(true)}
+                      className="flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl text-[10px] sm:text-xs font-bold border border-dashed border-purple-400 text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-950/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all"
+                    >
+                      <span>+ Custom</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
 

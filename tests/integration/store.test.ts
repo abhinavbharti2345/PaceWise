@@ -591,6 +591,97 @@ describe('Hardening & Cascade Deletion Logic', () => {
       expect(expenseTx).toBeDefined();
       expect(expenseTx?.amount).toBe(20);
     });
+
+    it('25. Batch settles multiple Paid for Me items at once, preserving original categories for each item', () => {
+      const store = useStore.getState();
+      const devId = store.addPerson({ name: 'Dev', balance: 0 });
+
+      // Lend ₹1000 to Dev -> balance is +1000
+      store.recordPersonTransaction({
+        personId: devId,
+        personName: 'Dev',
+        amount: 1000,
+        direction: 'gave',
+        reason: 'Initial loan'
+      });
+
+      // Dev pays for 3 items (Food ₹150, Travel ₹80, Food ₹20) with pay_later
+      store.recordPersonTransaction({
+        personId: devId,
+        personName: 'Dev',
+        amount: 150,
+        direction: 'bought_for_me',
+        category: 'Food',
+        reason: 'Lunch Split',
+        handleMode: 'pay_later'
+      });
+      store.recordPersonTransaction({
+        personId: devId,
+        personName: 'Dev',
+        amount: 80,
+        direction: 'bought_for_me',
+        category: 'Travel',
+        reason: 'Uber Ride',
+        handleMode: 'pay_later'
+      });
+      store.recordPersonTransaction({
+        personId: devId,
+        personName: 'Dev',
+        amount: 20,
+        direction: 'bought_for_me',
+        category: 'Food',
+        reason: 'Evening Chai',
+        handleMode: 'pay_later'
+      });
+
+      // Total balance is 1000 - 150 - 80 - 20 = 750
+      expect(useStore.getState().people.find(p => p.id === devId)?.balance).toBe(750);
+
+      const allUnsettled = useStore.getState().transactions.filter(
+        t => t.personId === devId && t.direction === 'bought_for_me' && t.status === 'unsettled'
+      );
+      expect(allUnsettled).toHaveLength(3);
+
+      // Batch settle all 3 items via offset_debt
+      store.settleDebt({
+        personId: devId,
+        personName: 'Dev',
+        amount: 250,
+        direction: 'paid',
+        settleItems: allUnsettled.map(item => ({
+          id: item.id,
+          amount: item.amount,
+          category: item.category,
+          reason: item.reason
+        })),
+        settlementMethod: 'offset_debt'
+      });
+
+      // Balance remains offset at 750
+      expect(useStore.getState().people.find(p => p.id === devId)?.balance).toBe(750);
+
+      // All 3 items should now be status: 'settled'
+      const updatedBoughtTxs = useStore.getState().transactions.filter(
+        t => t.personId === devId && t.direction === 'bought_for_me'
+      );
+      expect(updatedBoughtTxs.every(t => t.status === 'settled')).toBe(true);
+
+      // 3 distinct expenses must have been created in their respective categories
+      const expenses = useStore.getState().transactions.filter(t => t.type === 'expense' && t.personId === devId);
+      expect(expenses).toHaveLength(3);
+      
+      const lunchExpense = expenses.find(e => e.amount === 150);
+      expect(lunchExpense?.category).toBe('Food');
+      expect(lunchExpense?.reason).toBe('Settled purchase: Lunch Split');
+
+      const uberExpense = expenses.find(e => e.amount === 80);
+      expect(uberExpense?.category).toBe('Travel');
+      expect(uberExpense?.reason).toBe('Settled purchase: Uber Ride');
+
+      const chaiExpense = expenses.find(e => e.amount === 20);
+      expect(chaiExpense?.category).toBe('Food');
+      expect(chaiExpense?.reason).toBe('Settled purchase: Evening Chai');
+    });
   });
 });
 

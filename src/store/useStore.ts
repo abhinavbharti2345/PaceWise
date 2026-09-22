@@ -70,6 +70,7 @@ interface AppState {
     expenseCategory?: string;
     expenseReason?: string;
     settleTransactionId?: string;
+    settleItems?: { id: string; amount: number; category?: string; reason?: string }[];
     settlementMethod?: 'cash' | 'offset_debt';
   }) => void;
   
@@ -643,7 +644,7 @@ export const useStore = create<AppState>()(
         }
       },
 
-      settleDebt: ({ personId, personName, amount, direction, note, expenseCategory, expenseReason, settleTransactionId, settlementMethod }) => {
+      settleDebt: ({ personId, personName, amount, direction, note, expenseCategory, expenseReason, settleTransactionId, settleItems, settlementMethod }) => {
         const txDate = new Date().toISOString();
         const txId = generateId();
 
@@ -666,15 +667,28 @@ export const useStore = create<AppState>()(
             personName,
             direction: txDirection,
             isSettlement: true,
-            isBoughtForMeSettlement: !!expenseCategory,
+            isBoughtForMeSettlement: !!expenseCategory || (!!settleItems && settleItems.length > 0),
             date: txDate,
             note
           };
         }
 
-        let expenseTx: Transaction | null = null;
-        if (expenseCategory) {
-          expenseTx = {
+        const expenseTxs: Transaction[] = [];
+        if (settleItems && settleItems.length > 0) {
+          for (const item of settleItems) {
+            expenseTxs.push({
+              id: generateId(),
+              type: 'expense',
+              amount: item.amount,
+              date: txDate,
+              category: item.category || expenseCategory || 'General',
+              reason: item.reason ? `Settled purchase: ${item.reason}` : (expenseReason || `Settled purchase for ${personName}`),
+              personId,
+              personName
+            });
+          }
+        } else if (expenseCategory) {
+          expenseTxs.push({
             id: generateId(),
             type: 'expense',
             amount,
@@ -683,7 +697,7 @@ export const useStore = create<AppState>()(
             reason: expenseReason || `Settled expense for ${personName}`,
             personId,
             personName
-          };
+          });
         }
 
         const state = useStore.getState();
@@ -691,20 +705,28 @@ export const useStore = create<AppState>()(
         if (newTx) {
           newTransactions = [newTx, ...newTransactions];
         }
-        if (expenseTx) {
-          newTransactions = [expenseTx, ...newTransactions];
+        if (expenseTxs.length > 0) {
+          newTransactions = [...expenseTxs, ...newTransactions];
         }
 
-        // Mark the specific transaction as settled if full amount is covered
-        let isFullyCovered = true;
-        if (settleTransactionId) {
-          const targetTx = state.transactions.find(tx => tx.id === settleTransactionId);
-          isFullyCovered = !targetTx || amount >= targetTx.amount;
-          if (isFullyCovered) {
-            newTransactions = newTransactions.map(tx => 
-              tx.id === settleTransactionId ? { ...tx, status: 'settled' } : tx
-            );
+        // Mark target transactions as settled
+        const targetIdsToSettle = new Set<string>();
+        if (settleItems && settleItems.length > 0) {
+          for (const item of settleItems) {
+            targetIdsToSettle.add(item.id);
           }
+        } else if (settleTransactionId) {
+          const targetTx = state.transactions.find(tx => tx.id === settleTransactionId);
+          const isFullyCovered = !targetTx || amount >= targetTx.amount;
+          if (isFullyCovered) {
+            targetIdsToSettle.add(settleTransactionId);
+          }
+        }
+
+        if (targetIdsToSettle.size > 0) {
+          newTransactions = newTransactions.map(tx => 
+            targetIdsToSettle.has(tx.id) ? { ...tx, status: 'settled' } : tx
+          );
         }
 
         const newBalance = calculatePersonBalance(personId, newTransactions);
@@ -747,7 +769,7 @@ export const useStore = create<AppState>()(
               person_name: personName,
               direction: newTx.direction,
               is_settlement: true,
-              is_bought_for_me_settlement: !!expenseCategory,
+              is_bought_for_me_settlement: newTx.isBoughtForMeSettlement,
               note,
             }).then(({ error }) => {
               if (error) {
@@ -759,32 +781,36 @@ export const useStore = create<AppState>()(
           );
         }
 
-        if (settleTransactionId && isFullyCovered) {
-          promises.push(
-            supabase.from('transactions').update({ status: 'settled' })
-              .eq('id', settleTransactionId).eq('user_id', user.id)
-              .then(({ error }) => {
-                if (error) console.error('[PaceWise DB] Failed to update target transaction status in Supabase:', error);
-              })
-          );
+        if (targetIdsToSettle.size > 0) {
+          for (const sId of targetIdsToSettle) {
+            promises.push(
+              supabase.from('transactions').update({ status: 'settled' })
+                .eq('id', sId).eq('user_id', user.id)
+                .then(({ error }) => {
+                  if (error) console.error('[PaceWise DB] Failed to update target transaction status in Supabase:', error);
+                })
+            );
+          }
         }
 
-        if (expenseTx) {
-          promises.push(
-            supabase.from('transactions').insert({
-              id: expenseTx.id,
-              user_id: user.id,
-              type: 'expense',
-              amount: expenseTx.amount,
-              date: expenseTx.date,
-              category: expenseTx.category,
-              reason: expenseTx.reason,
-              person_id: expenseTx.personId,
-              person_name: expenseTx.personName,
-            }).then(({ error }) => {
-              if (error) console.error('[PaceWise DB] Failed to insert expense transaction', { error });
-            })
-          );
+        if (expenseTxs.length > 0) {
+          for (const expTx of expenseTxs) {
+            promises.push(
+              supabase.from('transactions').insert({
+                id: expTx.id,
+                user_id: user.id,
+                type: 'expense',
+                amount: expTx.amount,
+                date: expTx.date,
+                category: expTx.category,
+                reason: expTx.reason,
+                person_id: expTx.personId,
+                person_name: expTx.personName,
+              }).then(({ error }) => {
+                if (error) console.error('[PaceWise DB] Failed to insert expense transaction', { error });
+              })
+            );
+          }
         }
         
         Promise.all(promises).catch((error: any) => {

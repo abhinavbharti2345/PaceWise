@@ -170,6 +170,36 @@ export function PersonDetails() {
           </div>
         </div>
 
+        {/* Unsettled Purchases Quick Banner */}
+        {totalBoughtForMe > 0 && (
+          <div className="mt-4 p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900/60 flex items-center justify-between gap-3 animate-in fade-in duration-200">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="p-2 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 shrink-0">
+                <CreditCard size={18} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-purple-900 dark:text-purple-200 truncate">
+                  Unsettled "Paid for Me" ({formatCurrency(totalBoughtForMe)})
+                </p>
+                <p className="text-[11px] text-purple-700 dark:text-purple-400">
+                  {personTransactions.filter(t => t.direction === 'bought_for_me' && t.status !== 'settled').length} purchase(s) pending settlement
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setSettleTransaction(null);
+                setIsSettleModalOpen(true);
+              }}
+              className="shrink-0 text-xs font-bold bg-white dark:bg-purple-900/50 border-purple-300 text-purple-700 dark:text-purple-200 hover:bg-purple-100 dark:hover:bg-purple-900/70"
+            >
+              Settle All
+            </Button>
+          </div>
+        )}
+
         {/* Primary Action Buttons */}
         <div className="mt-6 pt-6 border-t border-[var(--color-gray-light)] space-y-3">
           {!isSettled && (
