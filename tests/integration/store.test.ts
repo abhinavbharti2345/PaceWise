@@ -502,24 +502,23 @@ describe('Hardening & Cascade Deletion Logic', () => {
 
     it('23. Paid for Me with offset_debt immediately logs expense and reduces balance without dangling unsettled item', () => {
       const store = useStore.getState();
-      store.addPerson('Rahul');
-      const rahul = useStore.getState().people.find(p => p.name === 'Rahul')!;
+      const rahulId = store.addPerson({ name: 'Rahul', balance: 0 });
 
       // Lend ₹300 initially -> balance is +300
       store.recordPersonTransaction({
-        personId: rahul.id,
-        personName: rahul.name,
+        personId: rahulId,
+        personName: 'Rahul',
         amount: 300,
         direction: 'gave',
         reason: 'Lent money for lunch'
       });
 
-      expect(useStore.getState().people.find(p => p.id === rahul.id)?.balance).toBe(300);
+      expect(useStore.getState().people.find(p => p.id === rahulId)?.balance).toBe(300);
 
       // Rahul pays ₹20 for me (Chai) with offset_debt
       store.recordPersonTransaction({
-        personId: rahul.id,
-        personName: rahul.name,
+        personId: rahulId,
+        personName: 'Rahul',
         amount: 20,
         direction: 'bought_for_me',
         category: 'Food',
@@ -527,7 +526,7 @@ describe('Hardening & Cascade Deletion Logic', () => {
         handleMode: 'offset_debt'
       });
 
-      const updatedRahul = useStore.getState().people.find(p => p.id === rahul.id)!;
+      const updatedRahul = useStore.getState().people.find(p => p.id === rahulId)!;
       expect(updatedRahul.balance).toBe(280); // 300 - 20 = 280
 
       const txs = useStore.getState().transactions;
@@ -542,13 +541,12 @@ describe('Hardening & Cascade Deletion Logic', () => {
 
     it('24. Paid for Me with pay_later keeps unsettled item, and settles cleanly via offset_debt vs cash', () => {
       const store = useStore.getState();
-      store.addPerson('Amit');
-      const amit = useStore.getState().people.find(p => p.name === 'Amit')!;
+      const amitId = store.addPerson({ name: 'Amit', balance: 0 });
 
       // Lend ₹300
       store.recordPersonTransaction({
-        personId: amit.id,
-        personName: amit.name,
+        personId: amitId,
+        personName: 'Amit',
         amount: 300,
         direction: 'gave',
         reason: 'Lent money'
@@ -556,8 +554,8 @@ describe('Hardening & Cascade Deletion Logic', () => {
 
       // Amit pays ₹20 with pay_later
       store.recordPersonTransaction({
-        personId: amit.id,
-        personName: amit.name,
+        personId: amitId,
+        personName: 'Amit',
         amount: 20,
         direction: 'bought_for_me',
         category: 'Food',
@@ -568,12 +566,12 @@ describe('Hardening & Cascade Deletion Logic', () => {
       let txs = useStore.getState().transactions;
       const boughtTx = txs.find(t => t.direction === 'bought_for_me' && t.reason === 'Movie Popcorn')!;
       expect(boughtTx.status).toBe('unsettled');
-      expect(useStore.getState().people.find(p => p.id === amit.id)?.balance).toBe(280);
+      expect(useStore.getState().people.find(p => p.id === amitId)?.balance).toBe(280);
 
       // Settle using offset_debt
       store.settleDebt({
-        personId: amit.id,
-        personName: amit.name,
+        personId: amitId,
+        personName: 'Amit',
         amount: 20,
         direction: 'paid',
         expenseCategory: 'Food',
@@ -582,7 +580,7 @@ describe('Hardening & Cascade Deletion Logic', () => {
         settlementMethod: 'offset_debt'
       });
 
-      const updatedAmit = useStore.getState().people.find(p => p.id === amit.id)!;
+      const updatedAmit = useStore.getState().people.find(p => p.id === amitId)!;
       expect(updatedAmit.balance).toBe(280); // Balance stays offset at 280!
 
       txs = useStore.getState().transactions;
