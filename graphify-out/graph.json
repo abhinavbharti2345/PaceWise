@@ -876,7 +876,7 @@
       "file_type": "code",
       "norm_label": "calculatepersonbalance()",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L87"
+      "source_location": "L88"
     },
     {
       "id": "src_store_usestore_generateid",
@@ -888,7 +888,7 @@
       "file_type": "code",
       "norm_label": "generateid()",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L96"
+      "source_location": "L97"
     },
     {
       "id": "src_components_modals_addpersonmodal_addpersonmodal",
@@ -1320,7 +1320,7 @@
       "file_type": "code",
       "norm_label": "getbudgetdatesfordate()",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L81"
+      "source_location": "L82"
     },
     {
       "id": "src_components_modals_addbillmodal",
@@ -1804,7 +1804,7 @@
       "file_type": "code",
       "norm_label": "defaultconfig",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L108"
+      "source_location": "L109"
     },
     {
       "id": "src_store_usestore_start_monthstart_end_monthend",
@@ -1815,7 +1815,7 @@
       "file_type": "code",
       "norm_label": "{ start: monthstart, end: monthend }",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L93"
+      "source_location": "L94"
     },
     {
       "id": "tests_budget_budgetengine_test",
@@ -3102,7 +3102,7 @@
       "file_type": "code",
       "norm_label": "usestore",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L116"
+      "source_location": "L117"
     },
     {
       "id": "src_lib_supabasesync_rationale_335",
@@ -27536,6 +27536,18 @@
     },
     {
       "source": "src_components_modals_settlemodal_settlemodal",
+      "target": "src_utils_categoryhelpers_getallexpensecategories",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/components/modals/SettleModal.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_modals_settlemodal_settlemodal",
       "target": "src_utils_cn_cn",
       "relation": "calls",
       "_origin": "ast",
@@ -27543,7 +27555,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L200",
+      "source_location": "L242",
       "weight": 1.0
     },
     {
@@ -27555,19 +27567,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L204",
-      "weight": 1.0
-    },
-    {
-      "source": "src_components_modals_settlemodal_settlemodal",
-      "target": "src_utils_categoryhelpers_getallexpensecategories",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/components/modals/SettleModal.tsx",
-      "source_location": "L22",
+      "source_location": "L246",
       "weight": 1.0
     },
     {
@@ -28239,7 +28239,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L200",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -28251,7 +28251,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L280",
+      "source_location": "L281",
       "weight": 1.0
     },
     {
@@ -28263,7 +28263,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/store/useStore.ts",
-      "source_location": "L344",
+      "source_location": "L345",
       "weight": 1.0
     },
     {
@@ -35456,7 +35456,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L108",
+      "source_location": "L109",
       "weight": 1.0
     },
     {
@@ -35467,7 +35467,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L116",
+      "source_location": "L117",
       "weight": 1.0
     },
     {
@@ -35500,7 +35500,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L81",
+      "source_location": "L82",
       "weight": 1.0
     },
     {
@@ -35511,7 +35511,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L87",
+      "source_location": "L88",
       "weight": 1.0
     },
     {
@@ -35522,7 +35522,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L93",
+      "source_location": "L94",
       "weight": 1.0
     },
     {
@@ -35533,7 +35533,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/store/useStore.ts",
-      "source_location": "L96",
+      "source_location": "L97",
       "weight": 1.0
     },
     {
@@ -52424,5 +52424,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b09a6a6ff586c095aab172721c01aeb680a212e8"
+  "built_at_commit": "e0f774129e2e1a5986917b0135f1b68f745a8bc4"
 }
