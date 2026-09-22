@@ -157,6 +157,10 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
 
     if (isBoughtForMeMode) {
       const itemsToSettle = boughtForMeItems.filter(t => selectedItemIds.includes(t.id));
+      if (boughtForMeItems.length > 0 && itemsToSettle.length === 0 && !isCustomCategoryMode) {
+        setError('Please select at least one purchase to settle');
+        return;
+      }
       if (itemsToSettle.length > 0 && !isCustomCategoryMode) {
         settleDebt({
           personId: person.id,

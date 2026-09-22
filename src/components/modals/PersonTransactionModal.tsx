@@ -47,7 +47,7 @@ export function PersonTransactionModal({
       setDate(getTodayDateString());
       setTime(getCurrentTimeString());
       setDirection(defaultDirection);
-      setHandleMode('offset_debt');
+      setHandleMode(person.balance > 0 ? 'offset_debt' : 'pay_later');
     }
   }, [isOpen, defaultDirection, person.balance]);
 
@@ -241,7 +241,14 @@ export function PersonTransactionModal({
                     </div>
                   </div>
                   <div className="flex-1">
-                    <span className="text-xs font-bold text-[var(--color-dark)]">I Will Pay Them Back Later</span>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-xs font-bold text-[var(--color-dark)]">I Will Pay Them Back Later</span>
+                      {person.balance <= 0 && (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
+                          Recommended
+                        </span>
+                      )}
+                    </div>
                     <p className="text-[11px] text-[var(--color-gray-dark)] mt-0.5 leading-normal">
                       Keep as an unsettled item. You will reimburse {person.name} via cash/UPI later.
                     </p>
