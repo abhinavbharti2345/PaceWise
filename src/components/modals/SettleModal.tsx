@@ -38,6 +38,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
     .reduce((sum, t) => sum + t.amount, 0);
   
   const [settlementMode, setSettlementMode] = useState<'general' | 'bought_for_me'>('general');
+  const [settlementMethod, setSettlementMethod] = useState<'cash' | 'offset_debt'>('cash');
   const [selectedItemId, setSelectedItemId] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Groceries');
 
@@ -55,6 +56,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
         setSelectedCategory(transactionToSettle.category || 'Groceries');
         setAmount(transactionToSettle.amount.toString());
         setIsFullSettlement(false);
+        setSettlementMethod(person.balance > 0 ? 'offset_debt' : 'cash');
       } else if (boughtForMeItems.length > 0) {
         setSettlementMode('bought_for_me');
         const first = boughtForMeItems[0];
@@ -62,17 +64,19 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
         setSelectedCategory(first.category || 'Groceries');
         setAmount(first.amount.toString());
         setIsFullSettlement(false);
+        setSettlementMethod(person.balance > 0 ? 'offset_debt' : 'cash');
       } else {
         setSettlementMode('general');
         setSelectedItemId('');
         setSelectedCategory('Groceries');
         setAmount(absBalance.toString());
         setIsFullSettlement(true);
+        setSettlementMethod('cash');
       }
       setNote('');
       setError('');
     }
-  }, [isOpen, transactionToSettle, absBalance]);
+  }, [isOpen, transactionToSettle, absBalance, person.balance]);
 
   if (!isOpen) return null;
 
@@ -137,7 +141,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
       personId: person.id,
       personName: person.name,
       amount: numAmount,
-      // If settling a purchase, direction is always 'paid' (paying off the purchase obligation and logging an expense)
+      // If settling a purchase, direction is 'paid' for cash payback
       direction: isBoughtForMeMode ? 'paid' : (isPersonOwing ? 'received' : 'paid'),
       note: note.trim() || undefined,
       expenseCategory: isBoughtForMeMode ? selectedCategory : undefined,
@@ -145,6 +149,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
         ? (selectedItem ? `Settled purchase: ${selectedItem.reason}` : `Settled purchase for ${person.name}`)
         : undefined,
       settleTransactionId: selectedItem?.id,
+      settlementMethod: isBoughtForMeMode ? settlementMethod : undefined,
     });
 
     setError('');
@@ -313,6 +318,73 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                   </select>
                 </div>
               )}
+
+              {/* Settlement Method Selection */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)]">
+                  Settlement Method
+                </label>
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => setSettlementMethod('offset_debt')}
+                    className={cn(
+                      "w-full text-left p-3 rounded-2xl border transition-all flex items-start gap-3",
+                      settlementMethod === 'offset_debt'
+                        ? "bg-[var(--color-surface)] border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20 shadow-sm"
+                        : "bg-[var(--color-surface-light)] border-[var(--color-gray-light)] hover:border-gray-400"
+                    )}
+                  >
+                    <div className="mt-0.5 shrink-0">
+                      <div className={cn(
+                        "w-4 h-4 rounded-full border flex items-center justify-center",
+                        settlementMethod === 'offset_debt' ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-gray-400"
+                      )}>
+                        {settlementMethod === 'offset_debt' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-xs font-bold text-[var(--color-dark)]">Offset Against Existing Debt</span>
+                        {person.balance > 0 && (
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                            Recommended
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-[var(--color-gray-dark)] mt-0.5 leading-normal">
+                        Deduct from what {person.name} owes you without giving new cash.
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSettlementMethod('cash')}
+                    className={cn(
+                      "w-full text-left p-3 rounded-2xl border transition-all flex items-start gap-3",
+                      settlementMethod === 'cash'
+                        ? "bg-[var(--color-surface)] border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20 shadow-sm"
+                        : "bg-[var(--color-surface-light)] border-[var(--color-gray-light)] hover:border-gray-400"
+                    )}
+                  >
+                    <div className="mt-0.5 shrink-0">
+                      <div className={cn(
+                        "w-4 h-4 rounded-full border flex items-center justify-center",
+                        settlementMethod === 'cash' ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-gray-400"
+                      )}>
+                        {settlementMethod === 'cash' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <span className="text-xs font-bold text-[var(--color-dark)]">Paid Cash / UPI to {person.name}</span>
+                      <p className="text-[11px] text-[var(--color-gray-dark)] mt-0.5 leading-normal">
+                        You paid cash out-of-pocket to reimburse them.
+                      </p>
+                    </div>
+                  </button>
+                </div>
+              </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">

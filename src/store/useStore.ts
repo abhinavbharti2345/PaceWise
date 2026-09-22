@@ -58,6 +58,7 @@ interface AppState {
     reason: string;
     date?: string;
     note?: string;
+    handleMode?: 'offset_debt' | 'pay_later';
   }) => void;
   
   settleDebt: (params: {
@@ -69,6 +70,7 @@ interface AppState {
     expenseCategory?: string;
     expenseReason?: string;
     settleTransactionId?: string;
+    settlementMethod?: 'cash' | 'offset_debt';
   }) => void;
   
   clearAllData: () => void;
@@ -529,7 +531,7 @@ export const useStore = create<AppState>()(
         }
       },
 
-      recordPersonTransaction: ({ personId, personName, amount, direction, category, reason, date, note }: { 
+      recordPersonTransaction: ({ personId, personName, amount, direction, category, reason, date, note, handleMode }: { 
         personId: string, 
         personName: string, 
         amount: number, 
@@ -537,10 +539,13 @@ export const useStore = create<AppState>()(
         category?: string, 
         reason: string, 
         date?: string, 
-        note?: string 
+        note?: string,
+        handleMode?: 'offset_debt' | 'pay_later'
       }) => {
         const txId = generateId();
         const txDate = date || new Date().toISOString();
+
+        const isOffsetDebt = direction === 'bought_for_me' && handleMode === 'offset_debt';
 
         const newTx: Transaction = {
           id: txId,
@@ -552,12 +557,30 @@ export const useStore = create<AppState>()(
           personId,
           personName,
           direction,
-          status: direction === 'bought_for_me' ? 'unsettled' : undefined,
+          status: direction === 'bought_for_me' ? (isOffsetDebt ? 'settled' : 'unsettled') : undefined,
           note
         };
 
+        let expenseTx: Transaction | null = null;
+        if (isOffsetDebt) {
+          expenseTx = {
+            id: generateId(),
+            type: 'expense',
+            amount,
+            date: txDate,
+            category: category || 'General',
+            reason: reason || `Paid for me by ${personName}`,
+            personId,
+            personName,
+            note
+          };
+        }
+
         const state = useStore.getState();
-        const newTransactions = [newTx, ...state.transactions];
+        let newTransactions = [newTx, ...state.transactions];
+        if (expenseTx) {
+          newTransactions = [expenseTx, ...newTransactions];
+        }
         const newBalance = calculatePersonBalance(personId, newTransactions);
 
         set({
@@ -595,36 +618,59 @@ export const useStore = create<AppState>()(
             })
           ];
 
+          if (expenseTx) {
+            promises.push(
+              supabase.from('transactions').insert({
+                id: expenseTx.id,
+                user_id: userId,
+                type: 'expense',
+                amount: expenseTx.amount,
+                date: expenseTx.date,
+                category: expenseTx.category,
+                reason: expenseTx.reason,
+                person_id: expenseTx.personId,
+                person_name: expenseTx.personName,
+                note: expenseTx.note,
+              }).then(({ error }) => {
+                if (error) console.error('[PaceWise] Failed to insert expense transaction:', error);
+              })
+            );
+          }
+
           Promise.all(promises).catch(err => 
             console.error('[PaceWise] Failed to sync recordPersonTransaction:', err)
           );
         }
       },
 
-      settleDebt: ({ personId, personName, amount, direction, note, expenseCategory, expenseReason, settleTransactionId }) => {
+      settleDebt: ({ personId, personName, amount, direction, note, expenseCategory, expenseReason, settleTransactionId, settlementMethod }) => {
         const txDate = new Date().toISOString();
         const txId = generateId();
 
-        const txDirection = direction === 'received' ? 'took' : 'gave';
-        
-        const txReason = direction === 'received' 
-          ? `Received settlement from ${personName}` 
-          : `Paid settlement to ${personName}`;
+        const isOffsetDebtSettlement = settlementMethod === 'offset_debt';
 
-        const newTx: Transaction = {
-          id: txId,
-          type: 'person',
-          amount,
-          category: 'Settlement',
-          reason: txReason,
-          personId,
-          personName,
-          direction: txDirection,
-          isSettlement: true,
-          isBoughtForMeSettlement: !!expenseCategory,
-          date: txDate,
-          note
-        };
+        let newTx: Transaction | null = null;
+        if (!isOffsetDebtSettlement) {
+          const txDirection = direction === 'received' ? 'took' : 'gave';
+          const txReason = direction === 'received' 
+            ? `Received settlement from ${personName}` 
+            : `Paid settlement to ${personName}`;
+
+          newTx = {
+            id: txId,
+            type: 'person',
+            amount,
+            category: 'Settlement',
+            reason: txReason,
+            personId,
+            personName,
+            direction: txDirection,
+            isSettlement: true,
+            isBoughtForMeSettlement: !!expenseCategory,
+            date: txDate,
+            note
+          };
+        }
 
         let expenseTx: Transaction | null = null;
         if (expenseCategory) {
@@ -641,8 +687,10 @@ export const useStore = create<AppState>()(
         }
 
         const state = useStore.getState();
-        let newTransactions = [newTx, ...state.transactions];
-        
+        let newTransactions = state.transactions;
+        if (newTx) {
+          newTransactions = [newTx, ...newTransactions];
+        }
         if (expenseTx) {
           newTransactions = [expenseTx, ...newTransactions];
         }
@@ -682,29 +730,34 @@ export const useStore = create<AppState>()(
               if (error) {
                 console.error('[PaceWise DB] Failed to update person balance', { error, code: error?.code });
               }
-            }),
-          supabase.from('transactions').insert({
-            id: txId,
-            user_id: user.id,
-            type: 'person',
-            amount,
-            date: txDate,
-            category: 'Settlement',
-            reason: txReason,
-            person_id: personId,
-            person_name: personName,
-            direction: txDirection,
-            is_settlement: true,
-            is_bought_for_me_settlement: !!expenseCategory,
-            note,
-          }).then(({ error }) => {
-            if (error) {
-              console.error('[PaceWise DB] Failed to insert settlement transaction', { error, code: error?.code });
-            } else {
-              console.log('[PaceWise DB] Settle debt SUCCESS');
-            }
-          })
+            })
         ];
+
+        if (newTx) {
+          promises.push(
+            supabase.from('transactions').insert({
+              id: txId,
+              user_id: user.id,
+              type: 'person',
+              amount,
+              date: txDate,
+              category: 'Settlement',
+              reason: newTx.reason,
+              person_id: personId,
+              person_name: personName,
+              direction: newTx.direction,
+              is_settlement: true,
+              is_bought_for_me_settlement: !!expenseCategory,
+              note,
+            }).then(({ error }) => {
+              if (error) {
+                console.error('[PaceWise DB] Failed to insert settlement transaction', { error, code: error?.code });
+              } else {
+                console.log('[PaceWise DB] Settle debt SUCCESS');
+              }
+            })
+          );
+        }
 
         if (settleTransactionId && isFullyCovered) {
           promises.push(

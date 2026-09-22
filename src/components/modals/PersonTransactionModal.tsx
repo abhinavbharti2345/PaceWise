@@ -34,6 +34,7 @@ export function PersonTransactionModal({
   
   const [amount, setAmount] = useState('');
   const [direction, setDirection] = useState<'gave' | 'took' | 'bought_for_me'>(defaultDirection);
+  const [handleMode, setHandleMode] = useState<'offset_debt' | 'pay_later'>('offset_debt');
   const [category, setCategory] = useState('Groceries');
   const [reason, setReason] = useState('');
   const [date, setDate] = useState(getTodayDateString());
@@ -46,8 +47,9 @@ export function PersonTransactionModal({
       setDate(getTodayDateString());
       setTime(getCurrentTimeString());
       setDirection(defaultDirection);
+      setHandleMode('offset_debt');
     }
-  }, [isOpen, defaultDirection]);
+  }, [isOpen, defaultDirection, person.balance]);
 
   if (!isOpen) return null;
 
@@ -72,6 +74,7 @@ export function PersonTransactionModal({
       reason: reason.trim(),
       date: parseLocalDate(date, time).toISOString(),
       note: note.trim() || undefined,
+      handleMode: direction === 'bought_for_me' ? handleMode : undefined,
     });
 
     setAmount('');
@@ -176,7 +179,79 @@ export function PersonTransactionModal({
             </div>
           )}
 
-          {/* Category Picker when Bought for Me is selected */}
+          {/* How to handle this when Paid for Me is selected */}
+          {direction === 'bought_for_me' && (
+            <div className="space-y-2 animate-in slide-in-from-top-2 fade-in duration-200">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)]">
+                How to handle this?
+              </label>
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => setHandleMode('offset_debt')}
+                  className={cn(
+                    "w-full text-left p-3 rounded-2xl border transition-all flex items-start gap-3",
+                    handleMode === 'offset_debt'
+                      ? "bg-[var(--color-surface)] border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20 shadow-sm"
+                      : "bg-[var(--color-surface-light)] border-[var(--color-gray-light)] hover:border-gray-400"
+                  )}
+                >
+                  <div className="mt-0.5 shrink-0">
+                    <div className={cn(
+                      "w-4 h-4 rounded-full border flex items-center justify-center",
+                      handleMode === 'offset_debt' ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-gray-400"
+                    )}>
+                      {handleMode === 'offset_debt' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-xs font-bold text-[var(--color-dark)]">Offset Against Debt</span>
+                      {person.balance > 0 && (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                          Recommended
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-[var(--color-gray-dark)] mt-0.5 leading-normal">
+                      {person.balance > 0
+                        ? `Deduct from what ${person.name} owes you and record as today's expense immediately. No cash payback needed.`
+                        : `Deduct from balance and record as today's expense immediately.`
+                      }
+                    </p>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setHandleMode('pay_later')}
+                  className={cn(
+                    "w-full text-left p-3 rounded-2xl border transition-all flex items-start gap-3",
+                    handleMode === 'pay_later'
+                      ? "bg-[var(--color-surface)] border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20 shadow-sm"
+                      : "bg-[var(--color-surface-light)] border-[var(--color-gray-light)] hover:border-gray-400"
+                  )}
+                >
+                  <div className="mt-0.5 shrink-0">
+                    <div className={cn(
+                      "w-4 h-4 rounded-full border flex items-center justify-center",
+                      handleMode === 'pay_later' ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-gray-400"
+                    )}>
+                      {handleMode === 'pay_later' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-xs font-bold text-[var(--color-dark)]">I Will Pay Them Back Later</span>
+                    <p className="text-[11px] text-[var(--color-gray-dark)] mt-0.5 leading-normal">
+                      Keep as an unsettled item. You will reimburse {person.name} via cash/UPI later.
+                    </p>
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Category Picker when Paid for Me is selected */}
           {direction === 'bought_for_me' && (
             <div className="animate-in slide-in-from-top-2 fade-in duration-200">
               <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2">

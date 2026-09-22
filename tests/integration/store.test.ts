@@ -499,6 +499,100 @@ describe('Hardening & Cascade Deletion Logic', () => {
       expect(rolloverTx).toBeDefined();
       expect(rolloverTx?.amount).toBe(4000); // Correctly rolled over remaining moneyLeft!
     });
+
+    it('23. Paid for Me with offset_debt immediately logs expense and reduces balance without dangling unsettled item', () => {
+      const store = useStore.getState();
+      store.addPerson('Rahul');
+      const rahul = useStore.getState().people.find(p => p.name === 'Rahul')!;
+
+      // Lend ₹300 initially -> balance is +300
+      store.recordPersonTransaction({
+        personId: rahul.id,
+        personName: rahul.name,
+        amount: 300,
+        direction: 'gave',
+        reason: 'Lent money for lunch'
+      });
+
+      expect(useStore.getState().people.find(p => p.id === rahul.id)?.balance).toBe(300);
+
+      // Rahul pays ₹20 for me (Chai) with offset_debt
+      store.recordPersonTransaction({
+        personId: rahul.id,
+        personName: rahul.name,
+        amount: 20,
+        direction: 'bought_for_me',
+        category: 'Food',
+        reason: 'Chai & Snack',
+        handleMode: 'offset_debt'
+      });
+
+      const updatedRahul = useStore.getState().people.find(p => p.id === rahul.id)!;
+      expect(updatedRahul.balance).toBe(280); // 300 - 20 = 280
+
+      const txs = useStore.getState().transactions;
+      const boughtTx = txs.find(t => t.direction === 'bought_for_me');
+      expect(boughtTx).toBeDefined();
+      expect(boughtTx?.status).toBe('settled');
+
+      const expenseTx = txs.find(t => t.type === 'expense' && t.amount === 20 && t.category === 'Food');
+      expect(expenseTx).toBeDefined();
+      expect(expenseTx?.reason).toBe('Chai & Snack');
+    });
+
+    it('24. Paid for Me with pay_later keeps unsettled item, and settles cleanly via offset_debt vs cash', () => {
+      const store = useStore.getState();
+      store.addPerson('Amit');
+      const amit = useStore.getState().people.find(p => p.name === 'Amit')!;
+
+      // Lend ₹300
+      store.recordPersonTransaction({
+        personId: amit.id,
+        personName: amit.name,
+        amount: 300,
+        direction: 'gave',
+        reason: 'Lent money'
+      });
+
+      // Amit pays ₹20 with pay_later
+      store.recordPersonTransaction({
+        personId: amit.id,
+        personName: amit.name,
+        amount: 20,
+        direction: 'bought_for_me',
+        category: 'Food',
+        reason: 'Movie Popcorn',
+        handleMode: 'pay_later'
+      });
+
+      let txs = useStore.getState().transactions;
+      const boughtTx = txs.find(t => t.direction === 'bought_for_me' && t.reason === 'Movie Popcorn')!;
+      expect(boughtTx.status).toBe('unsettled');
+      expect(useStore.getState().people.find(p => p.id === amit.id)?.balance).toBe(280);
+
+      // Settle using offset_debt
+      store.settleDebt({
+        personId: amit.id,
+        personName: amit.name,
+        amount: 20,
+        direction: 'paid',
+        expenseCategory: 'Food',
+        expenseReason: 'Settled purchase: Movie Popcorn',
+        settleTransactionId: boughtTx.id,
+        settlementMethod: 'offset_debt'
+      });
+
+      const updatedAmit = useStore.getState().people.find(p => p.id === amit.id)!;
+      expect(updatedAmit.balance).toBe(280); // Balance stays offset at 280!
+
+      txs = useStore.getState().transactions;
+      const settledBoughtTx = txs.find(t => t.id === boughtTx.id);
+      expect(settledBoughtTx?.status).toBe('settled');
+
+      const expenseTx = txs.find(t => t.type === 'expense' && t.reason === 'Settled purchase: Movie Popcorn');
+      expect(expenseTx).toBeDefined();
+      expect(expenseTx?.amount).toBe(20);
+    });
   });
 });
 
