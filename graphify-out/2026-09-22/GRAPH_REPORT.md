@@ -1,21 +1,21 @@
-# Graph Report - PaceWise  (2026-09-22)
+# Graph Report - PaceWise  (2026-09-17)
 
 ## Corpus Check
-- 177 files · ~152,743 words
+- 175 files · ~151,111 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1865 nodes · 2261 edges · 124 communities (105 shown, 14 thin omitted)
+- 1858 nodes · 2254 edges · 119 communities (101 shown, 14 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b09a6a6f`
+- Built from commit: `584a634c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- AddBillModal.tsx
+- cn
 - Code Explanation and Analysis
 - TDD Cycle Orchestrator
 - Automated Documentation Generation
@@ -75,7 +75,6 @@
 - accessibility-expert
 - design-system-architect
 - CSS Styling Approaches Reference
-- useStore
 - React State Management
 - Tailwind Design System: Advanced Patterns
 - TypeScript Advanced Types
@@ -118,11 +117,10 @@
 - ErrorBoundary
 - javascript-pro
 - typescript-pro
-- cn
 - check_schema.ts
 - tsconfig.json
 - copilot-instructions
-- useStore.ts
+- Package
 - Package
 - Package
 - Index
@@ -132,8 +130,6 @@
 - Workflow: graphify
 - index
 - graphify
-- Dashboard.tsx
-- typescript
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 48 edges
@@ -148,25 +144,25 @@
 10. `SwiftUI Component Library` - 26 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `AppLayout()` --calls--> `calculateBudget()`  [EXTRACTED]
-  src/components/layout/AppLayout.tsx → src/features/budget/budgetEngine.ts
-- `AppLayout()` --calls--> `cn()`  [EXTRACTED]
-  src/components/layout/AppLayout.tsx → src/utils/cn.ts
-- `AppLayout()` --calls--> `formatCurrency()`  [EXTRACTED]
-  src/components/layout/AppLayout.tsx → src/utils/currencyUtils.ts
-- `AddBillModal()` --calls--> `useStore`  [EXTRACTED]
-  src/components/modals/AddBillModal.tsx → src/store/useStore.ts
-- `AddCategoryModal()` --calls--> `useStore`  [EXTRACTED]
-  src/components/modals/AddCategoryModal.tsx → src/store/useStore.ts
+- `EditTransactionModalProps` --references--> `Transaction`  [EXTRACTED]
+  src/components/modals/EditTransactionModal.tsx → src/features/budget/budgetEngine.ts
+- `PersonTransactionModalProps` --references--> `Person`  [EXTRACTED]
+  src/components/modals/PersonTransactionModal.tsx → src/store/useStore.ts
+- `Badge()` --calls--> `cn()`  [EXTRACTED]
+  src/components/ui/Badge.tsx → src/utils/cn.ts
+- `CategorySelectorProps` --references--> `CategoryMeta`  [EXTRACTED]
+  src/components/ui/CategorySelector.tsx → src/utils/categoryHelpers.ts
+- `AppContent()` --calls--> `useMonthRollover()`  [EXTRACTED]
+  src/App.tsx → src/hooks/useMonthRollover.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (124 total, 14 thin omitted)
+## Communities (119 total, 14 thin omitted)
 
-### Community 0 - "AddBillModal.tsx"
-Cohesion: 0.14
-Nodes (35): AddBillModal(), AddBillModalProps, AddCategoryModal(), AddCategoryModalProps, AVAILABLE_COLORS, AVAILABLE_ICONS, AddExpenseModal(), AddExpenseModalProps (+27 more)
+### Community 0 - "cn"
+Cohesion: 0.05
+Nodes (108): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, AddBillModal(), AddBillModalProps (+100 more)
 
 ### Community 1 - "Code Explanation and Analysis"
 Cohesion: 0.04
@@ -365,12 +361,12 @@ Cohesion: 0.12
 Nodes (17): Accessible Color Pairs, Color Blindness Considerations, Color Harmony, Color Palette Generation, Color Systems Reference, Component Tokens, Contrast and Accessibility, CSS Color Functions (+9 more)
 
 ### Community 50 - "dependencies"
-Cohesion: 0.11
-Nodes (19): clsx, date-fns, lucide-react, dependencies, clsx, date-fns, lucide-react, react (+11 more)
+Cohesion: 0.12
+Nodes (17): clsx, date-fns, lucide-react, dependencies, clsx, date-fns, lucide-react, react-dom (+9 more)
 
 ### Community 51 - "devDependencies"
 Cohesion: 0.12
-Nodes (17): oxlint, devDependencies, oxlint, sharp, tailwindcss, @types/node, @types/react, vite (+9 more)
+Nodes (17): oxlint, devDependencies, oxlint, tailwindcss, @types/node, @types/react, typescript, vite (+9 more)
 
 ### Community 52 - "tutorial-engineer"
 Cohesion: 0.12
@@ -403,10 +399,6 @@ Nodes (15): Behavioral Traits, Capabilities, Component Library Architecture, Des
 ### Community 59 - "CSS Styling Approaches Reference"
 Cohesion: 0.13
 Nodes (15): Class Variance Authority (CVA), Code Splitting Styles, Comparison Matrix, Composition, Critical CSS Extraction, CSS Modules, CSS Styling Approaches Reference, Custom Plugin (+7 more)
-
-### Community 60 - "useStore"
-Cohesion: 0.09
-Nodes (31): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, InstallPrompt(), PromptState (+23 more)
 
 ### Community 61 - "React State Management"
 Cohesion: 0.15
@@ -572,37 +564,25 @@ Nodes (4): Approach, Focus Areas, javascript-pro, Output
 Cohesion: 0.50
 Nodes (4): Approach, Focus Areas, Output, typescript-pro
 
-### Community 103 - "cn"
-Cohesion: 0.17
-Nodes (19): ConfirmModal(), ConfirmModalProps, Badge(), BadgeProps, Card(), CardHeader(), CardProps, CardTitle() (+11 more)
-
-### Community 107 - "useStore.ts"
-Cohesion: 0.17
-Nodes (16): EditTransactionModalProps, PersonTransactionModalProps, SettleModal(), SettleModalProps, BudgetConfig, BudgetStats, calculateBudget(), DailyBudgetStat (+8 more)
-
-### Community 121 - "Dashboard.tsx"
-Cohesion: 0.23
-Nodes (9): AddPersonModal(), AddPersonModalProps, createEmptyTransactionItem(), InitialTransactionItem, LiveClock(), People(), Transactions(), getCategoryMeta() (+1 more)
-
 ## Knowledge Gaps
-- **1583 isolated node(s):** `name`, `private`, `version`, `node`, `type` (+1578 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1604 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **1581 isolated node(s):** `name`, `private`, `version`, `node`, `type` (+1576 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1600 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `useStore` connect `useStore` to `AddBillModal.tsx`, `Dashboard.tsx`, `useStore.ts`, `cn`?**
-  _High betweenness centrality (0.002) - this node is a cross-community bridge._
-- **Why does `cn()` connect `cn` to `AddBillModal.tsx`, `Dashboard.tsx`, `useStore.ts`, `useStore`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _1583 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `AddBillModal.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.13959183673469389 - nodes in this community are weakly interconnected._
+  _1581 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `cn` be split into smaller, more focused modules?**
+  _Cohesion score 0.05067030220404454 - nodes in this community are weakly interconnected._
 - **Should `Code Explanation and Analysis` be split into smaller, more focused modules?**
   _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._
 - **Should `TDD Cycle Orchestrator` be split into smaller, more focused modules?**
   _Cohesion score 0.046511627906976744 - nodes in this community are weakly interconnected._
 - **Should `Automated Documentation Generation` be split into smaller, more focused modules?**
   _Cohesion score 0.05128205128205128 - nodes in this community are weakly interconnected._
+- **Should `Accessibility Audit` be split into smaller, more focused modules?**
+  _Cohesion score 0.05714285714285714 - nodes in this community are weakly interconnected._
+- **Should `Design System Setup` be split into smaller, more focused modules?**
+  _Cohesion score 0.0625 - nodes in this community are weakly interconnected._

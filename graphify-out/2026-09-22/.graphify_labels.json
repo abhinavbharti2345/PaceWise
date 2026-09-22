@@ -1,5 +1,5 @@
 {
-  "0": "AddBillModal.tsx",
+  "0": "cn",
   "1": "Code Explanation and Analysis",
   "2": "TDD Cycle Orchestrator",
   "3": "Automated Documentation Generation",
@@ -59,7 +59,6 @@
   "57": "accessibility-expert",
   "58": "design-system-architect",
   "59": "CSS Styling Approaches Reference",
-  "60": "useStore",
   "61": "React State Management",
   "62": "Tailwind Design System: Advanced Patterns",
   "63": "TypeScript Advanced Types",
@@ -102,11 +101,10 @@
   "100": "ErrorBoundary",
   "101": "javascript-pro",
   "102": "typescript-pro",
-  "103": "cn",
   "104": "check_schema.ts",
   "105": "tsconfig.json",
   "106": "copilot-instructions",
-  "107": "useStore.ts",
+  "107": "Package",
   "108": "Package",
   "109": "Package",
   "110": "Index",
@@ -119,8 +117,5 @@
   "117": "favicon.svg",
   "118": "icon-192.png",
   "119": "icon-512.png",
-  "120": "vite.config.ts",
-  "121": "Dashboard.tsx",
-  "122": "typescript",
-  "123": "generate-icons.js"
+  "120": "vite.config.ts"
 }
