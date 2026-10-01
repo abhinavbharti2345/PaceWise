@@ -493,23 +493,23 @@ export const useStore = create<AppState>()(
 
         console.log(`[PaceWise DB] Deleting person ${id} and cascading associated transactions...`);
 
-        // Cascade delete person transactions first, then delete person
-        supabase.from('transactions').delete().eq('person_id', id).eq('user_id', user.id).then(({ error }) => {
-          if (error) console.error('[PaceWise DB] Failed to delete person transactions:', error);
-        });
-
-        supabase.from('people').delete().eq('id', id).eq('user_id', user.id).then(({ error }) => {
-          if (error) {
-            console.error('[PaceWise DB] Failed to delete person', {
-              error,
-              code: error?.code,
-              message: error?.message,
-              details: error?.details,
-              hint: error?.hint
-            });
-          } else {
-            console.log('[PaceWise DB] Person delete SUCCESS');
-          }
+        // Cascade delete person transactions first, then delete person sequentially
+        supabase.from('transactions').delete().eq('person_id', id).eq('user_id', user.id).then(({ error: txError }) => {
+          if (txError) console.error('[PaceWise DB] Failed to delete person transactions:', txError);
+          
+          supabase.from('people').delete().eq('id', id).eq('user_id', user.id).then(({ error }) => {
+            if (error) {
+              console.error('[PaceWise DB] Failed to delete person', {
+                error,
+                code: error?.code,
+                message: error?.message,
+                details: error?.details,
+                hint: error?.hint
+              });
+            } else {
+              console.log('[PaceWise DB] Person delete SUCCESS');
+            }
+          });
         });
       },
 
@@ -669,6 +669,22 @@ export const useStore = create<AppState>()(
             direction: txDirection,
             isSettlement: true,
             isBoughtForMeSettlement: !!expenseCategory || (!!settleItems && settleItems.length > 0),
+            date: txDate,
+            note
+          };
+        } else {
+          // Informational audit-trail transaction for offset debt settlements
+          newTx = {
+            id: txId,
+            type: 'person',
+            amount,
+            category: 'Settlement',
+            reason: note ? `Settled via debt offset: ${note}` : `Settled via debt offset with ${personName}`,
+            personId,
+            personName,
+            direction: 'offset_debt',
+            isSettlement: true,
+            isBoughtForMeSettlement: true,
             date: txDate,
             note
           };

@@ -12,7 +12,7 @@ export interface Transaction {
   source?: string; // For income: 'parents' | 'salary' | 'scholarship' | 'other'
   personId?: string;
   personName?: string;
-  direction?: 'gave' | 'took' | 'bought_for_me'; // 'gave' = lent money (they owe), 'took' = borrowed money (I owe), 'bought_for_me' = they bought for me (I owe)
+  direction?: 'gave' | 'took' | 'bought_for_me' | 'offset_debt'; // 'gave' = lent money (they owe), 'took' = borrowed money (I owe), 'bought_for_me' = they bought for me (I owe), 'offset_debt' = settled via debt reduction
   isSettlement?: boolean;
   isBoughtForMeSettlement?: boolean;
   paymentMethod?: string;
@@ -116,9 +116,9 @@ export function calculateBudget(
         spentToday += t.amount;
       }
     } else if (t.type === 'person') {
-      // 'bought_for_me' transactions do not represent direct wallet cash flow when created (friend paid).
+      // 'bought_for_me' and 'offset_debt' transactions do not represent direct wallet cash flow when created or settled.
       // Settlements for 'bought_for_me' items log an 'expense' transaction which already deducts from budget/money.
-      if (t.direction === 'bought_for_me' || t.isBoughtForMeSettlement) {
+      if (t.direction === 'bought_for_me' || t.direction === 'offset_debt' || t.isBoughtForMeSettlement) {
         continue;
       }
 

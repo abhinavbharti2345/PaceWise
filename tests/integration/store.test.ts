@@ -744,6 +744,150 @@ describe('Hardening & Cascade Deletion Logic', () => {
       );
       expect(remainingUnsettled).toHaveLength(0);
     });
+
+    it('27. Partial general settlement adjusts net balance correctly while keeping bought items intact until full settlement', () => {
+      const store = useStore.getState();
+      const samId = store.addPerson({ name: 'Sam', balance: 0 });
+
+      // 1. Lend ₹180 to Sam -> balance = +180
+      store.recordPersonTransaction({
+        personId: samId,
+        personName: 'Sam',
+        amount: 180,
+        direction: 'gave',
+        reason: 'Loan'
+      });
+
+      // 2. Sam buys ₹25 juice -> balance = +155
+      store.recordPersonTransaction({
+        personId: samId,
+        personName: 'Sam',
+        amount: 25,
+        direction: 'bought_for_me',
+        category: 'Food',
+        reason: 'Juice',
+        handleMode: 'pay_later'
+      });
+      expect(useStore.getState().people.find(p => p.id === samId)?.balance).toBe(155);
+
+      // 3. Partial repayment of ₹100 from Sam
+      store.settleDebt({
+        personId: samId,
+        personName: 'Sam',
+        amount: 100,
+        direction: 'received',
+      });
+
+      // 4. Net balance becomes 155 - 100 = 55
+      expect(useStore.getState().people.find(p => p.id === samId)?.balance).toBe(55);
+
+      // 5. Juice is still unsettled because it was a partial repayment
+      const juiceTx = useStore.getState().transactions.find(
+        t => t.personId === samId && t.direction === 'bought_for_me'
+      );
+      expect(juiceTx?.status).toBe('unsettled');
+
+      // 6. Now settle the remaining ₹55 in full
+      store.settleDebt({
+        personId: samId,
+        personName: 'Sam',
+        amount: 55,
+        direction: 'received',
+      });
+
+      // 7. Balance is 0, juice is settled, expense created
+      expect(useStore.getState().people.find(p => p.id === samId)?.balance).toBe(0);
+      const settledJuice = useStore.getState().transactions.find(t => t.id === juiceTx?.id);
+      expect(settledJuice?.status).toBe('settled');
+    });
+
+    it('28. Full settlement of negative balance (user paying debt owed to friend) correctly nets balance to zero', () => {
+      const store = useStore.getState();
+      const rohanId = store.addPerson({ name: 'Rohan', balance: 0 });
+
+      // 1. Borrow ₹500 from Rohan -> balance = -500
+      store.recordPersonTransaction({
+        personId: rohanId,
+        personName: 'Rohan',
+        amount: 500,
+        direction: 'took',
+        reason: 'Emergency borrow'
+      });
+      expect(useStore.getState().people.find(p => p.id === rohanId)?.balance).toBe(-500);
+
+      // 2. User pays full repayment of ₹500 to Rohan
+      store.settleDebt({
+        personId: rohanId,
+        personName: 'Rohan',
+        amount: 500,
+        direction: 'paid',
+        note: 'Repaid via UPI'
+      });
+
+      // 3. Balance becomes 0
+      expect(useStore.getState().people.find(p => p.id === rohanId)?.balance).toBe(0);
+
+      // 4. Verify settlement transaction was created with direction 'gave'
+      const settleTx = useStore.getState().transactions.find(
+        t => t.personId === rohanId && t.isSettlement && t.amount === 500
+      );
+      expect(settleTx).toBeDefined();
+      expect(settleTx?.direction).toBe('gave');
+    });
+
+    it('29. Offset debt settlement creates an informational audit trail record without double-counting in balance or budget cash flow', () => {
+      const store = useStore.getState();
+      const vikasId = store.addPerson({ name: 'Vikas', balance: 0 });
+
+      // 1. Lend ₹500 to Vikas -> balance = +500
+      store.recordPersonTransaction({
+        personId: vikasId,
+        personName: 'Vikas',
+        amount: 500,
+        direction: 'gave',
+        reason: 'Dinner loan'
+      });
+
+      // 2. Vikas buys ₹100 groceries with pay_later -> balance = +400
+      store.recordPersonTransaction({
+        personId: vikasId,
+        personName: 'Vikas',
+        amount: 100,
+        direction: 'bought_for_me',
+        category: 'Groceries',
+        reason: 'Supermarket bill',
+        handleMode: 'pay_later'
+      });
+      expect(useStore.getState().people.find(p => p.id === vikasId)?.balance).toBe(400);
+
+      const boughtTx = useStore.getState().transactions.find(
+        t => t.personId === vikasId && t.direction === 'bought_for_me'
+      )!;
+
+      // 3. Settle item via offset_debt
+      store.settleDebt({
+        personId: vikasId,
+        personName: 'Vikas',
+        amount: 100,
+        direction: 'paid',
+        expenseCategory: 'Groceries',
+        expenseReason: 'Settled groceries',
+        settleTransactionId: boughtTx.id,
+        settlementMethod: 'offset_debt'
+      });
+
+      // 4. Balance stays +400 (already reduced during bought_for_me)
+      expect(useStore.getState().people.find(p => p.id === vikasId)?.balance).toBe(400);
+
+      // 5. Verify audit transaction exists with direction 'offset_debt'
+      const auditTx = useStore.getState().transactions.find(
+        t => t.personId === vikasId && t.direction === 'offset_debt'
+      );
+      expect(auditTx).toBeDefined();
+      expect(auditTx?.amount).toBe(100);
+      expect(auditTx?.isSettlement).toBe(true);
+      expect(auditTx?.isBoughtForMeSettlement).toBe(true);
+    });
   });
 });
 

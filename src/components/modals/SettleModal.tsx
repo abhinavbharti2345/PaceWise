@@ -536,7 +536,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                   )}
                   onClick={() => handleSettleType(true)}
                 >
-                  Full Balance (₹{absBalance})
+                  Full Balance ({formatCurrency(absBalance)})
                 </button>
                 <button 
                   type="button"
@@ -562,7 +562,9 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
                 : `Amount to ${isPersonOwing ? "Receive" : "Pay"}`}
             </label>
             <div className="flex items-center text-3xl font-extrabold text-[var(--color-dark)] bg-[var(--color-surface-light)] px-4 py-3 rounded-xl border border-[var(--color-gray-light)]">
-              <span className="text-[var(--color-gray-dark)] mr-1">₹</span>
+              <span className="text-[var(--color-gray-dark)] mr-1">
+                {formatCurrency(0).replace(/\d|\s|\./g, '') || '₹'}
+              </span>
               <input 
                 type="number" 
                 inputMode="decimal"
@@ -581,6 +583,12 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
           {!isBoughtForMeMode && boughtForMeItems.length > 0 && isFullSettlement && (
             <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-900/60 text-[11px] text-purple-800 dark:text-purple-300 font-medium leading-relaxed">
               ✓ Settling the full balance will automatically clear <strong>{boughtForMeItems.length} "Paid for Me" purchase(s) ({formatCurrency(totalBoughtForMe)})</strong> and record their respective categories into your budget.
+            </div>
+          )}
+
+          {!isBoughtForMeMode && boughtForMeItems.length > 0 && !isFullSettlement && (
+            <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-[11px] text-amber-800 dark:text-amber-300 font-medium leading-relaxed">
+              ℹ️ Partial Settlement: You have <strong>{boughtForMeItems.length} pending "Paid for Me" item(s) ({formatCurrency(totalBoughtForMe)})</strong>. Partial settlements adjust the net balance, but individual items will remain listed until full balance or itemized settlement.
             </div>
           )}
 

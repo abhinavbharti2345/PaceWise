@@ -274,7 +274,8 @@ export function PersonDetails() {
             const isLent = t.direction === 'gave' && !t.isSettlement;
             const isBorrowed = t.direction === 'took' && !t.isSettlement;
             const isBoughtForMe = t.direction === 'bought_for_me' && !t.isSettlement;
-            const isSettlement = t.isSettlement;
+            const isOffsetDebt = t.direction === 'offset_debt';
+            const isSettlement = t.isSettlement && !isOffsetDebt;
             const isSettled = t.status === 'settled';
 
             return (
@@ -282,18 +283,23 @@ export function PersonDetails() {
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-3">
                     <IconBadge 
-                      iconName={isSettlement ? 'CheckCircle' : isLent ? 'ArrowUpRight' : (isBoughtForMe ? 'CreditCard' : 'ArrowDownRight')}
-                      color={isSettlement ? 'blue' : isLent ? 'green' : (isBoughtForMe ? 'purple' : 'red')}
+                      iconName={isOffsetDebt ? 'CreditCard' : isSettlement ? 'CheckCircle' : isLent ? 'ArrowUpRight' : (isBoughtForMe ? 'CreditCard' : 'ArrowDownRight')}
+                      color={isOffsetDebt ? 'purple' : isSettlement ? 'blue' : isLent ? 'green' : (isBoughtForMe ? 'purple' : 'red')}
                     />
                     <div>
                       <p className="text-sm font-bold text-[var(--color-dark)] flex items-center gap-2">
-                        {t.reason || (isSettlement ? 'Settlement Payment' : isLent ? 'Lent Money' : (isBoughtForMe ? 'Paid for Me' : 'Borrowed Money'))}
+                        {t.reason || (isOffsetDebt ? 'Settled via Debt Offset' : isSettlement ? 'Settlement Payment' : isLent ? 'Lent Money' : (isBoughtForMe ? 'Paid for Me' : 'Borrowed Money'))}
                         {isBoughtForMe && (
                           <span className={cn(
                             "px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase",
                             isSettled ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
                           )}>
                             {isSettled ? '✓ Settled' : 'Unsettled'}
+                          </span>
+                        )}
+                        {isOffsetDebt && (
+                          <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300">
+                            Debt Offset
                           </span>
                         )}
                       </p>
@@ -307,6 +313,7 @@ export function PersonDetails() {
                   <div className="text-right">
                     <span className={cn(
                       "text-base font-extrabold",
+                      isOffsetDebt ? "text-purple-600 dark:text-purple-400" :
                       isSettlement ? "text-blue-600 dark:text-blue-400" :
                       isLent ? "text-[var(--color-success)]" :
                       "text-[var(--color-primary)]"
@@ -316,7 +323,7 @@ export function PersonDetails() {
                        formatCurrency(t.amount)}
                     </span>
                     <p className="text-[10px] uppercase font-bold text-[var(--color-gray-dark)]">
-                      {isSettlement ? 'Settlement' : isLent ? 'Lent' : (isBoughtForMe ? (t.category || 'Item') : 'Borrowed')}
+                      {isOffsetDebt ? 'Offset' : isSettlement ? 'Settlement' : isLent ? 'Lent' : (isBoughtForMe ? (t.category || 'Item') : 'Borrowed')}
                     </p>
                   </div>
                 </div>
