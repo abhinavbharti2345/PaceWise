@@ -1,21 +1,21 @@
-# Graph Report - PaceWise  (2026-09-22)
+# Graph Report - PaceWise  (2026-10-01)
 
 ## Corpus Check
-- 177 files · ~153,553 words
+- 184 files · ~218,977 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1865 nodes · 2261 edges · 124 communities (105 shown, 14 thin omitted)
+- 1879 nodes · 2308 edges · 123 communities (106 shown, 12 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `0dd5f4c4`
+- Built from commit: `22329a65`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- AddBillModal.tsx
+- useStore
 - Code Explanation and Analysis
 - TDD Cycle Orchestrator
 - Automated Documentation Generation
@@ -75,7 +75,7 @@
 - accessibility-expert
 - design-system-architect
 - CSS Styling Approaches Reference
-- useStore
+- App.tsx
 - React State Management
 - Tailwind Design System: Advanced Patterns
 - TypeScript Advanced Types
@@ -115,14 +115,14 @@
 - TDD Red Phase
 - Responsive Design
 - scripts
-- ErrorBoundary
+- Logo.tsx
 - javascript-pro
 - typescript-pro
 - cn
 - check_schema.ts
 - tsconfig.json
 - copilot-instructions
-- useStore.ts
+- Dashboard.tsx
 - Package
 - Package
 - Index
@@ -131,12 +131,11 @@
 - graphify
 - Workflow: graphify
 - index
-- graphify
-- Dashboard.tsx
+- useStore.ts
 - typescript
 
 ## God Nodes (most connected - your core abstractions)
-1. `cn()` - 48 edges
+1. `cn()` - 54 edges
 2. `useStore` - 47 edges
 3. `Code Explanation and Analysis` - 45 edges
 4. `TDD Cycle Orchestrator` - 42 edges
@@ -148,25 +147,25 @@
 10. `SwiftUI Component Library` - 26 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `AppLayout()` --calls--> `calculateBudget()`  [EXTRACTED]
-  src/components/layout/AppLayout.tsx → src/features/budget/budgetEngine.ts
+- `AppContent()` --calls--> `useStore`  [EXTRACTED]
+  src/App.tsx → src/store/useStore.ts
+- `AppLayout()` --calls--> `useAuthStore`  [EXTRACTED]
+  src/components/layout/AppLayout.tsx → src/store/useAuthStore.ts
+- `AppLayout()` --calls--> `useStore`  [EXTRACTED]
+  src/components/layout/AppLayout.tsx → src/store/useStore.ts
 - `AppLayout()` --calls--> `cn()`  [EXTRACTED]
   src/components/layout/AppLayout.tsx → src/utils/cn.ts
-- `AppLayout()` --calls--> `formatCurrency()`  [EXTRACTED]
-  src/components/layout/AppLayout.tsx → src/utils/currencyUtils.ts
-- `AddBillModal()` --calls--> `useStore`  [EXTRACTED]
-  src/components/modals/AddBillModal.tsx → src/store/useStore.ts
-- `AddCategoryModal()` --calls--> `useStore`  [EXTRACTED]
-  src/components/modals/AddCategoryModal.tsx → src/store/useStore.ts
+- `AddCategoryModal()` --calls--> `cn()`  [EXTRACTED]
+  src/components/modals/AddCategoryModal.tsx → src/utils/cn.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (124 total, 14 thin omitted)
+## Communities (123 total, 12 thin omitted)
 
-### Community 0 - "AddBillModal.tsx"
-Cohesion: 0.14
-Nodes (35): AddBillModal(), AddBillModalProps, AddCategoryModal(), AddCategoryModalProps, AVAILABLE_COLORS, AVAILABLE_ICONS, AddExpenseModal(), AddExpenseModalProps (+27 more)
+### Community 0 - "useStore"
+Cohesion: 0.18
+Nodes (30): AddBillModal(), AddBillModalProps, AddCategoryModal(), AddExpenseModal(), AddExpenseModalProps, AddMoneyModal(), AddMoneyModalProps, AddPersonModal() (+22 more)
 
 ### Community 1 - "Code Explanation and Analysis"
 Cohesion: 0.04
@@ -404,9 +403,9 @@ Nodes (15): Behavioral Traits, Capabilities, Component Library Architecture, Des
 Cohesion: 0.13
 Nodes (15): Class Variance Authority (CVA), Code Splitting Styles, Comparison Matrix, Composition, Critical CSS Extraction, CSS Modules, CSS Styling Approaches Reference, Custom Plugin (+7 more)
 
-### Community 60 - "useStore"
+### Community 60 - "App.tsx"
 Cohesion: 0.09
-Nodes (31): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, AppLayout(), navItems, InstallPrompt(), PromptState (+23 more)
+Nodes (27): App(), AppContent(), ErrorBoundaryProps, ErrorBoundaryState, PersonTransactionModalProps, SettleModalProps, SplashScreen(), SplashScreenProps (+19 more)
 
 ### Community 61 - "React State Management"
 Cohesion: 0.15
@@ -564,6 +563,10 @@ Nodes (5): Best Practices, Common Issues, Detailed patterns and worked examples,
 Cohesion: 0.40
 Nodes (5): scripts, build, dev, lint, preview
 
+### Community 100 - "Logo.tsx"
+Cohesion: 0.14
+Nodes (9): ErrorBoundary, InstallPrompt(), PromptState, safeWriteStorage(), Logo(), LogoMark(), LogoMarkProps, LogoProps (+1 more)
+
 ### Community 101 - "javascript-pro"
 Cohesion: 0.50
 Nodes (4): Approach, Focus Areas, javascript-pro, Output
@@ -574,35 +577,35 @@ Nodes (4): Approach, Focus Areas, Output, typescript-pro
 
 ### Community 103 - "cn"
 Cohesion: 0.17
-Nodes (19): ConfirmModal(), ConfirmModalProps, Badge(), BadgeProps, Card(), CardHeader(), CardProps, CardTitle() (+11 more)
+Nodes (21): ConfirmModal(), ConfirmModalProps, SettleModal(), Badge(), BadgeProps, Button, ButtonProps, Card() (+13 more)
 
-### Community 107 - "useStore.ts"
-Cohesion: 0.17
-Nodes (16): EditTransactionModalProps, PersonTransactionModalProps, SettleModal(), SettleModalProps, BudgetConfig, BudgetStats, calculateBudget(), DailyBudgetStat (+8 more)
+### Community 107 - "Dashboard.tsx"
+Cohesion: 0.14
+Nodes (22): AppLayout(), navItems, CategoryDetailModal(), CategoryDetailModalProps, getCategoryIcon(), EditTransactionModalProps, SplurgeDetailModal(), SplurgeDetailModalProps (+14 more)
 
-### Community 121 - "Dashboard.tsx"
-Cohesion: 0.23
-Nodes (9): AddPersonModal(), AddPersonModalProps, createEmptyTransactionItem(), InitialTransactionItem, LiveClock(), People(), Transactions(), getCategoryMeta() (+1 more)
+### Community 116 - "useStore.ts"
+Cohesion: 0.19
+Nodes (14): AddCategoryModalProps, AVAILABLE_COLORS, AVAILABLE_ICONS, CategorySelectorProps, Categories(), AppState, calculatePersonBalance(), defaultConfig (+6 more)
 
 ## Knowledge Gaps
-- **1583 isolated node(s):** `name`, `private`, `version`, `node`, `type` (+1578 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1604 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **1586 isolated node(s):** `name`, `private`, `version`, `node`, `type` (+1581 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1607 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **12 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `useStore` connect `useStore` to `AddBillModal.tsx`, `Dashboard.tsx`, `useStore.ts`, `cn`?**
+- **Why does `useStore` connect `useStore` to `useStore.ts`, `Dashboard.tsx`, `App.tsx`, `cn`?**
   _High betweenness centrality (0.002) - this node is a cross-community bridge._
-- **Why does `cn()` connect `cn` to `AddBillModal.tsx`, `Dashboard.tsx`, `useStore.ts`, `useStore`?**
+- **Why does `cn()` connect `cn` to `useStore`, `Logo.tsx`, `Dashboard.tsx`, `useStore.ts`, `App.tsx`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _1583 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `AddBillModal.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.13959183673469389 - nodes in this community are weakly interconnected._
+  _1586 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Code Explanation and Analysis` be split into smaller, more focused modules?**
   _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._
 - **Should `TDD Cycle Orchestrator` be split into smaller, more focused modules?**
   _Cohesion score 0.046511627906976744 - nodes in this community are weakly interconnected._
 - **Should `Automated Documentation Generation` be split into smaller, more focused modules?**
   _Cohesion score 0.05128205128205128 - nodes in this community are weakly interconnected._
+- **Should `Accessibility Audit` be split into smaller, more focused modules?**
+  _Cohesion score 0.05714285714285714 - nodes in this community are weakly interconnected._

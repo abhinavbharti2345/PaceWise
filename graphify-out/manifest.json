@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "src/components/layout/AppLayout.tsx": {
-    "mtime": 1789346171.3673291,
-    "seen": 1789348665.9962406,
-    "ast_hash": "6a457ea86da50fa81bbb8a436617ea96",
+    "mtime": 1790858109.5745053,
+    "seen": 1790859184.6356277,
+    "ast_hash": "f32fe27eb6416dc60506568444e4201c",
     "semantic_hash": ""
   },
   "src/components/modals/AddExpenseModal.tsx": {
@@ -156,9 +156,9 @@
     "semantic_hash": ""
   },
   "src/pages/Insights.tsx": {
-    "mtime": 1789590803.3189301,
-    "seen": 1789590820.7172773,
-    "ast_hash": "abf31f6ac3de1b76fc12e75adb86bc0f",
+    "mtime": 1790859148.0571568,
+    "seen": 1790859184.6376283,
+    "ast_hash": "2960000d2bb26dd9a879564cb2b53272",
     "semantic_hash": ""
   },
   "src/pages/People.tsx": {
@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "src/store/useStore.ts": {
-    "mtime": 1790065749.9230292,
-    "seen": 1790065887.9608228,
-    "ast_hash": "a6c5d19513817384f938d580e7b2fade",
+    "mtime": 1790857810.8900633,
+    "seen": 1790859184.6380205,
+    "ast_hash": "f65c020c8afcd93e32ea012fa061b5ab",
     "semantic_hash": ""
   },
   "src/utils/cn.ts": {
@@ -791,12 +791,6 @@
     "ast_hash": "637776aa6f7496d069afe7520c845c8a",
     "semantic_hash": "637776aa6f7496d069afe7520c845c8a"
   },
-  ".opencode/commands/graphify.md": {
-    "mtime": 1788129525.1889706,
-    "seen": 1788198037.2189689,
-    "ast_hash": "38f36c0add7e99cc1cc1ac5faf830057",
-    "semantic_hash": "38f36c0add7e99cc1cc1ac5faf830057"
-  },
   "Docs/Pace_Stitch_Design_Prompts.md": {
     "mtime": 1788129525.1899714,
     "seen": 1788460524.0292559,
@@ -834,9 +828,9 @@
     "semantic_hash": ""
   },
   "src/components/modals/SettleModal.tsx": {
-    "mtime": 1790066032.0597553,
-    "seen": 1790066056.604885,
-    "ast_hash": "020274fafc4efb776ae0032d2dc2eeee",
+    "mtime": 1790857776.8261437,
+    "seen": 1790859184.6362498,
+    "ast_hash": "873d06849fc185334b5aa963e3075df0",
     "semantic_hash": ""
   },
   "src/pages/PersonDetails.tsx": {
@@ -870,10 +864,10 @@
     "semantic_hash": ""
   },
   "src/pages/Auth.tsx": {
-    "mtime": 1788193816.2199545,
-    "seen": 1788193924.9829416,
-    "ast_hash": "c9708f6aeb8fdeb856ff5591fa427b91",
-    "semantic_hash": "c9708f6aeb8fdeb856ff5591fa427b91"
+    "mtime": 1790858146.986807,
+    "seen": 1790859184.6373615,
+    "ast_hash": "4f42bcf7448df7b3672158c8600bd3d7",
+    "semantic_hash": ""
   },
   "src/store/useAuthStore.ts": {
     "mtime": 1788461808.3399994,
@@ -894,9 +888,9 @@
     "semantic_hash": "3ce034f37a6661efc8073a99b87d2c87"
   },
   "tests/integration/store.test.ts": {
-    "mtime": 1790065864.3955326,
-    "seen": 1790065887.9614246,
-    "ast_hash": "c5f12696989147e9659cc4ad8c9396ca",
+    "mtime": 1790857787.665382,
+    "seen": 1790859184.638704,
+    "ast_hash": "67f995346625a5b1d310aaa8bb60b65e",
     "semantic_hash": ""
   },
   "src/components/modals/ConfirmModal.tsx": {
@@ -960,10 +954,10 @@
     "semantic_hash": ""
   },
   "src/components/ui/InstallPrompt.tsx": {
-    "mtime": 1788199830.052516,
-    "seen": 1788217925.9420784,
-    "ast_hash": "770080388acf36c778f943d3d386e336",
-    "semantic_hash": "770080388acf36c778f943d3d386e336"
+    "mtime": 1790858128.1990635,
+    "seen": 1790859184.6367552,
+    "ast_hash": "76e79f09318c3902b08e25ab1b7a666e",
+    "semantic_hash": ""
   },
   "public/icon-192.png": {
     "mtime": 1789591713.412,
@@ -1089,6 +1083,60 @@
     "mtime": 1789591713.433,
     "seen": 1790065655.7825317,
     "ast_hash": "20e99ebc80f0a20332062b3ada4c39d2",
+    "semantic_hash": ""
+  },
+  "diagrams/pacewise-project-workflow.browser-check.json": {
+    "mtime": 1790851906.516176,
+    "seen": 1790859184.635274,
+    "ast_hash": "465d5c6fa94e32190eb4281b8e7c92e0",
+    "semantic_hash": ""
+  },
+  "diagrams/pacewise-project-workflow.delivery.json": {
+    "mtime": 1790851904.642138,
+    "seen": 1790859184.6352756,
+    "ast_hash": "2dd4be4ae49b1730a4ffe6cd6b106ff1",
+    "semantic_hash": ""
+  },
+  "diagrams/pacewise-project-workflow.finalize-summary.json": {
+    "mtime": 1790851906.7851162,
+    "seen": 1790859184.6352763,
+    "ast_hash": "6b7723303aab17107a1ce307dc336f4a",
+    "semantic_hash": ""
+  },
+  "diagrams/pacewise-project-workflow.finalize.json": {
+    "mtime": 1790851906.740695,
+    "seen": 1790859184.635277,
+    "ast_hash": "3561cfb73bcb2381e64553382feeea3b",
+    "semantic_hash": ""
+  },
+  "diagrams/pacewise-project-workflow.workflow.json": {
+    "mtime": 1790857897.1409957,
+    "seen": 1790859184.6352777,
+    "ast_hash": "ea8ea65926b437226499a799d8e99616",
+    "semantic_hash": ""
+  },
+  "src/components/modals/CategoryDetailModal.tsx": {
+    "mtime": 1790859075.1469817,
+    "seen": 1790859184.6360378,
+    "ast_hash": "91d83fb2402b144ab19d1b3c36a4eca7",
+    "semantic_hash": ""
+  },
+  "src/components/modals/SplurgeDetailModal.tsx": {
+    "mtime": 1790859081.2817924,
+    "seen": 1790859184.6362507,
+    "ast_hash": "897bfa8495cbe8e93b822439d9b8d357",
+    "semantic_hash": ""
+  },
+  "src/components/ui/Logo.tsx": {
+    "mtime": 1790858160.6118946,
+    "seen": 1790859184.6368225,
+    "ast_hash": "a43a9a4196727bf06bcc23743a01b7c7",
+    "semantic_hash": ""
+  },
+  "diagrams/pacewise-project-workflow.html": {
+    "mtime": 1790851904.532662,
+    "seen": 1790859184.6477997,
+    "ast_hash": "36af7a85c91bbe4b43b1f25b36eab0c2",
     "semantic_hash": ""
   }
 }
