@@ -601,7 +601,7 @@ export function Insights() {
 
     periodTransactions.forEach(t => {
       if (t.type === 'expense') {
-        if (t.personId || t.direction === 'lent' || t.direction === 'bought_for_me') {
+        if (t.personId || t.direction === 'gave' || t.direction === 'bought_for_me') {
           lentToFriends += t.amount;
         } else {
           personalSpend += t.amount;

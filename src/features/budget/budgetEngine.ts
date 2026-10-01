@@ -149,7 +149,7 @@ export function calculateBudget(
   // Mid-month bills and person cashflows (loans/borrowing) adjust only the remaining days from their occurrence date onward,
   // preventing retroactive drops in past carry-forward savings.
   const initialBase = totalDays > 0 ? (config.totalMoney + totalAddedMoney) / totalDays : 0;
-  const dailyBase: number[] = new Array(totalDays).fill(initialBase);
+  const dailyBase: number[] = Array.from({ length: totalDays }, () => initialBase);
 
   for (const t of transactions) {
     const tDate = startOfDay(new Date(t.date));

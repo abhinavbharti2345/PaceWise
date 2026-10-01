@@ -107,7 +107,7 @@ export function CategorySelector({
     const newIdx = direction === 'left' ? index - 1 : index + 1;
     if (newIdx < 0 || newIdx >= categories.length) return;
 
-    const newOrder = [...categories.map(c => c.name)];
+    const newOrder = categories.map(c => c.name);
     const temp = newOrder[index];
     newOrder[index] = newOrder[newIdx];
     newOrder[newIdx] = temp;
