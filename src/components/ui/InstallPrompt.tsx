@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Share, PlusSquare } from 'lucide-react';
 import { Button } from './Button';
+import { LogoMark } from './Logo';
 
 const PROMPT_KEY = 'pacewise_install_prompt';
 const COOLDOWN_DAYS = 7;
@@ -121,12 +122,7 @@ export function InstallPrompt() {
 
         <div className="flex justify-between items-start gap-2">
           <div className="flex gap-3">
-            <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400 flex items-center justify-center shrink-0">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                <line x1="12" y1="18" x2="12.01" y2="18"></line>
-              </svg>
-            </div>
+            <LogoMark size="md" className="shrink-0" />
             <div>
               <h3 className="font-bold text-[var(--color-dark)] text-sm">Add PaceWise to Home Screen</h3>
               <p className="text-xs text-[var(--color-gray-dark)] mt-0.5 leading-relaxed">

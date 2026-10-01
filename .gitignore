@@ -54,3 +54,8 @@ desktop.ini
 supabase/.temp/
 scratch/
 obsidianVault/
+
+# Graphify
+graphify-out/
+.graphify/
+

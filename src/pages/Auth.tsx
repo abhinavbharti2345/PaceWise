@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card, CardHeader } from '../components/ui/Card';
+import { LogoMark } from '../components/ui/Logo';
 import { AlertTriangle, Loader, CheckCircle2 } from 'lucide-react';
 
 export function AuthPage() {
@@ -98,11 +99,16 @@ export function AuthPage() {
     <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-light)] p-4 sm:p-8">
       <Card className="w-full max-w-md border border-[var(--color-gray-light)] shadow-xl overflow-hidden">
         <CardHeader className="pb-2">
-          <div className="text-center space-y-1">
-            <h1 className="text-4xl font-extrabold text-[var(--color-dark)] tracking-tight">PaceWise</h1>
-            <p className="text-[var(--color-gray-dark)] text-base font-medium">
-              {isResetPassword ? 'Reset your password' : isSignUp ? 'Create your account' : 'Welcome back'}
-            </p>
+          <div className="flex flex-col items-center text-center space-y-3">
+            <LogoMark size="lg" className="shadow-lg" />
+            <div>
+              <h1 className="text-3xl font-extrabold text-[var(--color-dark)] tracking-tight">
+                Pace<span className="text-[var(--color-primary)]">Wise</span>
+              </h1>
+              <p className="text-[var(--color-gray-dark)] text-sm font-medium mt-0.5">
+                {isResetPassword ? 'Reset your password' : isSignUp ? 'Create your account' : 'Welcome back'}
+              </p>
+            </div>
           </div>
         </CardHeader>
 

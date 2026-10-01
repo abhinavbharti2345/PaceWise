@@ -5,6 +5,7 @@ import { useStore } from '../../store/useStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { calculateBudget } from '../../features/budget/budgetEngine';
 import { InstallPrompt } from '../ui/InstallPrompt';
+import { Logo } from '../ui/Logo';
 
 import { useCurrentDate } from '../../hooks/useCurrentDate';
 import { formatCurrency as formatCurrencyUtil } from '../../utils/currencyUtils';
@@ -29,14 +30,8 @@ export function AppLayout() {
     <div className="flex h-screen bg-[var(--color-bg-light)] text-[var(--color-dark)] overflow-hidden">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-3xl my-3 ml-3 shadow-sm shrink-0 overflow-hidden">
-        <div className="p-6 flex items-center gap-3 border-b border-[var(--color-gray-light)]">
-          <div className="w-9 h-9 bg-[var(--color-primary)] rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md">
-            P
-          </div>
-          <div>
-            <span className="text-xl font-extrabold tracking-tight text-[var(--color-dark)]">Pace<span className="text-[var(--color-primary)]">Wise</span></span>
-            <p className="text-[10px] text-[var(--color-gray-dark)] font-semibold uppercase tracking-wider">Personal Budget</p>
-          </div>
+        <div className="p-6 border-b border-[var(--color-gray-light)]">
+          <Logo size="md" />
         </div>
         
         <nav className="flex-1 px-3 space-y-1.5 mt-4">
