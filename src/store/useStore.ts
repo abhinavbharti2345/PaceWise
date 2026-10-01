@@ -645,6 +645,7 @@ export const useStore = create<AppState>()(
       },
 
       settleDebt: ({ personId, personName, amount, direction, note, expenseCategory, expenseReason, settleTransactionId, settleItems, settlementMethod }) => {
+        const state = useStore.getState();
         const txDate = new Date().toISOString();
         const txId = generateId();
 
@@ -700,15 +701,6 @@ export const useStore = create<AppState>()(
           });
         }
 
-        const state = useStore.getState();
-        let newTransactions = state.transactions;
-        if (newTx) {
-          newTransactions = [newTx, ...newTransactions];
-        }
-        if (expenseTxs.length > 0) {
-          newTransactions = [...expenseTxs, ...newTransactions];
-        }
-
         // Mark target transactions as settled
         const targetIdsToSettle = new Set<string>();
         if (settleItems && settleItems.length > 0) {
@@ -721,6 +713,36 @@ export const useStore = create<AppState>()(
           if (isFullyCovered) {
             targetIdsToSettle.add(settleTransactionId);
           }
+        } else {
+          // Full / General settlement: Mark all unsettled bought_for_me transactions for this person as settled
+          const personUnsettledBought = state.transactions.filter(
+            t => t.personId === personId && t.direction === 'bought_for_me' && t.status !== 'settled'
+          );
+          const currentPersonBalance = Math.abs(state.people.find(p => p.id === personId)?.balance || 0);
+          const isFullPersonSettlement = amount >= currentPersonBalance || currentPersonBalance === 0;
+          if (isFullPersonSettlement && personUnsettledBought.length > 0) {
+            for (const item of personUnsettledBought) {
+              targetIdsToSettle.add(item.id);
+              expenseTxs.push({
+                id: generateId(),
+                type: 'expense',
+                amount: item.amount,
+                date: txDate,
+                category: item.category || 'General',
+                reason: item.reason ? `Settled purchase: ${item.reason}` : `Settled purchase for ${personName}`,
+                personId,
+                personName
+              });
+            }
+          }
+        }
+
+        let newTransactions = state.transactions;
+        if (newTx) {
+          newTransactions = [newTx, ...newTransactions];
+        }
+        if (expenseTxs.length > 0) {
+          newTransactions = [...expenseTxs, ...newTransactions];
         }
 
         if (targetIdsToSettle.size > 0) {

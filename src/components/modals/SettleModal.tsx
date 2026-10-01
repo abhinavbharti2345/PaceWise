@@ -59,7 +59,8 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
         setAmount(transactionToSettle.amount.toString());
         setIsFullSettlement(false);
         setSettlementMethod(person.balance > 0 ? 'offset_debt' : 'cash');
-      } else if (boughtForMeItems.length > 0) {
+      } else if (absBalance === 0 && boughtForMeItems.length > 0) {
+        // Only default to bought_for_me if general balance is already 0 but items exist
         setSettlementMode('bought_for_me');
         const allIds = boughtForMeItems.map(t => t.id);
         setSelectedItemIds(allIds);
@@ -67,8 +68,9 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
         const sum = boughtForMeItems.reduce((acc, t) => acc + t.amount, 0);
         setAmount(sum.toString());
         setIsFullSettlement(false);
-        setSettlementMethod(person.balance > 0 ? 'offset_debt' : 'cash');
+        setSettlementMethod('cash');
       } else {
+        // Default to General Cash Repayment of full balance
         setSettlementMode('general');
         setSelectedItemIds([]);
         setIsCustomCategoryMode(false);
@@ -80,7 +82,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
       setNote('');
       setError('');
     }
-  }, [isOpen, transactionToSettle, absBalance, person.balance]);
+  }, [isOpen, transactionToSettle, absBalance, person.balance, boughtForMeItems.length]);
 
   if (!isOpen) return null;
 
@@ -125,14 +127,14 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
 
   const handleQuickLentClick = () => {
     setSettlementMode('general');
-    const val = Math.max(0, totalLent);
+    const val = person.balance > 0 ? person.balance : 0;
     setAmount(val.toString());
     setIsFullSettlement(val === absBalance);
   };
 
   const handleQuickBorrowedClick = () => {
     setSettlementMode('general');
-    const val = Math.max(0, totalBorrowed);
+    const val = person.balance < 0 ? Math.abs(person.balance) : 0;
     setAmount(val.toString());
     setIsFullSettlement(val === absBalance);
   };
@@ -575,6 +577,12 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
               />
             </div>
           </div>
+
+          {!isBoughtForMeMode && boughtForMeItems.length > 0 && isFullSettlement && (
+            <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-900/60 text-[11px] text-purple-800 dark:text-purple-300 font-medium leading-relaxed">
+              ✓ Settling the full balance will automatically clear <strong>{boughtForMeItems.length} "Paid for Me" purchase(s) ({formatCurrency(totalBoughtForMe)})</strong> and record their respective categories into your budget.
+            </div>
+          )}
 
           {/* Optional Note */}
           <div>

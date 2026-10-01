@@ -682,6 +682,68 @@ describe('Hardening & Cascade Deletion Logic', () => {
       expect(chaiExpense?.category).toBe('Food');
       expect(chaiExpense?.reason).toBe('Settled purchase: Evening Chai');
     });
+
+    it('26. Full general settlement with a person automatically clears and settles all unsettled bought_for_me purchases without leaving dangling debts', () => {
+      const store = useStore.getState();
+      const hardikId = store.addPerson({ name: 'Hardik', balance: 0 });
+
+      // 1. Lend ₹180 to Hardik -> balance = +180
+      store.recordPersonTransaction({
+        personId: hardikId,
+        personName: 'Hardik',
+        amount: 180,
+        direction: 'gave',
+        reason: 'Lent money for snacks'
+      });
+      expect(useStore.getState().people.find(p => p.id === hardikId)?.balance).toBe(180);
+
+      // 2. Hardik buys ₹25 Sugarcane juice for user with pay_later -> balance = +155
+      store.recordPersonTransaction({
+        personId: hardikId,
+        personName: 'Hardik',
+        amount: 25,
+        direction: 'bought_for_me',
+        category: 'Food',
+        reason: 'Sugarcane juice',
+        handleMode: 'pay_later'
+      });
+      expect(useStore.getState().people.find(p => p.id === hardikId)?.balance).toBe(155);
+
+      // Verify item is currently unsettled
+      const unsettledJuice = useStore.getState().transactions.find(
+        t => t.personId === hardikId && t.direction === 'bought_for_me' && t.status === 'unsettled'
+      );
+      expect(unsettledJuice).toBeDefined();
+
+      // 3. User settles full net balance of ₹155 in General mode
+      store.settleDebt({
+        personId: hardikId,
+        personName: 'Hardik',
+        amount: 155,
+        direction: 'received',
+      });
+
+      // 4. Verify Hardik is completely settled to 0
+      expect(useStore.getState().people.find(p => p.id === hardikId)?.balance).toBe(0);
+
+      // 5. Verify the ₹25 sugarcane juice is automatically marked status: 'settled'
+      const updatedJuice = useStore.getState().transactions.find(t => t.id === unsettledJuice?.id);
+      expect(updatedJuice?.status).toBe('settled');
+
+      // 6. Verify expense transaction for ₹25 was recorded under Food
+      const juiceExpense = useStore.getState().transactions.find(
+        t => t.type === 'expense' && t.personId === hardikId && t.amount === 25
+      );
+      expect(juiceExpense).toBeDefined();
+      expect(juiceExpense?.category).toBe('Food');
+      expect(juiceExpense?.reason).toBe('Settled purchase: Sugarcane juice');
+
+      // 7. Verify no unsettled items remain
+      const remainingUnsettled = useStore.getState().transactions.filter(
+        t => t.personId === hardikId && t.direction === 'bought_for_me' && t.status === 'unsettled'
+      );
+      expect(remainingUnsettled).toHaveLength(0);
+    });
   });
 });
 

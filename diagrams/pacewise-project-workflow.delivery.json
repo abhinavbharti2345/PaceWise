@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "6c0acf0a-526c-4a31-b5e9-fd260a167f73",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "C:\\CS\\CS Projects\\Web-Projects\\PaceWise\\diagrams\\pacewise-project-workflow.workflow.json",
+  "output": "C:\\CS\\CS Projects\\Web-Projects\\PaceWise\\diagrams\\pacewise-project-workflow.html",
+  "specification": {
+    "sha256": "178de7acac26a353810e9bf12dfffdc56b8bc8cad9595c41f054b8c164856a50",
+    "bytes": 8895
+  },
+  "artifact": {
+    "sha256": "02b8f4f046ae1b77e38c3f5c328737517337324839c3892a8f13cdba72014454",
+    "bytes": 782204
+  }
+}

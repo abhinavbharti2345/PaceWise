@@ -1,0 +1,326 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "PaceWise Financial Engine & Application Lifecycle",
+    "subtitle": "Comprehensive architecture covering authentication, dynamic carry-forward budgeting, unified peer settlements, offline-first caching, and Supabase RLS cloud persistence",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "output": "diagrams/pacewise-project-workflow.html",
+    "repository": {
+      "url": "https://github.com/abhinavbharti2345/PaceWise",
+      "provider": "github",
+      "revision": "main"
+    },
+    "views": [
+      {
+        "id": "auth_flow",
+        "label": "1. Authentication & Session Gate",
+        "focus": ["user", "auth_view", "supabase_auth", "auth_store"],
+        "note": "Secure email/password authentication with JWT exchange and session hydration."
+      },
+      {
+        "id": "budget_engine_flow",
+        "label": "2. Dynamic Budget & Carry-Forward",
+        "focus": ["auth_store", "calc_engine", "dashboard"],
+        "note": "Dynamic daily pace calculation factoring cumulative carry-forward, cash flow, and fixed bills."
+      },
+      {
+        "id": "settlement_engine_flow",
+        "label": "3. Peer IOUs & Unified Settlement",
+        "focus": ["settle_flow", "calc_engine", "state_store", "supabase_db"],
+        "note": "Reciprocal cash flow settlements, automated 'Paid for Me' purchase clearing, and debt netting."
+      },
+      {
+        "id": "offline_sync_flow",
+        "label": "4. Offline-First Sync & RLS",
+        "focus": ["tx_logger", "local_cache", "state_store", "supabase_db"],
+        "note": "Zero-latency optimistic UI updates with synchronous scoped local storage and asynchronous Supabase PostgreSQL sync."
+      }
+    ]
+  },
+  "lanes": [
+    { "id": "client", "label": "Client UI & View Layer" },
+    { "id": "engine", "label": "Zustand State & Financial Engine" },
+    { "id": "storage", "label": "Offline Resilience & Local Storage" },
+    { "id": "cloud", "label": "Supabase Cloud & PostgreSQL (RLS)" }
+  ],
+  "phases": [
+    { "id": "auth_phase", "label": "1. Auth & Session", "fromCol": 0, "toCol": 1, "variant": "security" },
+    { "id": "budget_phase", "label": "2. Dynamic Budgeting", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "settle_phase", "label": "3. IOUs & Settlements", "fromCol": 4, "toCol": 5, "variant": "default" },
+    { "id": "persistence_phase", "label": "4. Persistence & Sync", "fromCol": 6, "toCol": 7, "variant": "dashed" }
+  ],
+  "groups": [
+    { "id": "auth_group", "label": "Auth Verification Gate", "lane": "cloud", "fromCol": 2, "toCol": 2, "variant": "security" },
+    { "id": "calc_group", "label": "Financial Calculation Engine", "lane": "engine", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "settle_group", "label": "Peer & Settlement Engine", "lane": "client", "fromCol": 4, "toCol": 5, "variant": "default" },
+    { "id": "storage_group", "label": "Offline-First Storage", "lane": "storage", "fromCol": 6, "toCol": 6, "variant": "dashed" },
+    { "id": "cloud_group", "label": "Cloud PostgreSQL (RLS)", "lane": "cloud", "fromCol": 7, "toCol": 7, "variant": "default" }
+  ],
+  "mainPath": [
+    "user",
+    "auth_view",
+    "supabase_auth",
+    "auth_store",
+    "calc_engine",
+    "dashboard",
+    "settle_flow",
+    "tx_logger",
+    "local_cache",
+    "state_store",
+    "supabase_db"
+  ],
+  "nodes": [
+    {
+      "id": "user",
+      "lane": "client",
+      "col": 0,
+      "type": "external",
+      "label": "User / Student",
+      "sublabel": "Mobile or Web Client",
+      "icon": "person",
+      "width": 136
+    },
+    {
+      "id": "auth_view",
+      "lane": "client",
+      "col": 1,
+      "type": "frontend",
+      "label": "Auth Surface",
+      "sublabel": "Login & Signup Form",
+      "tag": "React + Vite",
+      "brand": "react",
+      "icon": "frontend",
+      "sources": [{ "path": "src/pages/Auth.tsx" }],
+      "width": 136
+    },
+    {
+      "id": "supabase_auth",
+      "lane": "cloud",
+      "col": 2,
+      "type": "security",
+      "label": "Supabase Auth",
+      "sublabel": "JWT & Session Token",
+      "tag": "Security Gate",
+      "brand": "supabase",
+      "icon": "security",
+      "sources": [{ "path": "src/lib/supabase.ts" }],
+      "width": 136
+    },
+    {
+      "id": "auth_store",
+      "lane": "engine",
+      "col": 2,
+      "type": "backend",
+      "label": "useAuthStore",
+      "sublabel": "User Session & Scope",
+      "tag": "Zustand",
+      "icon": "backend",
+      "sources": [{ "path": "src/store/useAuthStore.ts" }],
+      "width": 136
+    },
+    {
+      "id": "calc_engine",
+      "lane": "engine",
+      "col": 3,
+      "type": "backend",
+      "label": "Budget Engine",
+      "sublabel": "Daily Pace & Carry-Forward",
+      "tag": "Mathematical Core",
+      "icon": "briefcase",
+      "sources": [{ "path": "src/features/budget/budgetEngine.ts" }],
+      "width": 136
+    },
+    {
+      "id": "dashboard",
+      "lane": "client",
+      "col": 3,
+      "type": "frontend",
+      "label": "Dashboard UI",
+      "sublabel": "Live Pace & Carry Meter",
+      "tag": "Dynamic UI",
+      "brand": "react",
+      "icon": "frontend",
+      "sources": [{ "path": "src/pages/Dashboard.tsx" }],
+      "width": 136
+    },
+    {
+      "id": "settle_flow",
+      "lane": "client",
+      "col": 4,
+      "type": "frontend",
+      "label": "People & Settlements",
+      "sublabel": "Unified Settle Modal",
+      "tag": "Peer IOUs",
+      "brand": "react",
+      "icon": "frontend",
+      "sources": [{ "path": "src/pages/PersonDetails.tsx" }, { "path": "src/components/modals/SettleModal.tsx" }],
+      "width": 136
+    },
+    {
+      "id": "tx_logger",
+      "lane": "client",
+      "col": 5,
+      "type": "frontend",
+      "label": "Transaction Logger",
+      "sublabel": "Expense, Income & Bills",
+      "tag": "User Action",
+      "brand": "react",
+      "icon": "frontend",
+      "sources": [{ "path": "src/pages/Transactions.tsx" }],
+      "width": 136
+    },
+    {
+      "id": "local_cache",
+      "lane": "storage",
+      "col": 6,
+      "type": "database",
+      "label": "Local Storage",
+      "sublabel": "pacewise-storage-${userId}",
+      "tag": "Offline-First",
+      "icon": "database",
+      "sources": [{ "path": "src/store/useStore.ts" }],
+      "width": 136
+    },
+    {
+      "id": "state_store",
+      "lane": "engine",
+      "col": 6,
+      "type": "backend",
+      "label": "Zustand useStore",
+      "sublabel": "Optimistic State Manager",
+      "tag": "Client State",
+      "icon": "backend",
+      "sources": [{ "path": "src/store/useStore.ts" }],
+      "width": 136
+    },
+    {
+      "id": "supabase_db",
+      "lane": "cloud",
+      "col": 7,
+      "type": "database",
+      "label": "PostgreSQL DB",
+      "sublabel": "RLS: Profiles, Budgets, Tx",
+      "tag": "Cloud DB",
+      "brand": "postgresql",
+      "icon": "database",
+      "sources": [{ "path": "src/lib/supabase.ts" }],
+      "width": 136
+    }
+  ],
+  "edges": [
+    {
+      "id": "user-to-auth",
+      "from": "user",
+      "to": "auth_view",
+      "variant": "default"
+    },
+    {
+      "id": "auth-to-cloud",
+      "from": "auth_view",
+      "to": "supabase_auth",
+      "label": "authenticate",
+      "variant": "security"
+    },
+    {
+      "id": "cloud-to-store",
+      "from": "supabase_auth",
+      "to": "auth_store",
+      "label": "session JWT",
+      "variant": "security"
+    },
+    {
+      "id": "store-to-calc",
+      "from": "auth_store",
+      "to": "calc_engine",
+      "label": "hydrate user state",
+      "variant": "emphasis"
+    },
+    {
+      "id": "calc-to-dashboard",
+      "from": "calc_engine",
+      "to": "dashboard",
+      "label": "render daily pace",
+      "variant": "emphasis"
+    },
+    {
+      "id": "dashboard-to-settle",
+      "from": "dashboard",
+      "to": "settle_flow",
+      "label": "view debts & settle",
+      "variant": "default"
+    },
+    {
+      "id": "settle-to-tx",
+      "from": "settle_flow",
+      "to": "tx_logger",
+      "label": "log settlement & expense",
+      "variant": "emphasis"
+    },
+    {
+      "id": "tx-to-local",
+      "from": "tx_logger",
+      "to": "local_cache",
+      "label": "instant offline cache",
+      "variant": "dashed"
+    },
+    {
+      "id": "local-to-store",
+      "from": "local_cache",
+      "to": "state_store",
+      "label": "update in-memory state",
+      "variant": "emphasis"
+    },
+    {
+      "id": "store-to-calc",
+      "from": "state_store",
+      "to": "calc_engine",
+      "label": "recalculate budget & balances",
+      "variant": "emphasis"
+    },
+    {
+      "id": "store-to-db",
+      "from": "state_store",
+      "to": "supabase_db",
+      "label": "async sync (RLS)",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Dynamic Budget & Carry-Forward Engine",
+      "items": [
+        "Effective Total Budget = Initial Allowance + Added Inflow - Fixed Bills + Net Peer Cashflow",
+        "Base Daily Pace = Effective Budget / Total Period Days",
+        "Cumulative Carry-Forward Accumulator: Under-spending rolls forward as surplus; Over-spending recalculates future daily pace",
+        "Today's Available = Dynamic Daily Limit + Cumulative Carry-Forward - Spent Today",
+        "Forward-Allocated Adjustments: Mid-month bills and cash flows adjust remaining days without distorting past savings",
+        "Month-End Rollover: Automatically carries forward unspent wallet cash into the next period's initial budget"
+      ]
+    },
+    {
+      "dot": "purple",
+      "title": "Peer Debt & Unified Settlement Engine",
+      "items": [
+        "Dynamic Net Balance = Sum(Gave / Lent) - Sum(Took / Borrowed) - Sum(Bought For Me)",
+        "Reciprocal Cash Flow Settlements: Settling creates an inverse cash transaction (took/gave) preserving true historical cash flow",
+        "Itemized 'Paid for Me' Purchases: Tracked per-item; settling converts them into categorized expenses in your budget",
+        "Debt Offset Settling: Offsets purchases directly against existing lent balance without moving physical wallet cash",
+        "Unified Full Settlement: 1-click full settlement clears total net balance and marks all pending purchases as settled in one action"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Offline-First Resilience & Cloud Security",
+      "items": [
+        "Optimistic UI updates via Zustand store ensure 0ms latency for all transaction and settlement actions",
+        "Synchronous user-scoped localStorage caching (pacewise-storage-${userId}) for resilient offline functionality",
+        "Asynchronous Supabase PostgreSQL sync protected by strict Row Level Security (RLS) policies",
+        "Clean multi-user isolation on shared devices: Logging out purges in-memory state and storage keys"
+      ]
+    }
+  ]
+}
