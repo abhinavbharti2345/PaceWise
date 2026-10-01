@@ -59,3 +59,6 @@ obsidianVault/
 graphify-out/
 .graphify/
 
+# Agents & AI Customizations
+.agents/
+.agent/
