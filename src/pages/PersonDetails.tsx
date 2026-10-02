@@ -56,7 +56,7 @@ export function PersonDetails() {
   const totalBorrowed = person.balance < 0 ? Math.abs(person.balance) : 0;
 
   const totalBoughtForMe = personTransactions
-    .filter(t => t.direction === 'bought_for_me' && t.status !== 'settled')
+    .filter(t => t.type === 'person' && t.direction === 'bought_for_me' && t.status !== 'settled')
     .reduce((sum, t) => sum + t.amount, 0);
 
   const isOwedToUser = person.balance > 0;
@@ -182,7 +182,7 @@ export function PersonDetails() {
                   Unsettled "Paid for Me" ({formatCurrency(totalBoughtForMe)})
                 </p>
                 <p className="text-[11px] text-purple-700 dark:text-purple-400">
-                  {personTransactions.filter(t => t.direction === 'bought_for_me' && t.status !== 'settled').length} purchase(s) pending settlement
+                  {personTransactions.filter(t => t.type === 'person' && t.direction === 'bought_for_me' && t.status !== 'settled').length} purchase(s) pending settlement
                 </p>
               </div>
             </div>
@@ -271,9 +271,10 @@ export function PersonDetails() {
 
         <div className="mt-4 divide-y divide-[var(--color-gray-light)]">
           {personTransactions.map((t) => {
-            const isLent = t.direction === 'gave' && !t.isSettlement;
-            const isBorrowed = t.direction === 'took' && !t.isSettlement;
-            const isBoughtForMe = t.direction === 'bought_for_me' && !t.isSettlement;
+            const isExpense = t.type === 'expense';
+            const isLent = t.type === 'person' && t.direction === 'gave' && !t.isSettlement;
+            const isBorrowed = t.type === 'person' && t.direction === 'took' && !t.isSettlement;
+            const isBoughtForMe = t.type === 'person' && t.direction === 'bought_for_me' && !t.isSettlement;
             const isOffsetDebt = t.direction === 'offset_debt';
             const isSettlement = t.isSettlement && !isOffsetDebt;
             const isSettled = t.status === 'settled';
@@ -283,18 +284,23 @@ export function PersonDetails() {
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-3">
                     <IconBadge 
-                      iconName={isOffsetDebt ? 'CreditCard' : isSettlement ? 'CheckCircle' : isLent ? 'ArrowUpRight' : (isBoughtForMe ? 'CreditCard' : 'ArrowDownRight')}
-                      color={isOffsetDebt ? 'purple' : isSettlement ? 'blue' : isLent ? 'green' : (isBoughtForMe ? 'purple' : 'red')}
+                      iconName={isExpense ? 'CreditCard' : isOffsetDebt ? 'CreditCard' : isSettlement ? 'CheckCircle' : isLent ? 'ArrowUpRight' : (isBoughtForMe ? 'CreditCard' : 'ArrowDownRight')}
+                      color={isExpense ? 'purple' : isOffsetDebt ? 'purple' : isSettlement ? 'blue' : isLent ? 'green' : (isBoughtForMe ? 'purple' : 'red')}
                     />
                     <div>
                       <p className="text-sm font-bold text-[var(--color-dark)] flex items-center gap-2">
-                        {t.reason || (isOffsetDebt ? 'Settled via Debt Offset' : isSettlement ? 'Settlement Payment' : isLent ? 'Lent Money' : (isBoughtForMe ? 'Paid for Me' : 'Borrowed Money'))}
+                        {t.reason || (isExpense ? 'Reimbursed Purchase' : isOffsetDebt ? 'Settled via Debt Offset' : isSettlement ? 'Settlement Payment' : isLent ? 'Lent Money' : (isBoughtForMe ? 'Paid for Me' : 'Borrowed Money'))}
                         {isBoughtForMe && (
                           <span className={cn(
                             "px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase",
-                            isSettled ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                            isSettled ? "bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-300" : "bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300"
                           )}>
                             {isSettled ? '✓ Settled' : 'Unsettled'}
+                          </span>
+                        )}
+                        {isExpense && (
+                          <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300">
+                            Paid & Settled
                           </span>
                         )}
                         {isOffsetDebt && (
@@ -313,17 +319,17 @@ export function PersonDetails() {
                   <div className="text-right">
                     <span className={cn(
                       "text-base font-extrabold",
-                      isOffsetDebt ? "text-purple-600 dark:text-purple-400" :
+                      isExpense || isOffsetDebt ? "text-purple-600 dark:text-purple-400" :
                       isSettlement ? "text-blue-600 dark:text-blue-400" :
                       isLent ? "text-[var(--color-success)]" :
                       "text-[var(--color-primary)]"
                     )}>
                       {isLent ? `+${formatCurrency(t.amount)}` :
-                       isBorrowed || isBoughtForMe ? `-${formatCurrency(t.amount)}` :
+                       isBorrowed || isBoughtForMe || isExpense ? `-${formatCurrency(t.amount)}` :
                        formatCurrency(t.amount)}
                     </span>
                     <p className="text-[10px] uppercase font-bold text-[var(--color-gray-dark)]">
-                      {isOffsetDebt ? 'Offset' : isSettlement ? 'Settlement' : isLent ? 'Lent' : (isBoughtForMe ? (t.category || 'Item') : 'Borrowed')}
+                      {isExpense ? (t.category || 'Expense') : isOffsetDebt ? 'Offset' : isSettlement ? 'Settlement' : isLent ? 'Lent' : (isBoughtForMe ? (t.category || 'Item') : 'Borrowed')}
                     </p>
                   </div>
                 </div>

@@ -206,7 +206,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex flex-col justify-end sm:justify-center items-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-0 sm:p-4 overflow-y-auto overscroll-y-contain touch-pan-y"
+      className="fixed inset-0 z-[100] flex flex-col justify-end sm:justify-center items-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-0 sm:p-4 overflow-y-auto overscroll-y-contain touch-pan-y scrollbar-hide"
       onClick={onClose}
     >
       <div 

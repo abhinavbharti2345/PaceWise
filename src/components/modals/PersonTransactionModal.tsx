@@ -34,13 +34,16 @@ export function PersonTransactionModal({
   
   const [amount, setAmount] = useState('');
   const [direction, setDirection] = useState<'gave' | 'took' | 'bought_for_me'>(defaultDirection);
-  const [handleMode, setHandleMode] = useState<'offset_debt' | 'pay_later'>('offset_debt');
+  const [handleMode, setHandleMode] = useState<'paid_back' | 'offset_debt' | 'pay_later'>('pay_later');
   const [category, setCategory] = useState('Groceries');
   const [reason, setReason] = useState('');
   const [date, setDate] = useState(getTodayDateString());
   const [time, setTime] = useState(getCurrentTimeString());
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
+
+  const hasOwedBalance = person.balance > 0;
+  const numAmount = Number(amount) || 0;
 
   useEffect(() => {
     if (isOpen) {
@@ -55,7 +58,6 @@ export function PersonTransactionModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const numAmount = Number(amount);
     if (!amount || isNaN(numAmount) || numAmount <= 0) {
       setError('Please enter a valid amount greater than 0');
       return;
@@ -86,7 +88,7 @@ export function PersonTransactionModal({
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex flex-col justify-end sm:justify-center items-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-0 sm:p-4 overflow-y-auto overscroll-y-contain touch-pan-y"
+      className="fixed inset-0 z-[100] flex flex-col justify-end sm:justify-center items-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-0 sm:p-4 overflow-y-auto overscroll-y-contain touch-pan-y scrollbar-hide"
       onClick={onClose}
     >
       <div 
@@ -186,12 +188,13 @@ export function PersonTransactionModal({
                 How to handle this?
               </label>
               <div className="space-y-2">
+                {/* Option 1: Paid them back Cash/UPI */}
                 <button
                   type="button"
-                  onClick={() => setHandleMode('offset_debt')}
+                  onClick={() => setHandleMode('paid_back')}
                   className={cn(
                     "w-full text-left p-3 rounded-2xl border transition-all flex items-start gap-3",
-                    handleMode === 'offset_debt'
+                    handleMode === 'paid_back'
                       ? "bg-[var(--color-surface)] border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20 shadow-sm"
                       : "bg-[var(--color-surface-light)] border-[var(--color-gray-light)] hover:border-gray-400"
                   )}
@@ -199,29 +202,61 @@ export function PersonTransactionModal({
                   <div className="mt-0.5 shrink-0">
                     <div className={cn(
                       "w-4 h-4 rounded-full border flex items-center justify-center",
-                      handleMode === 'offset_debt' ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-gray-400"
+                      handleMode === 'paid_back' ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-gray-400"
                     )}>
-                      {handleMode === 'offset_debt' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                      {handleMode === 'paid_back' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                     </div>
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-xs font-bold text-[var(--color-dark)]">Offset Against Debt</span>
-                      {person.balance > 0 && (
-                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-                          Recommended
-                        </span>
-                      )}
+                      <span className="text-xs font-bold text-[var(--color-dark)]">
+                        {hasOwedBalance ? "I Paid Them Back (Cash / UPI)" : "I Paid Them Back Immediately"}
+                      </span>
                     </div>
                     <p className="text-[11px] text-[var(--color-gray-dark)] mt-0.5 leading-normal">
-                      {person.balance > 0
-                        ? `Deduct from what ${person.name} owes you and record as today's expense immediately. No cash payback needed.`
-                        : `Deduct from balance and record as today's expense immediately.`
+                      {hasOwedBalance 
+                        ? <>Deduct from today's budget under <strong>{category}</strong>. Their ₹{person.balance} debt to you stays unchanged.</>
+                        : <>Deduct from today's budget as an expense under <strong>{category}</strong>. No debt is added to {person.name}.</>
                       }
                     </p>
                   </div>
                 </button>
 
+                {/* Option 2: Deduct from what they owe me (Contextual: only if person owes money) */}
+                {hasOwedBalance && (
+                  <button
+                    type="button"
+                    onClick={() => setHandleMode('offset_debt')}
+                    className={cn(
+                      "w-full text-left p-3 rounded-2xl border transition-all flex items-start gap-3",
+                      handleMode === 'offset_debt'
+                        ? "bg-[var(--color-surface)] border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20 shadow-sm"
+                        : "bg-[var(--color-surface-light)] border-[var(--color-gray-light)] hover:border-gray-400"
+                    )}
+                  >
+                    <div className="mt-0.5 shrink-0">
+                      <div className={cn(
+                        "w-4 h-4 rounded-full border flex items-center justify-center",
+                        handleMode === 'offset_debt' ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-gray-400"
+                      )}>
+                        {handleMode === 'offset_debt' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-xs font-bold text-[var(--color-dark)]">Deduct from what they owe me</span>
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                          Offset Debt
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[var(--color-gray-dark)] mt-0.5 leading-normal">
+                        Deduct from today's budget under <strong>{category}</strong>, and reduce what {person.name} owes you ({person.balance > 0 ? (numAmount > 0 ? `₹${person.balance} → ₹${Math.max(0, person.balance - numAmount)}` : `₹${person.balance} → ₹?`) : '0'}).
+                      </p>
+                    </div>
+                  </button>
+                )}
+
+                {/* Option 3: Pay Later */}
                 <button
                   type="button"
                   onClick={() => setHandleMode('pay_later')}
@@ -243,7 +278,7 @@ export function PersonTransactionModal({
                   <div className="flex-1">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="text-xs font-bold text-[var(--color-dark)]">I Will Pay Them Back Later</span>
-                      {person.balance <= 0 && (
+                      {!hasOwedBalance && (
                         <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
                           Recommended
                         </span>
@@ -305,10 +340,19 @@ export function PersonTransactionModal({
                 className="text-[10px] font-bold px-2 py-0.5 rounded-full"
                 style={direction === 'gave'
                   ? {background: 'var(--positive-bg)', color: 'var(--positive-text)', border: '1px solid var(--positive-border)'}
-                  : {background: 'var(--negative-bg)', color: 'var(--negative-text)', border: '1px solid var(--negative-border)'}
+                  : (direction === 'bought_for_me' && (handleMode === 'paid_back' || handleMode === 'offset_debt')
+                    ? {background: 'rgba(147, 51, 234, 0.12)', color: '#9333ea', border: '1px solid rgba(147, 51, 234, 0.3)'}
+                    : {background: 'var(--negative-bg)', color: 'var(--negative-text)', border: '1px solid var(--negative-border)'})
                 }
               >
-                {direction === 'gave' ? `${person.name} will owe you` : `You will owe ${person.name}`}
+                {direction === 'gave' 
+                  ? `${person.name} will owe you` 
+                  : (direction === 'bought_for_me' && handleMode === 'paid_back'
+                    ? "Budget Expense • No Debt"
+                    : (direction === 'bought_for_me' && handleMode === 'offset_debt'
+                      ? "Budget Expense • Debt Offset"
+                      : `You will owe ${person.name}`))
+                }
               </span>
             </div>
             <div className="flex items-center text-4xl sm:text-5xl font-extrabold text-[var(--color-dark)]">
@@ -323,7 +367,11 @@ export function PersonTransactionModal({
                 }}
                 className={cn(
                   "w-full bg-transparent border-none outline-none focus:ring-0 p-0 text-left",
-                  direction === 'gave' ? "text-[var(--color-success)]" : "text-[var(--color-primary)]"
+                  direction === 'gave' 
+                    ? "text-[var(--color-success)]" 
+                    : (direction === 'bought_for_me' && (handleMode === 'paid_back' || handleMode === 'offset_debt')
+                      ? "text-purple-600 dark:text-purple-400"
+                      : "text-[var(--color-primary)]")
                 )}
                 placeholder="0"
               />

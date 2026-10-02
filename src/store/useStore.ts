@@ -58,7 +58,7 @@ interface AppState {
     reason: string;
     date?: string;
     note?: string;
-    handleMode?: 'offset_debt' | 'pay_later';
+    handleMode?: 'paid_back' | 'pay_later' | 'offset_debt';
   }) => void;
   
   settleDebt: (params: {
@@ -87,8 +87,8 @@ export const getBudgetDatesForDate = (date: Date) => {
 
 export function calculatePersonBalance(personId: string, transactions: Transaction[]): number {
   return transactions
-    .filter(t => t.personId === personId)
-    .reduce((sum, t) => sum + (t.direction === 'gave' ? t.amount : (t.direction === 'took' || t.direction === 'bought_for_me' ? -t.amount : 0)), 0);
+    .filter(t => t.personId === personId && t.type === 'person')
+    .reduce((sum, t) => sum + (t.direction === 'gave' ? t.amount : (t.direction === 'took' || t.direction === 'offset_debt' || (t.direction === 'bought_for_me' && t.status !== 'settled') ? -t.amount : 0)), 0);
 }
 
 const { start: monthStart, end: monthEnd } = getBudgetDatesForDate(new Date());
@@ -541,12 +541,131 @@ export const useStore = create<AppState>()(
         reason: string, 
         date?: string, 
         note?: string,
-        handleMode?: 'offset_debt' | 'pay_later'
+        handleMode?: 'paid_back' | 'pay_later' | 'offset_debt'
       }) => {
         const txId = generateId();
         const txDate = date || new Date().toISOString();
 
-        const isOffsetDebt = direction === 'bought_for_me' && handleMode === 'offset_debt';
+        if (direction === 'bought_for_me' && handleMode === 'paid_back') {
+          const expenseTx: Transaction = {
+            id: txId,
+            type: 'expense',
+            amount,
+            date: txDate,
+            category: category || 'General',
+            reason: reason || `Paid for me by ${personName}`,
+            personId,
+            personName,
+            note
+          };
+
+          const state = useStore.getState();
+          const newTransactions = [expenseTx, ...state.transactions];
+          const newBalance = calculatePersonBalance(personId, newTransactions);
+
+          set({
+            people: state.people.map(p => 
+              p.id === personId ? { ...p, balance: newBalance } : p
+            ),
+            transactions: newTransactions
+          });
+
+          const userId = useAuthStore.getState().user?.id;
+          if (userId) {
+            supabase.from('transactions').insert({
+              id: expenseTx.id,
+              user_id: userId,
+              type: 'expense',
+              amount: expenseTx.amount,
+              date: expenseTx.date,
+              category: expenseTx.category,
+              reason: expenseTx.reason,
+              person_id: expenseTx.personId,
+              person_name: expenseTx.personName,
+              note: expenseTx.note,
+            }).then(({ error }) => {
+              if (error) console.error('[PaceWise] Failed to insert expense transaction:', error);
+            });
+          }
+          return;
+        }
+
+        if (direction === 'bought_for_me' && handleMode === 'offset_debt') {
+          const expenseTx: Transaction = {
+            id: txId,
+            type: 'expense',
+            amount,
+            date: txDate,
+            category: category || 'General',
+            reason: reason || `Paid for me by ${personName}`,
+            personId,
+            personName,
+            note
+          };
+
+          const offsetTxId = generateId();
+          const offsetTx: Transaction = {
+            id: offsetTxId,
+            type: 'person',
+            amount,
+            date: txDate,
+            category: 'Settlement',
+            reason: reason ? `Debt offset: ${reason}` : `Settled via debt offset with ${personName}`,
+            personId,
+            personName,
+            direction: 'offset_debt',
+            isSettlement: true,
+            isBoughtForMeSettlement: true,
+            note
+          };
+
+          const state = useStore.getState();
+          const newTransactions = [expenseTx, offsetTx, ...state.transactions];
+          const newBalance = calculatePersonBalance(personId, newTransactions);
+
+          set({
+            people: state.people.map(p => 
+              p.id === personId ? { ...p, balance: newBalance } : p
+            ),
+            transactions: newTransactions
+          });
+
+          const userId = useAuthStore.getState().user?.id;
+          if (userId) {
+            Promise.all([
+              supabase.from('people').update({ balance: newBalance, updated_at: new Date().toISOString() })
+                .eq('id', personId).eq('user_id', userId),
+              supabase.from('transactions').insert({
+                id: expenseTx.id,
+                user_id: userId,
+                type: 'expense',
+                amount: expenseTx.amount,
+                date: expenseTx.date,
+                category: expenseTx.category,
+                reason: expenseTx.reason,
+                person_id: expenseTx.personId,
+                person_name: expenseTx.personName,
+                note: expenseTx.note,
+              }),
+              supabase.from('transactions').insert({
+                id: offsetTx.id,
+                user_id: userId,
+                type: 'person',
+                amount: offsetTx.amount,
+                date: offsetTx.date,
+                category: 'Settlement',
+                reason: offsetTx.reason,
+                person_id: offsetTx.personId,
+                person_name: offsetTx.personName,
+                direction: 'offset_debt',
+                is_settlement: true,
+                is_bought_for_me_settlement: true,
+                note: offsetTx.note,
+              })
+            ]).catch(err => console.error('[PaceWise] Failed to sync offset_debt:', err));
+          }
+          return;
+        }
 
         const newTx: Transaction = {
           id: txId,
@@ -558,30 +677,12 @@ export const useStore = create<AppState>()(
           personId,
           personName,
           direction,
-          status: direction === 'bought_for_me' ? (isOffsetDebt ? 'settled' : 'unsettled') : undefined,
+          status: direction === 'bought_for_me' ? 'unsettled' : undefined,
           note
         };
 
-        let expenseTx: Transaction | null = null;
-        if (isOffsetDebt) {
-          expenseTx = {
-            id: generateId(),
-            type: 'expense',
-            amount,
-            date: txDate,
-            category: category || 'General',
-            reason: reason || `Paid for me by ${personName}`,
-            personId,
-            personName,
-            note
-          };
-        }
-
         const state = useStore.getState();
-        let newTransactions = [newTx, ...state.transactions];
-        if (expenseTx) {
-          newTransactions = [expenseTx, ...newTransactions];
-        }
+        const newTransactions = [newTx, ...state.transactions];
         const newBalance = calculatePersonBalance(personId, newTransactions);
 
         set({
@@ -618,25 +719,6 @@ export const useStore = create<AppState>()(
               }
             })
           ];
-
-          if (expenseTx) {
-            promises.push(
-              supabase.from('transactions').insert({
-                id: expenseTx.id,
-                user_id: userId,
-                type: 'expense',
-                amount: expenseTx.amount,
-                date: expenseTx.date,
-                category: expenseTx.category,
-                reason: expenseTx.reason,
-                person_id: expenseTx.personId,
-                person_name: expenseTx.personName,
-                note: expenseTx.note,
-              }).then(({ error }) => {
-                if (error) console.error('[PaceWise] Failed to insert expense transaction:', error);
-              })
-            );
-          }
 
           Promise.all(promises).catch(err => 
             console.error('[PaceWise] Failed to sync recordPersonTransaction:', err)
