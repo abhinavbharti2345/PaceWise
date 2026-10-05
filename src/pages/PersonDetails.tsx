@@ -49,7 +49,7 @@ export function PersonDetails() {
 
   // Filter all transactions for this person
   const personTransactions = transactions
-    .filter((t) => t.personId === person.id)
+    .filter((t) => t.personId === person.id && t.type === 'person')
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const totalLent = person.balance > 0 ? person.balance : 0;

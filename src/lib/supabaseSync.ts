@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/useAuthStore';
-import { useStore } from '../store/useStore';
+import { useStore, calculatePersonBalance } from '../store/useStore';
 import type { BudgetConfig, Transaction } from '../features/budget/budgetEngine';
 import type { Person } from '../store/useStore';
 
@@ -166,15 +166,6 @@ export function useSupabaseSync() {
         
         if (useAuthStore.getState().user?.id !== user.id) return;
 
-        useStore.setState({
-          people: (peopleData || []).map((p) => ({
-            id: p.id,
-            name: p.name,
-            avatarUrl: p.avatar_url,
-            balance: Number(p.balance) || 0,
-          })),
-        });
-
         console.log('[PaceWise Sync] fetching transactions');
         // ── 4. Fetch transactions ────────────────────────────────────
         const { data: txData, error: txError } = await supabase
@@ -189,24 +180,34 @@ export function useSupabaseSync() {
         
         if (useAuthStore.getState().user?.id !== user.id) return;
 
+        const txs: Transaction[] = (txData || []).map((tx) => ({
+          id: tx.id,
+          type: tx.type,
+          amount: Number(tx.amount),
+          date: tx.date,
+          category: tx.category,
+          reason: tx.reason,
+          source: tx.source,
+          personId: tx.person_id,
+          personName: tx.person_name,
+          direction: tx.direction,
+          isSettlement: tx.is_settlement,
+          isBoughtForMeSettlement: tx.is_bought_for_me_settlement,
+          paymentMethod: tx.payment_method,
+          note: tx.note,
+          status: tx.status,
+        }));
+
+        const peopleList: Person[] = (peopleData || []).map((p) => ({
+          id: p.id,
+          name: p.name,
+          avatarUrl: p.avatar_url,
+          balance: calculatePersonBalance(p.id, txs),
+        }));
+
         useStore.setState({
-          transactions: (txData || []).map((tx) => ({
-            id: tx.id,
-            type: tx.type,
-            amount: Number(tx.amount),
-            date: tx.date,
-            category: tx.category,
-            reason: tx.reason,
-            source: tx.source,
-            personId: tx.person_id,
-            personName: tx.person_name,
-            direction: tx.direction,
-            isSettlement: tx.is_settlement,
-            isBoughtForMeSettlement: tx.is_bought_for_me_settlement,
-            paymentMethod: tx.payment_method,
-            note: tx.note,
-            status: tx.status,
-          })),
+          people: peopleList,
+          transactions: txs,
         });
 
         // ── 5. Mark hydration complete ───────────────────────────────
