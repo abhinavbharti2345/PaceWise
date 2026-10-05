@@ -108,12 +108,9 @@ export function Dashboard() {
               of {formatCurrency(stats.effectiveTotalBudget)} total budget
             </p>
             {toReceive > 0 && (
-              <div className="mt-2 sm:mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/10 border border-white/15 text-red-100 text-[10px] sm:text-xs font-semibold backdrop-blur-md shadow-sm max-w-full flex-wrap">
+              <div className="mt-2 sm:mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/10 border border-white/15 text-red-100 text-[10px] sm:text-xs font-semibold backdrop-blur-md shadow-sm max-w-full truncate">
                 <span className="text-amber-300 shrink-0 text-xs">⚡</span>
-                <span className="truncate">Once settled: <strong className="text-white font-black">{formatCurrency(potentialTotalMoneyLeft)}</strong></span>
-                <span className="shrink-0 px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-200 text-[10px] font-bold border border-amber-400/30">
-                  +{formatCurrency(toReceive)} pending
-                </span>
+                <span className="truncate">Once settled: <strong className="text-white font-black">{formatCurrency(potentialTotalMoneyLeft)}</strong> <span className="opacity-75 text-[10px] hidden sm:inline">(+{formatCurrency(toReceive)})</span></span>
               </div>
             )}
           </div>
@@ -154,12 +151,9 @@ export function Dashboard() {
                   left to spend (of {formatCurrency(stats.todaysAvailable)})
                 </p>
                 {toReceive > 0 && (
-                  <div className="mt-1.5 sm:mt-2.5 inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl bg-white/10 border border-white/15 text-blue-100 text-[8px] sm:text-[11px] font-semibold backdrop-blur-md max-w-full shadow-sm flex-wrap">
+                  <div className="mt-1.5 sm:mt-2.5 inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl bg-white/10 border border-white/15 text-blue-100 text-[8px] sm:text-[11px] font-semibold backdrop-blur-md max-w-full truncate shadow-sm">
                     <span className="text-amber-300 shrink-0 text-[10px] sm:text-xs">⚡</span>
                     <span className="truncate">Once settled: <strong className="text-white font-black">{formatCurrency(potentialRepaidPace)}/d</strong></span>
-                    <span className="shrink-0 px-1 py-0.5 rounded-md bg-amber-400/20 text-amber-200 text-[8px] sm:text-[9px] font-bold border border-amber-400/30">
-                      +{formatCurrency(toReceive)}
-                    </span>
                   </div>
                 )}
               </div>
