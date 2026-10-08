@@ -74,6 +74,12 @@ export function Dashboard() {
     ? Math.max(0, (stats.moneyLeft + toReceive) / stats.daysRemaining) 
     : 0;
 
+  const settledDailyBoost = stats.daysRemaining > 0 && toReceive > 0
+    ? toReceive / stats.daysRemaining
+    : 0;
+
+  const potentialRepaidTodaysLeft = Math.max(0, (stats.todaysAvailable + settledDailyBoost) - stats.spentToday);
+
   const potentialTotalMoneyLeft = stats.moneyLeft + toReceive;
 
   const displayName = profile?.displayName
@@ -110,7 +116,7 @@ export function Dashboard() {
             {toReceive > 0 && (
               <div className="mt-2 sm:mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/10 border border-white/15 text-red-100 text-[10px] sm:text-xs font-semibold backdrop-blur-md shadow-sm max-w-full truncate">
                 <span className="text-amber-300 shrink-0 text-xs">⚡</span>
-                <span className="truncate">Once settled: <strong className="text-white font-black">{formatCurrency(potentialTotalMoneyLeft)}</strong> <span className="opacity-75 text-[10px] hidden sm:inline">(+{formatCurrency(toReceive)})</span></span>
+                <span className="truncate">Effective: <strong className="text-white font-black">{formatCurrency(potentialTotalMoneyLeft)}</strong> <span className="opacity-75 text-[10px] hidden sm:inline">(+{formatCurrency(toReceive)})</span></span>
               </div>
             )}
           </div>
@@ -151,9 +157,16 @@ export function Dashboard() {
                   left to spend (of {formatCurrency(stats.todaysAvailable)})
                 </p>
                 {toReceive > 0 && (
-                  <div className="mt-1.5 sm:mt-2.5 inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl bg-white/10 border border-white/15 text-blue-100 text-[8px] sm:text-[11px] font-semibold backdrop-blur-md max-w-full truncate shadow-sm">
+                  <div className="mt-1.5 sm:mt-2.5 inline-flex items-center gap-1 sm:gap-1.5 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl bg-white/10 border border-white/15 text-blue-100 text-[8.5px] sm:text-[11px] font-semibold backdrop-blur-md max-w-full truncate shadow-sm">
                     <span className="text-amber-300 shrink-0 text-[10px] sm:text-xs">⚡</span>
-                    <span className="truncate">Once settled: <strong className="text-white font-black">{formatCurrency(potentialRepaidPace)}/d</strong></span>
+                    <span className="truncate">
+                      Effective: <strong className="text-white font-black">{formatCurrency(potentialRepaidTodaysLeft)}</strong>
+                      {settledDailyBoost > 0 && (
+                        <span className="opacity-80 text-[8px] sm:text-[10px] ml-1 hidden sm:inline">
+                          (+{formatCurrency(settledDailyBoost)})
+                        </span>
+                      )}
+                    </span>
                   </div>
                 )}
               </div>
@@ -173,11 +186,16 @@ export function Dashboard() {
                 </p>
               </div>
 
-              <div className="text-right min-w-0 pl-1">
-                <p className="text-[9px] sm:text-xs font-bold text-blue-200/90 truncate">
-                  Pace: <span className="font-black text-white">{formatCurrency(stats.remainingDailyPace)}</span><span className="text-[9px] sm:text-[10px] font-normal text-blue-200/70">/d</span>
+              <div className="text-right min-w-0 pl-1 flex flex-col justify-end">
+                <p className="text-[9px] sm:text-xs font-bold text-blue-200/90 truncate leading-tight">
+                  Pace: <span className="font-black text-white">{formatCurrency(stats.remainingDailyPace)}</span><span className="text-[8px] sm:text-[10px] font-normal text-blue-200/70">/d</span>
                 </p>
-                <p className="text-[9px] sm:text-[10px] text-blue-200/80 mt-0.5 truncate font-medium">
+                {toReceive > 0 && (
+                  <p className="text-[8px] sm:text-[10px] text-amber-200/95 mt-0.5 truncate font-semibold leading-tight">
+                    ⚡ {formatCurrency(potentialRepaidPace)}/d <span className="hidden sm:inline font-normal opacity-90">effective</span>
+                  </p>
+                )}
+                <p className="text-[8px] sm:text-[10px] text-blue-200/80 mt-0.5 truncate font-medium leading-tight">
                   Base: {formatCurrency(stats.baseDailyBudget)}
                 </p>
               </div>
@@ -248,15 +266,15 @@ export function Dashboard() {
                   </p>
                 </div>
 
-                <div className="text-right min-w-0 pl-1">
+                <div className="text-right min-w-0 pl-1 flex flex-col justify-end">
                   <p className={cn(
-                    "text-[9px] sm:text-xs font-bold truncate",
+                    "text-[9px] sm:text-xs font-bold truncate leading-tight",
                     stats.carryForward >= 0 ? "text-emerald-200/90" : "text-red-200/90"
                   )}>
                     <span className="font-black text-white">{stats.remainingDailyPace >= stats.baseDailyBudget ? '🟢 Ahead' : '🔴 Behind'}</span>
                   </p>
                   <p className={cn(
-                    "text-[9px] sm:text-[10px] mt-0.5 truncate font-medium",
+                    "text-[8px] sm:text-[10px] mt-0.5 truncate font-medium leading-tight",
                     stats.carryForward >= 0 ? "text-emerald-200/80" : "text-red-200/80"
                   )}>
                     Base: {formatCurrency(stats.baseDailyBudget)}
