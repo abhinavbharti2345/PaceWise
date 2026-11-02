@@ -18,7 +18,9 @@ dist-ssr/
 .env.production.local
 *.pem
 client_secret*.json
-Docs/client_secret*.json
+Docs/
+docs/
+audit/
 
 # Logs
 npm-debug.log*
