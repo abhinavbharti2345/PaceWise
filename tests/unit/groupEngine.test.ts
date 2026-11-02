@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateGroupSummary, simplifyDebts, formatWhatsAppSummary, type Group, type MemberBalance } from '../../src/utils/groupEngine';
+import { calculateGroupSummary, simplifyDebts, formatWhatsAppSummary, toPaise, type Group, type MemberBalance } from '../../src/utils/groupEngine';
 
 // ---------------------------------------------------------------------------
 // Helper: build a minimal valid Group
@@ -415,5 +415,103 @@ describe('groupEngine', () => {
     // But total and balances should still be computed
     expect(summary.totalSpent).toBe(500);
     expect(summary.balances).toHaveLength(2);
+  });
+
+  it('ensures transfers do not corrupt totalPaid or totalShare (Accounting Inversion Guard)', () => {
+    // Alice paid 1000 for dinner split equally with Bob
+    // Bob transfers 500 to Alice
+    // Alice's totalPaid must stay 1000, totalShare must stay 500 (NOT 1000!)
+    const group = makeGroup({
+      members: [
+        { id: 'm1', name: 'Alice', isUser: true },
+        { id: 'm2', name: 'Bob', isUser: false },
+      ],
+      expenses: [
+        {
+          id: 'e1', groupId: 'g1',
+          description: 'Dinner',
+          amount: 1000, payerId: 'm1',
+          date: '2026-11-01', splitType: 'equal',
+          splits: [
+            { memberId: 'm1', amount: 500 },
+            { memberId: 'm2', amount: 500 },
+          ],
+          createdAt: new Date().toISOString(),
+        },
+      ],
+      transfers: [
+        {
+          id: 't1', groupId: 'g1',
+          fromMemberId: 'm2', toMemberId: 'm1',
+          amount: 500, date: '2026-11-02',
+          createdAt: new Date().toISOString(),
+        },
+      ],
+    });
+
+    const summary = calculateGroupSummary(group);
+    const alice = summary.balances.find((b) => b.memberId === 'm1')!;
+    const bob = summary.balances.find((b) => b.memberId === 'm2')!;
+
+    // Net balance is 0 for both (settled)
+    expect(alice.netBalance).toBe(0);
+    expect(bob.netBalance).toBe(0);
+
+    // CRITICAL: Alice's totalShare must be 500, NOT 1000!
+    expect(alice.totalPaid).toBe(1000);
+    expect(alice.totalShare).toBe(500);
+
+    // Bob's totalPaid must be 0 (transfers are repayments, not expense payments), totalShare is 500
+    expect(bob.totalPaid).toBe(0);
+    expect(bob.totalShare).toBe(500);
+  });
+
+  it('toPaise parser rejects invalid, negative, scientific notation, and sub-cent inputs', () => {
+    expect(toPaise('-500')).toBeNull();
+    expect(toPaise('0')).toBeNull();
+    expect(toPaise('1e20')).toBeNull();
+    expect(toPaise('Infinity')).toBeNull();
+    expect(toPaise('NaN')).toBeNull();
+    expect(toPaise('0.001')).toBeNull();
+    expect(toPaise('abc')).toBeNull();
+
+    // Valid inputs
+    expect(toPaise('0.01')).toBe(1);
+    expect(toPaise('100')).toBe(10000);
+    expect(toPaise('99.95')).toBe(9995);
+    expect(toPaise('0', { allowZero: true })).toBe(0);
+  });
+
+  it('simplifyDebts includes exact 1-paisa settlement without omitting it', () => {
+    const balances: MemberBalance[] = [
+      { memberId: 'm1', name: 'Alice', isUser: false, totalPaid: 0, totalShare: 0.01, netBalance: -0.01 },
+      { memberId: 'm2', name: 'Bob', isUser: false, totalPaid: 0.01, totalShare: 0, netBalance: 0.01 },
+    ];
+
+    const settlements = simplifyDebts(balances);
+    expect(settlements).toHaveLength(1);
+    expect(settlements[0]).toMatchObject({
+      fromName: 'Alice',
+      toName: 'Bob',
+      amount: 0.01,
+    });
+  });
+
+  it('nets circular debts correctly without loop or leftover', () => {
+    // A owes B 100, B owes C 100, C owes A 50
+    // Net: A = -50, B = 0, C = +50
+    const balances: MemberBalance[] = [
+      { memberId: 'A', name: 'Alice', isUser: false, totalPaid: 0, totalShare: 50, netBalance: -50 },
+      { memberId: 'B', name: 'Bob', isUser: false, totalPaid: 100, totalShare: 100, netBalance: 0 },
+      { memberId: 'C', name: 'Charlie', isUser: false, totalPaid: 100, totalShare: 50, netBalance: 50 },
+    ];
+
+    const result = simplifyDebts(balances);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      fromMemberId: 'A',
+      toMemberId: 'C',
+      amount: 50,
+    });
   });
 });

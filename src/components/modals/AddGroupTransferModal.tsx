@@ -3,7 +3,7 @@ import { X, AlertCircle, ArrowRight, ArrowRightLeft, Calendar } from 'lucide-rea
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { useGroupStore } from '../../store/useGroupStore';
-import type { Group } from '../../utils/groupEngine';
+import { toPaise, type Group } from '../../utils/groupEngine';
 import { getTodayDateString } from '../../utils/dateUtils';
 
 interface AddGroupTransferModalProps {
@@ -57,11 +57,13 @@ export function AddGroupTransferModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const numAmount = parseFloat(amount);
-    if (!numAmount || numAmount <= 0) {
-      setError('Please enter a transfer amount greater than 0.');
+    const amountPaise = toPaise(amount);
+    if (amountPaise === null || amountPaise <= 0) {
+      setError('Please enter a valid transfer amount greater than 0.');
       return;
     }
+    const numAmount = amountPaise / 100;
+
     if (!fromMemberId || !toMemberId) {
       setError('Please select both the sender and receiver.');
       return;
@@ -83,9 +85,9 @@ export function AddGroupTransferModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
-        className="w-full max-w-md bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-3xl p-6 shadow-2xl relative flex flex-col max-h-[90vh] overflow-hidden"
+        className="w-full max-w-md bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 shadow-2xl relative flex flex-col max-h-[92dvh] sm:max-h-[90vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

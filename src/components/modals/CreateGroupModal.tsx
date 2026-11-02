@@ -90,19 +90,19 @@ export function CreateGroupModal({ isOpen, onClose, onCreated }: CreateGroupModa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
-        className="w-full max-w-lg bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-3xl p-6 shadow-2xl relative flex flex-col max-h-[90vh] overflow-hidden"
+        className="w-full max-w-lg bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 shadow-2xl relative flex flex-col max-h-[92dvh] sm:max-h-[90vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-[var(--color-gray-light)] shrink-0">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-[var(--color-gray-light)] shrink-0">
           <div className="flex items-center gap-3">
-            <span className="text-3xl p-2 bg-[var(--color-surface-light)] rounded-2xl border border-[var(--color-gray-light)]">
+            <span className="text-2xl sm:text-3xl p-2 bg-[var(--color-surface-light)] rounded-2xl border border-[var(--color-gray-light)]">
               {emoji}
             </span>
             <div>
-              <h2 className="text-xl font-bold text-[var(--color-dark)] tracking-tight">Create Group or Trip</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-[var(--color-dark)] tracking-tight">Create Group or Trip</h2>
               <p className="text-xs text-[var(--color-gray-dark)] mt-0.5">
                 Isolated space to track spending & settle up cleanly
               </p>
@@ -117,7 +117,7 @@ export function CreateGroupModal({ isOpen, onClose, onCreated }: CreateGroupModa
         </div>
 
         {/* Scrollable Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto py-5 space-y-5 pr-1">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto py-4 sm:py-5 space-y-4 sm:space-y-5 pr-1">
           {error && (
             <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-xs font-semibold flex items-center gap-2">
               <AlertCircle size={16} className="shrink-0" />
@@ -125,20 +125,20 @@ export function CreateGroupModal({ isOpen, onClose, onCreated }: CreateGroupModa
             </div>
           )}
 
-          {/* Emoji Picker */}
+          {/* Emoji Picker - 6-column clean grid (2 rows of 6) */}
           <div>
             <label className="text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider block mb-2">
               Choose an Icon
             </label>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="grid grid-cols-6 gap-2">
               {PRESET_EMOJIS.map((e) => (
                 <button
                   key={e}
                   type="button"
                   onClick={() => setEmoji(e)}
-                  className={`w-10 h-10 rounded-xl text-lg flex items-center justify-center transition-all ${
+                  className={`h-10 rounded-xl text-lg flex items-center justify-center transition-all ${
                     emoji === e
-                      ? 'bg-[var(--color-primary)] text-white scale-110 shadow-md ring-2 ring-[var(--color-primary)]/40'
+                      ? 'bg-[var(--color-primary)] text-white shadow-md ring-2 ring-[var(--color-primary)]/40 font-bold'
                       : 'bg-[var(--color-surface-light)] hover:bg-[var(--color-gray-light)] border border-[var(--color-gray-light)]'
                   }`}
                 >
@@ -155,11 +155,10 @@ export function CreateGroupModal({ isOpen, onClose, onCreated }: CreateGroupModa
             </label>
             <Input
               type="text"
-              placeholder="e.g., Goa Trip 2026, Flat 402, Friday Dinner"
+              placeholder="e.g., Goa Trip, Flat 402, Friday Dinner"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full text-sm font-semibold"
-              autoFocus
+              className="w-full text-sm font-medium"
             />
           </div>
 
@@ -173,7 +172,7 @@ export function CreateGroupModal({ isOpen, onClose, onCreated }: CreateGroupModa
               placeholder="e.g., 3-day weekend trip with friends"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full text-sm"
+              className="w-full text-sm font-medium"
             />
           </div>
 
@@ -193,11 +192,11 @@ export function CreateGroupModal({ isOpen, onClose, onCreated }: CreateGroupModa
             <div className="flex gap-2">
               <Input
                 type="text"
-                placeholder="Type friend's name (e.g. Rohit) and press Enter"
+                placeholder="Type friend's name (e.g. Rohit)"
                 value={memberInput}
                 onChange={(e) => setMemberInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="flex-1 text-sm"
+                className="flex-1 text-sm font-medium"
               />
               <Button
                 type="button"

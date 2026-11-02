@@ -6,6 +6,10 @@ export function generateId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
   }
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    const bytes = crypto.getRandomValues(new Uint8Array(16));
+    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  }
   return 'id-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9);
 }
 
@@ -50,7 +54,7 @@ interface GroupState {
 
 export const useGroupStore = create<GroupState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       groups: [],
 
       createGroup: (data) => {
@@ -137,9 +141,16 @@ export const useGroupStore = create<GroupState>()(
         set((state) => ({
           groups: state.groups.map((g) => {
             if (g.id !== groupId) return g;
-            // Keep every member whose id differs from the target, BUT always retain the
-            // "You" member (isUser: true) even if memberId accidentally matches.
-            // The OR short-circuits: isUser members are unconditionally kept.
+            // Guard: Cannot remove member who has transaction history (expenses or transfers)
+            const hasHistory =
+              g.expenses.some(
+                (e) => e.payerId === memberId || e.splits.some((s) => s.memberId === memberId)
+              ) ||
+              g.transfers.some(
+                (t) => t.fromMemberId === memberId || t.toMemberId === memberId
+              );
+            if (hasHistory) return g;
+
             return {
               ...g,
               members: g.members.filter((m) => m.id !== memberId || m.isUser),
@@ -150,6 +161,12 @@ export const useGroupStore = create<GroupState>()(
       },
 
       addExpense: (groupId, data) => {
+        const group = get().groups.find((g) => g.id === groupId);
+        if (!group || group.status === 'settled') return '';
+        if (!Number.isFinite(data.amount) || data.amount <= 0) return '';
+        if (!group.members.some((m) => m.id === data.payerId)) return '';
+        if (!data.splits || data.splits.length === 0) return '';
+
         const id = generateId();
         const now = new Date().toISOString();
 
@@ -190,6 +207,12 @@ export const useGroupStore = create<GroupState>()(
       },
 
       addTransfer: (groupId, data) => {
+        const group = get().groups.find((g) => g.id === groupId);
+        if (!group || group.status === 'settled') return '';
+        if (!Number.isFinite(data.amount) || data.amount <= 0) return '';
+        if (!group.members.some((m) => m.id === data.fromMemberId)) return '';
+        if (!group.members.some((m) => m.id === data.toMemberId)) return '';
+
         const id = generateId();
         const now = new Date().toISOString();
 
@@ -241,6 +264,7 @@ export const useGroupStore = create<GroupState>()(
     }),
     {
       name: 'pacewise-groups-v1',
+      version: 1,
     }
   )
 );

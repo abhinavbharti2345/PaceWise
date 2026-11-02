@@ -36,8 +36,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           value={value}
           onChange={onChange}
           className={cn(
-            'flex w-full rounded-xl border border-[var(--color-gray-light)] bg-[var(--color-surface)] px-3 py-2.5 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-shadow touch-manipulation',
-            error && 'border-red-500 focus:ring-red-500',
+            'flex w-full rounded-xl border border-[var(--color-gray-light)] bg-[var(--color-surface)] px-3 py-2.5 text-base sm:text-sm placeholder:text-[var(--color-gray-dark)]/50 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 focus:border-[var(--color-primary)] transition-all touch-manipulation',
+            error && 'border-red-500 focus:ring-red-500/40',
             className
           )}
           ref={ref}

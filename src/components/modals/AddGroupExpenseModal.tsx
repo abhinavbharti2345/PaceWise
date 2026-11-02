@@ -3,7 +3,7 @@ import { X, AlertCircle, Check, Users, Receipt, Calendar } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { useGroupStore } from '../../store/useGroupStore';
-import type { Group, GroupExpenseSplit } from '../../utils/groupEngine';
+import { toPaise, type Group, type GroupExpenseSplit } from '../../utils/groupEngine';
 import { getTodayDateString } from '../../utils/dateUtils';
 
 interface AddGroupExpenseModalProps {
@@ -70,7 +70,8 @@ export function AddGroupExpenseModal({ isOpen, onClose, group }: AddGroupExpense
 
   if (!isOpen) return null;
 
-  const numAmount = parseFloat(amount) || 0;
+  const amountPaise = toPaise(amount);
+  const numAmount = amountPaise === null ? 0 : amountPaise / 100;
 
   // Calculate per-person share for equal split — use the same floor+remainder
   // logic as the actual save path so the preview matches stored values exactly.
@@ -103,8 +104,12 @@ export function AddGroupExpenseModal({ isOpen, onClose, group }: AddGroupExpense
     setError('');
   };
 
-  const customTotal = Object.values(customSplits).reduce((sum, v) => sum + (parseFloat(v) || 0), 0);
-  const customRemaining = Math.round((numAmount - customTotal) * 100) / 100;
+  const customTotalPaise = Object.values(customSplits).reduce((sum, v) => {
+    const p = toPaise(v, { allowZero: true });
+    return sum + (p ?? 0);
+  }, 0);
+  const customRemainingPaise = (amountPaise ?? 0) - customTotalPaise;
+  const customRemaining = customRemainingPaise / 100;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,7 +118,7 @@ export function AddGroupExpenseModal({ isOpen, onClose, group }: AddGroupExpense
       setError('Please provide a short description for this expense.');
       return;
     }
-    if (!numAmount || numAmount <= 0) {
+    if (amountPaise === null || amountPaise <= 0) {
       setError('Please enter a valid expense amount greater than 0.');
       return;
     }
@@ -147,22 +152,41 @@ export function AddGroupExpenseModal({ isOpen, onClose, group }: AddGroupExpense
         };
       });
     } else {
-      // Custom splits
-      if (Math.abs(customRemaining) > 0.05) {
+      // Custom splits validation
+      const hasNegativeOrInvalid = Object.values(customSplits).some((v) => {
+        if (!v || !v.trim()) return false;
+        const p = toPaise(v, { allowZero: true });
+        return p === null;
+      });
+
+      if (hasNegativeOrInvalid) {
+        setError('Split amounts must be valid non-negative numbers.');
+        return;
+      }
+
+      const splitEntries = group.members.map((m) => {
+        const valStr = customSplits[m.id] || '0';
+        const p = toPaise(valStr, { allowZero: true }) ?? 0;
+        return { memberId: m.id, paise: p };
+      });
+
+      const totalSplitPaise = splitEntries.reduce((sum, s) => sum + s.paise, 0);
+
+      if (totalSplitPaise !== amountPaise) {
+        const diffPaise = Math.abs(amountPaise - totalSplitPaise);
+        const diffStr = (diffPaise / 100).toFixed(2);
         setError(
-          `Custom split amounts must equal ${currency}${numAmount.toFixed(2)}. Difference: ${currency}${Math.abs(
-            customRemaining
-          ).toFixed(2)}`
+          `Custom splits must exactly equal ${currency}${numAmount.toFixed(2)}. Difference: ${currency}${diffStr}`
         );
         return;
       }
 
-      finalSplits = group.members
-        .map((m) => ({
-          memberId: m.id,
-          amount: Math.round((parseFloat(customSplits[m.id]) || 0) * 100) / 100,
-        }))
-        .filter((s) => s.amount > 0);
+      finalSplits = splitEntries
+        .filter((s) => s.paise > 0)
+        .map((s) => ({
+          memberId: s.memberId,
+          amount: s.paise / 100,
+        }));
 
       if (finalSplits.length === 0) {
         setError('Please assign custom amounts to at least one member.');
@@ -184,9 +208,9 @@ export function AddGroupExpenseModal({ isOpen, onClose, group }: AddGroupExpense
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
-        className="w-full max-w-lg bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-3xl p-6 shadow-2xl relative flex flex-col max-h-[90vh] overflow-hidden"
+        className="w-full max-w-lg bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 shadow-2xl relative flex flex-col max-h-[92dvh] sm:max-h-[90vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

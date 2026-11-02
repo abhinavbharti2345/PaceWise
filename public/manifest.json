@@ -2,8 +2,12 @@
   "name": "PaceWise",
   "short_name": "PaceWise",
   "description": "Access your budget instantly from your phone.",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay"],
+  "orientation": "portrait-primary",
   "background_color": "#09090b",
   "theme_color": "#18181b",
   "icons": [

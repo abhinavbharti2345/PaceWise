@@ -119,14 +119,13 @@ export function calculateGroupSummary(group: Group): GroupSummary {
   // If fromMember gave money to toMember:
   // - fromMember has paid more -> net balance increases
   // - toMember has received cash -> net balance decreases
+  // NOTE: Settlements do NOT alter totalPaid or totalShare (consumption)
   for (const transfer of group.transfers) {
     if (balancesMap[transfer.fromMemberId]) {
       balancesMap[transfer.fromMemberId].netBalance += transfer.amount;
-      balancesMap[transfer.fromMemberId].totalPaid += transfer.amount;
     }
     if (balancesMap[transfer.toMemberId]) {
       balancesMap[transfer.toMemberId].netBalance -= transfer.amount;
-      balancesMap[transfer.toMemberId].totalShare += transfer.amount;
     }
   }
 
@@ -156,7 +155,7 @@ export function calculateGroupSummary(group: Group): GroupSummary {
 /**
  * Debt Simplification Algorithm:
  * Greedily matches the largest debtor with the largest creditor
- * to minimize total number of settlement transfers.
+ * to produce a clean, valid settlement transfer plan.
  */
 export function simplifyDebts(balances: MemberBalance[]): SettlementTransfer[] {
   // Separate into debtors (< 0) and creditors (> 0)
@@ -165,9 +164,9 @@ export function simplifyDebts(balances: MemberBalance[]): SettlementTransfer[] {
 
   for (const b of balances) {
     const net = Math.round(b.netBalance * 100) / 100;
-    if (net < -0.01) {
+    if (net <= -0.005) {
       debtors.push({ memberId: b.memberId, name: b.name, amount: Math.abs(net) });
-    } else if (net > 0.01) {
+    } else if (net >= 0.005) {
       creditors.push({ memberId: b.memberId, name: b.name, amount: net });
     }
   }
@@ -197,18 +196,37 @@ export function simplifyDebts(balances: MemberBalance[]): SettlementTransfer[] {
       });
     }
 
-    debtor.amount -= amount;
-    creditor.amount -= amount;
+    debtor.amount = Math.round((debtor.amount - amount) * 100) / 100;
+    creditor.amount = Math.round((creditor.amount - amount) * 100) / 100;
 
-    if (debtor.amount < 0.01) {
+    if (debtor.amount < 0.005) {
       i++;
     }
-    if (creditor.amount < 0.01) {
+    if (creditor.amount < 0.005) {
       j++;
     }
   }
 
   return settlements;
+}
+
+/**
+ * Safely parses raw amount strings to integer paise.
+ * Rejects non-finite values, NaN, negative amounts, sub-paisa precision, and scientific notation.
+ */
+export function toPaise(raw: string, options: { allowZero?: boolean } = {}): number | null {
+  if (typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) return null;
+
+  const num = Number(trimmed);
+  if (!Number.isFinite(num)) return null;
+
+  const paise = Math.round(num * 100);
+  if (!Number.isSafeInteger(paise)) return null;
+  if (options.allowZero ? paise < 0 : paise <= 0) return null;
+
+  return paise;
 }
 
 /**
