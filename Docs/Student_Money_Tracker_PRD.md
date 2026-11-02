@@ -1,263 +1,181 @@
-**Student Money Tracker**
+# PaceWise — Product Requirements Document (PRD)
 
-_Product Requirements Document (PRD)_
+**Version:** 2.5 • **Status:** Production / Implemented  
+**Tagline:** *Track. Pace. Prosper.*
 
-Version 1.0 • August 2026 • Status: Draft for review
+---
 
-# 1\. Overview
+## 1. Executive Summary
 
-Student Money Tracker is a simple, student-focused web application for managing a fixed amount of money throughout the month. It exists to answer four questions quickly:
+**PaceWise** is an intelligent, student-centric personal finance and shared-expense web application. Built specifically around the financial realities of students and young adults living on fixed monthly allowances or stipends, PaceWise replaces complex corporate banking tools with a single intuitive answer to the everyday question:
 
-- How much money do I have left?
-- How much can I spend today?
-- Where did my money go?
-- Who owes me money, or who do I owe?
+> **"Given the money I have and the days remaining, how much can I safely spend today?"**
 
-Its defining feature is a dynamic daily spending allowance: unused money carries forward to future days, while bills and other major payments reduce the remaining monthly budget and automatically recalculate the amount available per day.
+Unlike standard expense trackers that merely categorize past transactions, PaceWise dynamically calculates a daily spending pace, carries forward unspent allowance to future days, absorbs fixed bills without penalizing daily habits, and handles both informal 1-on-1 friend debts and multi-member group trip/room splits with minimal settlements.
 
-# 2\. Problem Statement
+---
 
-Students typically receive a fixed amount of money for the month (allowance, scholarship, part-time income) and struggle to pace spending across the month. General-purpose finance apps are built for adults with bank integrations, investments, and complex categorization — too heavy for a student who just wants to know: "Given the money I have and the days remaining, how much can I safely spend today?"
+## 2. Problem Statement
 
-# 3\. Goals
+1. **Allowance Pacing Deficit:** Students receive lump-sum funds (monthly allowance from parents, scholarships, or freelance income) at the start of each month. Without real-time pacing, funds are often exhausted within the first 10–15 days.
+2. **Corporate Bloat in Existing Apps:** Traditional personal finance apps require bank linkages, investment tracking, and multi-layered accounting categories designed for salaried homeowners with mortgages.
+3. **Informal Friend Debts:** Students frequently pay for each other (cabs, hostel meals, shared groceries). Keeping track of who paid whom, partial cash settlements, and "bought for me" scenarios is messy and causes friction.
+4. **Group Expense Chaos:** Roommates and travel groups struggle with who paid for what and require separate third-party apps just to calculate group debt transfers.
 
-- Make daily spending decisions easy and fast.
-- Turn a monthly allowance into an understandable daily spending limit.
-- Reward underspending by carrying unused daily allowance forward.
-- Automatically adapt the daily allowance when money is spent on bills or other planned payments.
-- Record the reason behind every expense so the user can understand spending habits.
-- Track money lent to and borrowed from other people, separate from normal expenses.
-- Provide a clear monthly picture without the complexity of professional finance software.
+---
 
-# 4\. Non-Goals (V1)
+## 3. Core Product Principles
 
-- Bank account / card integrations or automatic transaction import.
-- Investment tracking, credit score, or loan management.
-- Multi-currency or multi-account support.
-- Cloud sync or multi-device accounts (see Section 12, V2+).
+1. **Pacing Over Accounting:** The app's primary metric is **Today's Available Budget**, not just a static bank balance.
+2. **Reward Underspending:** Underspending today gives you more money tomorrow (Carry-Forward). Overspending today gently recalibrates your pace over the remaining days.
+3. **Distinguish Bills from Daily Spending:** Fixed payments (rent, college fees, electricity, subscriptions) are treated as non-discretionary subtractions from total capital rather than daily lifestyle spikes.
+4. **Informal Debt Clarity:** Separate personal lifestyle spending from money lent to or borrowed from friends.
+5. **Zero-Friction Mobile Experience:** Rapid entry via bottom sheets/modals with minimum 44px touch targets conforming to Apple Human Interface guidelines.
+6. **Privacy & Offline First:** Local-first reactivity via Zustand with full cloud synchronization and strict PostgreSQL Row Level Security (RLS).
 
-# 5\. Target User
+---
 
-Primary persona: a student managing a fixed monthly allowance or limited income, who wants a lightweight, non-intimidating way to pace daily spending and keep track of informal debts with friends — not a full personal-finance suite.
-
-# 6\. Core Budget Concept
-
-## 6.1 Monthly Starting Money
-
-At the beginning of a budget period, the user enters the amount of money available for the month. Example: ₹6,000.
-
-## 6.2 Base Daily Budget
-
-The initial daily budget is calculated from the money available and the number of budget days. For a 30-day month: ₹6,000 ÷ 30 = ₹200 per day.
-
-## 6.3 Carry-Forward
-
-If the user spends less than the day's available allowance, the unused amount becomes carry-forward money for the next day.
-
-| **Item**                    | **Value**          |
-| --------------------------- | ------------------ |
-| Daily budget                | ₹200               |
-| Spent                       | ₹100               |
-| Unused                      | ₹100               |
-| Next day's available budget | ₹200 + ₹100 = ₹300 |
-
-## 6.4 Dynamic Recalculation
-
-When a bill or significant payment is recorded, it reduces the money remaining in the monthly budget. The app then recalculates the base daily budget using the remaining budget and remaining days.
-
-| **Item**         | **Value**              |
-| ---------------- | ---------------------- |
-| Starting money   | ₹6,000                 |
-| Bill / payment   | ₹1,000                 |
-| Remaining budget | ₹5,000                 |
-| Days remaining   | 25                     |
-| New daily budget | ₹5,000 ÷ 25 = ₹200/day |
-
-## 6.5 Three Budget Values
-
-The interface must distinguish between:
-
-- Base Daily Budget — the normal amount available for a day.
-- Carry-Forward — saved or deficit amount transferred from previous days.
-- Today's Available Budget — Base Daily Budget + Carry-Forward.
-
-This distinction prevents the app from confusing the user's actual bank/cash balance with the amount the budgeting system recommends spending today.
-
-# 7\. Budgeting Philosophy
-
-The app distinguishes between two concepts:
-
-- Actual Money Balance — the money the user physically has available.
-- Spending Allowance — the amount the budgeting system recommends spending today.
-
-Example: a user might physically have ₹3,800 but have only ₹253 as today's recommended spending allowance. Keeping these concepts separate is a core product principle, not just a UI detail.
-
-# 8\. Functional Requirements
-
-## 8.1 Expense Tracking
-
-Users can record normal spending through an Add Expense action, capturing:
-
-- Amount (required)
-- Category (required)
-- Reason / Description (required)
-- Date (required, defaults to today)
-- Payment method (optional)
-- Note (optional)
-
-Suggested categories: Food, Transport, Education, Hostel / Rent, Recharge, Entertainment, Shopping, Snacks, Games, Fitness, Other. Users must also be able to create custom categories.
-
-## 8.2 Bills & Major Payments
-
-Bills are represented separately from ordinary discretionary expenses (e.g. credit-card payments, subscriptions, hostel payments, recharges, other fixed payments). The system must record that money was paid toward a bill rather than treating it like discretionary spending, both for budgeting (Section 6.4) and reporting purposes.
-
-## 8.3 Adding Money
-
-Users can add money at any time, not only at the start of the month, capturing:
-
-- Amount (required)
-- Source — e.g. parents, salary, scholarship, other (required)
-- Date (required)
-- Note (optional)
-
-Additional money received during the month must update the remaining budget and the daily calculation.
-
-## 8.4 People / Money Owed
-
-A dedicated People section tracks money exchanged with other individuals, separate from ordinary personal spending.
-
-- Person name (required)
-- Amount (required)
-- Direction: I gave money / I took money (required)
-- Reason (required)
-- Date (required)
-- Optional note
-
-Direction meaning: "I gave money" means the person owes the user. "I took money" means the user owes the person.
-
-People Summary must show at the top of the section: total money to receive, total money to give, and net amount.
-
-## 8.5 Settlements
-
-Debts must not simply be deleted when settled. The system must support marking debts as settled and, ideally, partial repayments.
-
-- Full settlement example: ₹500 owed → ₹500 received → Settled.
-- Partial settlement example: ₹500 owed → ₹200 received → ₹300 remaining.
-
-## 8.6 Dashboard
-
-The Dashboard is the primary daily screen and must prioritize the most useful numbers:
-
-- Money Left
-- Today's Available Budget
-- Spent Today
-- Days Remaining
-- Carry-Forward
-- Quick Add Expense button
-- Quick Add Money button
-- People summary: To Receive / To Give
-
-Illustrative values: Money Left ₹3,800; Available Today ₹253; Spent Today ₹150; Days Remaining 22; Carry-Forward +₹80; People: To Receive ₹850 | To Give ₹300.
-
-## 8.7 Transactions
-
-A chronological history must show all financial activity: expenses, income / money received, bills / payments, and people-related transactions.
-
-Required filters:
-
-- All / Expenses / Income / Bills / People
-- Today / This Week / This Month / Custom Date Range
-- Category
-- Person
-
-## 8.8 Monthly Overview & Statistics
-
-A monthly overview must summarize:
-
-- Starting money
-- Additional money received
-- Bills / major payments
-- Normal expenses
-- Money remaining
-- Days passed and remaining
-- Current base daily budget
-- Current carry-forward
-- Today's available budget
-
-Later versions can add: spending by category, daily spending trend, highest-spending categories, monthly comparisons, and simple charts.
-
-## 8.9 Navigation
-
-- Home — daily budget and overall snapshot.
-- Transactions — complete financial history.
-- People — money owed to/from other people.
-- Stats — monthly spending and trends.
-- Settings — currency, budget preferences, notifications, data controls.
-
-# 9\. Recommended Improvements (Post-V1 Candidates)
-
-- Refund handling — record refunds as financial events instead of editing history.
-- Overspending handling — allow recording an expense even when over budget; carry the deficit forward.
-- Adding money mid-month — automatically incorporate new income into the remaining budget.
-- Savings goal — optionally set a target amount to keep at the end of the month.
-- Daily reminders — optionally show the current available amount.
-- Spending streaks — optional motivational feature for staying under budget.
-- Recurring bills — useful for subscriptions and predictable payments.
-- Export/import — allow users to keep a backup of their data.
-
-# 10\. Development Scope
-
-## V1 — Core Product
-
-- Monthly money
-- Add money
-- Add expense
-- Daily budget calculation
-- Carry-forward system
-- Dynamic recalculation
-- Bills / payments
-- Expense reasons
-- Categories
-- Transaction history
-- People and money owed
-- Settlements
-- Dashboard
-
-## V1.5
-
-- Partial settlements
-- Better filters
-- Monthly history
-- Basic statistics
-
-## V2+
-
-- Charts
-- Savings goals
-- Notifications
-- Recurring bills
-- Refunds
-- Export / import
-- Cloud synchronization
-- PWA / mobile installation
-
-# 11\. Product Design Direction
-
-The visual style should feel modern, friendly, and student-oriented rather than like a traditional banking application. The interface should minimize friction: large key numbers, a prominent Add Expense action, clear positive/negative money states, and simple explanations for how today's budget was calculated. See the companion UI/UX Design Specification for detail.
-
-# 12\. Core Product Principle
-
-**_The app is not only a record of where money went. Its main purpose is to answer: "Given the money I have and the days remaining, how much can I safely spend today?"_**
-
-# 13\. Open Questions / Next Decisions
-
-Before implementation begins, the following should be finalized:
-
-- Exact budget algorithm and all edge cases.
-- Rules for overspending and deficit carry-forward.
-- Rules for adding money during a month.
-- Rules for bills, refunds, and settlements.
-- Month boundaries and treatment of different month lengths.
-- Wireframes for each major page (see UI/UX Design Specification).
-- Underlying data model and transaction types.
-- Technology stack and storage approach.
+## 4. Financial Calculations & The Budget Engine
+
+The calculations powering PaceWise reside in [`src/features/budget/budgetEngine.ts`](file:///C:/CS/CS%20Projects/Web-Projects/PaceWise/src/features/budget/budgetEngine.ts).
+
+### 4.1 Variables & Definitions
+- $T_{total}$: Starting monthly allowance configured in `budget_configs.total_money`.
+- $D_{total}$: Total days in the active budget period (default: calendar month length, e.g., 28–31 days).
+- $D_{passed}$: Number of days elapsed since the budget start date (clamped between $0$ and $D_{total}$).
+- $D_{remaining}$: Days remaining including today ($D_{total} - D_{passed}$).
+- $I_{mid}$: Total mid-month income / additional money received.
+- $B_{total}$: Total fixed bills and non-discretionary payments.
+- $E_{prior}$: Cumulative discretionary expenses logged up to yesterday.
+- $E_{today}$: Discretionary expenses logged today.
+- $CF$: Cumulative carry-forward balance.
+
+### 4.2 Mathematical Formulas
+
+#### Effective Total Budget:
+$$T_{effective} = T_{total} + I_{mid} - B_{total}$$
+
+#### Base Daily Budget:
+$$B_{base} = \frac{T_{effective}}{D_{total}}$$
+
+#### Carry-Forward Calculation:
+Carry-forward reflects the cumulative difference between the ideal daily allocation and actual spending up to yesterday, taking into account net debt cashflows:
+$$CF = (B_{base} \times D_{passed}) - E_{prior} + \text{NetDebtFlow}_{prior}$$
+
+#### Today's Available Budget:
+$$\text{Available}_{today} = B_{base} + CF$$
+
+#### Remaining Daily Pace:
+If the user prefers a smoothed pace for all remaining days:
+$$\text{Pace}_{remaining} = \frac{\text{Money Left}}{D_{remaining}}$$
+
+#### Money Left:
+$$\text{Money Left} = T_{effective} - (E_{prior} + E_{today}) + \text{NetDebtFlow}_{total}$$
+
+#### Zero-Spend Days:
+The engine computes every calendar day in the period that has passed with $0$ discretionary expenses logged, rewarding students with positive financial reinforcement.
+
+---
+
+## 5. Functional Requirements
+
+### 5.1 Dashboard (Home)
+- **Hero Money Left Card:** Distinctive dark red gradient card displaying the total actual money left, total monthly pool, and budget depletion progress bar.
+- **Daily Budget Metric:** Circular pace indicator displaying **Today's Available Budget**, spent today, and remaining daily allowance.
+- **Carry-Forward Badge:** Color-coded pill (`+₹XX` green for saved allowance, `-₹XX` red for deficit carry-forward).
+- **Quick Action Bar:** One-tap triggers for `+ Add Expense`, `+ Add Money`, and `+ Add Bill`.
+- **People Summary Card:** Compact snapshot displaying `To Receive` (green) and `You Owe` (red) with instant link to People ledger.
+- **Recent Activity:** Compact transaction list showing recent events with semantic icon badges and currency amounts.
+
+### 5.2 Expense Tracking
+- **Expense Modal:** Amount input (prominent hero typography), Category selector, Reason description, Date picker (defaults to today), Payment method, and optional notes.
+- **Category Support:** Default categories (Food, Transport, Education, Hostel/Rent, Entertainment, Shopping, Snacks, Healthcare, Other).
+- **Custom Categories:** Ability to create custom categories with tailored Lucide icons and color palettes via `AddCategoryModal`.
+
+### 5.3 Bills & Major Payments
+- Addressed via dedicated `AddBillModal`.
+- Deducts directly from $T_{effective}$ rather than skewing daily discretionary pace.
+- Dedicated bill categories (Rent, Tuition, Wifi/Recharge, Utility, Insurance).
+
+### 5.4 Adding Money / Income Injections
+- Triggered via `AddMoneyModal`.
+- Tracks sources (Parents, Salary, Scholarship, Gift, Freelance, Other).
+- Mid-month additions instantly expand remaining allowance and recalculate the daily spending pace across remaining days.
+
+### 5.5 People & Debt Management (1-on-1)
+- **Ledger Entries:**
+  - `gave`: User lent money to friend (Friend owes user $\rightarrow$ "To Receive").
+  - `took`: User borrowed money from friend (User owes friend $\rightarrow$ "You Owe").
+  - `bought_for_me`: Friend paid for user's expense (User owes friend).
+  - `offset_debt`: Settles an outstanding obligation by writing down a countervailing balance.
+- **Settlement Modes:**
+  - **Full or Partial Cash Settlement:** User receives or pays physical cash or UPI transfer.
+  - **Itemized Settlement:** User selects specific transactions to settle, marking them as settled.
+  - **Offset Against Existing Debt:** Automatically nets reciprocal balances.
+
+### 5.6 Groups & Shared Expenses (Group Engine)
+Implemented in [`src/utils/groupEngine.ts`](file:///C:/CS/CS%20Projects/Web-Projects/PaceWise/src/utils/groupEngine.ts) and [`src/store/useGroupStore.ts`](file:///C:/CS/CS%20Projects/Web-Projects/PaceWise/src/store/useGroupStore.ts).
+- **Group Creation:** Custom name, emoji badge, description, and member roster ("You" + friends).
+- **Group Expenses:** Logged with payer assignment, amount, category, and split method:
+  - **Equal Split:** Divided evenly among all group members.
+  - **Custom Split:** Exact monetary shares assigned per participant.
+- **Group Transfers:** Direct peer-to-peer repayments within the group context.
+- **Optimal Debt Simplification:**
+  - Standard multi-person groups generate $O(N^2)$ bilateral debts.
+  - PaceWise runs an optimal greedy flow algorithm that computes net balances for each member and generates the minimum number of direct settlement transfers ($\le N - 1$).
+- **Group Lifecycle:** Groups can be toggled between `active` and `settled`.
+
+### 5.7 Insights & Analytics
+- **Period Scoping:** Filter insights by `Today`, `This Week`, `This Month`, or `Custom Date Range`.
+- **Category Breakdown:** Interactive breakdown of spending by category with percentages and total sums.
+- **Spending Pace Curve:** Day-by-day comparison of actual spend vs ideal baseline pace.
+- **Zero-Spend Days Counter:** Tracks discipline and non-spending milestones.
+- **High-Spend / Splurge Alerts:** Flags disproportionate expenses for review via `SplurgeDetailModal`.
+
+### 5.8 Custom Categories Management
+- Accessible via the `/categories` view.
+- Three dedicated tabs: **Expenses**, **Bills**, and **Income Sources**.
+- Add custom categories with custom icons and theme colors.
+- Hide/unhide categories to declutter modals.
+- Drag-and-drop or rank-order priority reordering.
+
+### 5.9 Month-End Rollover Engine
+- Monitored by [`src/hooks/useMonthRollover.ts`](file:///C:/CS/CS%20Projects/Web-Projects/PaceWise/src/hooks/useMonthRollover.ts).
+- Detects when the active date passes `config.endDate`.
+- Prompts user to start a new budget cycle with optional rollover of positive unspent carry-forward money.
+
+### 5.10 Settings & Data Management
+- **Budget Setup:** Modify starting monthly money, start date, and end date.
+- **Theme Preferences:** Light, Dark, or System automatic switching.
+- **Currency:** Configurable currency symbol (default: ₹).
+- **Data Deletion:**
+  - *Reset All Local Data:* Wipes client store and local storage.
+  - *Delete Account & Cloud Data:* Triggers Supabase Edge Function to permanently erase auth and database records.
+
+### 5.11 Authentication & Security
+- **Email/Password Auth:** Sign up, email verification flow, and login with session persistence.
+- **Data Isolation:** Enforced at database level with Supabase PostgreSQL Row Level Security (RLS).
+- **Profile Customization:** User display name and avatar management in `/profile`.
+
+---
+
+## 6. Technical Architecture & Technology Stack
+
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend Framework** | React 18, TypeScript, Vite |
+| **Styling & Design** | Tailwind CSS, Lucide React icons, clsx, tailwind-merge |
+| **State Management** | Zustand (with persistent middleware) |
+| **Date Manipulation** | date-fns |
+| **Visualization** | Recharts |
+| **Backend & Database** | Supabase (PostgreSQL 15, Supabase Auth, Deno Edge Functions) |
+| **Testing** | Vitest (Unit & Integration tests) |
+| **Hosting & CI/CD** | Vercel |
+
+---
+
+## 7. Non-Goals (Out of Scope for V2)
+
+- Automated Open Banking / SMS transaction scraping (prohibited due to student privacy concerns and mobile OS security constraints).
+- Stock/crypto portfolio trading or credit score tracking.
+- Complex multi-currency conversion with live forex feeds (fixed currency symbol supported).

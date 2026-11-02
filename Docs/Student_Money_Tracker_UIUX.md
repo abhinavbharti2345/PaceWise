@@ -1,290 +1,177 @@
-**Student Money Tracker**
-
-_UI/UX Design Specification_
-
-Version 1.0 • August 2026 • Status: Draft for review
-
-# 1\. Design Objective
-
-The interface should be a modern, minimal, student-focused money tracker. The user should be able to open the app and immediately understand how much money they have, how much they can spend today, what they recently spent, and their outstanding money with other people. The UI should prioritize clarity and speed over complex financial terminology.
-
-# 2\. Main Navigation
-
-The application has five primary sections:
-
-- 🏠 Dashboard — daily budget and current financial snapshot.
-- 💸 Transactions — complete transaction history.
-- 👥 People — money the user owes or should receive.
-- 📊 Insights — spending analysis and trends.
-- ⚙️ Settings — preferences, notifications, and data controls.
-
-Desktop: use a left sidebar. Mobile: use a bottom navigation bar. The People → Person Details screen is a sub-page and should not appear as a separate main navigation item.
-
-# 3\. Global UI Structure
-
-## 3.1 Desktop
-
-Recommended structure: fixed/comfortable left sidebar around 220–250px, with the main content centered and constrained to a readable maximum width.
-
-Suggested sidebar order: Logo/brand → Dashboard → Transactions → People → Insights → Settings.
-
-## 3.2 Mobile
-
-Use a bottom navigation bar for the five primary sections. Add Expense should be accessible through a prominent floating action button or persistent quick action.
-
-# 4\. Dashboard Layout
-
-The Dashboard is the most important screen and should be optimized for daily use.
-
-## 4.1 Top
-
-- Greeting / date.
-- Current month.
-- Primary Money Left card.
-
-Suggested hierarchy: August 2026 → Money Left — ₹3,800 → Starting/total monthly money — ₹6,000 → Progress indicator showing remaining budget.
-
-## 4.2 Today's Budget
-
-Place the daily budget information directly below the main money card:
-
-- Today's Available Budget — e.g. ₹253.
-- Spent Today — e.g. ₹150.
-- Days Remaining — e.g. 22.
-- Carry Forward — e.g. +₹80.
-
-The distinction between Base Daily Budget, Carry Forward, and Today's Available Budget must be understandable from the UI, not just from documentation.
-
-## 4.3 Quick Actions
-
-- \+ Add Expense
-- \+ Add Money
-
-## 4.4 Today's Spending
-
-Show a simple progress indicator such as ₹150 / ₹253, with a progress bar and a clear overspending state when applicable.
-
-## 4.5 Recent Transactions
-
-Show the latest few transactions in compact rows, with a View All action, e.g.:
-
-- 🍔 Dinner — -₹150
-- 💳 Credit Card — -₹1,000
-- 🚌 Bus — -₹40
-
-## 4.6 People Summary
-
-Show a compact summary near the bottom of the Dashboard:
-
-- You Owe — ₹300
-- To Receive — ₹850
-- View People →
-
-# 5\. Add Expense UI
-
-Add Expense should preferably open as a modal or bottom sheet instead of forcing the user through a full page.
-
-- Amount — largest input on the screen.
-- Category — selectable list.
-- Reason / Description — short text field.
-- Date — defaults to today.
-- Payment Method — optional.
-- Note — optional.
-- Save / Add Expense button.
-
-The form should be fast to complete because recording an expense is expected to be one of the most frequent actions in the app.
-
-# 6\. Add Money UI
-
-Use the same modal/bottom-sheet pattern as Add Expense.
-
-- Amount
-- Source — parents, salary, scholarship, other
-- Date
-- Note
-- Add Money button
-
-# 7\. Transactions Page
-
-## 7.1 Top Controls
-
-- Page title: Transactions
-- Search
-- Filters: All / Expenses / Income / Bills
-- Date filter: Today / Week / Month / Custom
-
-## 7.2 Transaction List
-
-Use compact rows rather than large cards so many transactions can be viewed at once:
-
-- Category/icon
-- Transaction name or reason
-- Date/time when useful
-- Amount aligned to the right
-- Positive/negative state
-
-# 8\. People Page
-
-## 8.1 Top Summary
-
-The top of the page should immediately show:
-
-- You Owe — total amount the user needs to pay.
-- To Receive — total amount other people owe the user.
-- Net — optional combined position.
-
-Recommended wording: ₹300 You Owe | ₹850 To Receive | Net +₹550
-
-## 8.2 People List
-
-Below the summary, show all people with their current balance:
-
-- Rahul — +₹500 — Dinner
-- Aman — -₹300 — Cab
-- Karan — +₹350 — Tickets
-
-Positive balance means the user should receive money. Negative balance means the user owes money.
-
-## 8.3 Add Person Transaction
-
-Provide a prominent + Add Transaction action:
-
-- Person
-- Amount
-- I gave money / I took money
-- Reason
-- Date
-- Optional note
-
-# 9\. Person Details Page
-
-Clicking a person opens a dedicated details screen showing the current balance and complete history with that person.
-
-## 9.1 Header
-
-- Back → People
-- Person name
-- Current status: You will receive / You owe
-- Current outstanding amount
-
-## 9.2 Primary Actions
-
-The action should adapt to the current balance:
-
-- If the person owes the user → Receive Money.
-- If the user owes the person → Give Money.
-- Add Transaction should remain available.
-
-## 9.3 History
-
-Show a chronological history, for example:
-
-- Aug 30 — Gave Rahul ₹500 — Dinner — +₹500 owed
-- Aug 31 — Received ₹200 — Partial repayment — -₹200
-- Remaining — ₹300
-
-## 9.4 Settlement
-
-Allow full settlement and partial repayment. Do not delete historical transactions when a debt is settled.
-
-# 10\. Insights Page
-
-Insights should explain spending behavior without becoming overly complex:
-
-- Monthly spending total
-- Money remaining
-- Category breakdown
-- Daily/weekly spending trend
-- Top spending categories
-- Optional monthly comparison
-
-Recommended sections: August Overview, Spending by Category, Daily Spending Trend, Top Spending.
-
-# 11\. Settings Page
-
-Keep Settings simple and grouped:
-
-- Budget — monthly budget, month start, currency.
-- Appearance — Light / Dark / System.
-- Notifications — daily reminders and budget warnings.
-- Data — export, import, delete/reset data.
-
-# 12\. Global Visual Design
-
-## 12.1 Design Language
-
-- Modern
-- Minimal
-- Friendly
-- Student-oriented
-- High readability
-- Fast interaction
-
-## 12.2 Components
-
-- Rounded cards for important summaries.
-- Compact list rows for transactions.
-- Large typography for money values.
-- Clear primary buttons.
-- Subtle progress bars.
-- Small icons for categories.
-- Modal/bottom-sheet forms for quick actions.
-
-## 12.3 Semantic Money States
-
-| **State**         | **Meaning**                                  |
-| ----------------- | -------------------------------------------- |
-| Green / positive  | Money to receive or positive budget movement |
-| Red / negative    | Money owed, spending, or overspending        |
-| Neutral / primary | Budget and balance information               |
-
-Color should never be the only indicator; pair it with labels, signs, and icons.
-
-# 13\. Responsive Design
-
-The app should be designed for both desktop and mobile from the beginning:
-
-- Desktop: sidebar + centered main content.
-- Tablet: compact sidebar or responsive navigation.
-- Mobile: bottom navigation + floating/obvious Add Expense action.
-- Forms: modal or bottom sheet on mobile.
-- Money values should remain highly visible at every screen size.
-
-# 14\. User Flow
-
-- Open Dashboard → see Money Left + Today's Available Budget.
-- Spend money → Add Expense → amount + category + reason → save.
-- Daily budget updates automatically.
-- Unused allowance carries forward.
-- Pay a bill → Add Bill/Payment → remaining monthly budget and daily calculation update.
-- Receive more money → Add Money → budget updates.
-- Lend/borrow → People → select person → give/take → reason → save.
-- Repay/receive → Person Details → Give Money / Receive Money → full or partial settlement.
-- Review behavior → Insights.
-
-# 15\. Navigation Summary
-
-- 🏠 Dashboard
-- 💸 Transactions
-- 👥 People
-  - ↳ Person Details
-- 📊 Insights
-- ⚙️ Settings
-
-Global actions:
-
-- \+ Add Expense
-- \+ Add Money
-
-# 16\. Design Priorities
-
-- 1\. Dashboard clarity — the user should understand their financial position in seconds.
-- 2\. Fast expense entry — recording spending should take very few interactions.
-- 3\. Clear People balances — immediately distinguish You Owe vs To Receive.
-- 4\. Strong transaction history — every important action should be traceable.
-- 5\. Simple Insights — useful information without financial-app complexity.
-- 6\. Responsive design — equally usable on a phone and desktop.
-
-# 17\. Next UI Work
-
-The next design step is low-fidelity wireframes for the Dashboard, Add Expense, Transactions, People, and Person Details screens. After the wireframes are approved, define the visual design system (typography, spacing, colors, buttons, cards, icons, states, and dark mode) before frontend implementation.
+# PaceWise — UI/UX Design Specification
+
+**Version:** 2.5 • **Status:** Production / Implemented  
+**Application:** PaceWise (*"Track. Pace. Prosper."*)
+
+---
+
+## 1. Design Objective & Aesthetic Vision
+
+PaceWise delivers a clean, modern, student-friendly fintech interface that feels lightweight, fast, and empowering. It avoids the intimidating jargon and rigid layouts of corporate banking apps, focusing instead on instant visual clarity:
+
+- **Primary Goal:** A student should open the app and within **3 seconds** know exactly how much they can spend today, their carry-forward status, and their debt positions.
+- **Visual Personality:** Confident, playful yet clean, generous whitespace, tactile rounded cards (16–24px border radius), and bold semantic colors.
+- **Accessibility:** Minimum touch targets of 44×44px on mobile devices, high-contrast typography, and strict compliance with iOS safe-area insets.
+
+---
+
+## 2. Navigation Architecture
+
+PaceWise employs a responsive adaptive navigation model:
+
+### 2.1 Desktop Navigation (Sidebar)
+A persistent fixed sidebar (240px wide) on screens $\ge 768\text{px}$ (`md` breakpoint):
+- **Header:** PaceWise logo (icon mark + bold wordmark) + live greeting.
+- **Primary Nav Items:**
+  - 🏠 **Dashboard** (`/`)
+  - 💸 **Transactions** (`/transactions`)
+  - 👥 **People** (`/people`)
+  - 🏖️ **Groups** (`/groups`)
+  - 🏷️ **Categories** (`/categories`)
+  - 📊 **Insights** (`/insights`)
+  - 📖 **Guide** (`/guide`)
+  - ⚙️ **Settings** (`/settings`)
+- **Footer:** User Profile summary card (`/profile`) with avatar, display name, email, and one-click quick logout.
+- **Active State:** Highlighted with a primary solid red background (`bg-red-500 text-white font-medium`) and soft shadow.
+
+### 2.2 Mobile Navigation (Bottom Nav Bar + FAB)
+On screens $< 768\text{px}$:
+- **Fixed Bottom Navigation Bar:** Ergonomically placed at the bottom with safe-area padding (`pb-safe`).
+- **Items:** Dashboard, Transactions, Quick `+` Action, People, Groups, More (Categories / Insights / Settings).
+- **Floating / Primary Quick Actions:** Floating action trigger or hero buttons on the Dashboard for immediate entry.
+
+---
+
+## 3. Global Design System
+
+### 3.1 Color Palette
+
+| Token | Hex / Value | Semantic Role |
+| :--- | :--- | :--- |
+| **Primary Red** | `#FF3B30` | Hero "Money Left" gradient, `+ Add Expense` button, negative balances, overspending alerts |
+| **Warning Orange** | `#FFB400` | Fixed bills, upcoming deadlines, moderate budget threshold alerts |
+| **Success Green** | `#25C266` | Carry-forward savings (`+₹XX`), "To Receive" balances, income additions, positive on-pace indicators |
+| **Dark Neutral (Card)** | `#14171A` | Dark hero card surfaces, dark mode card backgrounds |
+| **App Background (Light)** | `#F8FAFC` | Light mode background (`bg-slate-50`) |
+| **App Background (Dark)** | `#0F172A` | Dark mode background (`bg-slate-900`) |
+| **Border / Divider** | `#E2E8F0` / `#334155` | Subtle borders for cards and input containers |
+
+> [!IMPORTANT]
+> Color is never the sole indicator of financial status. Every balance or state is paired with an explicit `+`/`−` sign, directional icon, or textual label.
+
+### 3.2 Typography
+- **Font Family:** Modern geometric sans-serif (Inter, system-ui fallback).
+- **Money Displays:** 32px–42px bold font (`font-bold tracking-tight`) for instant scanning.
+- **Section Headers:** 18px–20px semi-bold (`font-semibold`).
+- **Meta / Captions:** 12px–13px medium (`text-slate-500 font-medium`).
+
+---
+
+## 4. Screen Specifications
+
+### 4.1 Dashboard (`src/pages/Dashboard.tsx`)
+The centerpiece of daily usage:
+1. **Header:** Date badge, greeting, and live clock ([LiveClock.tsx](file:///C:/CS/CS%20Projects/Web-Projects/PaceWise/src/components/ui/LiveClock.tsx)).
+2. **Hero "Money Left" Card:**
+   - Dark red gradient background (`from-red-600 to-rose-950`).
+   - Displays **Total Money Left** in bold 38px typography.
+   - Shows starting total budget and remaining days.
+   - Visual progress bar indicating percentage of monthly allowance remaining.
+3. **Daily Budget Pace Card:**
+   - Circular progress ring showing today's discretionary spend vs daily limit.
+   - **Today's Available Budget** prominently highlighted.
+   - **Carry-Forward Badge:** Green pill showing unspent allowance saved from yesterday or red pill if carrying a deficit.
+4. **Quick Action Grid:**
+   - Large touch-friendly pill buttons: `+ Add Expense` (Red), `+ Add Money` (Green), `+ Add Bill` (Orange).
+5. **People Debt Widget:**
+   - Split card showing: `To Receive` (green) and `You Owe` (red) with tap-to-open shortcut to `/people`.
+6. **Recent Transactions Feed:**
+   - Compact list rows showing the last 5 transactions with category icons, notes, and right-aligned amount.
+   - "View All" link directing to `/transactions`.
+
+### 4.2 Transactions (`src/pages/Transactions.tsx`)
+Full chronological ledger of all financial activity:
+- **Search Bar:** Real-time text search filtering across reasons, notes, categories, and person names.
+- **Filter Tabs:** All, Expenses, Income, Bills, People.
+- **Date Scope Filter:** Today, This Week, This Month, All Time, Custom Date Range.
+- **Transaction Item Row:**
+  - Category icon badge with tailored background color.
+  - Reason / Description and timestamp.
+  - Directional sign and color-coded amount (`+₹XX` green for income/received, `-₹XX` red for expense/paid).
+  - Quick action menu: Edit (via `EditTransactionModal`) or Delete (with confirmation).
+
+### 4.3 People & Person Details (`src/pages/People.tsx` & `PersonDetails.tsx`)
+1-on-1 debt tracking with friends:
+- **Summary Hero:** Total "You Owe", Total "To Receive", and Net Position.
+- **People List:**
+  - Alphabetical list with avatars, name, and current balance badge.
+  - Green badge: Person owes you. Red badge: You owe person.
+- **Person Details Screen:**
+  - Full history ledger with that individual.
+  - Chronological timeline of loans, borrowings, and "Bought for me" events.
+  - **Settle Modal (`SettleModal.tsx`):**
+    - Full or partial cash payment.
+    - Offset against existing debt.
+    - Itemized selection: Check off specific past transactions to settle.
+
+### 4.4 Groups (`src/pages/Groups.tsx` & `GroupDetails.tsx`)
+Multi-member shared expense tracking and debt simplification:
+- **Groups Grid:** Active and Settled group cards with emoji icons, member counters, total group spend, and user's net position.
+- **Group Details Header:**
+  - Group name, emoji, status toggle (`Active` / `Settled`).
+  - Total group spend, your paid amount, your share, and your net balance.
+- **Simplified Settlement Transfers ("Who pays whom"):**
+  - Generates minimal direct settlement transfers using graph flow minimization.
+  - Direct "Settle" button to log group transfers.
+- **Expenses & Transfers Tabs:**
+  - Detailed list of all group expenses with payer name and split breakdown (Equal vs Custom).
+  - Log of all peer-to-peer group transfers.
+
+### 4.5 Categories (`src/pages/Categories.tsx`)
+Custom category management:
+- **Tabs:** Expenses, Bills, Income.
+- **Category Tiles:** Icon badge, category title, active transaction count, and hide/show visibility toggle.
+- **Add Custom Category:** Opens `AddCategoryModal.tsx` to pick custom title, select from Lucide icons, and choose a theme color.
+
+### 4.6 Insights (`src/pages/Insights.tsx`)
+Visual spending analytics:
+- **Period Filter:** Today, This Week, This Month, Custom.
+- **Category Spend Distribution:** Interactive Recharts donut/bar chart with percentage share.
+- **Daily Spending Pace Graph:** Compares actual daily spending line against the ideal steady-pace allocation.
+- **Zero-Spend Days Milestone:** Highlights discipline days.
+- **Splurge Analysis:** Flags unusually high single transactions.
+
+### 4.7 Guide (`src/pages/Guide.tsx`)
+Interactive onboarding and visual manual:
+- Illustrates how Daily Pace is calculated.
+- Explains the Carry-Forward mechanic with visual before/after scenarios.
+- Demonstrates debt settlement and group splitting.
+
+### 4.8 Settings (`src/pages/Settings.tsx`)
+- **Budget Configuration:** Set monthly allowance, start date, and end date.
+- **Month Rollover:** Toggle automatic carry-over of unspent allowance into the next month.
+- **Theme Switcher:** Single-click toggle between Light, Dark, and System mode.
+- **Currency:** Set preferred currency symbol (₹, $, €, £).
+- **Data Safeguards:** Local data reset and full cloud account deletion.
+
+---
+
+## 5. Modal Specifications
+
+All modals are centered dialogs on desktop and slide-up bottom sheets on mobile with swipe-to-dismiss support:
+
+1. `AddExpenseModal.tsx`: Fast expense entry (Amount hero input, Category selector, Reason, Date, Payment method).
+2. `AddMoneyModal.tsx`: Income logging (Amount, Source, Date, Note).
+3. `AddBillModal.tsx`: Fixed bill entry (Amount, Bill category, Date, Note).
+4. `AddPersonModal.tsx`: Quick friend creation.
+5. `PersonTransactionModal.tsx`: Log Gave / Took / Bought for me transactions.
+6. `SettleModal.tsx`: Cash and offset settlements with itemized transaction checkboxes.
+7. `CreateGroupModal.tsx`: New group setup with emoji picker and member list.
+8. `AddGroupExpenseModal.tsx`: Group expense entry with Equal or Custom split calculation.
+9. `AddGroupTransferModal.tsx`: Direct settlement transfer within a group.
+10. `GroupSettleModal.tsx`: One-click group settlement flow.
+11. `AddCategoryModal.tsx`: Custom category creation with icon and color palette picker.
+12. `CategoryDetailModal.tsx`: In-depth category spending drill-down.
+13. `SplurgeDetailModal.tsx`: Outlier expense inspection.
+14. `ConfirmModal.tsx`: Safe confirmation dialog for destructive actions (deletions/resets).
+15. `EditTransactionModal.tsx`: Transaction editing flow.

@@ -1,233 +1,175 @@
 # PaceWise Supabase Integration Guide
 
-## Overview
+## 1. Overview
 
-PaceWise has been integrated with Supabase for secure, cloud-based data persistence. User data is now stored in Supabase PostgreSQL instead of browser localStorage, enabling multi-device sync and secure authentication.
+PaceWise integrates with [Supabase](https://supabase.com) (PostgreSQL + Supabase Auth + Row Level Security + Edge Functions) to provide secure cloud persistence, multi-device sync, and zero-leakage data isolation. 
 
-## Quick Start
+While offline or during active user interaction, PaceWise operates as an **optimistic local-first application** backed by Zustand stores and scoped `localStorage` caching (`pacewise-storage-${userId}`). All state mutations are synced asynchronously to Supabase.
 
-### 1. Create a Supabase Project
+---
 
-1. Go to [supabase.com](https://supabase.com)
-2. Sign up or log in
-3. Create a new project
-4. Copy your project URL and publishable API key from **Settings > API**
+## 2. Quick Start
 
-### 2. Set Up Database Schema
+### 2.1 Create a Supabase Project
 
-1. In Supabase, go to the **SQL Editor**
-2. Open a new query
-3. Copy and run the entire contents of `docs/supabase-schema.sql`
-4. This creates all tables with Row Level Security (RLS) policies
+1. Navigate to [supabase.com](https://supabase.com) and sign in to your dashboard.
+2. Click **New Project**, choose a project name (e.g., `pacewise-prod`), set a secure database password, and select your nearest region.
+3. Once provisioned, open **Project Settings > API**.
+4. Retrieve your **Project URL** (`https://<project-ref>.supabase.co`) and **Publishable / Anon API Key** (`eyJ...`).
 
-### 3. Configure Environment Variables
+### 2.2 Execute Database Schema
 
-1. Copy `.env.example` to `.env` (already done locally)
-2. Update `.env` with your Supabase credentials:
-   ```
-   VITE_SUPABASE_URL=https://your-project.supabase.co
-   VITE_SUPABASE_PUBLISHABLE_KEY=your_publishable_key_here
-   ```
-3. Never commit `.env` (it's in `.gitignore`)
+1. In your Supabase dashboard, navigate to the **SQL Editor**.
+2. Click **New query**.
+3. Copy and run the entire script from [supabase-schema.sql](file:///C:/CS/CS%20Projects/Web-Projects/PaceWise/Docs/supabase-schema.sql).
+4. This creates all core tables (`profiles`, `budget_configs`, `people`, `transactions`), performance indexes, and enables strict Row Level Security (RLS) policies.
 
-### 4. Deploy on Vercel
+### 2.3 Configure Environment Variables
 
-1. In Vercel project settings, add environment variables:
+Create or update `.env` in the root of your project:
+
+```env
+VITE_SUPABASE_URL=https://<your-project-id>.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your_publishable_anon_key_here
+```
+
+> [!CAUTION]
+> Never commit `.env` or paste your Supabase `SERVICE_ROLE_KEY` into frontend client code. The client only needs the public publishable anon key.
+
+### 2.4 Deploy to Vercel
+
+1. In your Vercel Project Settings, navigate to **Environment Variables**.
+2. Add:
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_PUBLISHABLE_KEY`
-2. Redeploy to apply the new configuration
+3. Trigger a redeploy.
 
-### 5. Local Development
+### 2.5 Local Development
 
 ```bash
-npm install              # Install dependencies (includes @supabase/supabase-js)
-npm run build           # Build the app
-npx vitest run          # Run tests
-npm run dev             # Start dev server
+npm install              # Install dependencies
+npm run build           # Verify TypeScript compilation and Vite build
+npm test                # Run Vitest test suites
+npm run dev             # Start development server
 ```
 
-## Architecture
+---
 
-### Authentication Flow
+## 3. Database Architecture & Schema
 
-1. **First Visit**: User sees login/signup page
-2. **Sign Up**: Creates new account in Supabase Auth
-3. **Sign In**: Authenticates and loads user's data
-4. **Auto-sync**: On every app start, Supabase session is restored automatically
-5. **Sign Out**: Available in Settings page
+### 3.1 Tables Overview
 
-### Data Storage
+| Table | Description | Primary Key | Foreign Keys |
+| :--- | :--- | :--- | :--- |
+| `public.profiles` | User profile details extending `auth.users` | `id` (UUID) | `id` -> `auth.users(id)` ON DELETE CASCADE |
+| `public.budget_configs` | Active budget period, starting money, currency, theme | `id` (UUID) | `user_id` -> `public.profiles(id)` ON DELETE CASCADE |
+| `public.people` | Friends tracked for 1-on-1 debt | `id` (UUID) | `user_id` -> `public.profiles(id)` ON DELETE CASCADE |
+| `public.transactions` | Expenses, income, bills, and debt transfers | `id` (UUID) | `user_id` -> `public.profiles(id)`, `person_id` -> `public.people(id)` |
 
-All persistent data is stored in Supabase PostgreSQL:
+### 3.2 Schema Columns & Constraints
 
-- **profiles**: User account information
-- **budget_configs**: Monthly budget settings
-- **people**: People tracked for debt
-- **transactions**: All expense, income, bill, and person transactions
+#### `public.profiles`
+- `id`: UUID (Primary Key, matches `auth.users.id`)
+- `email`: TEXT (Unique, NOT NULL)
+- `display_name`: TEXT
+- `avatar_url`: TEXT
+- `created_at`, `updated_at`: TIMESTAMPTZ
 
-### Security
+#### `public.budget_configs`
+- `id`: UUID (Primary Key)
+- `user_id`: UUID (NOT NULL, FK to `profiles`)
+- `total_money`: NUMERIC (NOT NULL, default 0)
+- `start_date`: TIMESTAMPTZ (NOT NULL)
+- `end_date`: TIMESTAMPTZ (NOT NULL)
+- `currency`: TEXT (Default `'₹'`)
+- `theme`: TEXT (Default `'system'`, options: `'light' | 'dark' | 'system'`)
 
-- **Row Level Security (RLS)**: Every user can ONLY access their own data
-- **No Secret Keys**: Frontend only uses the public anon/publishable key
-- **Encrypted Connections**: All data in transit is encrypted via HTTPS
-- **Auth-based Access**: All tables require valid Supabase authentication
+#### `public.people`
+- `id`: UUID (Primary Key)
+- `user_id`: UUID (NOT NULL, FK to `profiles`)
+- `name`: TEXT (NOT NULL)
+- `avatar_url`: TEXT
+- `balance`: NUMERIC (Default 0, computed balance)
 
-## Data Migration
+#### `public.transactions`
+- `id`: UUID (Primary Key)
+- `user_id`: UUID (NOT NULL, FK to `profiles`)
+- `type`: TEXT (`'expense' | 'income' | 'bill' | 'person'`)
+- `amount`: NUMERIC (NOT NULL)
+- `date`: TIMESTAMPTZ (NOT NULL)
+- `category`: TEXT
+- `reason`: TEXT
+- `source`: TEXT (For income: `'parents' | 'salary' | 'scholarship' | 'other'`)
+- `person_id`: UUID (Nullable, FK to `people`)
+- `person_name`: TEXT
+- `direction`: TEXT (`'gave' | 'took' | 'bought_for_me' | 'offset_debt'`)
+- `is_settlement`: BOOLEAN (Default FALSE)
+- `is_bought_for_me_settlement`: BOOLEAN (Default FALSE)
+- `status`: TEXT (Default `'unsettled'`)
+- `payment_method`: TEXT
+- `note`: TEXT
 
-### From localStorage to Supabase
+---
 
-The app automatically migrates existing localStorage data when a user logs in:
+## 4. Row Level Security (RLS) Policy Design
 
-1. **First Login**: If user had local data (from before authentication was added)
-2. **Preserved**: All existing transactions, people, and budget settings are maintained
-3. **No Duplicates**: Migration logic prevents re-importing the same data
+Every table has Row Level Security turned ON (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`). Users can only query, insert, update, or delete rows where `auth.uid() = user_id` (or `auth.uid() = id` for `profiles`).
 
-To manually trigger migration:
-- Sign in with the same email used before
-- Data will be detected and migrated automatically
-
-## Using the App
-
-### After Authentication
-
-1. **Dashboard**: Shows daily budget, recent transactions, people owing money
-2. **Transactions**: Add/view all expenses, income, bills, and person transactions
-3. **People**: Manage people you track debt with
-4. **Insights**: View spending analytics
-5. **Settings**: 
-   - Manage budget settings
-   - Change theme (light/dark/system)
-   - Sign out
-
-### Data Sync
-
-- **Real-time**: Changes are synced to Supabase immediately
-- **Offline**: App uses local Zustand store while offline
-- **Auto-reconnect**: Data syncs when connection is restored
-
-## API Functions
-
-The `src/lib/supabaseSync.ts` file provides these functions:
-
-```typescript
-// Use in components after authentication
-import { 
-  addTransactionToSupabase, 
-  deleteTransactionFromSupabase,
-  addPersonToSupabase, 
-  deletePersonFromSupabase,
-  updatePersonBalanceInSupabase 
-} from '../lib/supabaseSync';
-
-// In a modal or component:
-const user_id = useAuthStore((state) => state.user?.id);
-await addTransactionToSupabase(user_id, { /* transaction */ });
+Example policy:
+```sql
+CREATE POLICY "Users can view their own transactions" 
+  ON public.transactions
+  FOR SELECT 
+  USING (auth.uid() = user_id);
 ```
 
-## Troubleshooting
+This guarantees 100% cryptographic isolation between student accounts even in multi-tenant environments.
 
-### "Missing Supabase environment variables"
+---
 
-**Problem**: App won't start, showing error about missing env vars
-**Solution**: Ensure `.env` file exists with `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`
+## 5. Client Synchronization Architecture
 
-### "Failed to connect to Supabase"
+The sync engine resides in [`src/lib/supabaseSync.ts`](file:///C:/CS/CS%20Projects/Web-Projects/PaceWise/src/lib/supabaseSync.ts) and [`src/store/useStore.ts`](file:///C:/CS/CS%20Projects/Web-Projects/PaceWise/src/store/useStore.ts).
 
-**Problem**: Auth or data operations fail
-**Solution**: 
-1. Verify URL and key are correct
-2. Check that Supabase project is online
-3. Ensure RLS policies are enabled on all tables
+### 5.1 Hydration Lifecycle (`useSupabaseSync`)
+1. **User Authentication:** When a session is established in `useAuthStore`, `useSupabaseSync` triggers.
+2. **Double-Mount Guard:** React 18 strict mode double-mounting is guarded via module-level `activeFetchUserId`.
+3. **Profile Verification:** Checks if `profiles` record exists; if absent, automatically generates a profile row with the user's email or metadata display name.
+4. **Data Fetching:** Concurrently retrieves `budget_configs`, `people`, and `transactions` sorted chronologically.
+5. **State Hydration:** Hydrates Zustand store (`useStore.setState({ people, transactions })`) and updates dynamic debt balances via `calculatePersonBalance()`.
+6. **Flag Unlocking:** Sets `isHydrated = true`, revealing the UI without layout shifts or flash of empty state.
 
-### "Sign in works but no data appears"
+### 5.2 Optimistic Updates & Sync Helpers
+Whenever a user logs an expense, creates a debt transaction, or settles:
+- **Instant UI Response:** Local Zustand store updates immediately for zero-latency interactions.
+- **Background Sync:** Dedicated functions push changes to Supabase:
+  - `addTransactionToSupabase(user_id, transaction)`
+  - `deleteTransactionFromSupabase(user_id, id)`
+  - `addPersonToSupabase(user_id, person)`
+  - `deletePersonFromSupabase(user_id, id)`
+  - `updatePersonBalanceInSupabase(user_id, personId, balance)`
 
-**Problem**: User can log in but sees empty dashboard
-**Solution**:
-1. Data may still be migrating from localStorage
-2. Try adding a transaction manually
-3. Check Supabase > Tables to verify data was stored
+---
 
-### "Permission denied" on database operations
+## 6. Supabase Edge Functions: Account & Data Deletion
 
-**Problem**: App tries to read/write but gets RLS error
-**Solution**:
-1. Verify `profiles` table exists and user has a profile
-2. Check that RLS policies were applied correctly
-3. Ensure user is authenticated (not anon token)
+PaceWise includes a secure Edge Function located at `supabase/functions/delete-user/index.ts`.
 
-## Development
+### Why an Edge Function?
+Standard Supabase client tokens cannot delete their own record from `auth.users` for security reasons. The `delete-user` Deno Edge Function:
+1. Validates the caller's JWT `Authorization: Bearer <token>` to confirm identity.
+2. Uses the internal `SUPABASE_SERVICE_ROLE_KEY` (kept strictly in the Deno environment, never sent to the browser).
+3. Calls `supabaseAdmin.auth.admin.deleteUser(user.id)`.
+4. Cascades deletions across `profiles`, `budget_configs`, `people`, and `transactions`.
+5. Enforces CORS restrictions matching `APP_ORIGIN`.
 
-### Adding New Data Types
+---
 
-To add new data to Supabase:
+## 7. Troubleshooting & Verification
 
-1. **Create table** in Supabase SQL editor
-2. **Enable RLS** on the table
-3. **Add RLS policies** for SELECT, INSERT, UPDATE, DELETE
-4. **Update types** in relevant TypeScript files
-5. **Implement sync functions** in `src/lib/supabaseSync.ts`
-6. **Update Zustand store** if needed for UI state
-
-### Testing
-
-Run tests with:
-```bash
-npx vitest run          # Run all tests
-npx vitest --watch      # Watch mode for development
-```
-
-Tests currently verify:
-- Budget calculations
-- Transaction logic
-- Store state management
-
-## Production Checklist
-
-Before deploying to production:
-
-- [ ] Supabase project created and configured
-- [ ] Database schema applied via SQL
-- [ ] Environment variables set in Vercel
-- [ ] Build passes: `npm run build`
-- [ ] Tests pass: `npx vitest run`
-- [ ] Manual testing of auth flow
-- [ ] Manual testing of data creation/update/delete
-- [ ] Verify RLS policies prevent cross-user data access
-
-## Support & Documentation
-
-- **Supabase Docs**: https://supabase.com/docs
-- **React Integration**: https://supabase.com/docs/guides/auth/auth-js
-- **Row Level Security**: https://supabase.com/docs/guides/auth/row-level-security
-
-## Files Changed/Added
-
-### New Files
-- `src/lib/supabase.ts` - Supabase client setup
-- `src/lib/supabaseSync.ts` - Data sync and API functions
-- `src/store/useAuthStore.ts` - Authentication state management
-- `src/pages/Auth.tsx` - Login/signup page
-- `docs/supabase-schema.sql` - PostgreSQL schema
-- `.env` (local only, not committed)
-- `.env.example` - Environment variable template
-
-### Modified Files
-- `package.json` - Added @supabase/supabase-js dependency
-- `src/App.tsx` - Added auth routing and Supabase sync initialization
-- `src/pages/Settings.tsx` - Added logout button and user email display
-- `.gitignore` - Already had .env ignored
-
-### Database Schema
-
-Tables created:
-- `public.profiles` - User profiles (extends auth.users)
-- `public.budget_configs` - Budget settings per user
-- `public.people` - People tracked for debt
-- `public.transactions` - All financial transactions
-
-All tables have:
-- UUID primary keys
-- User ID foreign key
-- Timestamps (created_at, updated_at)
-- Row Level Security policies
-- Appropriate indexes for performance
+| Issue | Cause | Resolution |
+| :--- | :--- | :--- |
+| **"Missing Supabase environment variables"** | Missing `.env` | Ensure `.env` contains `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. Restart Vite dev server (`npm run dev`). |
+| **"Permission denied" / RLS Error** | RLS policy missing or wrong UID check | Re-run [supabase-schema.sql](file:///C:/CS/CS%20Projects/Web-Projects/PaceWise/Docs/supabase-schema.sql) in SQL Editor. Verify `auth.uid() = user_id`. |
+| **"Failed to fetch / network error"** | Supabase project paused or wrong URL | Check Supabase dashboard to verify project is Active. Ensure URL protocol is `https://`. |
+| **Stale data after reset** | Local cache or sync flag not cleared | Call `resetSyncFlag()` and use `clearAllData()` from `useStore`. |
