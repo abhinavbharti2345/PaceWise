@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useStore } from '../../src/store/useStore';
+import { useStore, storePersistConfig } from '../../src/store/useStore';
 import { useAuthStore } from '../../src/store/useAuthStore';
 import { parseLocalDate, getLocalDateString } from '../../src/utils/dateUtils';
 
@@ -462,6 +462,37 @@ describe('Hardening & Cascade Deletion Logic', () => {
 
       store.deleteCustomIncomeCategory('Dividends');
       expect(useStore.getState().customIncomeCategories?.some(c => c.name === 'Dividends')).toBe(false);
+      expect(useStore.getState().incomeCategoryOrder).toEqual(['Salary / Job', 'Parents']);
+    });
+
+    it('21b. Category customizations & custom categories are included in persist partialize for page refresh recovery', () => {
+      const store = useStore.getState();
+
+      store.addCustomCategory({ name: 'Gaming Subscriptions', icon: 'Sparkles', color: 'purple' });
+      store.addCustomBillCategory({ name: 'Hostel Maintenance', icon: 'Receipt', color: 'red' });
+      store.addCustomIncomeCategory({ name: 'Stipend', icon: 'Briefcase', color: 'green' });
+      store.hideCategory('Transport');
+      store.reorderCategories(['Gaming Subscriptions', 'Food', 'Education'], 'expense');
+
+      const persisted = storePersistConfig.partialize(useStore.getState());
+
+      expect(persisted.customCategories).toEqual(
+        expect.arrayContaining([expect.objectContaining({ name: 'Gaming Subscriptions' })])
+      );
+      expect(persisted.customBillCategories).toEqual(
+        expect.arrayContaining([expect.objectContaining({ name: 'Hostel Maintenance' })])
+      );
+      expect(persisted.customIncomeCategories).toEqual(
+        expect.arrayContaining([expect.objectContaining({ name: 'Stipend' })])
+      );
+      expect(persisted.hiddenCategories).toContain('Transport');
+      expect(persisted.categoryOrder).toEqual(['Gaming Subscriptions', 'Food', 'Education']);
+
+      // Cleanup
+      store.deleteCustomCategory('Gaming Subscriptions');
+      store.deleteCustomBillCategory('Hostel Maintenance');
+      store.deleteCustomIncomeCategory('Stipend');
+      store.unhideCategory('Transport');
     });
 
     it('22. Month rollover rolls over the full remaining moneyLeft to the new month', async () => {

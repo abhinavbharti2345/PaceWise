@@ -114,6 +114,23 @@ const defaultConfig: BudgetConfig = {
   theme: 'system',
 };
 
+export const storePersistConfig = {
+  name: 'pacewise-storage-v2',
+  partialize: (state: AppState) => ({
+    // Only persist data fields, NOT the isHydrated flag
+    config: state.config,
+    transactions: state.transactions,
+    people: state.people,
+    customCategories: state.customCategories,
+    customBillCategories: state.customBillCategories,
+    customIncomeCategories: state.customIncomeCategories,
+    hiddenCategories: state.hiddenCategories,
+    categoryOrder: state.categoryOrder,
+    billCategoryOrder: state.billCategoryOrder,
+    incomeCategoryOrder: state.incomeCategoryOrder,
+  }),
+};
+
 export const useStore = create<AppState>()(
   persist(
     (set) => ({
@@ -136,7 +153,8 @@ export const useStore = create<AppState>()(
       }),
 
       deleteCustomCategory: (name) => set((state) => ({
-        customCategories: state.customCategories.filter(c => c.name.toLowerCase() !== name.toLowerCase())
+        customCategories: state.customCategories.filter(c => c.name.toLowerCase() !== name.toLowerCase()),
+        categoryOrder: (state.categoryOrder || []).filter(c => c.toLowerCase() !== name.toLowerCase()),
       })),
 
       addCustomBillCategory: (cat) => set((state) => {
@@ -147,7 +165,8 @@ export const useStore = create<AppState>()(
       }),
 
       deleteCustomBillCategory: (name) => set((state) => ({
-        customBillCategories: (state.customBillCategories || []).filter(c => c.name.toLowerCase() !== name.toLowerCase())
+        customBillCategories: (state.customBillCategories || []).filter(c => c.name.toLowerCase() !== name.toLowerCase()),
+        billCategoryOrder: (state.billCategoryOrder || []).filter(c => c.toLowerCase() !== name.toLowerCase()),
       })),
 
       addCustomIncomeCategory: (cat) => set((state) => {
@@ -158,7 +177,8 @@ export const useStore = create<AppState>()(
       }),
 
       deleteCustomIncomeCategory: (name) => set((state) => ({
-        customIncomeCategories: (state.customIncomeCategories || []).filter(c => c.name.toLowerCase() !== name.toLowerCase())
+        customIncomeCategories: (state.customIncomeCategories || []).filter(c => c.name.toLowerCase() !== name.toLowerCase()),
+        incomeCategoryOrder: (state.incomeCategoryOrder || []).filter(c => c.toLowerCase() !== name.toLowerCase()),
       })),
 
       hideCategory: (name) => set((state) => {
@@ -913,6 +933,13 @@ export const useStore = create<AppState>()(
         },
         transactions: [],
         people: [],
+        customCategories: [],
+        customBillCategories: [],
+        customIncomeCategories: [],
+        hiddenCategories: [],
+        categoryOrder: [],
+        billCategoryOrder: [],
+        incomeCategoryOrder: [],
         isHydrated: false,
       }),
 
@@ -920,19 +947,18 @@ export const useStore = create<AppState>()(
         config: defaultConfig, 
         transactions: [], 
         people: [],
+        customCategories: [],
+        customBillCategories: [],
+        customIncomeCategories: [],
+        hiddenCategories: [],
+        categoryOrder: [],
+        billCategoryOrder: [],
+        incomeCategoryOrder: [],
         isHydrated: false,
       }),
 
       setHydrated: (value) => set({ isHydrated: value }),
     }),
-    {
-      name: 'pacewise-storage-v2',
-      partialize: (state) => ({
-        // Only persist data fields, NOT the isHydrated flag
-        config: state.config,
-        transactions: state.transactions,
-        people: state.people,
-      }),
-    }
+    storePersistConfig
   )
 );

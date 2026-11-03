@@ -17,9 +17,9 @@ interface SettleModalProps {
 }
 
 export function SettleModal({ isOpen, onClose, person, transactionToSettle }: SettleModalProps) {
-  const { settleDebt, transactions, customCategories } = useStore();
+  const { settleDebt, transactions, customCategories, hiddenCategories = [], categoryOrder = [] } = useStore();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
-  const allCategories = getAllExpenseCategories(customCategories);
+  const allCategories = getAllExpenseCategories(customCategories, hiddenCategories, categoryOrder);
   
   const absBalance = Math.abs(person.balance);
   const isPersonOwing = person.balance > 0; // Person owes user overall

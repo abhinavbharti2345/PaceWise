@@ -24,9 +24,9 @@ export function PersonTransactionModal({
   person,
   defaultDirection = 'gave'
 }: PersonTransactionModalProps) {
-  const { recordPersonTransaction, transactions, customCategories } = useStore();
+  const { recordPersonTransaction, transactions, customCategories, hiddenCategories = [], categoryOrder = [] } = useStore();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
-  const allCategories = getAllExpenseCategories(customCategories);
+  const allCategories = getAllExpenseCategories(customCategories, hiddenCategories, categoryOrder);
 
   const boughtForMeItems = transactions.filter(
     t => t.personId === person.id && t.direction === 'bought_for_me' && t.status !== 'settled'
