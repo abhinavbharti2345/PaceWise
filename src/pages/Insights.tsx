@@ -464,12 +464,39 @@ const CategoryDonutChart = React.memo(({
   );
 });
 
+export const INSIGHTS_TIME_FILTER_KEY = 'pacewise-insights-time-filter';
+const VALID_FILTERS = ['week', 'current', 'last1', 'last2'];
+
 export function Insights() {
   const { config, transactions, people } = useStore();
   const todayDateStr = useCurrentDate();
 
   // Time filter state: 'week' = This Week, 'current' = This Month, 'last1' = Last Month, 'last2' = 2 Months Ago
-  const [timeFilter, setTimeFilter] = useState<string>('current');
+  // Restores selected filter from localStorage on page refresh / revisit
+  const [timeFilter, setTimeFilterState] = useState<string>(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem(INSIGHTS_TIME_FILTER_KEY);
+        if (saved && VALID_FILTERS.includes(saved)) {
+          return saved;
+        }
+      }
+    } catch {
+      // localStorage may be unavailable
+    }
+    return 'current';
+  });
+
+  const setTimeFilter = (filter: string) => {
+    setTimeFilterState(filter);
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(INSIGHTS_TIME_FILTER_KEY, filter);
+      }
+    } catch {
+      // localStorage may be unavailable
+    }
+  };
 
   // Modal inspection states
   const [selectedCategoryName, setSelectedCategoryName] = useState<string | null>(null);

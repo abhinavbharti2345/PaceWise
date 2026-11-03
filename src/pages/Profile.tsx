@@ -86,7 +86,10 @@ export function Profile() {
 
       // 2. Explicitly clear persisted localStorage so stale data cannot
       //    rehydrate on the next page load.
-      try { localStorage.removeItem('pacewise-storage-v2'); } catch { /* ignore */ }
+      try { 
+        localStorage.removeItem('pacewise-storage-v2'); 
+        localStorage.removeItem('pacewise-insights-time-filter');
+      } catch { /* ignore */ }
 
       // 3. Reset the sync flag so the next mount triggers a clean re-sync
       //    against the now-empty Supabase tables.

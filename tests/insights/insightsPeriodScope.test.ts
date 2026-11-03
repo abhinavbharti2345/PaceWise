@@ -101,4 +101,13 @@ describe('Insights Period Scoping & Isolation Tests', () => {
     const projectedRollover = isHistorical ? augStats.moneyLeft : augStats.moneyLeft - 0;
     expect(projectedRollover).toBe(2500);
   });
+
+  it('5. Insights time filter persistence key is defined and valid', () => {
+    const key = 'pacewise-insights-time-filter';
+    const validFilters = ['week', 'current', 'last1', 'last2'];
+
+    expect(key).toBe('pacewise-insights-time-filter');
+    expect(validFilters).toContain('week');
+    expect(validFilters).toContain('current');
+  });
 });

@@ -186,6 +186,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       // Clear the localStorage cache so the next user doesn't see stale data
       try {
         localStorage.removeItem('pacewise-storage-v2');
+        localStorage.removeItem('pacewise-insights-time-filter');
       } catch {
         // localStorage may be unavailable
       }
