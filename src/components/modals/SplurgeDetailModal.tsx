@@ -31,10 +31,14 @@ export function SplurgeDetailModal({
     <div 
       className="fixed inset-0 z-[100] flex flex-col justify-end sm:justify-center items-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-0 sm:p-4 overflow-y-auto overscroll-y-contain touch-pan-y"
       onClick={onClose}
+      role="presentation"
     >
       <div 
         className="bg-[var(--color-surface)] w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-6 duration-300 max-h-[85dvh] sm:max-h-[80vh] flex flex-col border border-[var(--color-gray-light)] shrink-0"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="splurge-dialog-title"
       >
         {/* Header */}
         <div className="p-4 sm:p-5 flex items-center justify-between border-b border-[var(--color-gray-light)] shrink-0 bg-[var(--color-surface)]">
@@ -42,13 +46,14 @@ export function SplurgeDetailModal({
             <div className="w-9 h-9 rounded-2xl bg-[var(--color-primary)]/10 flex items-center justify-center text-[var(--color-primary)] shrink-0">
               <ShoppingBag size={18} />
             </div>
-            <h2 className="font-extrabold text-[var(--color-dark)] text-base sm:text-lg tracking-tight">
+            <h2 id="splurge-dialog-title" className="font-extrabold text-[var(--color-dark)] text-base sm:text-lg tracking-tight">
               Splurge Details
             </h2>
           </div>
           <button 
             type="button"
             onClick={onClose} 
+            aria-label="Close splurge details"
             className="p-2 hover:bg-[var(--color-surface-light)] rounded-full transition-colors text-[var(--color-gray-dark)] cursor-pointer"
           >
             <X size={20} />

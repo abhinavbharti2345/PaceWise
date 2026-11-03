@@ -2,7 +2,8 @@ import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { useStore } from '../store/useStore';
 import { calculateBudget } from '../features/budget/budgetEngine';
 import { useCurrentDate } from '../hooks/useCurrentDate';
-import { format, startOfDay } from 'date-fns';
+import { format, startOfDay, startOfWeek, endOfWeek } from 'date-fns';
+import { parseLocalDate } from '../utils/dateUtils';
 import { cn } from '../utils/cn';
 import { Card, CardTitle } from '../components/ui/Card';
 import {
@@ -76,8 +77,8 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
   }, [stats.effectiveTotalBudget]);
 
   const pastStats = useMemo(() =>
-    stats.dailyStats.filter((s: any) => !s.isFuture || s.dayIndex === stats.daysPassed + 1),
-    [stats.dailyStats, stats.daysPassed]);
+    stats.dailyStats.filter((s: any) => !s.isFuture),
+    [stats.dailyStats]);
 
   // Ideal cumulative spend line
   const idealPathD = useMemo(() => {
@@ -260,7 +261,14 @@ const BurnDownChart = React.memo(({ stats, endLabel = "End of Month" }: { stats:
             className="absolute top-0 bottom-0 border-l border-dashed border-[var(--color-gray-light)] transition-opacity duration-200 pointer-events-none"
             style={{ left: `${getX(stats.daysPassed)}%` }}
           >
-            <div className="absolute -top-6 -translate-x-1/2 bg-[var(--color-surface)] border border-[var(--color-gray-light)] px-2 py-1 rounded text-[11px] font-medium text-[var(--color-dark)] shadow-sm z-10 whitespace-nowrap">Today</div>
+            <div
+              className={cn(
+                "absolute -top-6 bg-[var(--color-surface)] border border-[var(--color-gray-light)] px-2 py-1 rounded text-[11px] font-medium text-[var(--color-dark)] shadow-sm z-10 whitespace-nowrap",
+                getX(stats.daysPassed) < 10 ? "left-0" : getX(stats.daysPassed) > 90 ? "right-0" : "-translate-x-1/2"
+              )}
+            >
+              Today
+            </div>
             <div
               className="absolute -translate-x-1/2 w-3 h-3 rounded-full bg-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)] z-10"
               style={{ top: `${getY(pastStats[pastStats.length - 1]?.cumulativeDiscretionarySpent || 0)}%`, transform: 'translateY(-50%)' }}
@@ -515,17 +523,18 @@ export function Insights() {
     }
 
     if (timeFilter === 'week') {
-      const now = startOfDay(new Date(todayDateStr));
-      const day = now.getDay();
-      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-      start = startOfDay(new Date(now.getFullYear(), now.getMonth(), diff));
-      end = startOfDay(new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6));
+      const now = startOfDay(parseLocalDate(todayDateStr));
+      start = startOfWeek(now, { weekStartsOn: 1 });
+      end = endOfWeek(now, { weekStartsOn: 1 });
 
       const currentStats = calculateBudget(config, transactions, todayDateStr);
       const totalMoneyLeft = currentStats.effectiveTotalBudget - currentStats.totalDiscretionarySpent;
       const daysLeft = currentStats.daysRemaining;
-      const weeksLeft = daysLeft > 0 ? daysLeft / 7 : 0;
-      const weeklyIdeal = weeksLeft > 0 ? totalMoneyLeft / weeksLeft : 0;
+      
+      // A week cannot exceed 7 days, nor can it budget more days than remain in the monthly cycle
+      const daysToBudget = Math.min(7, Math.max(1, daysLeft));
+      const dailyRate = Math.max(0, currentStats.remainingDailyPace > 0 ? currentStats.remainingDailyPace : (daysLeft > 0 ? totalMoneyLeft / daysLeft : 0));
+      const weeklyIdeal = Math.max(0, Math.min(totalMoneyLeft > 0 ? totalMoneyLeft : 0, dailyRate * daysToBudget));
 
       const syntheticConfig = {
         ...config,
@@ -533,21 +542,35 @@ export function Insights() {
         startDate: start.toISOString(),
         endDate: end.toISOString()
       };
-      const weeklyTransactions = transactions.filter(t => t.type !== 'income' && t.type !== 'bill');
+      const weeklyTransactions = transactions.filter(t => {
+        if (t.type === 'income' || t.type === 'bill') return false;
+        const d = startOfDay(new Date(t.date));
+        return d >= start && d <= end;
+      });
       const calculatedStats = calculateBudget(syntheticConfig, weeklyTransactions, todayDateStr);
       return { stats: calculatedStats, activeDateRange: { start, end } };
     }
 
     // Calculate boundaries for past months
     const offset = timeFilter === 'last1' ? 1 : 2;
-    const now = new Date(todayDateStr);
+    const now = parseLocalDate(todayDateStr);
     const targetDate = new Date(now.getFullYear(), now.getMonth() - offset, 1);
 
     start = startOfDay(new Date(targetDate.getFullYear(), targetDate.getMonth(), 1));
     end = startOfDay(new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0));
 
+    // For historical months, derive actual budget pool from income + net cashflow of that specific period,
+    // rather than leaking the current month's totalMoney setting.
+    const pastMonthTxs = transactions.filter(t => {
+      const d = startOfDay(new Date(t.date)).getTime();
+      return d >= start.getTime() && d <= end.getTime();
+    });
+    const pastIncomes = pastMonthTxs.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+    const historicalTotalBudget = pastIncomes > 0 ? 0 : config.totalMoney;
+
     const syntheticConfig = {
       ...config,
+      totalMoney: historicalTotalBudget,
       startDate: start.toISOString(),
       endDate: end.toISOString()
     };
@@ -567,8 +590,17 @@ export function Insights() {
     return periodTransactions.filter(t => t.type === 'expense');
   }, [periodTransactions]);
 
+  // Total discretionary spend within the selected period
+  const totalPeriodDiscretionary = useMemo(() => {
+    return periodExpenses.reduce((sum, t) => sum + t.amount, 0);
+  }, [periodExpenses]);
+
   // 1. Pacing Narrative Logic
-  const avgDailyDiscretionary = Math.round(stats.totalDiscretionarySpent / Math.max(1, stats.daysPassed));
+  const isHistoricalPeriod = timeFilter === 'last1' || timeFilter === 'last2';
+  const elapsedDays = isHistoricalPeriod
+    ? stats.totalDays
+    : Math.max(1, stats.daysPassed);
+  const avgDailyDiscretionary = Math.round(stats.totalDiscretionarySpent / elapsedDays);
   let heroTitle = "Pacing Health";
   let heroMessage: React.ReactNode = "";
   let badgeText = "On Track";
@@ -602,16 +634,30 @@ export function Insights() {
       return acc;
     }, {} as Record<string, number>);
 
-    return Object.entries(categoryMap)
-      .map(([category, amount]) => ({
-        category,
-        amount,
-        percentage: stats.totalDiscretionarySpent > 0
-          ? Math.round((amount / stats.totalDiscretionarySpent) * 100)
-          : 0,
-      }))
-      .sort((a, b) => b.amount - a.amount);
-  }, [periodExpenses, stats.totalDiscretionarySpent]);
+    const entries = Object.entries(categoryMap).sort((a, b) => b[1] - a[1]);
+    if (totalPeriodDiscretionary <= 0) {
+      return entries.map(([category, amount]) => ({ category, amount, percentage: 0 }));
+    }
+
+    // Largest Remainder Method (Hare-Niemeyer) ensures integer percentages strictly sum to 100%
+    const unrounded = entries.map(([category, amount]) => {
+      const raw = (amount / totalPeriodDiscretionary) * 100;
+      const floor = Math.floor(raw);
+      return { category, amount, floor, remainder: raw - floor };
+    });
+    const currentSum = unrounded.reduce((sum, item) => sum + item.floor, 0);
+    const diff = 100 - currentSum;
+    const remainderOrder = [...unrounded.keys()].sort((a, b) => unrounded[b].remainder - unrounded[a].remainder);
+    for (let i = 0; i < diff && i < remainderOrder.length; i++) {
+      unrounded[remainderOrder[i]].floor += 1;
+    }
+
+    return unrounded.map(item => ({
+      category: item.category,
+      amount: item.amount,
+      percentage: item.floor,
+    }));
+  }, [periodExpenses, totalPeriodDiscretionary]);
 
   // 3. Largest Splurges
   const largestSplurges = useMemo(() => {
@@ -627,13 +673,18 @@ export function Insights() {
     let settlementsReceived = 0;
 
     periodTransactions.forEach(t => {
-      if (t.type === 'expense') {
-        if (t.personId || t.direction === 'gave' || t.direction === 'bought_for_me') {
+      if (t.type === 'person' && t.direction === 'gave') {
+        // Direct wallet cash lent to friends
+        lentToFriends += t.amount;
+      } else if (t.type === 'expense') {
+        // Expenses incurred on behalf of someone else are loans;
+        // Settlements for items bought for me are personal consumption
+        if (t.personId && !t.isBoughtForMeSettlement && t.direction !== 'bought_for_me') {
           lentToFriends += t.amount;
         } else {
           personalSpend += t.amount;
         }
-      } else if (t.type === 'income' && t.personId) {
+      } else if ((t.type === 'income' || t.type === 'person') && (t.isSettlement && (t.direction === 'took' || !t.direction))) {
         settlementsReceived += t.amount;
       }
     });
@@ -663,7 +714,8 @@ export function Insights() {
 
     periodExpenses.forEach(t => {
       const day = new Date(t.date).getDate();
-      const idx = Math.min(3, Math.floor((day - 1) / 7.5));
+      // Standard 7-day calendar weeks: Days 1-7, 8-14, 15-21, 22+
+      const idx = Math.min(3, Math.floor((day - 1) / 7));
       weeks[idx].amount += t.amount;
       weeks[idx].count += 1;
     });
@@ -680,10 +732,11 @@ export function Insights() {
   }, [timeFilter, activeDateRange.end]);
 
   // 7. IOUs and Buffer
-  const friendsOweYou = people.filter(p => p.balance > 0).reduce((sum, p) => sum + p.balance, 0);
+  const friendsOweYou = useMemo(() => {
+    return people.filter(p => p.balance > 0).reduce((sum, p) => sum + p.balance, 0);
+  }, [people]);
 
   // 8. Projected Rollover
-  const isHistoricalPeriod = timeFilter === 'last1' || timeFilter === 'last2';
   const projectedRollover = isHistoricalPeriod
     ? stats.moneyLeft
     : stats.moneyLeft - (avgDailyDiscretionary * stats.daysRemaining);
@@ -868,7 +921,7 @@ export function Insights() {
       </Card>
 
       {/* Zero-Spend Days & Projected Rollover Side-by-Side */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-6">
+      <div className="grid grid-cols-1 min-[375px]:grid-cols-2 gap-3 sm:gap-6">
         {/* Zero-Spend Days */}
         <Card className="flex flex-col justify-between border border-[var(--color-gray-light)] p-3.5 sm:p-6 min-w-0">
           <div className="flex justify-between items-start mb-2 sm:mb-4">
@@ -917,7 +970,7 @@ export function Insights() {
           {categoryBreakdown.length > 0 ? (
             <CategoryDonutChart
               categories={categoryBreakdown}
-              totalSpend={stats.totalDiscretionarySpent}
+              totalSpend={totalPeriodDiscretionary}
               onSelectCategory={(catName) => setSelectedCategoryName(catName)}
             />
           ) : (
@@ -979,7 +1032,7 @@ export function Insights() {
           <div className="pt-4 mt-4 border-t border-[var(--color-gray-light)] flex items-center justify-between text-[11px] text-[var(--color-gray-dark)] font-medium">
             <span>Average per active week:</span>
             <span className="font-bold text-[var(--color-dark)]">
-              {formatCurrency(Math.round(stats.totalDiscretionarySpent / 4))}
+              {formatCurrency(Math.round(stats.totalDiscretionarySpent / (isHistoricalPeriod ? 4 : Math.max(1, Math.min(4, Math.ceil((stats.daysPassed + 1) / 7))))))}
             </span>
           </div>
         </Card>
@@ -1001,10 +1054,11 @@ export function Insights() {
 
           <div className="flex flex-col gap-3">
             {largestSplurges.length > 0 ? largestSplurges.map(t => (
-              <div 
+              <button 
+                type="button"
                 key={t.id} 
                 onClick={() => setSelectedSplurge(t)}
-                className="flex items-center justify-between p-3.5 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] hover:border-[var(--color-primary)]/40 hover:shadow-sm transition-all cursor-pointer group"
+                className="w-full text-left flex items-center justify-between p-3.5 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] hover:border-[var(--color-primary)]/40 hover:shadow-sm transition-all cursor-pointer group"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-10 h-10 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] flex items-center justify-center shrink-0 shadow-inner group-hover:border-[var(--color-primary)]/30 transition-colors">
@@ -1029,7 +1083,7 @@ export function Insights() {
                     Inspect ➔
                   </span>
                 </div>
-              </div>
+              </button>
             )) : (
               <p className="text-sm text-[var(--color-gray-dark)] py-4 text-center">No expenses to show in this period.</p>
             )}
@@ -1074,8 +1128,8 @@ export function Insights() {
           onClose={() => setSelectedCategoryName(null)}
           categoryName={selectedCategoryName}
           transactions={periodExpenses}
-          totalPeriodSpend={stats.totalDiscretionarySpent}
-          daysInPeriod={stats.daysPassed || 1}
+          totalPeriodSpend={totalPeriodDiscretionary}
+          daysInPeriod={elapsedDays}
           onEditTransaction={(tx) => setTxToEdit(tx)}
         />
       )}

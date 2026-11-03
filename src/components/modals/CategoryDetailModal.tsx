@@ -91,7 +91,7 @@ export function CategoryDetailModal({
     const buckets = [0, 0, 0, 0];
     categoryTxs.forEach(t => {
       const d = new Date(t.date).getDate();
-      const bucketIdx = Math.min(3, Math.floor((d - 1) / 7.5));
+      const bucketIdx = Math.min(3, Math.floor((d - 1) / 7));
       buckets[bucketIdx] += t.amount;
     });
     return buckets;
@@ -105,10 +105,14 @@ export function CategoryDetailModal({
     <div 
       className="fixed inset-0 z-[100] flex flex-col justify-end sm:justify-center items-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 p-0 sm:p-4 overflow-y-auto overscroll-y-contain touch-pan-y"
       onClick={onClose}
+      role="presentation"
     >
       <div 
         className="bg-[var(--color-surface)] w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-6 duration-300 max-h-[90dvh] sm:max-h-[85vh] flex flex-col border border-[var(--color-gray-light)] shrink-0"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="category-dialog-title"
       >
         {/* Header */}
         <div className="p-4 sm:p-5 flex items-center justify-between border-b border-[var(--color-gray-light)] shrink-0 bg-[var(--color-surface)]">
@@ -117,7 +121,7 @@ export function CategoryDetailModal({
               {getCategoryIcon(categoryName)}
             </div>
             <div>
-              <h2 className="font-extrabold text-[var(--color-dark)] text-lg sm:text-xl tracking-tight leading-tight">
+              <h2 id="category-dialog-title" className="font-extrabold text-[var(--color-dark)] text-lg sm:text-xl tracking-tight leading-tight">
                 {categoryName}
               </h2>
               <p className="text-xs font-semibold text-[var(--color-gray-dark)]">
@@ -128,6 +132,7 @@ export function CategoryDetailModal({
           <button 
             type="button"
             onClick={onClose} 
+            aria-label="Close category details"
             className="p-2 hover:bg-[var(--color-surface-light)] rounded-full transition-colors text-[var(--color-gray-dark)] cursor-pointer"
           >
             <X size={20} />

@@ -64,9 +64,13 @@ export function calculateBudget(
   transactions: Transaction[],
   currentDateStr: string
 ): BudgetStats {
-  const start = startOfDay(new Date(config.startDate));
-  const end = startOfDay(new Date(config.endDate));
-  const today = startOfDay(new Date(currentDateStr));
+  const safeTotalMoney = Number.isFinite(config.totalMoney) ? Math.max(0, config.totalMoney) : 0;
+  const rawStart = new Date(config.startDate);
+  const rawEnd = new Date(config.endDate);
+  const rawToday = new Date(currentDateStr);
+  const start = startOfDay(Number.isNaN(rawStart.getTime()) ? new Date() : rawStart);
+  const end = startOfDay(Number.isNaN(rawEnd.getTime()) ? start : rawEnd);
+  const today = startOfDay(Number.isNaN(rawToday.getTime()) ? new Date() : rawToday);
 
   const totalDays = Math.max(1, differenceInDays(end, start) + 1); // Inclusive of start and end day
   
@@ -89,7 +93,10 @@ export function calculateBudget(
   const netPersonCashFlowByDate: Record<string, number> = {};
 
   for (const t of transactions) {
-    const tDate = startOfDay(new Date(t.date));
+    if (!Number.isFinite(t.amount) || t.amount < 0) continue;
+    const parsedDate = new Date(t.date);
+    if (Number.isNaN(parsedDate.getTime())) continue;
+    const tDate = startOfDay(parsedDate);
     
     // Ignore transactions that occurred before the current budget period start date
     // OR after the current budget period end date.
@@ -142,17 +149,20 @@ export function calculateBudget(
   const totalNetPersonCashFlow = netPersonCashFlowUpToYesterday + netPersonCashFlowToday;
 
   // 1. Effective Total Budget
-  const effectiveTotalBudget = config.totalMoney + totalAddedMoney - totalBills + totalNetPersonCashFlow;
+  const effectiveTotalBudget = safeTotalMoney + totalAddedMoney - totalBills + totalNetPersonCashFlow;
 
   // 2. Daily Base Distribution
   // Starting base incorporates total initial money + total income across the full month.
   // Mid-month bills and person cashflows (loans/borrowing) adjust only the remaining days from their occurrence date onward,
   // preventing retroactive drops in past carry-forward savings.
-  const initialBase = totalDays > 0 ? (config.totalMoney + totalAddedMoney) / totalDays : 0;
+  const initialBase = totalDays > 0 ? (safeTotalMoney + totalAddedMoney) / totalDays : 0;
   const dailyBase: number[] = Array.from({ length: totalDays }, () => initialBase);
 
   for (const t of transactions) {
-    const tDate = startOfDay(new Date(t.date));
+    if (!Number.isFinite(t.amount) || t.amount < 0) continue;
+    const parsedDate = new Date(t.date);
+    if (Number.isNaN(parsedDate.getTime())) continue;
+    const tDate = startOfDay(parsedDate);
     if (tDate.getTime() < start.getTime() || tDate.getTime() > end.getTime()) {
       continue;
     }
