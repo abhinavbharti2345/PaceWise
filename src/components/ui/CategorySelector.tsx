@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Check, X, SlidersHorizontal, ChevronLeft, ChevronRight, Trash2, EyeOff, Plus } from 'lucide-react';
+import { Check, X, SlidersHorizontal, ChevronLeft, ChevronRight, Trash2, EyeOff, Plus, GripVertical } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { cn } from '../../utils/cn';
 import { type CategoryMeta } from '../../utils/categoryHelpers';
@@ -44,6 +44,17 @@ export function CategorySelector({
     y: number;
   } | null>(null);
 
+  // Drag-and-drop & Touch state
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [touchPos, setTouchPos] = useState<{ x: number; y: number } | null>(null);
+  const [dragOffset, setDragOffset] = useState({ x: 30, y: 20, width: 110, height: 40 });
+
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const dragHoldTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const touchStartPosRef = useRef<{ x: number; y: number } | null>(null);
+
   const longPressTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isLongPressTriggeredRef = useRef(false);
 
@@ -64,6 +75,67 @@ export function CategorySelector({
       window.removeEventListener('scroll', handleScroll, true);
     };
   }, []);
+
+  // Global touchmove & touchend listeners while dragging
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleWindowTouchMove = (e: TouchEvent) => {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+      const touch = e.touches[0];
+      if (!touch) return;
+      setTouchPos({ x: touch.clientX, y: touch.clientY });
+
+      for (let i = 0; i < categories.length; i++) {
+        const el = itemRefs.current[i];
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        if (
+          touch.clientX >= rect.left - 6 &&
+          touch.clientX <= rect.right + 6 &&
+          touch.clientY >= rect.top - 6 &&
+          touch.clientY <= rect.bottom + 6
+        ) {
+          setDragOverIndex(i);
+          break;
+        }
+      }
+    };
+
+    const handleWindowTouchEnd = () => {
+      if (dragHoldTimerRef.current) {
+        clearTimeout(dragHoldTimerRef.current);
+        dragHoldTimerRef.current = null;
+      }
+
+      if (draggedIndex !== null && dragOverIndex !== null && draggedIndex !== dragOverIndex) {
+        const newOrder = categories.map(c => c.name);
+        const [moved] = newOrder.splice(draggedIndex, 1);
+        newOrder.splice(dragOverIndex, 0, moved);
+        reorderCategories(newOrder, type);
+        if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+          navigator.vibrate(30);
+        }
+      }
+
+      setIsDragging(false);
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      setTouchPos(null);
+    };
+
+    window.addEventListener('touchmove', handleWindowTouchMove, { passive: false });
+    window.addEventListener('touchend', handleWindowTouchEnd);
+    window.addEventListener('touchcancel', handleWindowTouchEnd);
+
+    return () => {
+      window.removeEventListener('touchmove', handleWindowTouchMove);
+      window.removeEventListener('touchend', handleWindowTouchEnd);
+      window.removeEventListener('touchcancel', handleWindowTouchEnd);
+    };
+  }, [isDragging, draggedIndex, dragOverIndex, categories, reorderCategories, type]);
 
   const isCustomCategory = (name: string) => {
     if (type === 'income') {
@@ -116,7 +188,7 @@ export function CategorySelector({
     setContextMenu(null);
   };
 
-  // Long press for mobile touch
+  // 450ms long press to activate Customize mode when not editing
   const handleTouchStart = () => {
     isLongPressTriggeredRef.current = false;
     longPressTimeoutRef.current = setTimeout(() => {
@@ -133,6 +205,107 @@ export function CategorySelector({
       clearTimeout(longPressTimeoutRef.current);
       longPressTimeoutRef.current = null;
     }
+  };
+
+  // Touch handlers for Hold & Drag while in Customize mode
+  const handleItemTouchStart = (index: number, e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isEditing) {
+      handleTouchStart();
+      return;
+    }
+
+    const touch = e.touches[0];
+    if (!touch) return;
+    touchStartPosRef.current = { x: touch.clientX, y: touch.clientY };
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const offset = {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top,
+      width: rect.width,
+      height: rect.height,
+    };
+
+    if (dragHoldTimerRef.current) {
+      clearTimeout(dragHoldTimerRef.current);
+    }
+
+    dragHoldTimerRef.current = setTimeout(() => {
+      setDragOffset(offset);
+      setIsDragging(true);
+      setDraggedIndex(index);
+      setDragOverIndex(index);
+      setTouchPos({ x: touch.clientX, y: touch.clientY });
+      if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+        navigator.vibrate(40);
+      }
+    }, 150);
+  };
+
+  const handleItemTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isEditing) {
+      handleTouchEnd();
+      return;
+    }
+
+    if (dragHoldTimerRef.current && !isDragging && touchStartPosRef.current) {
+      const touch = e.touches[0];
+      if (touch) {
+        const dx = Math.abs(touch.clientX - touchStartPosRef.current.x);
+        const dy = Math.abs(touch.clientY - touchStartPosRef.current.y);
+        if (dx > 10 || dy > 10) {
+          clearTimeout(dragHoldTimerRef.current);
+          dragHoldTimerRef.current = null;
+        }
+      }
+    }
+  };
+
+  const handleItemTouchEnd = () => {
+    if (dragHoldTimerRef.current) {
+      clearTimeout(dragHoldTimerRef.current);
+      dragHoldTimerRef.current = null;
+    }
+    if (!isEditing) {
+      handleTouchEnd();
+    }
+  };
+
+  // Desktop HTML5 drag & drop handlers
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    if (!isEditing) return;
+    e.dataTransfer.setData('text/plain', index.toString());
+    e.dataTransfer.effectAllowed = 'move';
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    if (!isEditing) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragOverIndex !== index) {
+      setDragOverIndex(index);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, index: number) => {
+    if (!isEditing) return;
+    e.preventDefault();
+    const fromStr = e.dataTransfer.getData('text/plain');
+    const fromIdx = fromStr !== '' ? parseInt(fromStr, 10) : draggedIndex;
+    if (fromIdx !== null && !isNaN(fromIdx) && fromIdx !== index && fromIdx < categories.length) {
+      const newOrder = categories.map(c => c.name);
+      const [moved] = newOrder.splice(fromIdx, 1);
+      newOrder.splice(index, 0, moved);
+      reorderCategories(newOrder, type);
+    }
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
   };
 
   const handleContextMenu = (catName: string, e: React.MouseEvent) => {
@@ -178,6 +351,9 @@ export function CategorySelector({
           onClick={() => {
             setIsEditing(!isEditing);
             setContextMenu(null);
+            setIsDragging(false);
+            setDraggedIndex(null);
+            setDragOverIndex(null);
           }}
           className={cn(
             "flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-lg transition-all cursor-pointer",
@@ -193,10 +369,15 @@ export function CategorySelector({
 
       {isEditing && (
         <div className="p-2 rounded-xl bg-[var(--color-surface-light)] border border-dashed border-[var(--color-gray-light)] text-[10px] text-[var(--color-gray-dark)] flex items-center justify-between animate-in fade-in duration-200">
-          <span>Tap <strong>×</strong> to hide or delete, or use arrows to reorder.</span>
+          <span>Hold & drag to reorder, or use arrows / <strong>×</strong> to hide or delete.</span>
           <button
             type="button"
-            onClick={() => setIsEditing(false)}
+            onClick={() => {
+              setIsEditing(false);
+              setIsDragging(false);
+              setDraggedIndex(null);
+              setDragOverIndex(null);
+            }}
             className="text-[var(--color-primary)] font-bold text-xs hover:underline ml-2 cursor-pointer"
           >
             Done
@@ -210,20 +391,34 @@ export function CategorySelector({
           const isCustom = isCustomCategory(cat.name);
           const isFirst = index === 0;
           const isLast = index === categories.length - 1;
+          const isBeingDragged = isDragging && draggedIndex === index;
+          const isDropTarget = isDragging && dragOverIndex === index && draggedIndex !== index;
 
           return (
             <div
               key={cat.name}
-              className="relative group"
+              ref={(el) => { itemRefs.current[index] = el; }}
+              draggable={isEditing && !isDragging}
+              onDragStart={(e) => handleDragStart(e, index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
+              onTouchStart={(e) => handleItemTouchStart(index, e)}
+              onTouchMove={handleItemTouchMove}
+              onTouchEnd={handleItemTouchEnd}
+              onTouchCancel={handleItemTouchEnd}
               onContextMenu={(e) => handleContextMenu(cat.name, e)}
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-              onTouchMove={handleTouchEnd}
+              className={cn(
+                "relative group select-none transition-all duration-150",
+                isEditing && "touch-none",
+                isBeingDragged && "opacity-25 scale-95",
+                isDropTarget && "scale-105 ring-2 ring-[var(--color-primary)] shadow-md rounded-xl"
+              )}
             >
               <button
                 type="button"
                 onClick={() => {
-                  if (isLongPressTriggeredRef.current) return;
+                  if (isLongPressTriggeredRef.current || isDragging) return;
                   if (!isEditing) {
                     onSelectCategory(cat.name);
                   }
@@ -231,9 +426,12 @@ export function CategorySelector({
                 className={cn(
                   "w-full flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all text-left truncate relative cursor-pointer",
                   getSelectedStyles(isSelected),
-                  isEditing && "pr-6 border-dashed border-red-300 dark:border-red-900/60"
+                  isEditing && "pr-6 border-dashed border-red-300 dark:border-red-900/60 cursor-grab active:cursor-grabbing"
                 )}
               >
+                {isEditing && (
+                  <GripVertical size={12} className="text-[var(--color-gray-dark)]/70 shrink-0 -ml-1 cursor-grab" />
+                )}
                 <span className="truncate">{cat.name}</span>
                 {isSelected && !isEditing && <Check size={12} className="ml-auto shrink-0" />}
               </button>
@@ -296,6 +494,21 @@ export function CategorySelector({
           <span className="truncate">{customButtonText}</span>
         </button>
       </div>
+
+      {/* Floating Drag Clone for Touch Devices */}
+      {isDragging && draggedIndex !== null && categories[draggedIndex] && touchPos && (
+        <div
+          className="fixed pointer-events-none z-[300] px-3 py-2.5 rounded-xl text-xs font-semibold shadow-2xl border bg-[var(--color-surface)] border-[var(--color-primary)] text-[var(--color-dark)] flex items-center gap-1.5 opacity-95 transition-none"
+          style={{
+            left: Math.max(10, Math.min(window.innerWidth - dragOffset.width - 10, touchPos.x - dragOffset.x)),
+            top: touchPos.y - dragOffset.y - 10,
+            width: dragOffset.width,
+          }}
+        >
+          <GripVertical size={13} className="text-[var(--color-primary)] shrink-0" />
+          <span className="truncate font-bold">{categories[draggedIndex].name}</span>
+        </div>
+      )}
 
       {/* Desktop Right-Click Context Menu & Dismissal Overlay */}
       {contextMenu && (
