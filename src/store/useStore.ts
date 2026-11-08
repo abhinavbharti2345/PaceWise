@@ -76,6 +76,7 @@ interface AppState {
     date?: string;
     note?: string;
     handleMode?: 'paid_back' | 'pay_later' | 'offset_debt';
+    receiptId?: string;
   }) => void;
   
   settleDebt: (params: {
@@ -488,8 +489,17 @@ export const useStore = create<AppState>()(
         if (updated.isSettlement !== undefined) payload.is_settlement = updated.isSettlement;
         if (updated.paymentMethod !== undefined) payload.payment_method = updated.paymentMethod;
         if (updated.note !== undefined) payload.note = updated.note;
+        if (updated.receiptId !== undefined) {
+          // Receipts and photos are 100% strictly local and never uploaded to remote DB
+          if (oldTx?.receiptId && oldTx.receiptId !== updated.receiptId && !updated.receiptId) {
+            deleteReceipt(oldTx.receiptId);
+          }
+        }
 
-        dispatchCloudSync('update', 'transactions', id, payload, { id, user_id: user.id });
+        // Only dispatch cloud sync if actual remote database columns changed
+        if (Object.keys(payload).length > 0) {
+          dispatchCloudSync('update', 'transactions', id, payload, { id, user_id: user.id });
+        }
       },
 
       deleteTransaction: (id) => {
@@ -615,7 +625,7 @@ export const useStore = create<AppState>()(
         }
       },
 
-      recordPersonTransaction: ({ personId, personName, amount, direction, category, reason, date, note, handleMode }: { 
+      recordPersonTransaction: ({ personId, personName, amount, direction, category, reason, date, note, handleMode, receiptId }: { 
         personId: string, 
         personName: string, 
         amount: number, 
@@ -624,7 +634,8 @@ export const useStore = create<AppState>()(
         reason: string, 
         date?: string, 
         note?: string,
-        handleMode?: 'paid_back' | 'pay_later' | 'offset_debt'
+        handleMode?: 'paid_back' | 'pay_later' | 'offset_debt',
+        receiptId?: string
       }) => {
         const txId = generateId();
         const txDate = date || new Date().toISOString();
@@ -639,7 +650,8 @@ export const useStore = create<AppState>()(
             reason: reason || `Paid for me by ${personName}`,
             personId,
             personName,
-            note
+            note,
+            receiptId: receiptId || undefined
           };
 
           const state = useStore.getState();
@@ -686,7 +698,8 @@ export const useStore = create<AppState>()(
           personName,
           direction,
           status: direction === 'bought_for_me' ? (isOffsetDebt ? 'settled' : 'unsettled') : undefined,
-          note
+          note,
+          receiptId: receiptId || undefined
         };
 
         let expenseTx: Transaction | null = null;
@@ -700,7 +713,8 @@ export const useStore = create<AppState>()(
             reason: reason || `Paid for me by ${personName}`,
             personId,
             personName,
-            note
+            note,
+            receiptId: receiptId || undefined
           };
         }
 

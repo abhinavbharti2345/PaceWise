@@ -108,8 +108,8 @@ export function AppLayout() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col h-full relative overflow-y-auto pt-[env(safe-area-inset-top,24px)] pb-28 md:pb-8">
-        <div className="flex-1 flex flex-col w-full max-w-[1680px] mx-auto p-4 sm:p-6 md:p-8 xl:p-10">
+      <main className="flex-1 flex flex-col h-full relative overflow-y-auto pb-28 md:pb-8">
+        <div className="flex-1 flex flex-col w-full max-w-[1680px] mx-auto px-4 pt-1 sm:pt-4 pb-4 sm:p-6 md:p-8 xl:p-10">
           <NetworkStatusPill />
           <Outlet />
         </div>

@@ -1,4 +1,13 @@
 // PaceWise PWA Service Worker
+
+// In Capacitor / native localhost environment, never intercept requests
+if (typeof self !== 'undefined' && (self.location.hostname === 'localhost' || self.location.protocol === 'capacitor:')) {
+  self.addEventListener('install', () => self.skipWaiting());
+  self.addEventListener('activate', (event) => {
+    event.waitUntil(self.registration.unregister());
+  });
+}
+
 const CACHE_NAME = 'pacewise-v1';
 const STATIC_ASSETS = [
   '/',

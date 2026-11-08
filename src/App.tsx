@@ -1,6 +1,7 @@
 import { useEffect, Component, lazy, Suspense } from 'react';
 import type { ReactNode } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Capacitor } from '@capacitor/core';
 import { AppLayout } from './components/layout/AppLayout';
 import { Dashboard } from './pages/Dashboard';
 import { useStore } from './store/useStore';
@@ -167,11 +168,12 @@ function AppContent() {
 }
 
 function App() {
+  const RouterComponent = Capacitor.isNativePlatform() ? HashRouter : BrowserRouter;
   return (
     <ErrorBoundary>
-      <BrowserRouter>
+      <RouterComponent>
         <AppContent />
-      </BrowserRouter>
+      </RouterComponent>
     </ErrorBoundary>
   );
 }

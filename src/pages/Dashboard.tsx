@@ -10,6 +10,7 @@ import { AddMoneyModal } from '../components/modals/AddMoneyModal';
 import { AddBillModal } from '../components/modals/AddBillModal';
 import { AddPersonModal } from '../components/modals/AddPersonModal';
 import { ReceiptModal } from '../components/modals/ReceiptModal';
+import { ReceiptPickerModal } from '../components/modals/ReceiptPickerModal';
 import { type Transaction } from '../features/budget/budgetEngine';
 import { useCurrentDate } from '../hooks/useCurrentDate';
 import { format } from 'date-fns';
@@ -20,15 +21,19 @@ import {
   AlertTriangle,
   Scale,
   ArrowRightLeft,
-  CreditCard
+  CreditCard,
+  Camera,
+  Receipt
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { getCategoryMeta } from '../utils/categoryHelpers';
 import { formatCurrency as formatCurrencyUtil } from '../utils/currencyUtils';
+import { captureReceipt } from '../lib/receiptStorage';
 
 export function Dashboard() {
   const config = useStore((state) => state.config);
   const transactions = useStore((state) => state.transactions);
+  const updateTransaction = useStore((state) => state.updateTransaction);
   const people = useStore((state) => state.people);
   const pendingSyncQueue = useStore((state) => state.pendingSyncQueue) || [];
   const customCategories = useStore((state) => state.customCategories);
@@ -41,6 +46,7 @@ export function Dashboard() {
   const [isBillModalOpen, setIsBillModalOpen] = useState(false);
   const [isPersonModalOpen, setIsPersonModalOpen] = useState(false);
   const [activeReceiptTx, setActiveReceiptTx] = useState<Transaction | null>(null);
+  const [pickerTx, setPickerTx] = useState<Transaction | null>(null);
 
   const pendingTxIds = useMemo(
     () => new Set(pendingSyncQueue.filter((q) => q.table === 'transactions').map((q) => q.id)),
@@ -487,18 +493,29 @@ export function Dashboard() {
                         <p className="text-xs sm:text-sm font-bold text-[var(--color-dark)] leading-tight truncate">
                           {t.reason || t.category || t.type}
                         </p>
-                        {t.receiptId && (
+                        {t.receiptId ? (
                           <button
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setActiveReceiptTx(t);
+                              setPickerTx(t);
                             }}
-                            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#FF453A]/10 hover:bg-[#FF453A]/20 text-[#FF453A] text-[10px] font-bold transition-colors cursor-pointer shrink-0"
-                            title="View attached receipt"
+                            className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[#FF453A]/15 text-[#FF453A] hover:bg-[#FF453A]/25 transition-colors cursor-pointer shrink-0"
+                            title="Receipt attached • Tap options"
                           >
-                            <span>🧾</span>
-                            <span className="hidden sm:inline">Receipt</span>
+                            <Receipt size={12} />
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPickerTx(t);
+                            }}
+                            className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[var(--color-surface-light)] hover:bg-[var(--color-primary)]/10 text-[var(--color-gray-dark)] hover:text-[var(--color-primary)] transition-colors cursor-pointer shrink-0"
+                            title="Attach receipt"
+                          >
+                            <Camera size={12} />
                           </button>
                         )}
                       </div>
@@ -625,6 +642,35 @@ export function Dashboard() {
         currency={currencySymbol}
         date={activeReceiptTx ? format(new Date(activeReceiptTx.date), 'd MMM yyyy, h:mm a') : undefined}
         category={activeReceiptTx?.category}
+      />
+
+      <ReceiptPickerModal
+        isOpen={!!pickerTx}
+        onClose={() => setPickerTx(null)}
+        title={pickerTx?.reason || pickerTx?.category || 'Transaction'}
+        hasExistingReceipt={!!pickerTx?.receiptId}
+        onSelectCamera={async () => {
+          if (!pickerTx) return;
+          const captured = await captureReceipt('camera');
+          if (captured) {
+            updateTransaction(pickerTx.id, { receiptId: captured });
+          }
+        }}
+        onSelectGallery={async () => {
+          if (!pickerTx) return;
+          const captured = await captureReceipt('photos');
+          if (captured) {
+            updateTransaction(pickerTx.id, { receiptId: captured });
+          }
+        }}
+        onView={() => {
+          if (pickerTx) setActiveReceiptTx(pickerTx);
+        }}
+        onDelete={() => {
+          if (pickerTx) {
+            updateTransaction(pickerTx.id, { receiptId: undefined });
+          }
+        }}
       />
     </div>
   );

@@ -9,6 +9,7 @@ import { TimePicker } from '../ui/TimePicker';
 import { parseLocalDate, getTodayDateString, getCurrentTimeString } from '../../utils/dateUtils';
 import { getAllExpenseCategories } from '../../utils/categoryHelpers';
 import { AddCategoryModal } from './AddCategoryModal';
+import { ReceiptAttachmentInput } from '../ui/ReceiptAttachmentInput';
 import { cn } from '../../utils/cn';
 
 interface PersonTransactionModalProps {
@@ -40,6 +41,7 @@ export function PersonTransactionModal({
   const [date, setDate] = useState(getTodayDateString());
   const [time, setTime] = useState(getCurrentTimeString());
   const [note, setNote] = useState('');
+  const [receiptId, setReceiptId] = useState<string | null>(null);
   const [error, setError] = useState('');
 
   const hasOwedBalance = person.balance > 0;
@@ -51,6 +53,7 @@ export function PersonTransactionModal({
       setTime(getCurrentTimeString());
       setDirection(defaultDirection);
       setHandleMode(person.balance > 0 ? 'offset_debt' : 'pay_later');
+      setReceiptId(null);
     }
   }, [isOpen, defaultDirection, person.balance]);
 
@@ -77,11 +80,13 @@ export function PersonTransactionModal({
       date: parseLocalDate(date, time).toISOString(),
       note: note.trim() || undefined,
       handleMode: direction === 'bought_for_me' ? handleMode : undefined,
+      receiptId: receiptId || undefined,
     });
 
     setAmount('');
     setReason('');
     setNote('');
+    setReceiptId(null);
     setError('');
     onClose();
   };
@@ -418,6 +423,12 @@ export function PersonTransactionModal({
               className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
             />
           </div>
+
+          {/* Receipt Attachment */}
+          <ReceiptAttachmentInput
+            receiptId={receiptId}
+            onChange={setReceiptId}
+          />
           
           <div className="pt-2">
             <Button type="submit" variant="primary" size="lg" className="w-full font-bold text-base shadow-md">

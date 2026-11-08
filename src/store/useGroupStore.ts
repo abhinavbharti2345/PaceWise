@@ -41,6 +41,7 @@ interface GroupState {
     data: Omit<GroupExpense, 'id' | 'groupId' | 'createdAt'>
   ) => string;
   deleteExpense: (groupId: string, expenseId: string) => void;
+  attachExpenseReceipt: (groupId: string, expenseId: string, receiptId: string) => void;
 
   // Transfers / Settlements
   addTransfer: (
@@ -206,6 +207,22 @@ export const useGroupStore = create<GroupState>()(
               ? {
                   ...g,
                   expenses: g.expenses.filter((e) => e.id !== expenseId),
+                  updatedAt: new Date().toISOString(),
+                }
+              : g
+          ),
+        }));
+      },
+
+      attachExpenseReceipt: (groupId, expenseId, receiptId) => {
+        set((state) => ({
+          groups: state.groups.map((g) =>
+            g.id === groupId
+              ? {
+                  ...g,
+                  expenses: g.expenses.map((e) =>
+                    e.id === expenseId ? { ...e, receiptId } : e
+                  ),
                   updatedAt: new Date().toISOString(),
                 }
               : g

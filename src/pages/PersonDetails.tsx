@@ -13,20 +13,23 @@ import {
   Trash2, 
   Clock, 
   Receipt,
-  CreditCard
+  CreditCard,
+  Camera
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { PersonTransactionModal } from '../components/modals/PersonTransactionModal';
 import { SettleModal } from '../components/modals/SettleModal';
 import { ConfirmModal } from '../components/modals/ConfirmModal';
 import { ReceiptModal } from '../components/modals/ReceiptModal';
+import { ReceiptPickerModal } from '../components/modals/ReceiptPickerModal';
+import { captureReceipt } from '../lib/receiptStorage';
 import { formatCurrency } from '../utils/currencyUtils';
 import type { Transaction } from '../features/budget/budgetEngine';
 
 export function PersonDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { people, transactions, deletePerson, config } = useStore();
+  const { people, transactions, deletePerson, updateTransaction, config } = useStore();
 
   const person = people.find((p) => p.id === id);
 
@@ -36,6 +39,7 @@ export function PersonDetails() {
   const [settleTransaction, setSettleTransaction] = useState<Transaction | null>(null);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [activeReceiptTx, setActiveReceiptTx] = useState<Transaction | null>(null);
+  const [pickerTx, setPickerTx] = useState<Transaction | null>(null);
 
   if (!person) {
     return (
@@ -310,18 +314,29 @@ export function PersonDetails() {
                             Debt Offset
                           </span>
                         )}
-                        {t.receiptId && (
+                        {t.receiptId ? (
                           <button
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setActiveReceiptTx(t);
+                              setPickerTx(t);
                             }}
-                            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#FF453A]/10 hover:bg-[#FF453A]/20 text-[#FF453A] text-[10px] font-bold transition-colors cursor-pointer shrink-0"
-                            title="View attached receipt"
+                            className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[#FF453A]/15 text-[#FF453A] hover:bg-[#FF453A]/25 transition-colors cursor-pointer shrink-0"
+                            title="Receipt attached • Tap options"
                           >
-                            <span>🧾</span>
-                            <span className="hidden sm:inline">Receipt</span>
+                            <Receipt size={12} />
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPickerTx(t);
+                            }}
+                            className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[var(--color-surface-light)] hover:bg-[var(--color-primary)]/10 text-[var(--color-gray-dark)] hover:text-[var(--color-primary)] transition-colors cursor-pointer shrink-0"
+                            title="Attach receipt"
+                          >
+                            <Camera size={12} />
                           </button>
                         )}
                       </p>
@@ -423,6 +438,35 @@ export function PersonDetails() {
         currency={config?.currency || '₹'}
         date={activeReceiptTx ? format(new Date(activeReceiptTx.date), 'd MMM yyyy, h:mm a') : undefined}
         category={activeReceiptTx?.category}
+      />
+
+      <ReceiptPickerModal
+        isOpen={!!pickerTx}
+        onClose={() => setPickerTx(null)}
+        title={pickerTx?.reason || pickerTx?.category || 'Transaction'}
+        hasExistingReceipt={!!pickerTx?.receiptId}
+        onSelectCamera={async () => {
+          if (!pickerTx) return;
+          const captured = await captureReceipt('camera');
+          if (captured) {
+            updateTransaction(pickerTx.id, { receiptId: captured });
+          }
+        }}
+        onSelectGallery={async () => {
+          if (!pickerTx) return;
+          const captured = await captureReceipt('photos');
+          if (captured) {
+            updateTransaction(pickerTx.id, { receiptId: captured });
+          }
+        }}
+        onView={() => {
+          if (pickerTx) setActiveReceiptTx(pickerTx);
+        }}
+        onDelete={() => {
+          if (pickerTx) {
+            updateTransaction(pickerTx.id, { receiptId: undefined });
+          }
+        }}
       />
     </div>
   );

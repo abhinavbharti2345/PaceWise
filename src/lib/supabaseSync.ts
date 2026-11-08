@@ -47,6 +47,18 @@ export async function flushPendingSyncQueue(): Promise<{ flushedCount: number; e
       if (!getIsOnline()) break;
 
       try {
+        // Strip out purely local fields like receipt_id before transmitting to Supabase
+        if (item.payload && typeof item.payload === 'object') {
+          delete (item.payload as Record<string, any>).receipt_id;
+        }
+
+        // If an update only contained local fields and is now empty, consider it handled
+        if (item.action === 'update' && Object.keys(item.payload || {}).length === 0) {
+          flushedIds.push(item.id);
+          flushedCount++;
+          continue;
+        }
+
         if (item.action === 'insert') {
           if (item.table === 'budget_configs') {
             const { data: existing } = await supabase
@@ -92,9 +104,14 @@ export async function flushPendingSyncQueue(): Promise<{ flushedCount: number; e
 
         flushedIds.push(item.id);
         flushedCount++;
-      } catch (itemErr) {
+      } catch (itemErr: unknown) {
         console.warn(`[PaceWise Sync Queue] Item ${item.id} flush failed:`, itemErr);
         errorCount++;
+        // If error is a permanent schema mismatch or missing column, discard so queue doesn't stick
+        const errStr = String(itemErr && typeof itemErr === 'object' && 'message' in itemErr ? (itemErr as any).message : itemErr);
+        if (errStr.includes('column') || errStr.includes('PGRST204') || errStr.includes('schema') || errStr.includes('does not exist')) {
+          flushedIds.push(item.id);
+        }
         if (!getIsOnline()) break;
       }
     }
@@ -126,6 +143,15 @@ export function useSupabaseSync() {
 
   // Setup automatic background flush whenever network status turns online
   useEffect(() => {
+    // Clean up any stale receipt_id-only items from previous sessions
+    const queue = useStore.getState().pendingSyncQueue || [];
+    const staleReceiptIds = queue
+      .filter((q) => q.table === 'transactions' && q.payload && Object.keys(q.payload).every((k) => k === 'receipt_id'))
+      .map((q) => q.id);
+    if (staleReceiptIds.length > 0) {
+      useStore.getState().removeFromSyncQueue(staleReceiptIds);
+    }
+
     const unsubscribe = subscribeNetworkStatus((status) => {
       if (status.isOnline) {
         console.log('[PaceWise Sync] Connection restored. Flushing pending queue...');
@@ -283,6 +309,9 @@ export function useSupabaseSync() {
 
         if (useAuthStore.getState().user?.id !== user.id) return;
 
+        const currentLocalTxs = useStore.getState().transactions || [];
+        const localReceiptMap = new Map(currentLocalTxs.filter(t => t.receiptId).map(t => [t.id, t.receiptId]));
+
         const txs: Transaction[] = (txData || []).map((tx) => ({
           id: tx.id,
           type: tx.type,
@@ -299,6 +328,7 @@ export function useSupabaseSync() {
           paymentMethod: tx.payment_method,
           note: tx.note,
           status: tx.status,
+          receiptId: localReceiptMap.get(tx.id) || (tx as any).receipt_id || undefined,
         }));
 
         const peopleList: Person[] = (peopleData || []).map((p) => ({
@@ -315,7 +345,6 @@ export function useSupabaseSync() {
             .filter((q) => q.table === 'transactions' && q.action === 'insert')
             .map((q) => q.id)
         );
-        const currentLocalTxs = useStore.getState().transactions || [];
         const uncommittedTxs = currentLocalTxs.filter((t) => pendingInsertIds.has(t.id));
 
         const combinedTxs = [

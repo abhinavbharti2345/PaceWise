@@ -24,18 +24,20 @@ async function ensureReceiptsDir(): Promise<void> {
 }
 
 /**
- * Prompts user for Camera or Gallery, compresses image to ~100-150KB (quality 75, width 1280),
+ * Captures a receipt from device Camera or Photos gallery, compresses it (quality 75, width 1280),
  * and saves locally to app-internal storage (Directory.Data / receipts).
  * Returns the unique receipt ID (filename), or null if cancelled/failed.
  */
-export async function captureReceipt(): Promise<string | null> {
+export async function captureReceipt(sourceOption: 'camera' | 'photos' = 'camera'): Promise<string | null> {
   try {
     if (Capacitor.isNativePlatform()) {
       await ensureReceiptsDir();
 
+      const source = sourceOption === 'photos' ? CameraSource.Photos : CameraSource.Camera;
+
       const photo = await Camera.getPhoto({
         resultType: CameraResultType.Uri,
-        source: CameraSource.Prompt,
+        source,
         quality: 75,
         width: 1280,
         allowEditing: false,
@@ -83,6 +85,9 @@ export async function captureReceipt(): Promise<string | null> {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
+        if (sourceOption === 'camera') {
+          input.capture = 'environment';
+        }
         input.onchange = () => {
           const file = input.files?.[0];
           if (!file) {

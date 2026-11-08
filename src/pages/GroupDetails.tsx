@@ -15,6 +15,7 @@ import {
   ArrowUpRight,
   UserPlus,
   Check,
+  Camera,
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -25,6 +26,8 @@ import { AddGroupExpenseModal } from '../components/modals/AddGroupExpenseModal'
 import { AddGroupTransferModal } from '../components/modals/AddGroupTransferModal';
 import { GroupSettleModal } from '../components/modals/GroupSettleModal';
 import { ReceiptModal } from '../components/modals/ReceiptModal';
+import { ReceiptPickerModal } from '../components/modals/ReceiptPickerModal';
+import { captureReceipt } from '../lib/receiptStorage';
 import type { GroupExpense } from '../utils/groupEngine';
 
 // Moved to module scope so it is not re-created on every render
@@ -35,7 +38,7 @@ type ActivityItem =
 export function GroupDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { groups, addMember, deleteExpense, deleteTransfer } = useGroupStore();
+  const { groups, addMember, deleteExpense, deleteTransfer, attachExpenseReceipt } = useGroupStore();
 
   const group = groups.find((g) => g.id === id);
 
@@ -47,6 +50,7 @@ export function GroupDetails() {
   const [activityTab, setActivityTab] = useState<'all' | 'expenses' | 'transfers'>('all');
   const [copied, setCopied] = useState(false);
   const [activeReceiptExpense, setActiveReceiptExpense] = useState<GroupExpense | null>(null);
+  const [pickerExpense, setPickerExpense] = useState<GroupExpense | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -462,18 +466,29 @@ export function GroupDetails() {
                           <h4 className="text-sm font-bold text-[var(--color-dark)] truncate">
                             {exp.description}
                           </h4>
-                          {exp.receiptId && (
+                          {exp.receiptId ? (
                             <button
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setActiveReceiptExpense(exp);
+                                setPickerExpense(exp);
                               }}
-                              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#FF453A]/10 hover:bg-[#FF453A]/20 text-[#FF453A] text-[10px] font-bold transition-colors cursor-pointer shrink-0"
-                              title="View attached receipt"
+                              className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[#FF453A]/15 text-[#FF453A] hover:bg-[#FF453A]/25 transition-colors cursor-pointer shrink-0"
+                              title="Receipt attached • Tap options"
                             >
-                              <span>🧾</span>
-                              <span className="hidden sm:inline">Receipt</span>
+                              <Receipt size={12} />
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPickerExpense(exp);
+                              }}
+                              className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[var(--color-surface-light)] hover:bg-[var(--color-primary)]/10 text-[var(--color-gray-dark)] hover:text-[var(--color-primary)] transition-colors cursor-pointer shrink-0"
+                              title="Attach receipt"
+                            >
+                              <Camera size={12} />
                             </button>
                           )}
                         </div>
@@ -587,6 +602,35 @@ export function GroupDetails() {
         currency={currency}
         date={activeReceiptExpense?.date}
         category={activeReceiptExpense?.category}
+      />
+
+      <ReceiptPickerModal
+        isOpen={!!pickerExpense}
+        onClose={() => setPickerExpense(null)}
+        title={pickerExpense?.description || 'Group Expense'}
+        hasExistingReceipt={!!pickerExpense?.receiptId}
+        onSelectCamera={async () => {
+          if (!pickerExpense || !group) return;
+          const captured = await captureReceipt('camera');
+          if (captured) {
+            attachExpenseReceipt(group.id, pickerExpense.id, captured);
+          }
+        }}
+        onSelectGallery={async () => {
+          if (!pickerExpense || !group) return;
+          const captured = await captureReceipt('photos');
+          if (captured) {
+            attachExpenseReceipt(group.id, pickerExpense.id, captured);
+          }
+        }}
+        onView={() => {
+          if (pickerExpense) setActiveReceiptExpense(pickerExpense);
+        }}
+        onDelete={() => {
+          if (pickerExpense && group) {
+            attachExpenseReceipt(group.id, pickerExpense.id, '');
+          }
+        }}
       />
     </div>
   );

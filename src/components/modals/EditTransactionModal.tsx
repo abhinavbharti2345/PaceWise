@@ -8,6 +8,7 @@ import { TimePicker } from '../ui/TimePicker';
 import type { Transaction } from '../../features/budget/budgetEngine';
 import { getAllExpenseCategories, getAllBillCategories } from '../../utils/categoryHelpers';
 import { parseLocalDate, getTimeStringFromDate, getLocalDateString } from '../../utils/dateUtils';
+import { ReceiptAttachmentInput } from '../ui/ReceiptAttachmentInput';
 
 interface EditTransactionModalProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
   const [time, setTime] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [note, setNote] = useState('');
+  const [receiptId, setReceiptId] = useState<string | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -40,6 +42,7 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
       setTime(getTimeStringFromDate(transaction.date));
       setPaymentMethod(transaction.paymentMethod || 'UPI / Card');
       setNote(transaction.note || '');
+      setReceiptId(transaction.receiptId || null);
       setError('');
     }
   }, [transaction]);
@@ -65,6 +68,7 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
       date: parseLocalDate(date, time, transaction.date).toISOString(),
       paymentMethod: paymentMethod || undefined,
       note: note.trim() || undefined,
+      receiptId: receiptId || undefined,
     });
 
     onClose();
@@ -187,6 +191,12 @@ export function EditTransactionModal({ isOpen, onClose, transaction }: EditTrans
               onChange={(e) => setNote(e.target.value)}
             />
           </div>
+
+          {/* Receipt Attachment */}
+          <ReceiptAttachmentInput 
+            receiptId={receiptId} 
+            onChange={setReceiptId} 
+          />
 
           {/* Submit */}
           <div className="pt-2 flex items-center justify-end gap-3 border-t border-[var(--color-gray-light)]">

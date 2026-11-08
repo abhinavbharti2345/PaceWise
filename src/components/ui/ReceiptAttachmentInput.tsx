@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Camera, X, Check, Loader2 } from 'lucide-react';
 import { captureReceipt, getReceiptUrl, deleteReceipt } from '../../lib/receiptStorage';
+import { ReceiptPickerModal } from '../modals/ReceiptPickerModal';
 import { cn } from '../../utils/cn';
 
 interface ReceiptAttachmentInputProps {
@@ -16,6 +17,7 @@ export function ReceiptAttachmentInput({
 }: ReceiptAttachmentInputProps) {
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -31,11 +33,11 @@ export function ReceiptAttachmentInput({
     };
   }, [receiptId]);
 
-  const handleCapture = async () => {
+  const handleCapture = async (source: 'camera' | 'photos') => {
     if (isCapturing) return;
     setIsCapturing(true);
     try {
-      const id = await captureReceipt();
+      const id = await captureReceipt(source);
       if (id) {
         onChange(id);
       }
@@ -61,7 +63,10 @@ export function ReceiptAttachmentInput({
 
       {receiptId ? (
         <div className="flex items-center justify-between p-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/5 transition-all">
-          <div className="flex items-center gap-3 min-w-0">
+          <div 
+            onClick={() => setIsPickerOpen(true)}
+            className="flex items-center gap-3 min-w-0 cursor-pointer"
+          >
             {thumbnailUrl ? (
               <img
                 src={thumbnailUrl}
@@ -79,7 +84,7 @@ export function ReceiptAttachmentInput({
                 Receipt attached
               </p>
               <p className="text-[10px] text-[var(--color-gray-dark)] truncate">
-                Ready to save with transaction
+                Tap to change or view options
               </p>
             </div>
           </div>
@@ -96,14 +101,14 @@ export function ReceiptAttachmentInput({
       ) : (
         <button
           type="button"
-          onClick={handleCapture}
+          onClick={() => setIsPickerOpen(true)}
           disabled={isCapturing}
           className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-dashed border-[var(--color-gray-light)] hover:border-[var(--color-primary)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-light)] text-xs font-bold text-[var(--color-gray-dark)] hover:text-[var(--color-dark)] transition-all active:scale-[0.99] cursor-pointer"
         >
           {isCapturing ? (
             <>
               <Loader2 size={16} className="animate-spin text-[var(--color-primary)]" />
-              <span>Opening camera...</span>
+              <span>Opening...</span>
             </>
           ) : (
             <>
@@ -113,6 +118,20 @@ export function ReceiptAttachmentInput({
           )}
         </button>
       )}
+
+      <ReceiptPickerModal
+        isOpen={isPickerOpen}
+        onClose={() => setIsPickerOpen(false)}
+        title="Transaction Receipt"
+        hasExistingReceipt={!!receiptId}
+        onSelectCamera={() => handleCapture('camera')}
+        onSelectGallery={() => handleCapture('photos')}
+        onDelete={receiptId ? () => {
+          deleteReceipt(receiptId);
+          onChange(null);
+          setThumbnailUrl(null);
+        } : undefined}
+      />
     </div>
   );
 }
