@@ -9,6 +9,8 @@ import { CategorySelector } from '../ui/CategorySelector';
 import { getAllBillCategories } from '../../utils/categoryHelpers';
 import { AddCategoryModal } from './AddCategoryModal';
 import { parseLocalDate, getTodayDateString, getCurrentTimeString } from '../../utils/dateUtils';
+import { ReceiptAttachmentInput } from '../ui/ReceiptAttachmentInput';
+import { registerModal } from '../../lib/modalStack';
 
 interface AddBillModalProps {
   isOpen: boolean;
@@ -33,12 +35,20 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
   const [date, setDate] = useState(getTodayDateString());
   const [time, setTime] = useState(getCurrentTimeString());
   const [note, setNote] = useState('');
+  const [receiptId, setReceiptId] = useState<string | null>(null);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      return registerModal(onClose);
+    }
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (isOpen) {
       setDate(getTodayDateString());
       setTime(getCurrentTimeString());
+      setReceiptId(null);
     }
   }, [isOpen]);
   
@@ -64,12 +74,14 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
       reason: reason.trim() || `${finalCategory} Bill Payment`,
       date: parseLocalDate(date, time).toISOString(),
       note: note.trim() || undefined,
+      receiptId: receiptId || undefined,
     });
     
     setAmount('');
     setReason('');
     setCustomCategory('');
     setNote('');
+    setReceiptId(null);
     setError('');
     onClose();
   };
@@ -197,7 +209,13 @@ export function AddBillModal({ isOpen, onClose }: AddBillModalProps) {
                 className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
               />
             </div>
-            
+
+            {/* Receipt Attachment */}
+            <ReceiptAttachmentInput
+              receiptId={receiptId}
+              onChange={setReceiptId}
+            />
+
             <div className="pt-2">
               <Button type="submit" variant="primary" size="lg" className="w-full font-bold text-base shadow-md">
                 Record Bill Payment

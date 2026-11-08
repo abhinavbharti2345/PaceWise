@@ -12,6 +12,7 @@ import { AddMoneyModal } from '../components/modals/AddMoneyModal';
 import { AddBillModal } from '../components/modals/AddBillModal';
 import { EditTransactionModal } from '../components/modals/EditTransactionModal';
 import { ConfirmModal } from '../components/modals/ConfirmModal';
+import { ReceiptModal } from '../components/modals/ReceiptModal';
 import { formatCurrency } from '../utils/currencyUtils';
 import type { Transaction } from '../features/budget/budgetEngine';
 
@@ -23,9 +24,18 @@ export function Transactions() {
   const deleteTransaction = useStore((state) => state.deleteTransaction);
   const customCategories = useStore((state) => state.customCategories);
   const customBillCategories = useStore((state) => state.customBillCategories) || [];
+  const config = useStore((state) => state.config);
+  const pendingSyncQueue = useStore((state) => state.pendingSyncQueue) || [];
+
+  const pendingTxIds = useMemo(
+    () => new Set(pendingSyncQueue.filter((q) => q.table === 'transactions').map((q) => q.id)),
+    [pendingSyncQueue]
+  );
+
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
   const [search, setSearch] = useState('');
+  const [activeReceiptTx, setActiveReceiptTx] = useState<Transaction | null>(null);
 
   const currentMonthKey = format(new Date(), 'yyyy-MM');
   const [selectedMonth, setSelectedMonth] = useState<string>(currentMonthKey);
@@ -325,9 +335,25 @@ export function Transactions() {
                           className="shrink-0"
                         />
                         <div className="min-w-0 flex-1">
-                          <p className="text-xs sm:text-sm font-bold text-[var(--color-dark)] truncate">
-                            {t.reason || t.category || t.type}
-                          </p>
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <p className="text-xs sm:text-sm font-bold text-[var(--color-dark)] truncate">
+                              {t.reason || t.category || t.type}
+                            </p>
+                            {t.receiptId && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveReceiptTx(t);
+                                }}
+                                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#FF453A]/10 hover:bg-[#FF453A]/20 text-[#FF453A] text-[10px] font-bold transition-colors cursor-pointer shrink-0"
+                                title="View attached receipt"
+                              >
+                                <span>🧾</span>
+                                <span className="hidden sm:inline">Receipt</span>
+                              </button>
+                            )}
+                          </div>
                           <p className="text-[10px] sm:text-xs text-[var(--color-gray-dark)] flex items-center gap-1 sm:gap-2 mt-0.5 truncate">
                             <span className="font-semibold text-[var(--color-dark)] capitalize shrink-0">
                               {t.personName ? t.personName : (t.category || t.type)}
@@ -340,6 +366,12 @@ export function Transactions() {
                       </div>
 
                       <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+                        {pendingTxIds.has(t.id) && (
+                          <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-bold text-amber-500 bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.5 rounded-md">
+                            <span>🕒</span>
+                            <span className="hidden sm:inline">Pending Sync</span>
+                          </span>
+                        )}
                         <span className={cn(
                           'text-xs sm:text-base font-extrabold', 
                           isIncome ? 'text-[var(--color-success)]' : 'text-[var(--color-primary)]'
@@ -439,6 +471,17 @@ export function Transactions() {
         confirmText="Delete"
         cancelText="Cancel"
         variant="destructive"
+      />
+
+      <ReceiptModal
+        isOpen={Boolean(activeReceiptTx?.receiptId)}
+        onClose={() => setActiveReceiptTx(null)}
+        receiptId={activeReceiptTx?.receiptId}
+        title={activeReceiptTx?.reason || activeReceiptTx?.category || 'Receipt'}
+        amount={activeReceiptTx?.amount}
+        currency={config?.currency || '₹'}
+        date={activeReceiptTx ? format(new Date(activeReceiptTx.date), 'd MMM yyyy, h:mm a') : undefined}
+        category={activeReceiptTx?.category}
       />
     </div>
   );

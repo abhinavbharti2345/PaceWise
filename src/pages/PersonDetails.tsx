@@ -19,13 +19,14 @@ import { cn } from '../utils/cn';
 import { PersonTransactionModal } from '../components/modals/PersonTransactionModal';
 import { SettleModal } from '../components/modals/SettleModal';
 import { ConfirmModal } from '../components/modals/ConfirmModal';
+import { ReceiptModal } from '../components/modals/ReceiptModal';
 import { formatCurrency } from '../utils/currencyUtils';
 import type { Transaction } from '../features/budget/budgetEngine';
 
 export function PersonDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { people, transactions, deletePerson } = useStore();
+  const { people, transactions, deletePerson, config } = useStore();
 
   const person = people.find((p) => p.id === id);
 
@@ -34,6 +35,7 @@ export function PersonDetails() {
   const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
   const [settleTransaction, setSettleTransaction] = useState<Transaction | null>(null);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [activeReceiptTx, setActiveReceiptTx] = useState<Transaction | null>(null);
 
   if (!person) {
     return (
@@ -308,6 +310,20 @@ export function PersonDetails() {
                             Debt Offset
                           </span>
                         )}
+                        {t.receiptId && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveReceiptTx(t);
+                            }}
+                            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#FF453A]/10 hover:bg-[#FF453A]/20 text-[#FF453A] text-[10px] font-bold transition-colors cursor-pointer shrink-0"
+                            title="View attached receipt"
+                          >
+                            <span>🧾</span>
+                            <span className="hidden sm:inline">Receipt</span>
+                          </button>
+                        )}
                       </p>
                       <p className="text-xs text-[var(--color-gray-dark)] flex items-center gap-1.5 mt-0.5">
                         <span>{format(new Date(t.date), 'dd MMM yyyy, h:mm a')}</span>
@@ -396,6 +412,17 @@ export function PersonDetails() {
         confirmText="Delete Person"
         cancelText="Cancel"
         variant="destructive"
+      />
+
+      <ReceiptModal
+        isOpen={Boolean(activeReceiptTx?.receiptId)}
+        onClose={() => setActiveReceiptTx(null)}
+        receiptId={activeReceiptTx?.receiptId}
+        title={activeReceiptTx?.reason || activeReceiptTx?.category || 'Receipt'}
+        amount={activeReceiptTx?.amount}
+        currency={config?.currency || '₹'}
+        date={activeReceiptTx ? format(new Date(activeReceiptTx.date), 'd MMM yyyy, h:mm a') : undefined}
+        category={activeReceiptTx?.category}
       />
     </div>
   );

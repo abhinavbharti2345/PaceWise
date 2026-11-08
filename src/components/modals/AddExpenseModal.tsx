@@ -9,6 +9,8 @@ import { CategorySelector } from '../ui/CategorySelector';
 import { getAllExpenseCategories } from '../../utils/categoryHelpers';
 import { AddCategoryModal } from './AddCategoryModal';
 import { parseLocalDate, getTodayDateString, getCurrentTimeString } from '../../utils/dateUtils';
+import { ReceiptAttachmentInput } from '../ui/ReceiptAttachmentInput';
+import { registerModal } from '../../lib/modalStack';
 
 interface AddExpenseModalProps {
   isOpen: boolean;
@@ -28,12 +30,20 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
   const [time, setTime] = useState(getCurrentTimeString());
   const [paymentMethod, setPaymentMethod] = useState('UPI / Card');
   const [note, setNote] = useState('');
+  const [receiptId, setReceiptId] = useState<string | null>(null);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      return registerModal(onClose);
+    }
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (isOpen) {
       setDate(getTodayDateString());
       setTime(getCurrentTimeString());
+      setReceiptId(null);
     }
   }, [isOpen]);
 
@@ -63,6 +73,7 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
       date: parseLocalDate(date, time).toISOString(),
       paymentMethod,
       note: note.trim() || undefined,
+      receiptId: receiptId || undefined,
     });
     
     // Reset and close
@@ -71,6 +82,7 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
     setSelectedCategory(allCategories[0]?.name || 'Food');
     setCustomCategory('');
     setNote('');
+    setReceiptId(null);
     setError('');
     onClose();
   };
@@ -211,7 +223,13 @@ export function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
               className="w-full bg-[var(--color-surface)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-base sm:text-xs text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] touch-manipulation"
             />
           </div>
-          
+
+          {/* Receipt Attachment */}
+          <ReceiptAttachmentInput
+            receiptId={receiptId}
+            onChange={setReceiptId}
+          />
+
           {/* Submit Button */}
           <div className="pt-2">
             <Button type="submit" variant="primary" size="lg" className="w-full font-bold text-base shadow-md">

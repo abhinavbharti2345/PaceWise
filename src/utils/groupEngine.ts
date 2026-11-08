@@ -20,6 +20,7 @@ export interface GroupExpense {
   splitType: 'equal' | 'custom';
   splits: GroupExpenseSplit[];
   createdAt: string;
+  receiptId?: string;
 }
 
 export interface GroupTransfer {

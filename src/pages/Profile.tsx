@@ -20,7 +20,10 @@ import {
   Moon,
   Monitor,
   Globe,
-  Tag 
+  Tag,
+  DownloadCloud,
+  RefreshCw,
+  CheckCircle2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '../utils/cn';
@@ -28,6 +31,7 @@ import { cn } from '../utils/cn';
 import { ConfirmModal } from '../components/modals/ConfirmModal';
 import { useStore } from '../store/useStore';
 import { deleteAllUserData, deleteUserAccount, resetSyncFlag } from '../lib/supabaseSync';
+import { useAppUpdate } from '../hooks/useAppUpdate';
 
 export function Profile() {
   const { user, profile, updateProfile, signOut } = useAuthStore();
@@ -40,7 +44,18 @@ export function Profile() {
   const [isDeleteDataModalOpen, setIsDeleteDataModalOpen] = useState(false);
   const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  
+
+  const {
+    currentVersion,
+    latestVersion,
+    hasUpdate,
+    isChecking: isCheckingUpdate,
+    checkStatus: updateCheckStatus,
+    statusMessage: updateStatusMessage,
+    checkForUpdate,
+    openModal: openUpdateModal,
+  } = useAppUpdate(false);
+
   // Ref-based guard prevents double-submission even if isDeleting state hasn't
   // propagated yet (React batching gap on rapid double-click or double-tap).
   const isRunning = useRef(false);
@@ -470,6 +485,75 @@ export function Profile() {
         </div>
       </Card>
       
+      {/* App Version & Updates */}
+      <Card className="border border-[var(--color-gray-light)] shadow-sm">
+        <CardHeader>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <DownloadCloud size={18} className="text-[var(--color-primary)]" />
+              <CardTitle className="text-base sm:text-lg">App Updates</CardTitle>
+            </div>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] text-[var(--color-dark)]">
+              v{currentVersion}
+            </span>
+          </div>
+        </CardHeader>
+        <div className="p-4 sm:p-6 space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <p className="font-semibold text-base text-[var(--color-dark)] flex items-center gap-2">
+                PaceWise for Android
+                {hasUpdate && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#FF453A]/10 text-[#FF453A] border border-[#FF453A]/25 animate-pulse">
+                    v{latestVersion} Available
+                  </span>
+                )}
+              </p>
+              <p className="text-xs sm:text-sm text-[var(--color-gray-dark)] mt-0.5">
+                Installed version: <span className="font-mono font-bold">v{currentVersion}</span> • Sideloaded APK releases via GitHub.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              {hasUpdate ? (
+                <Button
+                  onClick={openUpdateModal}
+                  className="w-full sm:w-auto h-11 bg-[var(--color-primary)] hover:opacity-95 text-white font-extrabold gap-2 shadow-sm whitespace-nowrap justify-center rounded-xl"
+                >
+                  <DownloadCloud size={16} /> View Update
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={() => checkForUpdate(true)}
+                  disabled={isCheckingUpdate}
+                  className="w-full sm:w-auto h-11 border-[var(--color-gray-light)] font-bold gap-2 shadow-sm whitespace-nowrap justify-center rounded-xl text-[var(--color-dark)] hover:bg-[var(--color-surface-light)]"
+                >
+                  <RefreshCw size={16} className={cn(isCheckingUpdate && 'animate-spin')} />
+                  {isCheckingUpdate ? 'Checking...' : 'Check for Updates'}
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Status feedback banner */}
+          {updateStatusMessage && (
+            <div
+              className={cn(
+                'p-3 rounded-xl border text-xs font-bold flex items-center gap-2 animate-in fade-in',
+                updateCheckStatus === 'update-available' && 'bg-[#FF453A]/10 border-[#FF453A]/25 text-[#FF453A]',
+                updateCheckStatus === 'up-to-date' && 'bg-green-500/10 border-green-500/25 text-green-600 dark:text-green-400',
+                updateCheckStatus === 'error' && 'bg-red-500/10 border-red-500/25 text-red-500'
+              )}
+            >
+              {updateCheckStatus === 'up-to-date' && <CheckCircle2 size={16} />}
+              {updateCheckStatus === 'update-available' && <DownloadCloud size={16} />}
+              <span>{updateStatusMessage}</span>
+            </div>
+          )}
+        </div>
+      </Card>
+
       {/* Account Actions */}
       <Card>
         <CardHeader>

@@ -9,6 +9,8 @@ import { AddExpenseModal } from '../components/modals/AddExpenseModal';
 import { AddMoneyModal } from '../components/modals/AddMoneyModal';
 import { AddBillModal } from '../components/modals/AddBillModal';
 import { AddPersonModal } from '../components/modals/AddPersonModal';
+import { ReceiptModal } from '../components/modals/ReceiptModal';
+import { type Transaction } from '../features/budget/budgetEngine';
 import { useCurrentDate } from '../hooks/useCurrentDate';
 import { format } from 'date-fns';
 import { 
@@ -28,6 +30,7 @@ export function Dashboard() {
   const config = useStore((state) => state.config);
   const transactions = useStore((state) => state.transactions);
   const people = useStore((state) => state.people);
+  const pendingSyncQueue = useStore((state) => state.pendingSyncQueue) || [];
   const customCategories = useStore((state) => state.customCategories);
   const customBillCategories = useStore((state) => state.customBillCategories) || [];
   const profile = useAuthStore((state) => state.profile);
@@ -37,7 +40,13 @@ export function Dashboard() {
   const [isMoneyModalOpen, setIsMoneyModalOpen] = useState(false);
   const [isBillModalOpen, setIsBillModalOpen] = useState(false);
   const [isPersonModalOpen, setIsPersonModalOpen] = useState(false);
-  
+  const [activeReceiptTx, setActiveReceiptTx] = useState<Transaction | null>(null);
+
+  const pendingTxIds = useMemo(
+    () => new Set(pendingSyncQueue.filter((q) => q.table === 'transactions').map((q) => q.id)),
+    [pendingSyncQueue]
+  );
+
   const todayDateStr = useCurrentDate();
   const stats = useMemo(() => calculateBudget(config, transactions, todayDateStr), [config, transactions, todayDateStr]);
 
@@ -474,9 +483,25 @@ export function Dashboard() {
                       className="scale-95 sm:scale-100 shrink-0"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs sm:text-sm font-bold text-[var(--color-dark)] leading-tight truncate">
-                        {t.reason || t.category || t.type}
-                      </p>
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <p className="text-xs sm:text-sm font-bold text-[var(--color-dark)] leading-tight truncate">
+                          {t.reason || t.category || t.type}
+                        </p>
+                        {t.receiptId && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveReceiptTx(t);
+                            }}
+                            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#FF453A]/10 hover:bg-[#FF453A]/20 text-[#FF453A] text-[10px] font-bold transition-colors cursor-pointer shrink-0"
+                            title="View attached receipt"
+                          >
+                            <span>🧾</span>
+                            <span className="hidden sm:inline">Receipt</span>
+                          </button>
+                        )}
+                      </div>
                       <p className="text-[10px] sm:text-xs text-[var(--color-gray-dark)] flex items-center gap-1 mt-0.5 truncate">
                         <span className="capitalize font-semibold text-[var(--color-dark)] shrink-0">
                           {t.personName ? t.personName : (t.category || t.type)}
@@ -487,12 +512,20 @@ export function Dashboard() {
                     </div>
                   </div>
 
-                  <span className={cn(
-                    'text-sm sm:text-base font-extrabold shrink-0', 
-                    isIncome ? 'text-[var(--color-success)]' : 'text-[var(--color-primary)]'
-                  )}>
-                    {isIncome ? '+' : '−'}{formatCurrency(t.amount)}
-                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {pendingTxIds.has(t.id) && (
+                      <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] font-bold text-amber-500 bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.5 rounded-md">
+                        <span>🕒</span>
+                        <span className="hidden sm:inline">Pending Sync</span>
+                      </span>
+                    )}
+                    <span className={cn(
+                      'text-sm sm:text-base font-extrabold shrink-0',
+                      isIncome ? 'text-[var(--color-success)]' : 'text-[var(--color-primary)]'
+                    )}>
+                      {isIncome ? '+' : '−'}{formatCurrency(t.amount)}
+                    </span>
+                  </div>
                 </div>
               );
             })}
@@ -524,11 +557,33 @@ export function Dashboard() {
                   <div className="flex items-center gap-2.5">
                     <IconBadge iconName="CreditCard" color="red" size="sm" className="scale-90 sm:scale-100" />
                     <div>
-                      <p className="text-[11px] sm:text-xs font-bold text-[var(--color-dark)] leading-tight">{b.category || 'Bill'}</p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-[11px] sm:text-xs font-bold text-[var(--color-dark)] leading-tight">{b.category || 'Bill'}</p>
+                        {b.receiptId && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveReceiptTx(b);
+                            }}
+                            className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded bg-[#FF453A]/10 hover:bg-[#FF453A]/20 text-[#FF453A] text-[9px] font-bold transition-colors cursor-pointer shrink-0"
+                            title="View attached bill receipt"
+                          >
+                            <span>🧾</span>
+                          </button>
+                        )}
+                      </div>
                       <p className="text-[9px] sm:text-[10px] text-[var(--color-gray-dark)] mt-0.5">{format(new Date(b.date), 'dd MMM yyyy')}</p>
                     </div>
                   </div>
-                  <span className="text-xs font-extrabold text-[var(--color-primary)]">{formatCurrency(b.amount)}</span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {pendingTxIds.has(b.id) && (
+                      <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-amber-500 bg-amber-500/10 border border-amber-500/25 px-1 py-0.5 rounded">
+                        <span>🕒</span>
+                      </span>
+                    )}
+                    <span className="text-xs font-extrabold text-[var(--color-primary)]">{formatCurrency(b.amount)}</span>
+                  </div>
                 </div>
               ))
             ) : (
@@ -560,6 +615,16 @@ export function Dashboard() {
       <AddPersonModal
         isOpen={isPersonModalOpen}
         onClose={() => setIsPersonModalOpen(false)}
+      />
+      <ReceiptModal
+        isOpen={Boolean(activeReceiptTx?.receiptId)}
+        onClose={() => setActiveReceiptTx(null)}
+        receiptId={activeReceiptTx?.receiptId}
+        title={activeReceiptTx?.reason || activeReceiptTx?.category || 'Receipt'}
+        amount={activeReceiptTx?.amount}
+        currency={currencySymbol}
+        date={activeReceiptTx ? format(new Date(activeReceiptTx.date), 'd MMM yyyy, h:mm a') : undefined}
+        category={activeReceiptTx?.category}
       />
     </div>
   );

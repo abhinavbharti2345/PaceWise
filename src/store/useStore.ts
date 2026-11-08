@@ -4,6 +4,17 @@ import { calculateBudget, type Transaction, type BudgetConfig } from '../feature
 import type { CategoryMeta } from '../utils/categoryHelpers';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from './useAuthStore';
+import { deleteReceipt } from '../lib/receiptStorage';
+import { getIsOnline } from '../hooks/useNetworkStatus';
+
+export interface SyncQueueItem {
+  id: string;
+  action: 'insert' | 'update' | 'delete';
+  table: string;
+  payload: any;
+  match?: Record<string, any>;
+  createdAt: number;
+}
 
 export interface Person {
   id: string;
@@ -16,6 +27,7 @@ interface AppState {
   config: BudgetConfig;
   transactions: Transaction[];
   people: Person[];
+  pendingSyncQueue: SyncQueueItem[];
   customCategories: CategoryMeta[];
   customBillCategories?: CategoryMeta[];
   customIncomeCategories?: CategoryMeta[];
@@ -42,7 +54,12 @@ interface AppState {
   addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
   updateTransaction: (id: string, updated: Partial<Omit<Transaction, 'id'>>) => void;
   deleteTransaction: (id: string) => void;
-  
+
+  // Offline sync queue actions
+  enqueueSyncItem: (item: Omit<SyncQueueItem, 'createdAt'> & { createdAt?: number }) => void;
+  removeFromSyncQueue: (ids: string[]) => void;
+  clearPendingQueue: () => void;
+
   // People actions
   addPerson: (person: Omit<Person, 'id'>) => string;
   deletePerson: (id: string) => void;
@@ -128,15 +145,67 @@ export const storePersistConfig = {
     categoryOrder: state.categoryOrder,
     billCategoryOrder: state.billCategoryOrder,
     incomeCategoryOrder: state.incomeCategoryOrder,
+    pendingSyncQueue: state.pendingSyncQueue || [],
   }),
 };
 
+function dispatchCloudSync(
+  action: 'insert' | 'update' | 'delete',
+  table: string,
+  id: string,
+  payload: any,
+  match?: Record<string, any>
+) {
+  const isOnline = getIsOnline();
+  if (!isOnline) {
+    console.log(`[PaceWise Sync Queue] Offline: enqueueing ${action} on ${table} (${id})`);
+    useStore.getState().enqueueSyncItem({ id, action, table, payload, match });
+    return;
+  }
+
+  let req: PromiseLike<any>;
+  if (action === 'insert') {
+    req = supabase.from(table).insert(payload);
+  } else if (action === 'update') {
+    let q = supabase.from(table).update(payload);
+    if (match) {
+      for (const [k, v] of Object.entries(match)) {
+        q = q.eq(k, v);
+      }
+    }
+    req = q;
+  } else if (action === 'delete') {
+    let q = supabase.from(table).delete();
+    if (match) {
+      for (const [k, v] of Object.entries(match)) {
+        q = q.eq(k, v);
+      }
+    }
+    req = q;
+  } else {
+    return;
+  }
+
+  Promise.resolve(req).then(({ error }: any) => {
+    if (error) {
+      console.warn(`[PaceWise DB] Failed online ${action} on ${table}, enqueuing for offline flush:`, error);
+      useStore.getState().enqueueSyncItem({ id, action, table, payload, match });
+    } else {
+      console.log(`[PaceWise DB] Online ${action} on ${table} SUCCESS`);
+    }
+  }).catch((err: any) => {
+    console.warn(`[PaceWise DB] Network exception on ${action} on ${table}, enqueuing for offline flush:`, err);
+    useStore.getState().enqueueSyncItem({ id, action, table, payload, match });
+  });
+}
+
 export const useStore = create<AppState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       config: defaultConfig,
       transactions: [],
       people: [],
+      pendingSyncQueue: [],
       customCategories: [],
       customBillCategories: [],
       customIncomeCategories: [],
@@ -145,6 +214,27 @@ export const useStore = create<AppState>()(
       billCategoryOrder: [],
       incomeCategoryOrder: [],
       isHydrated: false,
+
+      enqueueSyncItem: (item) => set((state) => {
+        const queue = state.pendingSyncQueue || [];
+        const existingIdx = queue.findIndex(q => q.id === item.id && q.action === item.action && q.table === item.table);
+        const newItem: SyncQueueItem = {
+          ...item,
+          createdAt: item.createdAt || Date.now(),
+        };
+        if (existingIdx !== -1) {
+          const updated = [...queue];
+          updated[existingIdx] = newItem;
+          return { pendingSyncQueue: updated };
+        }
+        return { pendingSyncQueue: [...queue, newItem] };
+      }),
+
+      removeFromSyncQueue: (ids) => set((state) => ({
+        pendingSyncQueue: (state.pendingSyncQueue || []).filter((q) => !ids.includes(q.id)),
+      })),
+
+      clearPendingQueue: () => set({ pendingSyncQueue: [] }),
 
       addCustomCategory: (cat) => set((state) => {
         const exists = state.customCategories.some(c => c.name.toLowerCase() === cat.name.toLowerCase());
@@ -253,6 +343,28 @@ export const useStore = create<AppState>()(
         console.log('[PaceWise DB] Saving budget...');
         console.log('[PaceWise DB] Budget payload:', newConfig);
 
+        const payload = {
+          user_id: user.id,
+          total_money: newConfig.totalMoney,
+          start_date: newConfig.startDate,
+          end_date: newConfig.endDate,
+          currency: newConfig.currency,
+          theme: newConfig.theme,
+          updated_at: new Date().toISOString(),
+        };
+
+        if (!getIsOnline()) {
+          console.log('[PaceWise Sync Queue] Offline: enqueueing budget config update');
+          get().enqueueSyncItem({
+            id: `config_${user.id}`,
+            action: 'update',
+            table: 'budget_configs',
+            payload,
+            match: { user_id: user.id },
+          });
+          return;
+        }
+
         try {
           // Manual UPSERT since user_id is not uniquely constrained in DB
           const { data: existing } = await supabase
@@ -262,37 +374,22 @@ export const useStore = create<AppState>()(
             .maybeSingle();
 
           if (existing) {
-            const { error } = await supabase.from('budget_configs').update({
-              total_money: newConfig.totalMoney,
-              start_date: newConfig.startDate,
-              end_date: newConfig.endDate,
-              currency: newConfig.currency,
-              theme: newConfig.theme,
-              updated_at: new Date().toISOString(),
-            }).eq('user_id', user.id);
-            
+            const { error } = await supabase.from('budget_configs').update(payload).eq('user_id', user.id);
             if (error) throw error;
             console.log('[PaceWise DB] Budget save SUCCESS (updated)');
           } else {
-            const { error } = await supabase.from('budget_configs').insert({
-              user_id: user.id,
-              total_money: newConfig.totalMoney,
-              start_date: newConfig.startDate,
-              end_date: newConfig.endDate,
-              currency: newConfig.currency,
-              theme: newConfig.theme,
-            });
-            
+            const { error } = await supabase.from('budget_configs').insert(payload);
             if (error) throw error;
             console.log('[PaceWise DB] Budget save SUCCESS (inserted)');
           }
         } catch (error: any) {
-          console.error('[PaceWise DB] Failed to save budget config', {
-            error,
-            code: error?.code,
-            message: error?.message,
-            details: error?.details,
-            hint: error?.hint
+          console.warn('[PaceWise DB] Failed to save budget config online, enqueuing for offline flush:', error);
+          get().enqueueSyncItem({
+            id: `config_${user.id}`,
+            action: 'update',
+            table: 'budget_configs',
+            payload,
+            match: { user_id: user.id },
           });
         }
       },
@@ -312,11 +409,9 @@ export const useStore = create<AppState>()(
           return;
         }
 
-        console.log('[PaceWise DB] Saving transaction...');
-        console.log('[PaceWise DB] Transaction payload:', newTx);
+        console.log('[PaceWise DB] Saving transaction...', newTx);
 
-        // Fire and forget cloud write
-        supabase.from('transactions').insert({
+        const payload = {
           id,
           user_id: user.id,
           type: newTx.type,
@@ -331,19 +426,9 @@ export const useStore = create<AppState>()(
           is_settlement: newTx.isSettlement,
           payment_method: newTx.paymentMethod,
           note: newTx.note,
-        }).then(({ error }) => {
-          if (error) {
-            console.error('[PaceWise DB] Failed to save transaction', {
-              error,
-              code: error?.code,
-              message: error?.message,
-              details: error?.details,
-              hint: error?.hint
-            });
-          } else {
-            console.log('[PaceWise DB] Transaction save SUCCESS');
-          }
-        });
+        };
+
+        dispatchCloudSync('insert', 'transactions', id, payload);
       },
 
       updateTransaction: (id, updated) => {
@@ -371,10 +456,13 @@ export const useStore = create<AppState>()(
           if (userId) {
             affectedPersonIds.forEach(pId => {
               const b = calculatePersonBalance(pId, newTransactions);
-              supabase.from('people').update({ balance: b, updated_at: new Date().toISOString() })
-                .eq('id', pId).eq('user_id', userId).then(({ error }) => {
-                  if (error) console.error('[PaceWise DB] Failed to update person balance on tx update:', error);
-                });
+              dispatchCloudSync(
+                'update',
+                'people',
+                `person_bal_${pId}`,
+                { balance: b, updated_at: new Date().toISOString() },
+                { id: pId, user_id: userId }
+              );
             });
           }
         }
@@ -401,15 +489,17 @@ export const useStore = create<AppState>()(
         if (updated.paymentMethod !== undefined) payload.payment_method = updated.paymentMethod;
         if (updated.note !== undefined) payload.note = updated.note;
 
-        supabase.from('transactions').update(payload).eq('id', id).eq('user_id', user.id).then(({ error }) => {
-          if (error) console.error('[PaceWise DB] Failed to update transaction:', error);
-        });
+        dispatchCloudSync('update', 'transactions', id, payload, { id, user_id: user.id });
       },
 
       deleteTransaction: (id) => {
         const state = useStore.getState();
         const targetTx = state.transactions.find(t => t.id === id);
         const newTransactions = state.transactions.filter(t => t.id !== id);
+
+        if (targetTx?.receiptId) {
+          deleteReceipt(targetTx.receiptId);
+        }
 
         let newPeople = state.people;
         if (targetTx?.personId) {
@@ -418,10 +508,13 @@ export const useStore = create<AppState>()(
 
           const userId = useAuthStore.getState().user?.id;
           if (userId) {
-            supabase.from('people').update({ balance: newBalance, updated_at: new Date().toISOString() })
-              .eq('id', targetTx.personId).eq('user_id', userId).then(({ error }) => {
-                if (error) console.error('[PaceWise DB] Failed to update person balance on tx delete:', error);
-              });
+            dispatchCloudSync(
+              'update',
+              'people',
+              `person_bal_${targetTx.personId}`,
+              { balance: newBalance, updated_at: new Date().toISOString() },
+              { id: targetTx.personId, user_id: userId }
+            );
           }
         }
 
@@ -440,19 +533,14 @@ export const useStore = create<AppState>()(
 
         console.log(`[PaceWise DB] Deleting transaction ${id}...`);
 
-        supabase.from('transactions').delete().eq('id', id).eq('user_id', user.id).then(({ error }) => {
-          if (error) {
-            console.error('[PaceWise DB] Failed to delete transaction', {
-              error,
-              code: error?.code,
-              message: error?.message,
-              details: error?.details,
-              hint: error?.hint
-            });
-          } else {
-            console.log('[PaceWise DB] Transaction delete SUCCESS');
-          }
-        });
+        // If this item was only created offline and pending insertion in queue, simply remove the pending insert!
+        const pendingInsert = (state.pendingSyncQueue || []).find(q => q.id === id && q.action === 'insert');
+        if (pendingInsert) {
+          state.removeFromSyncQueue([id]);
+          return;
+        }
+
+        dispatchCloudSync('delete', 'transactions', id, {}, { id, user_id: user.id });
       },
       
       addPerson: (person) => {
@@ -470,29 +558,16 @@ export const useStore = create<AppState>()(
           return id;
         }
 
-        console.log('[PaceWise DB] Saving person...');
-        console.log('[PaceWise DB] Person payload:', newPerson);
+        console.log('[PaceWise DB] Saving person...', newPerson);
 
-        // Fire and forget
-        supabase.from('people').insert({
+        const payload = {
           id,
           user_id: user.id,
           name: newPerson.name,
           avatar_url: newPerson.avatarUrl,
           balance: newPerson.balance,
-        }).then(({ error }) => {
-          if (error) {
-            console.error('[PaceWise DB] Failed to save person', {
-              error,
-              code: error?.code,
-              message: error?.message,
-              details: error?.details,
-              hint: error?.hint
-            });
-          } else {
-            console.log('[PaceWise DB] Person save SUCCESS');
-          }
-        });
+        };
+        dispatchCloudSync('insert', 'people', id, payload);
         
         return id;
       },
@@ -514,23 +589,8 @@ export const useStore = create<AppState>()(
         console.log(`[PaceWise DB] Deleting person ${id} and cascading associated transactions...`);
 
         // Cascade delete person transactions first, then delete person sequentially
-        supabase.from('transactions').delete().eq('person_id', id).eq('user_id', user.id).then(({ error: txError }) => {
-          if (txError) console.error('[PaceWise DB] Failed to delete person transactions:', txError);
-          
-          supabase.from('people').delete().eq('id', id).eq('user_id', user.id).then(({ error }) => {
-            if (error) {
-              console.error('[PaceWise DB] Failed to delete person', {
-                error,
-                code: error?.code,
-                message: error?.message,
-                details: error?.details,
-                hint: error?.hint
-              });
-            } else {
-              console.log('[PaceWise DB] Person delete SUCCESS');
-            }
-          });
-        });
+        dispatchCloudSync('delete', 'transactions', `cascade_person_${id}`, {}, { person_id: id, user_id: user.id });
+        dispatchCloudSync('delete', 'people', id, {}, { id, user_id: user.id });
       },
 
       updatePersonBalance: (personId, amountChange) => {
@@ -544,10 +604,13 @@ export const useStore = create<AppState>()(
         if (userId) {
           const person = useStore.getState().people.find(p => p.id === personId);
           if (person) {
-            supabase.from('people').update({ balance: person.balance, updated_at: new Date().toISOString() })
-              .eq('id', personId).eq('user_id', userId).then(({ error }) => {
-              if (error) console.error('[PaceWise] Failed to update person balance in Supabase:', error);
-            });
+            dispatchCloudSync(
+              'update',
+              'people',
+              `person_bal_${personId}`,
+              { balance: person.balance, updated_at: new Date().toISOString() },
+              { id: personId, user_id: userId }
+            );
           }
         }
       },
@@ -847,80 +910,59 @@ export const useStore = create<AppState>()(
           return;
         }
 
-        const promises: PromiseLike<unknown>[] = [
-          supabase.from('people').update({ balance: newBalance, updated_at: new Date().toISOString() })
-            .eq('id', personId).eq('user_id', user.id).then(({ error }) => {
-              if (error) {
-                console.error('[PaceWise DB] Failed to update person balance', { error, code: error?.code });
-              }
-            })
-        ];
+        dispatchCloudSync(
+          'update',
+          'people',
+          `person_bal_${personId}`,
+          { balance: newBalance, updated_at: new Date().toISOString() },
+          { id: personId, user_id: user.id }
+        );
 
         if (newTx) {
-          promises.push(
-            supabase.from('transactions').insert({
-              id: txId,
-              user_id: user.id,
-              type: 'person',
-              amount,
-              date: txDate,
-              category: 'Settlement',
-              reason: newTx.reason,
-              person_id: personId,
-              person_name: personName,
-              direction: newTx.direction,
-              is_settlement: true,
-              is_bought_for_me_settlement: newTx.isBoughtForMeSettlement,
-              note,
-            }).then(({ error }) => {
-              if (error) {
-                console.error('[PaceWise DB] Failed to insert settlement transaction', { error, code: error?.code });
-              } else {
-                console.log('[PaceWise DB] Settle debt SUCCESS');
-              }
-            })
-          );
+          dispatchCloudSync('insert', 'transactions', txId, {
+            id: txId,
+            user_id: user.id,
+            type: 'person',
+            amount,
+            date: txDate,
+            category: 'Settlement',
+            reason: newTx.reason,
+            person_id: personId,
+            person_name: personName,
+            direction: newTx.direction,
+            is_settlement: true,
+            is_bought_for_me_settlement: newTx.isBoughtForMeSettlement,
+            note,
+          });
         }
 
         if (targetIdsToSettle.size > 0) {
           for (const sId of targetIdsToSettle) {
-            promises.push(
-              supabase.from('transactions').update({ status: 'settled' })
-                .eq('id', sId).eq('user_id', user.id)
-                .then(({ error }) => {
-                  if (error) console.error('[PaceWise DB] Failed to update target transaction status in Supabase:', error);
-                })
+            dispatchCloudSync(
+              'update',
+              'transactions',
+              `settled_${sId}`,
+              { status: 'settled' },
+              { id: sId, user_id: user.id }
             );
           }
         }
 
         if (expenseTxs.length > 0) {
           for (const expTx of expenseTxs) {
-            promises.push(
-              supabase.from('transactions').insert({
-                id: expTx.id,
-                user_id: user.id,
-                type: 'expense',
-                amount: expTx.amount,
-                date: expTx.date,
-                category: expTx.category,
-                reason: expTx.reason,
-                person_id: expTx.personId,
-                person_name: expTx.personName,
-              }).then(({ error }) => {
-                if (error) console.error('[PaceWise DB] Failed to insert expense transaction', { error });
-              })
-            );
+            dispatchCloudSync('insert', 'transactions', expTx.id, {
+              id: expTx.id,
+              user_id: user.id,
+              type: 'expense',
+              amount: expTx.amount,
+              date: expTx.date,
+              category: expTx.category,
+              reason: expTx.reason,
+              person_id: expTx.personId,
+              person_name: expTx.personName,
+            });
           }
         }
-        
-        Promise.all(promises).catch((error: any) => {
-          console.error('[PaceWise DB] Failed to sync settleDebt', {
-            error,
-            code: error?.code,
-            message: error?.message
-          });
-        });
       },
       
       clearAllData: () => set({
@@ -933,6 +975,7 @@ export const useStore = create<AppState>()(
         },
         transactions: [],
         people: [],
+        pendingSyncQueue: [],
         customCategories: [],
         customBillCategories: [],
         customIncomeCategories: [],
@@ -947,6 +990,7 @@ export const useStore = create<AppState>()(
         config: defaultConfig, 
         transactions: [], 
         people: [],
+        pendingSyncQueue: [],
         customCategories: [],
         customBillCategories: [],
         customIncomeCategories: [],

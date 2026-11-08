@@ -919,6 +919,34 @@ describe('Hardening & Cascade Deletion Logic', () => {
       expect(auditTx?.isSettlement).toBe(true);
       expect(auditTx?.isBoughtForMeSettlement).toBe(true);
     });
+
+    it('30. Offline mutations queue items in pendingSyncQueue and purge offline-created items on delete', () => {
+      const store = useStore.getState();
+
+      // Enqueue sync item
+      store.enqueueSyncItem({
+        id: 'test-tx-1',
+        action: 'insert',
+        table: 'transactions',
+        payload: { amount: 100 }
+      });
+      expect(useStore.getState().pendingSyncQueue.some(q => q.id === 'test-tx-1')).toBe(true);
+
+      // Deleting an offline-created transaction purges it from queue
+      store.deleteTransaction('test-tx-1');
+      expect(useStore.getState().pendingSyncQueue.some(q => q.id === 'test-tx-1')).toBe(false);
+
+      // Clear queue helper
+      store.enqueueSyncItem({
+        id: 'test-tx-2',
+        action: 'insert',
+        table: 'transactions',
+        payload: { amount: 200 }
+      });
+      expect(useStore.getState().pendingSyncQueue.length).toBeGreaterThan(0);
+      store.clearPendingQueue();
+      expect(useStore.getState().pendingSyncQueue.length).toBe(0);
+    });
   });
 });
 

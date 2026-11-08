@@ -10,6 +10,10 @@ import { Logo } from '../ui/Logo';
 
 import { useCurrentDate } from '../../hooks/useCurrentDate';
 import { formatCurrency as formatCurrencyUtil } from '../../utils/currencyUtils';
+import { useAppUpdate } from '../../hooks/useAppUpdate';
+import { useHardwareBackButton } from '../../hooks/useHardwareBackButton';
+import { UpdateModal } from '../modals/UpdateModal';
+import { NetworkStatusPill } from '../ui/NetworkStatusPill';
 
 const navItems = [
   { name: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -26,6 +30,8 @@ export function AppLayout() {
   const user = useAuthStore((state) => state.user);
   const todayDateStr = useCurrentDate();
 
+  useHardwareBackButton();
+
   const stats = useMemo(
     () => calculateBudget(config, transactions, todayDateStr),
     [config, transactions, todayDateStr]
@@ -33,6 +39,7 @@ export function AppLayout() {
 
   const currency = config.currency || '₹';
   const formatCurrency = useCallback((val: number) => formatCurrencyUtil(val, currency), [currency]);
+  const update = useAppUpdate(true);
 
   return (
     <div className="flex h-screen bg-[var(--color-bg-light)] text-[var(--color-dark)] overflow-hidden">
@@ -101,8 +108,9 @@ export function AppLayout() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col h-full relative overflow-y-auto pb-28 md:pb-8">
+      <main className="flex-1 flex flex-col h-full relative overflow-y-auto pt-[env(safe-area-inset-top,24px)] pb-28 md:pb-8">
         <div className="flex-1 flex flex-col w-full max-w-[1680px] mx-auto p-4 sm:p-6 md:p-8 xl:p-10">
+          <NetworkStatusPill />
           <Outlet />
         </div>
       </main>
@@ -153,6 +161,16 @@ export function AppLayout() {
       </nav>
 
       <InstallPrompt />
+
+      <UpdateModal
+        isOpen={update.isModalOpen}
+        onClose={update.dismissModal}
+        currentVersion={update.currentVersion}
+        latestVersion={update.latestVersion}
+        releaseNotes={update.releaseNotes}
+        downloadUrl={update.downloadUrl}
+        isMandatory={update.isMandatory}
+      />
     </div>
   );
 }

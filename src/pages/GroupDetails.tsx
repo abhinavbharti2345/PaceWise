@@ -23,6 +23,8 @@ import { calculateGroupSummary, formatWhatsAppSummary } from '../utils/groupEngi
 import { AddGroupExpenseModal } from '../components/modals/AddGroupExpenseModal';
 import { AddGroupTransferModal } from '../components/modals/AddGroupTransferModal';
 import { GroupSettleModal } from '../components/modals/GroupSettleModal';
+import { ReceiptModal } from '../components/modals/ReceiptModal';
+import type { GroupExpense } from '../utils/groupEngine';
 
 // Moved to module scope so it is not re-created on every render
 type ActivityItem =
@@ -43,6 +45,7 @@ export function GroupDetails() {
   const [newMemberName, setNewMemberName] = useState('');
   const [activityTab, setActivityTab] = useState<'all' | 'expenses' | 'transfers'>('all');
   const [copied, setCopied] = useState(false);
+  const [activeReceiptExpense, setActiveReceiptExpense] = useState<GroupExpense | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -425,9 +428,25 @@ export function GroupDetails() {
                           : '🧾'}
                       </div>
                       <div className="min-w-0">
-                        <h4 className="text-sm font-bold text-[var(--color-dark)] truncate">
-                          {exp.description}
-                        </h4>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <h4 className="text-sm font-bold text-[var(--color-dark)] truncate">
+                            {exp.description}
+                          </h4>
+                          {exp.receiptId && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveReceiptExpense(exp);
+                              }}
+                              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#FF453A]/10 hover:bg-[#FF453A]/20 text-[#FF453A] text-[10px] font-bold transition-colors cursor-pointer shrink-0"
+                              title="View attached receipt"
+                            >
+                              <span>🧾</span>
+                              <span className="hidden sm:inline">Receipt</span>
+                            </button>
+                          )}
+                        </div>
                         <p className="text-[11px] text-[var(--color-gray-dark)] flex items-center gap-2 mt-0.5">
                           <span>Paid by <strong className="text-[var(--color-dark)]">{payer?.isUser ? 'You' : payer?.name || 'Someone'}</strong></span>
                           <span>•</span>
@@ -527,6 +546,17 @@ export function GroupDetails() {
         isOpen={isSettleOpen}
         onClose={() => setIsSettleOpen(false)}
         group={group}
+      />
+
+      <ReceiptModal
+        isOpen={Boolean(activeReceiptExpense?.receiptId)}
+        onClose={() => setActiveReceiptExpense(null)}
+        receiptId={activeReceiptExpense?.receiptId}
+        title={activeReceiptExpense?.description || 'Group Expense'}
+        amount={activeReceiptExpense?.amount}
+        currency={currency}
+        date={activeReceiptExpense?.date}
+        category={activeReceiptExpense?.category}
       />
     </div>
   );

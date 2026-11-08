@@ -8,6 +8,7 @@ import { useAuthStore } from './store/useAuthStore';
 import { useSupabaseSync } from './lib/supabaseSync';
 import { useMonthRollover } from './hooks/useMonthRollover';
 import { SplashScreen } from './components/ui/SplashScreen';
+import { useNetworkStatus } from './hooks/useNetworkStatus';
 
 // Lazy-loaded routes to minimize initial JS payload
 const Transactions = lazy(() => import('./pages/Transactions').then(m => ({ default: m.Transactions })));
@@ -79,6 +80,9 @@ function AppContent() {
   // Use atomic selectors to prevent unnecessary re-renders on every store mutation
   const theme = useStore((state) => state.config.theme);
   const isHydrated = useStore((state) => state.isHydrated);
+  const transactions = useStore((state) => state.transactions);
+  const config = useStore((state) => state.config);
+  const { isOnline } = useNetworkStatus();
   const { user, loading: authLoading, checkAuthStatus } = useAuthStore();
 
   // Initialize Supabase sync (hook handles auth state internally)
@@ -129,9 +133,14 @@ function AppContent() {
     );
   }
 
-  // Authenticated but Supabase data hasn't loaded yet → show loading
-  // This prevents stale localStorage data from flashing before cloud data arrives
-  if (!isHydrated) {
+  // Check if we already have local data from previous sessions or if offline
+  const hasLocalData =
+    transactions.length > 0 ||
+    config.totalMoney > 0 ||
+    Boolean(typeof window !== 'undefined' && localStorage.getItem('pacewise-storage-v2'));
+
+  // Only block on splash screen if there is NO local data AND we are online waiting for initial sync
+  if (!isHydrated && !hasLocalData && isOnline) {
     return <SplashScreen message="Syncing your budget..." />;
   }
 

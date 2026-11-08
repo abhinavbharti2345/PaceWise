@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Group, GroupExpense, GroupTransfer } from '../utils/groupEngine';
+import { deleteReceipt } from '../lib/receiptStorage';
 
 export function generateId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -193,6 +194,12 @@ export const useGroupStore = create<GroupState>()(
       },
 
       deleteExpense: (groupId, expenseId) => {
+        const group = get().groups.find((g) => g.id === groupId);
+        const exp = group?.expenses.find((e) => e.id === expenseId);
+        if (exp?.receiptId) {
+          deleteReceipt(exp.receiptId);
+        }
+
         set((state) => ({
           groups: state.groups.map((g) =>
             g.id === groupId

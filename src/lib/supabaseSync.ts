@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useStore, calculatePersonBalance } from '../store/useStore';
 import type { BudgetConfig, Transaction } from '../features/budget/budgetEngine';
 import type { Person } from '../store/useStore';
+import { getIsOnline, subscribeNetworkStatus } from '../hooks/useNetworkStatus';
 
 /**
  * Module-level flag to prevent duplicate fetches across React strict-mode
@@ -16,6 +17,96 @@ let activeFetchUserId: string | null = null;
 /** Reset the sync flag. Must be called after successful "Delete All My Data". */
 export function resetSyncFlag() {
   activeFetchUserId = null;
+}
+
+let isFlushingQueue = false;
+
+/**
+ * Iterates through pendingSyncQueue in chronological order and executes
+ * corresponding Supabase actions. Dequeues successfully flushed items.
+ */
+export async function flushPendingSyncQueue(): Promise<{ flushedCount: number; errors: number }> {
+  if (isFlushingQueue) return { flushedCount: 0, errors: 0 };
+  if (!getIsOnline()) return { flushedCount: 0, errors: 0 };
+
+  const user = useAuthStore.getState().user;
+  if (!user?.id) return { flushedCount: 0, errors: 0 };
+
+  const queue = useStore.getState().pendingSyncQueue || [];
+  if (queue.length === 0) return { flushedCount: 0, errors: 0 };
+
+  isFlushingQueue = true;
+  console.log(`[PaceWise Sync Queue] Starting flush of ${queue.length} pending operations...`);
+
+  let flushedCount = 0;
+  let errorCount = 0;
+  const flushedIds: string[] = [];
+
+  try {
+    for (const item of queue) {
+      if (!getIsOnline()) break;
+
+      try {
+        if (item.action === 'insert') {
+          if (item.table === 'budget_configs') {
+            const { data: existing } = await supabase
+              .from('budget_configs')
+              .select('id')
+              .eq('user_id', item.payload.user_id)
+              .maybeSingle();
+
+            if (existing) {
+              const { error } = await supabase
+                .from('budget_configs')
+                .update(item.payload)
+                .eq('user_id', item.payload.user_id);
+              if (error) throw error;
+            } else {
+              const { error } = await supabase.from('budget_configs').insert(item.payload);
+              if (error) throw error;
+            }
+          } else {
+            // Upsert for idempotency
+            const { error } = await supabase.from(item.table).upsert(item.payload, { onConflict: 'id' });
+            if (error) throw error;
+          }
+        } else if (item.action === 'update') {
+          let q = supabase.from(item.table).update(item.payload);
+          if (item.match) {
+            for (const [k, v] of Object.entries(item.match)) {
+              q = q.eq(k, v);
+            }
+          }
+          const { error } = await q;
+          if (error) throw error;
+        } else if (item.action === 'delete') {
+          let q = supabase.from(item.table).delete();
+          if (item.match) {
+            for (const [k, v] of Object.entries(item.match)) {
+              q = q.eq(k, v);
+            }
+          }
+          const { error } = await q;
+          if (error) throw error;
+        }
+
+        flushedIds.push(item.id);
+        flushedCount++;
+      } catch (itemErr) {
+        console.warn(`[PaceWise Sync Queue] Item ${item.id} flush failed:`, itemErr);
+        errorCount++;
+        if (!getIsOnline()) break;
+      }
+    }
+  } finally {
+    if (flushedIds.length > 0) {
+      useStore.getState().removeFromSyncQueue(flushedIds);
+    }
+    isFlushingQueue = false;
+    console.log(`[PaceWise Sync Queue] Flush complete: ${flushedCount} succeeded, ${errorCount} failed.`);
+  }
+
+  return { flushedCount, errors: errorCount };
 }
 
 /**
@@ -33,6 +124,17 @@ export function resetSyncFlag() {
 export function useSupabaseSync() {
   const user = useAuthStore((state) => state.user);
 
+  // Setup automatic background flush whenever network status turns online
+  useEffect(() => {
+    const unsubscribe = subscribeNetworkStatus((status) => {
+      if (status.isOnline) {
+        console.log('[PaceWise Sync] Connection restored. Flushing pending queue...');
+        flushPendingSyncQueue();
+      }
+    });
+    return unsubscribe;
+  }, []);
+
   useEffect(() => {
     if (!user) {
       activeFetchUserId = null;
@@ -45,7 +147,14 @@ export function useSupabaseSync() {
 
     const fetchData = async () => {
       console.log(`[PaceWise Sync] starting for user ${user.id}`);
-      
+
+      // If offline, bypass network call immediately and let user work with local data
+      if (!getIsOnline()) {
+        console.log('[PaceWise Sync] Device is offline. Using local storage data.');
+        useStore.getState().setHydrated(true);
+        return;
+      }
+
       try {
         console.log('[PaceWise Sync] checking profile');
         // ── 1. Ensure profile row exists ──────────────────────────────
@@ -199,14 +308,30 @@ export function useSupabaseSync() {
           balance: calculatePersonBalance(p.id, txs),
         }));
 
+        // ── 5. Merge with any uncommitted local transactions ──────────
+        const pendingQueue = useStore.getState().pendingSyncQueue || [];
+        const pendingInsertIds = new Set(
+          pendingQueue
+            .filter((q) => q.table === 'transactions' && q.action === 'insert')
+            .map((q) => q.id)
+        );
+        const currentLocalTxs = useStore.getState().transactions || [];
+        const uncommittedTxs = currentLocalTxs.filter((t) => pendingInsertIds.has(t.id));
+
+        const combinedTxs = [
+          ...uncommittedTxs,
+          ...txs.filter((t) => !uncommittedTxs.some((local) => local.id === t.id)),
+        ];
+
         useStore.setState({
           people: peopleList,
-          transactions: txs,
+          transactions: combinedTxs,
         });
 
-        // ── 5. Mark hydration complete ───────────────────────────────
+        // ── 6. Mark hydration complete & flush queued operations ──────
         console.log('[PaceWise Sync] hydration complete');
         useStore.getState().setHydrated(true);
+        flushPendingSyncQueue();
 
       } catch (err) {
         console.error('[PaceWise Sync] UNEXPECTED FATAL ERROR:', err);

@@ -18,6 +18,7 @@ export interface Transaction {
   paymentMethod?: string;
   note?: string;
   status?: 'settled' | 'unsettled';
+  receiptId?: string;
 }
 
 export interface BudgetConfig {

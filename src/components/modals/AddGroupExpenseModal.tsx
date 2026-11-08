@@ -5,6 +5,8 @@ import { Input } from '../ui/Input';
 import { useGroupStore } from '../../store/useGroupStore';
 import { toPaise, type Group, type GroupExpenseSplit } from '../../utils/groupEngine';
 import { getTodayDateString } from '../../utils/dateUtils';
+import { ReceiptAttachmentInput } from '../ui/ReceiptAttachmentInput';
+import { registerModal } from '../../lib/modalStack';
 
 interface AddGroupExpenseModalProps {
   isOpen: boolean;
@@ -36,11 +38,18 @@ export function AddGroupExpenseModal({ isOpen, onClose, group }: AddGroupExpense
 
   // For Custom split: map of memberId -> string amount
   const [customSplits, setCustomSplits] = useState<Record<string, string>>({});
+  const [receiptId, setReceiptId] = useState<string | null>(null);
 
   const [error, setError] = useState('');
   const amountInputId = useId();
 
   const currency = group.currency || '₹';
+
+  useEffect(() => {
+    if (isOpen) {
+      return registerModal(onClose);
+    }
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (isOpen) {
@@ -50,6 +59,7 @@ export function AddGroupExpenseModal({ isOpen, onClose, group }: AddGroupExpense
       setCategory('Food & Drinks');
       setError('');
       setSplitType('equal');
+      setReceiptId(null);
 
       // Default payer is "You" (isUser) or the first member
       const userMember = group.members.find((m) => m.isUser);
@@ -202,8 +212,10 @@ export function AddGroupExpenseModal({ isOpen, onClose, group }: AddGroupExpense
       category,
       splitType,
       splits: finalSplits,
+      receiptId: receiptId || undefined,
     });
 
+    setReceiptId(null);
     onClose();
   };
 
@@ -439,6 +451,12 @@ export function AddGroupExpenseModal({ isOpen, onClose, group }: AddGroupExpense
                 </div>
               </div>
             )}
+
+            {/* Receipt Attachment */}
+            <ReceiptAttachmentInput
+              receiptId={receiptId}
+              onChange={setReceiptId}
+            />
           </div>
 
           {/* Footer */}
