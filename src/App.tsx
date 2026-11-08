@@ -7,7 +7,6 @@ import { Transactions } from './pages/Transactions';
 import { People } from './pages/People';
 import { PersonDetails } from './pages/PersonDetails';
 import { Insights } from './pages/Insights';
-import { Settings } from './pages/Settings';
 import { AuthPage } from './pages/Auth';
 import { EmailVerificationPending } from './pages/EmailVerificationPending';
 import { Profile } from './pages/Profile';
@@ -134,7 +133,7 @@ function AppContent() {
         <Route path="groups" element={<Groups />} />
         <Route path="groups/:id" element={<GroupDetails />} />
         <Route path="insights" element={<Insights />} />
-        <Route path="settings" element={<Settings />} />
+        <Route path="settings" element={<Navigate to="/profile" replace />} />
         <Route path="categories" element={<Categories />} />
         <Route path="profile" element={<Profile />} />
         <Route path="guide" element={<Guide />} />

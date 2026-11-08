@@ -51,9 +51,9 @@ export function Categories() {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={() => navigate('/settings')}
+            onClick={() => navigate('/profile')}
             className="w-10 h-10 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-gray-light)] text-[var(--color-dark)] flex items-center justify-center hover:bg-[var(--color-surface-light)] transition-colors shadow-sm cursor-pointer"
-            title="Back to Settings"
+            title="Back to Profile & Settings"
           >
             <ArrowLeft size={20} />
           </button>

@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { LayoutDashboard, ArrowRightLeft, Users, PieChart, Settings, User, Palmtree } from 'lucide-react';
+import { LayoutDashboard, ArrowRightLeft, Users, PieChart, User, Palmtree } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useStore } from '../../store/useStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -16,7 +16,6 @@ const navItems = [
   { name: 'People', path: '/people', icon: Users },
   { name: 'Groups', path: '/groups', icon: Palmtree },
   { name: 'Insights', path: '/insights', icon: PieChart },
-  { name: 'Settings', path: '/settings', icon: Settings },
 ];
 
 export function AppLayout() {

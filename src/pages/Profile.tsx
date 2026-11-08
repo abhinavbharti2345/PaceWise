@@ -4,8 +4,26 @@ import { supabase } from '../lib/supabase';
 import { Card, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { User, Mail, LogOut, Check, Pencil, Shield, AlertTriangle, BookOpen, ChevronRight, Sparkles } from 'lucide-react';
+import { 
+  User, 
+  Mail, 
+  LogOut, 
+  Check, 
+  Pencil, 
+  Shield, 
+  AlertTriangle, 
+  BookOpen, 
+  ChevronRight, 
+  Sparkles, 
+  Settings as SettingsIcon,
+  Sun,
+  Moon,
+  Monitor,
+  Globe,
+  Tag 
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { cn } from '../utils/cn';
 
 import { ConfirmModal } from '../components/modals/ConfirmModal';
 import { useStore } from '../store/useStore';
@@ -13,6 +31,7 @@ import { deleteAllUserData, deleteUserAccount, resetSyncFlag } from '../lib/supa
 
 export function Profile() {
   const { user, profile, updateProfile, signOut } = useAuthStore();
+  const { config, updateConfig, resetData } = useStore();
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(profile?.displayName || '');
   const [isSaving, setIsSaving] = useState(false);
@@ -25,8 +44,6 @@ export function Profile() {
   // Ref-based guard prevents double-submission even if isDeleting state hasn't
   // propagated yet (React batching gap on rapid double-click or double-tap).
   const isRunning = useRef(false);
-
-  const resetData = useStore(state => state.resetData);
 
   // Keep displayName in sync when profile loads asynchronously
   useEffect(() => {
@@ -166,8 +183,8 @@ export function Profile() {
           <User size={20} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-[var(--color-dark)]">Profile</h1>
-          <p className="text-[var(--color-gray-dark)] text-sm mt-0.5">Manage your account and personal information.</p>
+          <h1 className="text-2xl font-bold text-[var(--color-dark)]">Profile & Settings</h1>
+          <p className="text-[var(--color-gray-dark)] text-sm mt-0.5">Manage your account, preferences, and personal information.</p>
         </div>
       </header>
 
@@ -300,6 +317,113 @@ export function Profile() {
             </div>
           </div>
           
+        </div>
+      </Card>
+      
+      {/* App Preferences & Settings */}
+      <Card className="border border-[var(--color-gray-light)] shadow-sm">
+        <CardHeader>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <SettingsIcon size={18} className="text-[var(--color-primary)]" />
+              <CardTitle className="text-base sm:text-lg">Preferences & Settings</CardTitle>
+            </div>
+            <span className="text-xs text-[var(--color-gray-dark)] font-medium">Appearance & Regional</span>
+          </div>
+        </CardHeader>
+
+        <div className="p-4 sm:p-6 space-y-5">
+          {/* Appearance & Theme */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2 flex items-center gap-1.5">
+              <Sparkles size={14} className="text-amber-500" /> Appearance & Theme
+            </label>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 bg-[var(--color-surface-light)] p-1.5 rounded-2xl border border-[var(--color-gray-light)]">
+              <button 
+                type="button"
+                onClick={() => updateConfig({ theme: 'light' })}
+                className={cn(
+                  "py-2.5 px-2 text-xs font-bold rounded-xl transition-all flex flex-col sm:flex-row justify-center items-center gap-1.5 sm:gap-2 cursor-pointer",
+                  config.theme === 'light' 
+                    ? "bg-[var(--color-surface)] text-[var(--color-primary)] shadow-sm border border-[var(--color-gray-light)]" 
+                    : "text-[var(--color-gray-dark)] hover:text-[var(--color-dark)]"
+                )}
+              >
+                <Sun size={16} />
+                <span>Light</span>
+              </button>
+
+              <button 
+                type="button"
+                onClick={() => updateConfig({ theme: 'dark' })}
+                className={cn(
+                  "py-2.5 px-2 text-xs font-bold rounded-xl transition-all flex flex-col sm:flex-row justify-center items-center gap-1.5 sm:gap-2 cursor-pointer",
+                  config.theme === 'dark' 
+                    ? "bg-[var(--color-surface)] text-[var(--color-primary)] shadow-sm border border-[var(--color-gray-light)]" 
+                    : "text-[var(--color-gray-dark)] hover:text-[var(--color-dark)]"
+                )}
+              >
+                <Moon size={16} />
+                <span>Dark</span>
+              </button>
+
+              <button 
+                type="button"
+                onClick={() => updateConfig({ theme: 'system' })}
+                className={cn(
+                  "py-2.5 px-2 text-xs font-bold rounded-xl transition-all flex flex-col sm:flex-row justify-center items-center gap-1.5 sm:gap-2 cursor-pointer",
+                  config.theme === 'system' 
+                    ? "bg-[var(--color-surface)] text-[var(--color-primary)] shadow-sm border border-[var(--color-gray-light)]" 
+                    : "text-[var(--color-gray-dark)] hover:text-[var(--color-dark)]"
+                )}
+              >
+                <Monitor size={16} />
+                <span>System</span>
+              </button>
+            </div>
+          </div>
+
+          <hr className="border-[var(--color-gray-light)]" />
+
+          {/* Currency Preference */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--color-gray-dark)] mb-2 flex items-center gap-1.5">
+              <Globe size={14} className="text-[var(--color-primary)]" /> Currency Symbol
+            </label>
+            <select
+              value={config.currency || '₹'}
+              onChange={(e) => updateConfig({ currency: e.target.value })}
+              className="w-full sm:w-64 bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] rounded-xl px-3 py-2.5 text-sm font-bold text-[var(--color-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] cursor-pointer"
+            >
+              <option value="₹">₹ (INR - Indian Rupee)</option>
+              <option value="$">$ (USD - Dollar)</option>
+              <option value="€">€ (EUR - Euro)</option>
+              <option value="£">£ (GBP - Pound)</option>
+            </select>
+          </div>
+
+          <hr className="border-[var(--color-gray-light)]" />
+
+          {/* Categories & Customization Quick Link */}
+          <Link 
+            to="/categories"
+            className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface-light)] hover:bg-[var(--color-gray-light)]/50 border border-[var(--color-gray-light)] transition-all group cursor-pointer"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold shadow-sm shrink-0 group-hover:scale-105 transition-transform">
+                <Tag size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-sm sm:text-base text-[var(--color-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                  Categories & Types
+                </p>
+                <p className="text-xs text-[var(--color-gray-dark)] mt-0.5">
+                  Customize, reorder, and add spending categories & bill types.
+                </p>
+              </div>
+            </div>
+            <ChevronRight size={18} className="text-[var(--color-gray-dark)] group-hover:text-[var(--color-primary)] group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+          </Link>
         </div>
       </Card>
       
