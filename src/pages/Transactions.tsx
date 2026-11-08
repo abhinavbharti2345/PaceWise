@@ -19,7 +19,10 @@ type FilterType = 'all' | 'expense' | 'income' | 'bill' | 'person';
 type TimeFilter = 'all' | 'today' | 'week' | 'month';
 
 export function Transactions() {
-  const { transactions, deleteTransaction, customCategories, customBillCategories = [] } = useStore();
+  const transactions = useStore((state) => state.transactions);
+  const deleteTransaction = useStore((state) => state.deleteTransaction);
+  const customCategories = useStore((state) => state.customCategories);
+  const customBillCategories = useStore((state) => state.customBillCategories) || [];
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
   const [search, setSearch] = useState('');
@@ -86,27 +89,34 @@ export function Transactions() {
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   const filteredTransactions = useMemo(() => {
+    const q = search.trim().toLowerCase();
+
     return transactions
-      .filter(t => (filterType === 'all' ? true : t.type === filterType))
-      .filter(t => {
-        if (timeFilter === 'today') return isToday(new Date(t.date));
-        if (timeFilter === 'week') return isThisWeek(new Date(t.date));
-        if (timeFilter === 'month') {
-          return format(new Date(t.date), 'yyyy-MM') === selectedMonth;
+      .filter((t) => {
+        if (filterType !== 'all' && t.type !== filterType) return false;
+
+        if (timeFilter === 'today') {
+          if (!isToday(new Date(t.date))) return false;
+        } else if (timeFilter === 'week') {
+          if (!isThisWeek(new Date(t.date))) return false;
+        } else if (timeFilter === 'month') {
+          if (format(new Date(t.date), 'yyyy-MM') !== selectedMonth) return false;
         }
+
+        if (q) {
+          const reason = (t.reason || '').toLowerCase();
+          const cat = (t.category || '').toLowerCase();
+          const person = (t.personName || '').toLowerCase();
+          const amt = String(t.amount);
+          if (!reason.includes(q) && !cat.includes(q) && !person.includes(q) && !amt.includes(q)) {
+            return false;
+          }
+        }
+
         return true;
       })
-      .filter(t => {
-        if (!search.trim()) return true;
-        const q = search.toLowerCase();
-        const reason = (t.reason || '').toLowerCase();
-        const cat = (t.category || '').toLowerCase();
-        const person = (t.personName || '').toLowerCase();
-        const amt = String(t.amount);
-        return reason.includes(q) || cat.includes(q) || person.includes(q) || amt.includes(q);
-      })
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [transactions, filterType, timeFilter, search]);
+  }, [transactions, filterType, timeFilter, search, selectedMonth]);
 
   // Group by date
   const grouped = useMemo(() => {

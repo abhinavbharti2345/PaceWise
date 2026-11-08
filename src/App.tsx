@@ -1,24 +1,26 @@
-import { useEffect, Component } from 'react';
+import { useEffect, Component, lazy, Suspense } from 'react';
 import type { ReactNode } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppLayout } from './components/layout/AppLayout';
 import { Dashboard } from './pages/Dashboard';
-import { Transactions } from './pages/Transactions';
-import { People } from './pages/People';
-import { PersonDetails } from './pages/PersonDetails';
-import { Insights } from './pages/Insights';
-import { AuthPage } from './pages/Auth';
-import { EmailVerificationPending } from './pages/EmailVerificationPending';
-import { Profile } from './pages/Profile';
-import { Guide } from './pages/Guide';
-import { Categories } from './pages/Categories';
-import { Groups } from './pages/Groups';
-import { GroupDetails } from './pages/GroupDetails';
 import { useStore } from './store/useStore';
 import { useAuthStore } from './store/useAuthStore';
 import { useSupabaseSync } from './lib/supabaseSync';
 import { useMonthRollover } from './hooks/useMonthRollover';
 import { SplashScreen } from './components/ui/SplashScreen';
+
+// Lazy-loaded routes to minimize initial JS payload
+const Transactions = lazy(() => import('./pages/Transactions').then(m => ({ default: m.Transactions })));
+const People = lazy(() => import('./pages/People').then(m => ({ default: m.People })));
+const PersonDetails = lazy(() => import('./pages/PersonDetails').then(m => ({ default: m.PersonDetails })));
+const Insights = lazy(() => import('./pages/Insights').then(m => ({ default: m.Insights })));
+const AuthPage = lazy(() => import('./pages/Auth').then(m => ({ default: m.AuthPage })));
+const EmailVerificationPending = lazy(() => import('./pages/EmailVerificationPending').then(m => ({ default: m.EmailVerificationPending })));
+const Profile = lazy(() => import('./pages/Profile').then(m => ({ default: m.Profile })));
+const Guide = lazy(() => import('./pages/Guide').then(m => ({ default: m.Guide })));
+const Categories = lazy(() => import('./pages/Categories').then(m => ({ default: m.Categories })));
+const Groups = lazy(() => import('./pages/Groups').then(m => ({ default: m.Groups })));
+const GroupDetails = lazy(() => import('./pages/GroupDetails').then(m => ({ default: m.GroupDetails })));
 
 // ── Error Boundary ───────────────────────────────────────────────────
 interface ErrorBoundaryProps {
@@ -74,7 +76,9 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
 // ── App Content ──────────────────────────────────────────────────────
 function AppContent() {
-  const { config, isHydrated } = useStore();
+  // Use atomic selectors to prevent unnecessary re-renders on every store mutation
+  const theme = useStore((state) => state.config.theme);
+  const isHydrated = useStore((state) => state.isHydrated);
   const { user, loading: authLoading, checkAuthStatus } = useAuthStore();
 
   // Initialize Supabase sync (hook handles auth state internally)
@@ -90,15 +94,15 @@ function AppContent() {
   useEffect(() => {
     const root = document.documentElement;
     const isDark =
-      config.theme === 'dark' ||
-      (config.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      theme === 'dark' ||
+      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
     if (isDark) {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
-  }, [config.theme]);
+  }, [theme]);
 
   // Show loading while auth status is being determined
   if (authLoading) {
@@ -107,14 +111,22 @@ function AppContent() {
 
   // Not authenticated → show auth page
   if (!user) {
-    return <AuthPage />;
+    return (
+      <Suspense fallback={<SplashScreen />}>
+        <AuthPage />
+      </Suspense>
+    );
   }
 
   // Check email confirmation (skip for OAuth providers like Google)
   const isEmailConfirmed = !!user.email_confirmed_at || user.app_metadata?.provider !== 'email';
 
   if (!isEmailConfirmed) {
-    return <EmailVerificationPending />;
+    return (
+      <Suspense fallback={<SplashScreen />}>
+        <EmailVerificationPending />
+      </Suspense>
+    );
   }
 
   // Authenticated but Supabase data hasn't loaded yet → show loading
@@ -124,22 +136,24 @@ function AppContent() {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<AppLayout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="transactions" element={<Transactions />} />
-        <Route path="people" element={<People />} />
-        <Route path="people/:id" element={<PersonDetails />} />
-        <Route path="groups" element={<Groups />} />
-        <Route path="groups/:id" element={<GroupDetails />} />
-        <Route path="insights" element={<Insights />} />
-        <Route path="settings" element={<Navigate to="/profile" replace />} />
-        <Route path="categories" element={<Categories />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="guide" element={<Guide />} />
-      </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <Suspense fallback={<SplashScreen message="Loading..." />}>
+      <Routes>
+        <Route path="/" element={<AppLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="transactions" element={<Transactions />} />
+          <Route path="people" element={<People />} />
+          <Route path="people/:id" element={<PersonDetails />} />
+          <Route path="groups" element={<Groups />} />
+          <Route path="groups/:id" element={<GroupDetails />} />
+          <Route path="insights" element={<Insights />} />
+          <Route path="settings" element={<Navigate to="/profile" replace />} />
+          <Route path="categories" element={<Categories />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="guide" element={<Guide />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   );
 }
 

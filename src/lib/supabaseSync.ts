@@ -98,16 +98,38 @@ export function useSupabaseSync() {
           return;
         }
 
-        console.log('[PaceWise Sync] fetching budget');
-        // ── 2. Fetch budget config ───────────────────────────────────
-        const { data: configData, error: configError } = await supabase
-          .from('budget_configs')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle();
+        console.log('[PaceWise Sync] fetching cloud data in parallel');
+        // ── 2, 3, 4. Fetch budget config, people, and transactions concurrently ──────────
+        const [
+          { data: configData, error: configError },
+          { data: peopleData, error: peopleError },
+          { data: txData, error: txError }
+        ] = await Promise.all([
+          supabase
+            .from('budget_configs')
+            .select('*')
+            .eq('user_id', user.id)
+            .maybeSingle(),
+          supabase
+            .from('people')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: true }),
+          supabase
+            .from('transactions')
+            .select('id, type, amount, date, category, reason, source, person_id, person_name, direction, is_settlement, is_bought_for_me_settlement, payment_method, note, status')
+            .eq('user_id', user.id)
+            .order('date', { ascending: false })
+        ]);
 
         if (configError && configError.code !== 'PGRST116') {
           console.error('[PaceWise Sync] ERROR fetching budget config:', configError);
+        }
+        if (peopleError) {
+          console.error('[PaceWise Sync] ERROR fetching people:', peopleError);
+        }
+        if (txError) {
+          console.error('[PaceWise Sync] ERROR fetching transactions:', txError);
         }
 
         if (useAuthStore.getState().user?.id !== user.id) return;
@@ -152,34 +174,6 @@ export function useSupabaseSync() {
 
         if (useAuthStore.getState().user?.id !== user.id) return;
 
-        console.log('[PaceWise Sync] fetching people');
-        // ── 3. Fetch people ──────────────────────────────────────────
-        const { data: peopleData, error: peopleError } = await supabase
-          .from('people')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: true });
-
-        if (peopleError) {
-          console.error('[PaceWise Sync] ERROR fetching people:', peopleError);
-        }
-        
-        if (useAuthStore.getState().user?.id !== user.id) return;
-
-        console.log('[PaceWise Sync] fetching transactions');
-        // ── 4. Fetch transactions ────────────────────────────────────
-        const { data: txData, error: txError } = await supabase
-          .from('transactions')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('date', { ascending: false });
-
-        if (txError) {
-          console.error('[PaceWise Sync] ERROR fetching transactions:', txError);
-        }
-        
-        if (useAuthStore.getState().user?.id !== user.id) return;
-
         const txs: Transaction[] = (txData || []).map((tx) => ({
           id: tx.id,
           type: tx.type,
@@ -216,6 +210,8 @@ export function useSupabaseSync() {
 
       } catch (err) {
         console.error('[PaceWise Sync] UNEXPECTED FATAL ERROR:', err);
+        // Reset activeFetchUserId so retry is possible without requiring relogin
+        activeFetchUserId = null;
         // Safety fallback: allow user into the app
         useStore.getState().setHydrated(true);
       }

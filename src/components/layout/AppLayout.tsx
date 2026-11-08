@@ -1,3 +1,4 @@
+import { useMemo, useCallback } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { LayoutDashboard, ArrowRightLeft, Users, PieChart, User, Palmtree } from 'lucide-react';
 import { cn } from '../../utils/cn';
@@ -19,12 +20,19 @@ const navItems = [
 ];
 
 export function AppLayout() {
-  const { config, transactions } = useStore();
-  const { profile, user } = useAuthStore();
+  const config = useStore((state) => state.config);
+  const transactions = useStore((state) => state.transactions);
+  const profile = useAuthStore((state) => state.profile);
+  const user = useAuthStore((state) => state.user);
   const todayDateStr = useCurrentDate();
-  const stats = calculateBudget(config, transactions, todayDateStr);
 
-  const formatCurrency = (val: number) => formatCurrencyUtil(val, config.currency || '₹');
+  const stats = useMemo(
+    () => calculateBudget(config, transactions, todayDateStr),
+    [config, transactions, todayDateStr]
+  );
+
+  const currency = config.currency || '₹';
+  const formatCurrency = useCallback((val: number) => formatCurrencyUtil(val, currency), [currency]);
 
   return (
     <div className="flex h-screen bg-[var(--color-bg-light)] text-[var(--color-dark)] overflow-hidden">

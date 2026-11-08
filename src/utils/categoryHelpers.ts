@@ -1,8 +1,6 @@
-import * as LucideIcons from 'lucide-react';
-
 export interface CategoryMeta {
   name: string;
-  icon: keyof typeof LucideIcons;
+  icon: string;
   color: 'red' | 'green' | 'orange' | 'gray' | 'blue' | 'purple';
 }
 

@@ -25,8 +25,13 @@ import { getCategoryMeta } from '../utils/categoryHelpers';
 import { formatCurrency as formatCurrencyUtil } from '../utils/currencyUtils';
 
 export function Dashboard() {
-  const { config, transactions, people, customCategories, customBillCategories = [] } = useStore();
-  const { profile, user } = useAuthStore();
+  const config = useStore((state) => state.config);
+  const transactions = useStore((state) => state.transactions);
+  const people = useStore((state) => state.people);
+  const customCategories = useStore((state) => state.customCategories);
+  const customBillCategories = useStore((state) => state.customBillCategories) || [];
+  const profile = useAuthStore((state) => state.profile);
+  const user = useAuthStore((state) => state.user);
   
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [isMoneyModalOpen, setIsMoneyModalOpen] = useState(false);
@@ -39,23 +44,45 @@ export function Dashboard() {
   const currencySymbol = config.currency || '₹';
   const formatCurrency = (amount: number) => formatCurrencyUtil(amount, currencySymbol);
 
-  // People calculations
-  const toReceive = people.filter(p => (p.balance || 0) > 0).reduce((sum, p) => sum + p.balance, 0);
-  const toGive = people.filter(p => (p.balance || 0) < 0).reduce((sum, p) => sum + Math.abs(p.balance), 0);
-  const peopleOwingCount = people.filter(p => (p.balance || 0) > 0).length;
-  const userOwingCount = people.filter(p => (p.balance || 0) < 0).length;
-  const netPosition = toReceive - toGive;
+  // People calculations (memoized single-pass)
+  const { toReceive, toGive, peopleOwingCount, userOwingCount, netPosition } = useMemo(() => {
+    let receive = 0;
+    let give = 0;
+    let owingCount = 0;
+    let userCount = 0;
+    for (const p of people) {
+      const bal = p.balance || 0;
+      if (bal > 0) {
+        receive += bal;
+        owingCount++;
+      } else if (bal < 0) {
+        give += Math.abs(bal);
+        userCount++;
+      }
+    }
+    return {
+      toReceive: receive,
+      toGive: give,
+      peopleOwingCount: owingCount,
+      userOwingCount: userCount,
+      netPosition: receive - give,
+    };
+  }, [people]);
 
-  // Recent transactions (adaptive)
-  const recentTransactions = [...transactions]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 7);
+  // Recent transactions (adaptive & memoized)
+  const recentTransactions = useMemo(() => {
+    return [...transactions]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 7);
+  }, [transactions]);
 
-  // Recent / Upcoming Bills
-  const bills = transactions
-    .filter(t => t.type === 'bill')
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 5);
+  // Recent / Upcoming Bills (memoized)
+  const bills = useMemo(() => {
+    return transactions
+      .filter((t) => t.type === 'bill')
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 5);
+  }, [transactions]);
 
   const spentPercent = stats.todaysAvailable > 0 
     ? Math.min(100, Math.round((stats.spentToday / stats.todaysAvailable) * 100))

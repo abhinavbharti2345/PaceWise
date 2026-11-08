@@ -73,6 +73,8 @@ export function CategorySelector({
       window.removeEventListener('click', handleGlobalClick);
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('scroll', handleScroll, true);
+      if (longPressTimeoutRef.current) clearTimeout(longPressTimeoutRef.current);
+      if (dragHoldTimerRef.current) clearTimeout(dragHoldTimerRef.current);
     };
   }, []);
 

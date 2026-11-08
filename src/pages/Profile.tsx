@@ -44,6 +44,13 @@ export function Profile() {
   // Ref-based guard prevents double-submission even if isDeleting state hasn't
   // propagated yet (React batching gap on rapid double-click or double-tap).
   const isRunning = useRef(false);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, []);
 
   // Keep displayName in sync when profile loads asynchronously
   useEffect(() => {
@@ -75,7 +82,8 @@ export function Profile() {
       updateProfile({ displayName });
       setIsEditing(false);
       setSaveMessage({ type: 'success', text: 'Profile updated successfully.' });
-      setTimeout(() => setSaveMessage(null), 3000);
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = setTimeout(() => setSaveMessage(null), 3000);
     } catch (err) {
       console.error('Failed to update profile:', err);
       setSaveMessage({ type: 'error', text: 'Failed to update profile. Please try again.' });

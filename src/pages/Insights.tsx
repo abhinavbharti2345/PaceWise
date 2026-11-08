@@ -476,7 +476,9 @@ export const INSIGHTS_TIME_FILTER_KEY = 'pacewise-insights-time-filter';
 const VALID_FILTERS = ['week', 'current', 'last1', 'last2'];
 
 export function Insights() {
-  const { config, transactions, people } = useStore();
+  const config = useStore((state) => state.config);
+  const transactions = useStore((state) => state.transactions);
+  const people = useStore((state) => state.people);
   const todayDateStr = useCurrentDate();
 
   // Time filter state: 'week' = This Week, 'current' = This Month, 'last1' = Last Month, 'last2' = 2 Months Ago

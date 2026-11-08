@@ -1,16 +1,95 @@
 import React from 'react';
 import { cn } from '../../utils/cn';
-import * as LucideIcons from 'lucide-react';
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Award,
+  Book,
+  Briefcase,
+  Bus,
+  Camera,
+  Car,
+  CircleHelp,
+  Coffee,
+  CreditCard,
+  Droplets,
+  Dumbbell,
+  FileText,
+  Film,
+  Flame,
+  Gamepad2,
+  Gift,
+  GraduationCap,
+  Heart,
+  Home,
+  Laptop,
+  MoreHorizontal,
+  Music,
+  Receipt,
+  Shield,
+  ShoppingBag,
+  Smartphone,
+  Smile,
+  Sparkles,
+  Tag,
+  Tv,
+  UserCheck,
+  UserPlus,
+  Users,
+  Utensils,
+  Wifi,
+  Zap,
+} from 'lucide-react';
+
+const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>> = {
+  ArrowDownRight,
+  ArrowUpRight,
+  Award,
+  Book,
+  Briefcase,
+  Bus,
+  Camera,
+  Car,
+  Coffee,
+  CreditCard,
+  Droplets,
+  Dumbbell,
+  FileText,
+  Film,
+  Flame,
+  Gamepad2,
+  Gift,
+  GraduationCap,
+  Heart,
+  Home,
+  Laptop,
+  MoreHorizontal,
+  Music,
+  Receipt,
+  Shield,
+  ShoppingBag,
+  Smartphone,
+  Smile,
+  Sparkles,
+  Tag,
+  Tv,
+  UserCheck,
+  UserPlus,
+  Users,
+  Utensils,
+  Wifi,
+  Zap,
+};
 
 export interface IconBadgeProps {
-  iconName: keyof typeof LucideIcons;
+  iconName: string;
   color?: 'red' | 'green' | 'orange' | 'gray' | 'blue' | 'purple';
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
 
 export function IconBadge({ iconName, color = 'gray', size = 'md', className }: IconBadgeProps) {
-  const Icon = (LucideIcons[iconName] as React.ElementType) || LucideIcons.CircleHelp;
+  const Icon = ICON_MAP[iconName] || CircleHelp;
 
   const colorStyles: Record<string, string> = {
     red: 'bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400',
