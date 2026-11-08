@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PaceWise</string>
+    <string name="title_activity_main">PaceWise</string>
+    <string name="package_name">com.pacewise.app</string>
+    <string name="custom_url_scheme">com.pacewise.app</string>
+</resources>
