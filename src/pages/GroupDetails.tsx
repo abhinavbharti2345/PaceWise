@@ -1,5 +1,6 @@
 import { useState, useId, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Share } from '@capacitor/share';
 import {
   ArrowLeft,
   Plus,
@@ -81,8 +82,37 @@ export function GroupDetails() {
     setIsAddMemberOpen(false);
   };
 
-  const handleCopyWhatsApp = async () => {
+  const handleShareSummary = async () => {
     const text = formatWhatsAppSummary(group, currency);
+    const title = `${group.name} — Expense Breakdown`;
+
+    // 1. Try Native Capacitor Share Drawer (Android)
+    try {
+      const canShare = await Share.canShare();
+      if (canShare.value) {
+        await Share.share({
+          title,
+          text,
+          dialogTitle: `Share ${group.name} Summary`,
+        });
+        return;
+      }
+    } catch (err) {
+      console.debug('Capacitor Share unavailable, falling back:', err);
+    }
+
+    // 2. Try Standard Browser Web Share API
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ title, text });
+        return;
+      } catch (err: any) {
+        // User dismissed share dialog
+        if (err.name === 'AbortError') return;
+      }
+    }
+
+    // 3. Desktop / Unsupported Fallback: Copy to Clipboard
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
@@ -176,13 +206,13 @@ export function GroupDetails() {
           <Button
             variant="outline"
             size="sm"
-            onClick={handleCopyWhatsApp}
+            onClick={handleShareSummary}
             className={`rounded-xl text-xs font-bold gap-1.5 h-9 ${
               copied ? 'border-emerald-500 text-emerald-600 bg-emerald-50' : ''
             }`}
           >
             {copied ? <Check size={14} /> : <Share2 size={14} />}
-            <span>{copied ? 'Copied!' : 'Share WhatsApp'}</span>
+            <span>{copied ? 'Copied!' : 'Share Summary'}</span>
           </Button>
 
           <Button
