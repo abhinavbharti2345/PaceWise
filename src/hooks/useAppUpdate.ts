@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 export const GITHUB_OWNER = 'abhinavbharti2345';
 export const GITHUB_REPO = 'PaceWise';
-export const CURRENT_VERSION = '1.0.0';
+export const CURRENT_VERSION = '1.2.0';
 
 export const LATEST_RELEASE_API = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`;
 export const DEFAULT_FALLBACK_APK_URL = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest/download/PaceWise.apk`;
