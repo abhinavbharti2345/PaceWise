@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useStore, storePersistConfig } from '../../src/store/useStore';
 import { useAuthStore } from '../../src/store/useAuthStore';
 import { parseLocalDate, getLocalDateString } from '../../src/utils/dateUtils';
+import { calculateBudget } from '../../src/features/budget/budgetEngine';
 
 // Mock Supabase
 vi.mock('../../src/lib/supabase', () => {
@@ -946,6 +947,61 @@ describe('Hardening & Cascade Deletion Logic', () => {
       expect(useStore.getState().pendingSyncQueue.length).toBeGreaterThan(0);
       store.clearPendingQueue();
       expect(useStore.getState().pendingSyncQueue.length).toBe(0);
+    });
+
+    it('31. Settling a Paid for Me purchase in general mode deducts only the purchase amount without double-counting', () => {
+      const store = useStore.getState();
+      const rahulId = store.addPerson({ name: 'Rahul Test', balance: 0 });
+
+      // Total starting money: 3027
+      store.updateConfig({
+        totalMoney: 3027,
+        startDate: '2026-11-01',
+        endDate: '2026-11-30'
+      });
+
+      // 1. Rahul pays ₹50 for user ("df" purchase)
+      store.recordPersonTransaction({
+        personId: rahulId,
+        personName: 'Rahul Test',
+        amount: 50,
+        direction: 'bought_for_me',
+        category: 'Snacks',
+        reason: 'df',
+        handleMode: 'pay_later',
+        date: '2026-11-16T12:00:00.000Z'
+      });
+
+      // User owes Rahul ₹50
+      expect(useStore.getState().people.find(p => p.id === rahulId)?.balance).toBe(-50);
+
+      // Money left before settlement must still be 3027 (user hasn't spent cash yet)
+      const statsBefore = calculateBudget(
+        useStore.getState().config,
+        useStore.getState().transactions,
+        '2026-11-16'
+      );
+      expect(statsBefore.moneyLeft).toBe(3027);
+
+      // 2. User settles full debt of ₹50 in General mode (e.g. clicking Settle Debt)
+      store.settleDebt({
+        personId: rahulId,
+        personName: 'Rahul Test',
+        amount: 50,
+        direction: 'paid',
+      });
+
+      // 3. Balance must be 0 (All settled)
+      expect(useStore.getState().people.find(p => p.id === rahulId)?.balance).toBe(0);
+
+      // 4. Money left after settlement must be exactly 3027 - 50 = 2977 (NOT 2927!)
+      const statsAfter = calculateBudget(
+        useStore.getState().config,
+        useStore.getState().transactions,
+        '2026-11-16'
+      );
+      expect(statsAfter.spentToday).toBe(50);
+      expect(statsAfter.moneyLeft).toBe(2977);
     });
   });
 });

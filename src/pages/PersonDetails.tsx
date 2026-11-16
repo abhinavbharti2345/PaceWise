@@ -37,6 +37,7 @@ export function PersonDetails() {
   const [txDirection, setTxDirection] = useState<'gave' | 'took' | 'bought_for_me'>('gave');
   const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
   const [settleTransaction, setSettleTransaction] = useState<Transaction | null>(null);
+  const [settleMode, setSettleMode] = useState<'general' | 'bought_for_me'>('general');
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [activeReceiptTx, setActiveReceiptTx] = useState<Transaction | null>(null);
   const [pickerTx, setPickerTx] = useState<Transaction | null>(null);
@@ -53,16 +54,42 @@ export function PersonDetails() {
     );
   }
 
-  // Filter all transactions for this person
+  // Filter all transactions for this person (both direct debts and settled purchases)
   const personTransactions = transactions
-    .filter((t) => t.personId === person.id && t.type === 'person')
+    .filter((t) => t.personId === person.id && (t.type === 'person' || t.type === 'expense'))
+    .filter((t) => {
+      // Hide redundant internal settlement audit records paired with an expense settlement
+      if (t.type === 'person' && t.isSettlement && t.direction === 'gave') {
+        const isPaired = transactions.some(
+          other => other.type === 'expense' && other.personId === t.personId && Math.abs(new Date(other.date).getTime() - new Date(t.date).getTime()) < 15000
+        );
+        if (isPaired || t.isBoughtForMeSettlement) return false;
+      }
+      return true;
+    })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  const totalLent = person.balance > 0 ? person.balance : 0;
-  const totalBorrowed = person.balance < 0 ? Math.abs(person.balance) : 0;
+  // Pure cash lent minus cash repayments received
+  const personCashTxs = transactions.filter(t => t.personId === person.id && t.type === 'person');
+  const pureLent = personCashTxs
+    .filter(t => t.direction === 'gave' && !t.isSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const pureLentRepaid = personCashTxs
+    .filter(t => t.direction === 'took' && t.isSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const totalLent = Math.max(0, pureLent - pureLentRepaid);
 
-  const totalBoughtForMe = personTransactions
-    .filter(t => t.type === 'person' && t.direction === 'bought_for_me' && t.status !== 'settled')
+  // Pure cash borrowed minus cash repayments paid
+  const pureBorrowed = personCashTxs
+    .filter(t => t.direction === 'took' && !t.isSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const pureBorrowedRepaid = personCashTxs
+    .filter(t => t.direction === 'gave' && t.isSettlement && !t.isBoughtForMeSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const totalBorrowed = Math.max(0, pureBorrowed - pureBorrowedRepaid);
+
+  const totalBoughtForMe = transactions
+    .filter(t => t.personId === person.id && t.type === 'person' && t.direction === 'bought_for_me' && t.status !== 'settled')
     .reduce((sum, t) => sum + t.amount, 0);
 
   const isOwedToUser = person.balance > 0;
@@ -80,11 +107,13 @@ export function PersonDetails() {
 
   const handleSettleIndividual = (t: Transaction) => {
     setSettleTransaction(t);
+    setSettleMode('bought_for_me');
     setIsSettleModalOpen(true);
   };
 
   const handleSettleAll = () => {
     setSettleTransaction(null);
+    setSettleMode(totalBoughtForMe > 0 && totalBorrowed === 0 ? 'bought_for_me' : 'general');
     setIsSettleModalOpen(true);
   };
 
@@ -197,6 +226,7 @@ export function PersonDetails() {
               size="sm"
               onClick={() => {
                 setSettleTransaction(null);
+                setSettleMode('bought_for_me');
                 setIsSettleModalOpen(true);
               }}
               className="shrink-0 text-xs font-bold bg-white dark:bg-purple-900/50 border-purple-300 text-purple-700 dark:text-purple-200 hover:bg-purple-100 dark:hover:bg-purple-900/70"
@@ -407,6 +437,7 @@ export function PersonDetails() {
         }}
         person={person}
         transactionToSettle={settleTransaction || undefined}
+        defaultMode={settleMode}
       />
 
       <ConfirmModal

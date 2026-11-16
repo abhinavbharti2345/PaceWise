@@ -14,9 +14,10 @@ interface SettleModalProps {
   onClose: () => void;
   person: Person;
   transactionToSettle?: Transaction;
+  defaultMode?: 'general' | 'bought_for_me';
 }
 
-export function SettleModal({ isOpen, onClose, person, transactionToSettle }: SettleModalProps) {
+export function SettleModal({ isOpen, onClose, person, transactionToSettle, defaultMode = 'general' }: SettleModalProps) {
   const { settleDebt, transactions, customCategories, hiddenCategories = [], categoryOrder = [] } = useStore();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const allCategories = getAllExpenseCategories(customCategories, hiddenCategories, categoryOrder);
@@ -30,8 +31,21 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
 
   const personTxs = transactions.filter(t => t.personId === person.id);
 
-  const totalLent = person.balance > 0 ? person.balance : 0;
-  const totalBorrowed = person.balance < 0 ? Math.abs(person.balance) : 0;
+  const pureLent = personTxs
+    .filter(t => t.type === 'person' && t.direction === 'gave' && !t.isSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const pureLentRepaid = personTxs
+    .filter(t => t.type === 'person' && t.direction === 'took' && t.isSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const totalLent = Math.max(0, pureLent - pureLentRepaid);
+
+  const pureBorrowed = personTxs
+    .filter(t => t.type === 'person' && t.direction === 'took' && !t.isSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const pureBorrowedRepaid = personTxs
+    .filter(t => t.type === 'person' && t.direction === 'gave' && t.isSettlement && !t.isBoughtForMeSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const totalBorrowed = Math.max(0, pureBorrowed - pureBorrowedRepaid);
 
   const totalBoughtForMe = personTxs
     .filter(t => t.direction === 'bought_for_me' && t.status !== 'settled')
@@ -59,16 +73,16 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
         setAmount(transactionToSettle.amount.toString());
         setIsFullSettlement(false);
         setSettlementMethod(person.balance > 0 ? 'offset_debt' : 'cash');
-      } else if (absBalance === 0 && boughtForMeItems.length > 0) {
-        // Only default to bought_for_me if general balance is already 0 but items exist
+      } else if (defaultMode === 'bought_for_me' || (boughtForMeItems.length > 0 && totalBorrowed === 0 && person.balance <= 0)) {
+        // Default to bought_for_me mode when opened from Paid for Me banner OR when all debt is from bought_for_me purchases
         setSettlementMode('bought_for_me');
         const allIds = boughtForMeItems.map(t => t.id);
         setSelectedItemIds(allIds);
         setIsCustomCategoryMode(false);
         const sum = boughtForMeItems.reduce((acc, t) => acc + t.amount, 0);
-        setAmount(sum.toString());
-        setIsFullSettlement(false);
-        setSettlementMethod('cash');
+        setAmount(sum > 0 ? sum.toString() : absBalance.toString());
+        setIsFullSettlement(sum === absBalance);
+        setSettlementMethod(person.balance > 0 ? 'offset_debt' : 'cash');
       } else {
         // Default to General Cash Repayment of full balance
         setSettlementMode('general');
@@ -82,7 +96,7 @@ export function SettleModal({ isOpen, onClose, person, transactionToSettle }: Se
       setNote('');
       setError('');
     }
-  }, [isOpen, transactionToSettle, absBalance, person.balance, boughtForMeItems.length]);
+  }, [isOpen, transactionToSettle, defaultMode, absBalance, person.balance, boughtForMeItems.length, totalBorrowed]);
 
   if (!isOpen) return null;
 

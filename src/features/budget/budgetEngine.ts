@@ -126,7 +126,11 @@ export function calculateBudget(
     } else if (t.type === 'person') {
       // 'bought_for_me' and 'offset_debt' transactions do not represent direct wallet cash flow when created or settled.
       // Settlements for 'bought_for_me' items log an 'expense' transaction which already deducts from budget/money.
-      if (t.direction === 'bought_for_me' || t.direction === 'offset_debt' || t.isBoughtForMeSettlement) {
+      const isPairedBoughtSettlement = t.isSettlement && t.direction === 'gave' && transactions.some(
+        other => other.type === 'expense' && other.personId === t.personId && Math.abs(new Date(other.date).getTime() - new Date(t.date).getTime()) < 15000
+      );
+
+      if (t.direction === 'bought_for_me' || t.direction === 'offset_debt' || t.isBoughtForMeSettlement || isPairedBoughtSettlement) {
         continue;
       }
 
@@ -181,7 +185,11 @@ export function calculateBudget(
         dailyBase[j] += deltaPerDay;
       }
     } else if (t.type === 'person') {
-      if (t.direction === 'bought_for_me' || t.isBoughtForMeSettlement) {
+      const isPairedBoughtSettlement = t.isSettlement && t.direction === 'gave' && transactions.some(
+        other => other.type === 'expense' && other.personId === t.personId && Math.abs(new Date(other.date).getTime() - new Date(t.date).getTime()) < 15000
+      );
+
+      if (t.direction === 'bought_for_me' || t.direction === 'offset_debt' || t.isBoughtForMeSettlement || isPairedBoughtSettlement) {
         continue;
       }
       const flow = t.direction === 'took' ? t.amount : -t.amount;

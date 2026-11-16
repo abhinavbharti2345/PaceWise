@@ -29,6 +29,22 @@ export function People() {
     .filter(t => t.direction === 'bought_for_me' && t.status !== 'settled')
     .reduce((sum, t) => sum + t.amount, 0);
 
+  const pureLentCash = personTxs
+    .filter(t => t.direction === 'gave' && !t.isSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const pureLentRepaid = personTxs
+    .filter(t => t.direction === 'took' && t.isSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const globalTotalLent = Math.max(0, pureLentCash - pureLentRepaid);
+
+  const pureBorrowedCash = personTxs
+    .filter(t => t.direction === 'took' && !t.isSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const pureBorrowedRepaid = personTxs
+    .filter(t => t.direction === 'gave' && t.isSettlement && !t.isBoughtForMeSettlement)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const globalTotalBorrowed = Math.max(0, pureBorrowedCash - pureBorrowedRepaid);
+
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Header */}
@@ -82,13 +98,13 @@ export function People() {
             <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">
               <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↗ Lent</span>
               <span className="text-sm sm:text-lg font-extrabold text-[var(--color-success)] mt-0.5">
-                {formatCurrency(toReceive)}
+                {formatCurrency(globalTotalLent)}
               </span>
             </div>
             <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">
               <span className="text-[10px] sm:text-xs font-bold text-[var(--color-gray-dark)] leading-tight">↘ Borrowed</span>
               <span className="text-sm sm:text-lg font-extrabold text-[var(--color-primary)] mt-0.5">
-                {formatCurrency(toGive)}
+                {formatCurrency(globalTotalBorrowed)}
               </span>
             </div>
             <div className="p-2 sm:p-3 rounded-2xl bg-[var(--color-surface-light)] border border-[var(--color-gray-light)] shadow-sm flex flex-col justify-center">

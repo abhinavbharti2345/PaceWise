@@ -87,6 +87,17 @@ export function Dashboard() {
   // Recent transactions (adaptive & memoized)
   const recentTransactions = useMemo(() => {
     return [...transactions]
+      .filter((t) => {
+        if (t.isBoughtForMeSettlement) return false;
+        // Hide paired duplicate settlement if an accompanying expense transaction exists
+        if (t.type === 'person' && t.isSettlement && t.direction === 'gave') {
+          const hasPairedExpense = transactions.some(
+            other => other.type === 'expense' && other.personId === t.personId && Math.abs(new Date(other.date).getTime() - new Date(t.date).getTime()) < 15000
+          );
+          if (hasPairedExpense) return false;
+        }
+        return true;
+      })
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 7);
   }, [transactions]);

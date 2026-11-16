@@ -791,48 +791,12 @@ export const useStore = create<AppState>()(
 
         const isOffsetDebtSettlement = settlementMethod === 'offset_debt';
 
-        let newTx: Transaction | null = null;
-        if (!isOffsetDebtSettlement) {
-          const txDirection = direction === 'received' ? 'took' : 'gave';
-          const txReason = direction === 'received' 
-            ? `Received settlement from ${personName}` 
-            : `Paid settlement to ${personName}`;
-
-          newTx = {
-            id: txId,
-            type: 'person',
-            amount,
-            category: 'Settlement',
-            reason: txReason,
-            personId,
-            personName,
-            direction: txDirection,
-            isSettlement: true,
-            isBoughtForMeSettlement: !!expenseCategory || (!!settleItems && settleItems.length > 0),
-            date: txDate,
-            note
-          };
-        } else {
-          // Informational audit-trail transaction for offset debt settlements
-          newTx = {
-            id: txId,
-            type: 'person',
-            amount,
-            category: 'Settlement',
-            reason: note ? `Settled via debt offset: ${note}` : `Settled via debt offset with ${personName}`,
-            personId,
-            personName,
-            direction: 'offset_debt',
-            isSettlement: true,
-            isBoughtForMeSettlement: true,
-            date: txDate,
-            note
-          };
-        }
-
         const expenseTxs: Transaction[] = [];
+        const targetIdsToSettle = new Set<string>();
+
         if (settleItems && settleItems.length > 0) {
           for (const item of settleItems) {
+            targetIdsToSettle.add(item.id);
             expenseTxs.push({
               id: generateId(),
               type: 'expense',
@@ -841,7 +805,8 @@ export const useStore = create<AppState>()(
               category: item.category || expenseCategory || 'General',
               reason: item.reason ? `Settled purchase: ${item.reason}` : (expenseReason || `Settled purchase for ${personName}`),
               personId,
-              personName
+              personName,
+              note: note || undefined,
             });
           }
         } else if (expenseCategory) {
@@ -853,21 +818,27 @@ export const useStore = create<AppState>()(
             category: expenseCategory,
             reason: expenseReason || `Settled expense for ${personName}`,
             personId,
-            personName
+            personName,
+            note: note || undefined,
           });
-        }
-
-        // Mark target transactions as settled
-        const targetIdsToSettle = new Set<string>();
-        if (settleItems && settleItems.length > 0) {
-          for (const item of settleItems) {
-            targetIdsToSettle.add(item.id);
+          if (settleTransactionId) {
+            targetIdsToSettle.add(settleTransactionId);
           }
         } else if (settleTransactionId) {
           const targetTx = state.transactions.find(tx => tx.id === settleTransactionId);
-          const isFullyCovered = !targetTx || amount >= targetTx.amount;
-          if (isFullyCovered) {
+          if (targetTx && targetTx.direction === 'bought_for_me') {
             targetIdsToSettle.add(settleTransactionId);
+            expenseTxs.push({
+              id: generateId(),
+              type: 'expense',
+              amount: targetTx.amount,
+              date: txDate,
+              category: targetTx.category || 'General',
+              reason: targetTx.reason ? `Settled purchase: ${targetTx.reason}` : `Settled purchase for ${personName}`,
+              personId,
+              personName,
+              note: note || undefined,
+            });
           }
         } else {
           // Full / General settlement: Mark all unsettled bought_for_me transactions for this person as settled
@@ -887,15 +858,97 @@ export const useStore = create<AppState>()(
                 category: item.category || 'General',
                 reason: item.reason ? `Settled purchase: ${item.reason}` : `Settled purchase for ${personName}`,
                 personId,
-                personName
+                personName,
+                note: note || undefined,
               });
             }
+          }
+        }
+
+        const settledBoughtSum = expenseTxs.reduce((sum, item) => sum + item.amount, 0);
+        const hasBoughtSettlement = settledBoughtSum > 0 || isOffsetDebtSettlement || !!expenseCategory || (!!settleItems && settleItems.length > 0);
+
+        let newTx: Transaction | null = null;
+        let secondaryTx: Transaction | null = null;
+
+        if (isOffsetDebtSettlement) {
+          // Informational audit-trail transaction for offset debt settlements
+          newTx = {
+            id: txId,
+            type: 'person',
+            amount,
+            category: 'Settlement',
+            reason: note ? `Settled via debt offset: ${note}` : `Settled via debt offset with ${personName}`,
+            personId,
+            personName,
+            direction: 'offset_debt',
+            isSettlement: true,
+            isBoughtForMeSettlement: true,
+            date: txDate,
+            note
+          };
+        } else {
+          const txDirection = direction === 'received' ? 'took' : 'gave';
+          const txReason = direction === 'received' 
+            ? `Received settlement from ${personName}` 
+            : `Paid settlement to ${personName}`;
+
+          if (direction === 'paid' && settledBoughtSum > 0 && amount > settledBoughtSum) {
+            // Mixed settlement: User paid both bought_for_me purchases AND cash loan
+            const cashLoanAmount = amount - settledBoughtSum;
+            newTx = {
+              id: txId,
+              type: 'person',
+              amount: cashLoanAmount,
+              category: 'Settlement',
+              reason: txReason,
+              personId,
+              personName,
+              direction: 'gave',
+              isSettlement: true,
+              isBoughtForMeSettlement: false,
+              date: txDate,
+              note
+            };
+            secondaryTx = {
+              id: generateId(),
+              type: 'person',
+              amount: settledBoughtSum,
+              category: 'Settlement',
+              reason: `Paid settlement for purchases to ${personName}`,
+              personId,
+              personName,
+              direction: 'gave',
+              isSettlement: true,
+              isBoughtForMeSettlement: true,
+              date: txDate,
+              note
+            };
+          } else {
+            const isFullBoughtSettlement = direction === 'paid' && hasBoughtSettlement;
+            newTx = {
+              id: txId,
+              type: 'person',
+              amount,
+              category: 'Settlement',
+              reason: txReason,
+              personId,
+              personName,
+              direction: txDirection,
+              isSettlement: true,
+              isBoughtForMeSettlement: isFullBoughtSettlement,
+              date: txDate,
+              note
+            };
           }
         }
 
         let newTransactions = state.transactions;
         if (newTx) {
           newTransactions = [newTx, ...newTransactions];
+        }
+        if (secondaryTx) {
+          newTransactions = [secondaryTx, ...newTransactions];
         }
         if (expenseTxs.length > 0) {
           newTransactions = [...expenseTxs, ...newTransactions];
@@ -933,11 +986,11 @@ export const useStore = create<AppState>()(
         );
 
         if (newTx) {
-          dispatchCloudSync('insert', 'transactions', txId, {
-            id: txId,
+          dispatchCloudSync('insert', 'transactions', newTx.id, {
+            id: newTx.id,
             user_id: user.id,
             type: 'person',
-            amount,
+            amount: newTx.amount,
             date: txDate,
             category: 'Settlement',
             reason: newTx.reason,
@@ -946,6 +999,24 @@ export const useStore = create<AppState>()(
             direction: newTx.direction,
             is_settlement: true,
             is_bought_for_me_settlement: newTx.isBoughtForMeSettlement,
+            note,
+          });
+        }
+
+        if (secondaryTx) {
+          dispatchCloudSync('insert', 'transactions', secondaryTx.id, {
+            id: secondaryTx.id,
+            user_id: user.id,
+            type: 'person',
+            amount: secondaryTx.amount,
+            date: txDate,
+            category: 'Settlement',
+            reason: secondaryTx.reason,
+            person_id: personId,
+            person_name: personName,
+            direction: secondaryTx.direction,
+            is_settlement: true,
+            is_bought_for_me_settlement: secondaryTx.isBoughtForMeSettlement,
             note,
           });
         }

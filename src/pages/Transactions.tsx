@@ -107,6 +107,14 @@ export function Transactions() {
 
     return transactions
       .filter((t) => {
+        if (t.isBoughtForMeSettlement) return false;
+        if (t.type === 'person' && t.isSettlement && t.direction === 'gave') {
+          const hasPairedExpense = transactions.some(
+            other => other.type === 'expense' && other.personId === t.personId && Math.abs(new Date(other.date).getTime() - new Date(t.date).getTime()) < 15000
+          );
+          if (hasPairedExpense) return false;
+        }
+
         if (filterType !== 'all' && t.type !== filterType) return false;
 
         if (timeFilter === 'today') {
