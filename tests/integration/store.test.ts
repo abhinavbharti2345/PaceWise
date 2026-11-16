@@ -1003,6 +1003,101 @@ describe('Hardening & Cascade Deletion Logic', () => {
       expect(statsAfter.spentToday).toBe(50);
       expect(statsAfter.moneyLeft).toBe(2977);
     });
+
+    it('32. splitExpense equal split where User pays logs user share as expense and friend shares as lent debt', () => {
+      const store = useStore.getState();
+      const rahulId = store.addPerson({ name: 'Rahul Split', balance: 0 });
+      const hardikId = store.addPerson({ name: 'Hardik Split', balance: 0 });
+
+      store.updateConfig({
+        totalMoney: 5000,
+        startDate: '2026-11-01',
+        endDate: '2026-11-30'
+      });
+
+      // Split ₹600 equally 3 ways: User ₹200, Rahul ₹200, Hardik ₹200
+      store.splitExpense({
+        totalAmount: 600,
+        description: 'Dinner at Social',
+        category: 'Food',
+        payerId: 'user',
+        splits: [
+          { personId: 'user', personName: 'You', amount: 200 },
+          { personId: rahulId, personName: 'Rahul Split', amount: 200 },
+          { personId: hardikId, personName: 'Hardik Split', amount: 200 }
+        ]
+      });
+
+      // Rahul and Hardik should each owe user ₹200
+      expect(useStore.getState().people.find(p => p.id === rahulId)?.balance).toBe(200);
+      expect(useStore.getState().people.find(p => p.id === hardikId)?.balance).toBe(200);
+
+      // Verify transactions created:
+      const txs = useStore.getState().transactions;
+      const userExpTx = txs.find(t => t.type === 'expense' && t.amount === 200 && t.reason === 'Split: Dinner at Social');
+      expect(userExpTx).toBeDefined();
+      expect(userExpTx?.category).toBe('Food');
+
+      const rahulLentTx = txs.find(t => t.personId === rahulId && t.direction === 'gave' && t.amount === 200);
+      expect(rahulLentTx).toBeDefined();
+
+      const hardikLentTx = txs.find(t => t.personId === hardikId && t.direction === 'gave' && t.amount === 200);
+      expect(hardikLentTx).toBeDefined();
+
+      // Check budget:
+      // Spent today (discretionary) is only the user's ₹200 share
+      // Total money left reflects ₹600 cash spent from pocket (₹200 expense + ₹400 lent cash flow)
+      const stats = calculateBudget(
+        useStore.getState().config,
+        useStore.getState().transactions,
+        '2026-11-16'
+      );
+      expect(stats.spentToday).toBe(200);
+      expect(stats.moneyLeft).toBe(4400); // 5000 - 600
+    });
+
+    it('33. splitExpense where a friend pays logs user share as bought_for_me debt without cash leaving wallet today', () => {
+      const store = useStore.getState();
+      const rahulId = store.addPerson({ name: 'Rahul Payer', balance: 0 });
+
+      store.updateConfig({
+        totalMoney: 5000,
+        startDate: '2026-11-01',
+        endDate: '2026-11-30'
+      });
+
+      // Rahul paid ₹300, user share is ₹100
+      store.splitExpense({
+        totalAmount: 300,
+        description: 'Movie tickets',
+        category: 'Entertainment',
+        payerId: rahulId,
+        payerName: 'Rahul Payer',
+        splits: [
+          { personId: 'user', personName: 'You', amount: 100 },
+          { personId: rahulId, personName: 'Rahul Payer', amount: 200 }
+        ]
+      });
+
+      // User owes Rahul ₹100
+      expect(useStore.getState().people.find(p => p.id === rahulId)?.balance).toBe(-100);
+
+      // Verify bought_for_me transaction
+      const boughtTx = useStore.getState().transactions.find(
+        t => t.personId === rahulId && t.direction === 'bought_for_me' && t.amount === 100
+      );
+      expect(boughtTx).toBeDefined();
+      expect(boughtTx?.status).toBe('unsettled');
+
+      // User did not spend cash from pocket today
+      const stats = calculateBudget(
+        useStore.getState().config,
+        useStore.getState().transactions,
+        '2026-11-16'
+      );
+      expect(stats.spentToday).toBe(0);
+      expect(stats.moneyLeft).toBe(5000);
+    });
   });
 });
 

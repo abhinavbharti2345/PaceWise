@@ -92,6 +92,22 @@ interface AppState {
     settlementMethod?: 'cash' | 'offset_debt';
   }) => void;
   
+  splitExpense: (params: {
+    totalAmount: number;
+    description: string;
+    category?: string;
+    date?: string;
+    payerId: string; // 'user' or personId
+    payerName?: string;
+    splits: Array<{
+      personId: string; // 'user' or personId
+      personName: string;
+      amount: number;
+    }>;
+    note?: string;
+    receiptId?: string;
+  }) => void;
+
   clearAllData: () => void;
   resetData: () => void;
   setHydrated: (value: boolean) => void;
@@ -1046,6 +1062,143 @@ export const useStore = create<AppState>()(
               person_id: expTx.personId,
               person_name: expTx.personName,
             });
+          }
+        }
+      },
+
+      splitExpense: ({
+        totalAmount: _totalAmount,
+        description,
+        category,
+        date,
+        payerId,
+        payerName,
+        splits,
+        note,
+        receiptId
+      }) => {
+        const state = useStore.getState();
+        const txDate = date || new Date().toISOString();
+        const cat = category || 'General';
+        const user = useAuthStore.getState().user;
+
+        const newTxs: Transaction[] = [];
+        const affectedPersonIds = new Set<string>();
+
+        const isUserPayer = payerId === 'user';
+
+        if (isUserPayer) {
+          // User paid the full bill:
+          // 1. User's own share -> Discretionary expense affecting user's daily budget
+          // 2. Friends' shares -> Lent loans ("gave") that friends owe back
+          for (const split of splits) {
+            if (split.amount <= 0) continue;
+
+            if (split.personId === 'user') {
+              const expTx: Transaction = {
+                id: generateId(),
+                type: 'expense',
+                amount: split.amount,
+                date: txDate,
+                category: cat,
+                reason: description ? `Split: ${description}` : 'Split expense share',
+                note: note || undefined,
+                receiptId: receiptId || undefined
+              };
+              newTxs.push(expTx);
+            } else {
+              affectedPersonIds.add(split.personId);
+              const lentTx: Transaction = {
+                id: generateId(),
+                type: 'person',
+                amount: split.amount,
+                date: txDate,
+                category: cat,
+                reason: description ? `Split (${description})` : 'Split expense share',
+                personId: split.personId,
+                personName: split.personName,
+                direction: 'gave',
+                note: note || undefined,
+                receiptId: receiptId || undefined
+              };
+              newTxs.push(lentTx);
+            }
+          }
+        } else {
+          // A friend paid (payerId !== 'user'):
+          // User owes this friend for the user's portion of the bill -> 'bought_for_me'
+          const userSplit = splits.find(s => s.personId === 'user');
+          if (userSplit && userSplit.amount > 0) {
+            affectedPersonIds.add(payerId);
+            const boughtTx: Transaction = {
+              id: generateId(),
+              type: 'person',
+              amount: userSplit.amount,
+              date: txDate,
+              category: cat,
+              reason: description ? `Split (${description}): paid by ${payerName || 'Friend'}` : `Split share paid by ${payerName || 'Friend'}`,
+              personId: payerId,
+              personName: payerName || 'Friend',
+              direction: 'bought_for_me',
+              status: 'unsettled',
+              note: note || undefined,
+              receiptId: receiptId || undefined
+            };
+            newTxs.push(boughtTx);
+          }
+        }
+
+        if (newTxs.length === 0) return;
+
+        const newTransactions = [...newTxs, ...state.transactions];
+
+        // Recalculate balances for all affected people
+        const updatedPeople = state.people.map(p => {
+          if (affectedPersonIds.has(p.id)) {
+            return {
+              ...p,
+              balance: calculatePersonBalance(p.id, newTransactions)
+            };
+          }
+          return p;
+        });
+
+        set({
+          people: updatedPeople,
+          transactions: newTransactions
+        });
+
+        // Cloud sync
+        if (user?.id) {
+          for (const tx of newTxs) {
+            dispatchCloudSync('insert', 'transactions', tx.id, {
+              id: tx.id,
+              user_id: user.id,
+              type: tx.type,
+              amount: tx.amount,
+              date: tx.date,
+              category: tx.category,
+              reason: tx.reason,
+              person_id: tx.personId,
+              person_name: tx.personName,
+              direction: tx.direction,
+              status: tx.status,
+              note: tx.note,
+              receipt_id: tx.receiptId
+            });
+          }
+
+          for (const pId of affectedPersonIds) {
+            const p = updatedPeople.find(person => person.id === pId);
+            if (p) {
+              dispatchCloudSync(
+                'update',
+                'people',
+                `person_bal_${pId}`,
+                { balance: p.balance, updated_at: new Date().toISOString() },
+                { id: pId, user_id: user.id }
+              );
+            }
           }
         }
       },

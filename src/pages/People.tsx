@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { UserPlus, ChevronRight, Search, Users, ArrowUpRight, ArrowDownRight, Scale } from 'lucide-react';
+import { UserPlus, ChevronRight, Search, Users, ArrowUpRight, ArrowDownRight, Scale, PieChart } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { AddPersonModal } from '../components/modals/AddPersonModal';
+import { SplitBillModal } from '../components/modals/SplitBillModal';
 import { formatCurrency } from '../utils/currencyUtils';
 
 export function People() {
@@ -13,6 +14,7 @@ export function People() {
   const { people, transactions } = useStore();
   const [search, setSearch] = useState('');
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
+  const [isSplitModalOpen, setIsSplitModalOpen] = useState(false);
 
   // Positive balance means they owe us (To Receive)
   // Negative balance means we owe them (To Give)
@@ -226,9 +228,29 @@ export function People() {
         )}
       </div>
 
+      {/* Floating Action Button (FAB) for Quick Split */}
+      <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 z-40 animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <button
+          type="button"
+          onClick={() => setIsSplitModalOpen(true)}
+          className="group flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold px-4 py-3 rounded-full shadow-xl shadow-emerald-500/25 active:scale-95 transition-all text-xs sm:text-sm cursor-pointer border border-emerald-400/40"
+          title="Split a bill among friends"
+        >
+          <div className="p-1 rounded-full bg-white/20 group-hover:rotate-12 transition-transform">
+            <PieChart size={16} />
+          </div>
+          <span className="tracking-wide">Split Bill</span>
+        </button>
+      </div>
+
       <AddPersonModal 
         isOpen={isAddPersonOpen} 
         onClose={() => setIsAddPersonOpen(false)} 
+      />
+
+      <SplitBillModal
+        isOpen={isSplitModalOpen}
+        onClose={() => setIsSplitModalOpen(false)}
       />
     </div>
   );
