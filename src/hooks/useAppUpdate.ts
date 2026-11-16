@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { create } from 'zustand';
+import { Capacitor } from '@capacitor/core';
 
 export const GITHUB_OWNER = 'abhinavbharti2345';
 export const GITHUB_REPO = 'PaceWise';
@@ -72,6 +73,8 @@ export const useUpdateStore = create<UpdateStoreState>((set, get) => ({
   statusMessage: null,
 
   checkForUpdate: async (force = false) => {
+    // Only native platforms (Android APK) check for sideloaded app updates
+    if (!Capacitor.isNativePlatform()) return;
     if (get().isChecking) return;
 
     // Rate-limit check: Throttle automatic background checks to once per 24 hours
@@ -198,7 +201,8 @@ export function useAppUpdate(autoCheck = true) {
   const store = useUpdateStore();
 
   useEffect(() => {
-    if (!autoCheck) return;
+    // Web app updates automatically via page reloads/hosting; only check on native Android
+    if (!autoCheck || !Capacitor.isNativePlatform()) return;
     const timer = setTimeout(() => {
       store.checkForUpdate(false);
     }, 2500);

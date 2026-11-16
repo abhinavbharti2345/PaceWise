@@ -1,6 +1,7 @@
 import { useMemo, useCallback } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { LayoutDashboard, ArrowRightLeft, Users, PieChart, User, Palmtree } from 'lucide-react';
+import { Capacitor } from '@capacitor/core';
 import { cn } from '../../utils/cn';
 import { useStore } from '../../store/useStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -39,7 +40,8 @@ export function AppLayout() {
 
   const currency = config.currency || '₹';
   const formatCurrency = useCallback((val: number) => formatCurrencyUtil(val, currency), [currency]);
-  const update = useAppUpdate(true);
+  const isNative = Capacitor.isNativePlatform();
+  const update = useAppUpdate(isNative);
 
   return (
     <div className="flex h-screen bg-[var(--color-bg-light)] text-[var(--color-dark)] overflow-hidden">
@@ -162,15 +164,17 @@ export function AppLayout() {
 
       <InstallPrompt />
 
-      <UpdateModal
-        isOpen={update.isModalOpen}
-        onClose={update.dismissModal}
-        currentVersion={update.currentVersion}
-        latestVersion={update.latestVersion}
-        releaseNotes={update.releaseNotes}
-        downloadUrl={update.downloadUrl}
-        isMandatory={update.isMandatory}
-      />
+      {isNative && (
+        <UpdateModal
+          isOpen={update.isModalOpen}
+          onClose={update.dismissModal}
+          currentVersion={update.currentVersion}
+          latestVersion={update.latestVersion}
+          releaseNotes={update.releaseNotes}
+          downloadUrl={update.downloadUrl}
+          isMandatory={update.isMandatory}
+        />
+      )}
     </div>
   );
 }
