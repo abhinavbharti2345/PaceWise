@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 interface AddPersonModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onPersonAdded?: (id: string) => void;
 }
 
 interface InitialTransactionItem {
@@ -33,7 +34,7 @@ const createEmptyTransactionItem = (): InitialTransactionItem => ({
   time: getCurrentTimeString(),
 });
 
-export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
+export function AddPersonModal({ isOpen, onClose, onPersonAdded }: AddPersonModalProps) {
   const { people, config, addPerson, recordPersonTransaction } = useStore();
   
   const [name, setName] = useState('');
@@ -174,6 +175,7 @@ export function AddPersonModal({ isOpen, onClose }: AddPersonModalProps) {
     setInitialTransactions([fresh]);
     setExpandedItemId(fresh.id);
     setError('');
+    onPersonAdded?.(personId);
     onClose();
   };
 

@@ -91,34 +91,17 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
       setPayerId('user');
       setSplitMode('equal');
 
-      // Include user and all existing friends by default
-      const allParticipantIds = ['user', ...people.map(p => p.id)];
-      setIncludedIds(allParticipantIds);
+      // By default: none of the friends are selected, only 'user'
+      setIncludedIds(['user']);
 
-      const initialCustom: Record<string, string> = {};
-      allParticipantIds.forEach(id => {
-        initialCustom[id] = '';
+      const initialCustom: Record<string, string> = { user: '' };
+      people.forEach(p => {
+        initialCustom[p.id] = '';
       });
       setCustomAmounts(initialCustom);
-    } else if (isOpen && prevOpenRef.current) {
-      // If modal is already open and a friend was added, adopt new friends without clearing inputs
-      const currentPersonIds = people.map(p => p.id);
-      setIncludedIds(prev => {
-        const added = currentPersonIds.filter(id => !prev.includes(id));
-        return added.length > 0 ? [...prev, ...added] : prev;
-      });
-      setCustomAmounts(prev => {
-        const updated = { ...prev };
-        currentPersonIds.forEach(id => {
-          if (updated[id] === undefined) {
-            updated[id] = '';
-          }
-        });
-        return updated;
-      });
     }
     prevOpenRef.current = isOpen;
-  }, [isOpen, people, allCategories]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -141,16 +124,23 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
   const customDiffPaise = (totalPaise || 0) - customSumPaise;
   const isCustomMatch = totalPaise !== null && totalPaise > 0 && customDiffPaise === 0;
 
-  const handleToggleParticipant = (id: string) => {
-    if (includedIds.includes(id)) {
-      if (includedIds.length === 1) {
-        setError('At least one person must be included in the split');
-        return;
-      }
-      setIncludedIds(includedIds.filter(item => item !== id));
+  const allParticipantIds = ['user', ...people.map(p => p.id)];
+
+  const handleToggleSelectAll = () => {
+    if (includedIds.length === allParticipantIds.length) {
+      // If all are selected, deselect all friends (keep only user)
+      setIncludedIds(['user']);
     } else {
-      setIncludedIds([...includedIds, id]);
+      // Select all
+      setIncludedIds(allParticipantIds);
     }
+    setError('');
+  };
+
+  const handleToggleParticipant = (id: string) => {
+    setIncludedIds(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
     setError('');
   };
 
@@ -429,14 +419,25 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
 
           {/* 4. Participants Breakdown */}
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider">
-                Participants ({splitMode === 'equal' ? includedCount : people.length + 1})
-              </span>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-bold text-[var(--color-gray-dark)] uppercase tracking-wider">
+                  Participants ({splitMode === 'equal' ? includedCount : people.length + 1})
+                </span>
+                {splitMode === 'equal' && people.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleToggleSelectAll}
+                    className="text-xs font-bold text-[var(--color-primary)] hover:underline"
+                  >
+                    {includedIds.length === allParticipantIds.length ? 'Deselect All' : 'Select All'}
+                  </button>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => setIsAddPersonOpen(true)}
-                className="text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1"
+                className="text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1 shrink-0"
               >
                 <UserPlus size={13} />
                 <span>Add Friend</span>
@@ -445,15 +446,35 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
 
             <div className="divide-y divide-[var(--color-gray-light)] border border-[var(--color-gray-light)] rounded-2xl bg-[var(--color-surface-light)]/40 overflow-hidden">
               {/* You (Self) */}
-              <div className="p-3 sm:p-3.5 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
+              <div
+                role={splitMode === 'equal' ? 'button' : undefined}
+                tabIndex={splitMode === 'equal' ? 0 : undefined}
+                onClick={() => {
+                  if (splitMode === 'equal') {
+                    handleToggleParticipant('user');
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (splitMode === 'equal' && (e.key === ' ' || e.key === 'Enter')) {
+                    e.preventDefault();
+                    handleToggleParticipant('user');
+                  }
+                }}
+                className={cn(
+                  "p-3 sm:p-3.5 flex items-center justify-between gap-3 select-none transition-colors",
+                  splitMode === 'equal' ? "cursor-pointer hover:bg-[var(--color-surface)]/70 active:bg-[var(--color-surface)]" : ""
+                )}
+              >
+                <div className="flex items-center gap-3 min-w-0">
                   {splitMode === 'equal' && (
-                    <input
-                      type="checkbox"
-                      checked={includedIds.includes('user')}
-                      onChange={() => handleToggleParticipant('user')}
-                      className="w-4 h-4 rounded text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer"
-                    />
+                    <div className={cn(
+                      "w-5 h-5 rounded-md flex items-center justify-center transition-all border shrink-0",
+                      includedIds.includes('user')
+                        ? "bg-[var(--color-primary)] border-[var(--color-primary)] text-white shadow-sm"
+                        : "border-[var(--color-gray-dark)]/40 bg-[var(--color-surface)] text-transparent"
+                    )}>
+                      <Check size={13} className={cn("stroke-[3] transition-transform", includedIds.includes('user') ? "scale-100" : "scale-0")} />
+                    </div>
                   )}
                   <div className="w-8 h-8 rounded-full bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold text-xs flex items-center justify-center shrink-0">
                     You
@@ -478,7 +499,7 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
                       <span className="text-xs text-[var(--color-gray-dark)] italic">Excluded</span>
                     )
                   ) : (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                       <span className="text-xs font-bold text-[var(--color-gray-dark)]">{currency}</span>
                       <input
                         type="number"
@@ -500,15 +521,36 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
                 const equalShareForPerson = includedIds[0] === p.id ? equalBaseShare + equalRemainder : equalBaseShare;
 
                 return (
-                  <div key={p.id} className="p-3 sm:p-3.5 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5 min-w-0">
+                  <div
+                    key={p.id}
+                    role={splitMode === 'equal' ? 'button' : undefined}
+                    tabIndex={splitMode === 'equal' ? 0 : undefined}
+                    onClick={() => {
+                      if (splitMode === 'equal') {
+                        handleToggleParticipant(p.id);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (splitMode === 'equal' && (e.key === ' ' || e.key === 'Enter')) {
+                        e.preventDefault();
+                        handleToggleParticipant(p.id);
+                      }
+                    }}
+                    className={cn(
+                      "p-3 sm:p-3.5 flex items-center justify-between gap-3 select-none transition-colors",
+                      splitMode === 'equal' ? "cursor-pointer hover:bg-[var(--color-surface)]/70 active:bg-[var(--color-surface)]" : ""
+                    )}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
                       {splitMode === 'equal' && (
-                        <input
-                          type="checkbox"
-                          checked={isIncluded}
-                          onChange={() => handleToggleParticipant(p.id)}
-                          className="w-4 h-4 rounded text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer"
-                        />
+                        <div className={cn(
+                          "w-5 h-5 rounded-md flex items-center justify-center transition-all border shrink-0",
+                          isIncluded
+                            ? "bg-[var(--color-primary)] border-[var(--color-primary)] text-white shadow-sm"
+                            : "border-[var(--color-gray-dark)]/40 bg-[var(--color-surface)] text-transparent"
+                        )}>
+                          <Check size={13} className={cn("stroke-[3] transition-transform", isIncluded ? "scale-100" : "scale-0")} />
+                        </div>
                       )}
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white font-bold text-xs flex items-center justify-center shrink-0">
                         {p.name.charAt(0).toUpperCase()}
@@ -533,7 +575,7 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
                           <span className="text-xs text-[var(--color-gray-dark)] italic">Excluded</span>
                         )
                       ) : (
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                           <span className="text-xs font-bold text-[var(--color-gray-dark)]">{currency}</span>
                           <input
                             type="number"
@@ -700,6 +742,12 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
       <AddPersonModal
         isOpen={isAddPersonOpen}
         onClose={() => setIsAddPersonOpen(false)}
+        onPersonAdded={(newId) => {
+          if (newId) {
+            setIncludedIds(prev => [...prev, newId]);
+            setCustomAmounts(prev => ({ ...prev, [newId]: '' }));
+          }
+        }}
       />
     </div>
   );
