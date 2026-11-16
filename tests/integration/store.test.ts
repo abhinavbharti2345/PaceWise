@@ -1098,6 +1098,32 @@ describe('Hardening & Cascade Deletion Logic', () => {
       expect(stats.spentToday).toBe(0);
       expect(stats.moneyLeft).toBe(5000);
     });
+
+    it('34. recordPersonTransaction properly enqueues person debt transactions and balance updates when offline', () => {
+      const store = useStore.getState();
+      const personId = store.addPerson({ name: 'Offline Person', balance: 0 });
+
+      // Record a transaction
+      store.recordPersonTransaction({
+        personId,
+        personName: 'Offline Person',
+        amount: 150,
+        direction: 'gave',
+        category: 'Food',
+        reason: 'Lent for lunch',
+        date: '2026-11-16T12:00:00.000Z'
+      });
+
+      // Verify transaction added and balance updated in store
+      expect(useStore.getState().people.find(p => p.id === personId)?.balance).toBe(150);
+      const tx = useStore.getState().transactions.find(t => t.personId === personId && t.amount === 150);
+      expect(tx).toBeDefined();
+
+      // Verify that offline sync queue enqueued both the person transaction and person balance update
+      const queue = useStore.getState().pendingSyncQueue;
+      expect(queue.some(q => q.table === 'transactions' && q.id === tx?.id)).toBe(true);
+      expect(queue.some(q => q.table === 'people' && q.id === `person_bal_${personId}`)).toBe(true);
+    });
   });
 });
 

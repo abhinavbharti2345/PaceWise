@@ -69,6 +69,7 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
 
   const [error, setError] = useState('');
   const amountInputId = useId();
+  const prevOpenRef = React.useRef(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -76,9 +77,9 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
     }
   }, [isOpen, onClose]);
 
-  // Reset and initialize participants when modal opens
+  // Reset and initialize participants when modal opens fresh
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !prevOpenRef.current) {
       setAmount('');
       setDescription('');
       setSelectedCategory(allCategories[0]?.name || 'Food');
@@ -99,18 +100,37 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
         initialCustom[id] = '';
       });
       setCustomAmounts(initialCustom);
+    } else if (isOpen && prevOpenRef.current) {
+      // If modal is already open and a friend was added, adopt new friends without clearing inputs
+      const currentPersonIds = people.map(p => p.id);
+      setIncludedIds(prev => {
+        const added = currentPersonIds.filter(id => !prev.includes(id));
+        return added.length > 0 ? [...prev, ...added] : prev;
+      });
+      setCustomAmounts(prev => {
+        const updated = { ...prev };
+        currentPersonIds.forEach(id => {
+          if (updated[id] === undefined) {
+            updated[id] = '';
+          }
+        });
+        return updated;
+      });
     }
-  }, [isOpen, people.length]);
+    prevOpenRef.current = isOpen;
+  }, [isOpen, people, allCategories]);
 
   if (!isOpen) return null;
 
   const totalPaise = toPaise(amount);
   const numTotalAmount = totalPaise === null ? 0 : totalPaise / 100;
 
-  // Equal split calculation
+  // Equal split calculation using exact integer paise (Zero-Loss Invariant)
   const includedCount = includedIds.length;
-  const equalBaseShare = includedCount > 0 ? Math.floor((numTotalAmount / includedCount) * 100) / 100 : 0;
-  const equalRemainder = includedCount > 0 ? Math.round((numTotalAmount - equalBaseShare * includedCount) * 100) / 100 : 0;
+  const baseSharePaise = (totalPaise !== null && includedCount > 0) ? Math.floor(totalPaise / includedCount) : 0;
+  const remainderPaise = (totalPaise !== null && includedCount > 0) ? totalPaise - (baseSharePaise * includedCount) : 0;
+  const equalBaseShare = baseSharePaise / 100;
+  const equalRemainder = remainderPaise / 100;
 
   // Custom split calculation
   const customSumPaise = Object.values(customAmounts).reduce((sum, val) => {
@@ -177,6 +197,18 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
       return;
     }
 
+    // Validation when friend is payer
+    if (payerId !== 'user') {
+      const isUserIncludedInEqual = splitMode === 'equal' && includedIds.includes('user');
+      const userCustomPaise = splitMode === 'custom' ? (toPaise(customAmounts['user'] || '0', { allowZero: true }) || 0) : 0;
+      const isUserIncludedInCustom = splitMode === 'custom' && userCustomPaise > 0;
+
+      if (!isUserIncludedInEqual && !isUserIncludedInCustom) {
+        setError('Since you did not participate in this bill, no personal debt is incurred. Include yourself or select You as the payer.');
+        return;
+      }
+    }
+
     let splitsToSave: Array<{ personId: string; personName: string; amount: number }> = [];
 
     if (splitMode === 'equal') {
@@ -186,13 +218,13 @@ export function SplitBillModal({ isOpen, onClose }: SplitBillModalProps) {
       }
 
       splitsToSave = includedIds.map((id, index) => {
-        // Distribute remainder paise to first person
-        const share = index === 0 ? equalBaseShare + equalRemainder : equalBaseShare;
+        // Distribute remainder paise to first person in integer precision
+        const share = index === 0 ? baseSharePaise + remainderPaise : baseSharePaise;
         const name = id === 'user' ? 'You' : (people.find(p => p.id === id)?.name || 'Friend');
         return {
           personId: id,
           personName: name,
-          amount: Math.round(share * 100) / 100
+          amount: share / 100
         };
       });
     } else {

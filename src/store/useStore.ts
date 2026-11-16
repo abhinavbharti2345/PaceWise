@@ -683,7 +683,7 @@ export const useStore = create<AppState>()(
 
           const userId = useAuthStore.getState().user?.id;
           if (userId) {
-            supabase.from('transactions').insert({
+            dispatchCloudSync('insert', 'transactions', expenseTx.id, {
               id: expenseTx.id,
               user_id: userId,
               type: 'expense',
@@ -694,8 +694,6 @@ export const useStore = create<AppState>()(
               person_id: expenseTx.personId,
               person_name: expenseTx.personName,
               note: expenseTx.note,
-            }).then(({ error }) => {
-              if (error) console.error('[PaceWise] Failed to insert expense transaction:', error);
             });
           }
           return;
@@ -750,53 +748,43 @@ export const useStore = create<AppState>()(
 
         const userId = useAuthStore.getState().user?.id;
         if (userId) {
-          const promises: PromiseLike<unknown>[] = [
-            supabase.from('people').update({ balance: newBalance, updated_at: new Date().toISOString() })
-              .eq('id', personId).eq('user_id', userId).then(({ error }) => {
-                if (error) console.error('[PaceWise] Failed to update person balance:', error);
-              }),
-            supabase.from('transactions').insert({
-              id: txId,
-              user_id: userId,
-              type: 'person',
-              amount,
-              date: txDate,
-              category: newTx.category || 'People',
-              reason: newTx.reason,
-              person_id: personId,
-              person_name: personName,
-              direction,
-              status: newTx.status,
-              note,
-            }).then(({ error }) => {
-              if (error) {
-                console.error('[PaceWise] Failed to insert person transaction:', error);
-              }
-            })
-          ];
+          dispatchCloudSync(
+            'update',
+            'people',
+            `person_bal_${personId}`,
+            { balance: newBalance, updated_at: new Date().toISOString() },
+            { id: personId, user_id: userId }
+          );
+
+          dispatchCloudSync('insert', 'transactions', txId, {
+            id: txId,
+            user_id: userId,
+            type: 'person',
+            amount,
+            date: txDate,
+            category: newTx.category || 'People',
+            reason: newTx.reason,
+            person_id: personId,
+            person_name: personName,
+            direction,
+            status: newTx.status,
+            note,
+          });
 
           if (expenseTx) {
-            promises.push(
-              supabase.from('transactions').insert({
-                id: expenseTx.id,
-                user_id: userId,
-                type: 'expense',
-                amount: expenseTx.amount,
-                date: expenseTx.date,
-                category: expenseTx.category,
-                reason: expenseTx.reason,
-                person_id: expenseTx.personId,
-                person_name: expenseTx.personName,
-                note: expenseTx.note,
-              }).then(({ error }) => {
-                if (error) console.error('[PaceWise] Failed to insert expense transaction:', error);
-              })
-            );
+            dispatchCloudSync('insert', 'transactions', expenseTx.id, {
+              id: expenseTx.id,
+              user_id: userId,
+              type: 'expense',
+              amount: expenseTx.amount,
+              date: expenseTx.date,
+              category: expenseTx.category,
+              reason: expenseTx.reason,
+              person_id: expenseTx.personId,
+              person_name: expenseTx.personName,
+              note: expenseTx.note,
+            });
           }
-
-          Promise.all(promises).catch(err => 
-            console.error('[PaceWise] Failed to sync recordPersonTransaction:', err)
-          );
         }
       },
 

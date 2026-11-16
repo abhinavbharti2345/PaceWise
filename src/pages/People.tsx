@@ -57,14 +57,24 @@ export function People() {
             Track informal loans and shared expenses with friends.
           </p>
         </div>
-        <Button 
-          variant="primary" 
-          onClick={() => setIsAddPersonOpen(true)} 
-          className="h-10 px-3.5 sm:px-4 py-2 rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 font-bold shadow-sm shrink-0 whitespace-nowrap"
-        >
-          <UserPlus size={18} />
-          <span className="text-xs sm:text-sm">Add Person</span>
-        </Button>
+        <div className="flex items-center gap-2 shrink-0">
+          <Button
+            variant="secondary"
+            onClick={() => setIsSplitModalOpen(true)}
+            className="hidden sm:inline-flex h-10 px-3.5 py-2 rounded-xl items-center gap-1.5 font-bold shadow-sm whitespace-nowrap border border-[var(--color-gray-light)] hover:border-emerald-500/40"
+          >
+            <PieChart size={16} className="text-emerald-500" />
+            <span className="text-xs sm:text-sm">Split Bill</span>
+          </Button>
+          <Button 
+            variant="primary" 
+            onClick={() => setIsAddPersonOpen(true)} 
+            className="h-10 px-3.5 sm:px-4 py-2 rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 font-bold shadow-sm shrink-0 whitespace-nowrap"
+          >
+            <UserPlus size={18} />
+            <span className="text-xs sm:text-sm">Add Person</span>
+          </Button>
+        </div>
       </header>
 
       {/* Summary Cards */}
